@@ -207,7 +207,7 @@ class FooterWidget extends StatelessWidget {
           children: [
             _buildSocialIcon(Icons.facebook, 'Facebook', Color(0xFF1877F2)),
             SizedBox(width: 12),
-            _buildSocialIcon(Icons.twitter, 'Twitter', Color(0xFF1DA1F2)),
+            _buildSocialIcon(Icons.close, 'X (Twitter)', Color(0xFF1DA1F2)),
             SizedBox(width: 12),
             _buildSocialIcon(
                 Icons.account_circle, 'Instagram', Color(0xFFE4405F)),

@@ -75,7 +75,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
         boxShadow: _showElevation
             ? [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                 )
               ]
@@ -116,7 +116,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
         gradient: LinearGradient(
           colors: [
             AppColors.primary,
-            AppColors.primary.withOpacity(0.8),
+            AppColors.primary.withValues(alpha: 0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -463,7 +463,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
             padding: const EdgeInsets.all(16),
             child: Text(
               answer,
-              style: TextStyles.bodyMedium(Colors.black),
+              style: TextStyles.bodyMedium.copyWith(color: Colors.black),
             ),
           ),
         ],
@@ -511,7 +511,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
         },
         child: Text(
           label,
-          style: TextStyles.bodyMedium(AppColors.primary),
+          style: TextStyles.bodyMedium.copyWith(color: AppColors.primary),
         ),
       ),
     );

@@ -5,6 +5,7 @@ import 'package:mcs/core/errors/failures.dart';
 import 'package:mcs/core/models/user_model.dart';
 import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// تنفيذ مستودع المصادقة
 /// يتعامل مع تحويل الاستثناءات إلى [Failure] objects
@@ -32,12 +33,8 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       final roleStr = authUser.userMetadata?['role'] as String? ?? 'patient';
-      final createdAt = authUser.createdAt != null
-          ? DateTime.parse(authUser.createdAt.toString())
-          : null;
-      final updatedAt = authUser.updatedAt != null
-          ? DateTime.parse(authUser.updatedAt.toString())
-          : null;
+      final createdAt = _parseDateTime(authUser.createdAt);
+      final updatedAt = _parseDateTime(authUser.updatedAt);
       final userId = authUser.id;
 
       final user = UserModel(
@@ -125,7 +122,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'فشل إرسال رمز التحقق: ${e.toString()}'));
+        ServerFailure(message: 'فشل إرسال رمز التحقق: ${e.toString()}'),
+      );
     }
   }
 
@@ -154,8 +152,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(
-          message: 'فشل إعادة تعيين كلمة المرور: ${e.toString()}'));
+      return Left(
+        ServerFailure(message: 'فشل إعادة تعيين كلمة المرور: ${e.toString()}'),
+      );
     }
   }
 
@@ -185,7 +184,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'فشل تغيير كلمة المرور: ${e.toString()}'));
+        ServerFailure(message: 'فشل تغيير كلمة المرور: ${e.toString()}'),
+      );
     }
   }
 
@@ -212,12 +212,8 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       final roleStr = authUser.userMetadata?['role'] as String? ?? 'patient';
-      final createdAt = authUser.createdAt != null
-          ? DateTime.parse(authUser.createdAt.toString())
-          : null;
-      final updatedAt = authUser.updatedAt != null
-          ? DateTime.parse(authUser.updatedAt.toString())
-          : null;
+      final createdAt = _parseDateTime(authUser.createdAt);
+      final updatedAt = _parseDateTime(authUser.updatedAt);
       final userId = authUser.id;
 
       final user = UserModel(
@@ -232,8 +228,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Right(user);
     } catch (e) {
-      return Left(ServerFailure(
-          message: 'فشل الحصول على بيانات المستخدم: ${e.toString()}'));
+      return Left(
+        ServerFailure(message: 'فشل الحصول على بيانات المستخدم: ${e.toString()}'),
+      );
     }
   }
 
@@ -244,7 +241,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user != null);
     } catch (e) {
       return Left(
-          ServerFailure(message: 'خطأ في التحقق من الجلسة: ${e.toString()}'));
+        ServerFailure(message: 'خطأ في التحقق من الجلسة: ${e.toString()}'),
+      );
     }
   }
 
@@ -264,9 +262,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final roleStr = updates['role'] as String? ??
           authUser.userMetadata?['role'] as String? ??
           'patient';
-      final createdAt = authUser.createdAt != null
-          ? DateTime.parse(authUser.createdAt.toString())
-          : null;
+      final createdAt = _parseDateTime(authUser.createdAt);
 
       final user = UserModel(
         id: authUser.id,
@@ -284,7 +280,8 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'فشل تحديث الملف الشخصي: ${e.toString()}'));
+        ServerFailure(message: 'فشل تحديث الملف الشخصي: ${e.toString()}'),
+      );
     }
   }
 
@@ -298,8 +295,17 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(
-          message: 'فشل تسجيل الدخول عبر وسائل التواصل: ${e.toString()}'));
+      return Left(
+        ServerFailure(message: 'فشل تسجيل الدخول عبر وسائل التواصل: ${e.toString()}'),
+      );
     }
+  }
+
+  /// Helper function to parse DateTime from String
+  DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    if (value is String) return DateTime.tryParse(value);
+    return null;
   }
 }

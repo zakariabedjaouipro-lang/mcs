@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/app_colors.dart';
-import 'package:mcs/core/theme/text_styles.dart' as text_styles;
+import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/widgets/responsive_layout.dart';
 import 'package:mcs/features/landing/widgets/faq_section.dart';
 
@@ -41,7 +41,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
           end: Alignment.bottomRight,
           colors: [
             AppColors.primary,
-            AppColors.primary.withOpacity(0.8),
+            AppColors.primary.withValues(alpha: 0.8),
           ],
         ),
       ),
@@ -49,13 +49,13 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
         children: [
           Text(
             'الدعم الفني',
-            style: text_styles.heading1.copyWith(color: Colors.white),
+            style: TextStyles.heading1.copyWith(color: Colors.white),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 16),
           Text(
             'احصل على المساعدة والدعم من فريقنا المتخصص',
-            style: text_styles.body1.copyWith(color: Colors.white70),
+            style: TextStyles.body1.copyWith(color: Colors.white70),
             textAlign: TextAlign.center,
           ),
         ],
@@ -98,7 +98,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
           ),
           child: Text(
             label,
-            style: text_styles.subtitle1.copyWith(
+            style: TextStyles.subtitle1.copyWith(
               color: isSelected ? AppColors.primary : AppColors.greyDark,
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             ),
@@ -200,7 +200,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
           Container(
             height: 140,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
             ),
             child: Center(
@@ -221,7 +221,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
                   Chip(
                     label: Text(
                       video['category'] as String,
-                      style: text_styles.caption.copyWith(
+                      style: TextStyles.caption.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
@@ -232,7 +232,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
                   SizedBox(height: 8),
                   Text(
                     video['title'] as String,
-                    style: text_styles.subtitle2.copyWith(
+                    style: TextStyles.subtitle2.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                     maxLines: 2,
@@ -247,7 +247,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
                       Text(
                         video['duration'] as String,
                         style:
-                            text_styles.caption.copyWith(color: AppColors.grey),
+                            TextStyles.caption.copyWith(color: AppColors.grey),
                       ),
                     ],
                   ),
@@ -359,7 +359,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
                 SizedBox(height: 12),
                 Text(
                   link['description'] as String,
-                  style: text_styles.subtitle1.copyWith(
+                  style: TextStyles.subtitle1.copyWith(
                     fontWeight: FontWeight.w700,
                     color: link['color'] as Color,
                   ),
@@ -367,7 +367,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
                 SizedBox(height: 8),
                 Text(
                   link['description'] as String,
-                  style: text_styles.caption.copyWith(
+                  style: TextStyles.caption.copyWith(
                     color: AppColors.greyDark,
                   ),
                   maxLines: 2,

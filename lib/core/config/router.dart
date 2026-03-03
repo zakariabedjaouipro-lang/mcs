@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mcs/core/config/supabase_config.dart';
+import 'package:mcs/features/landing/screens/landing_screen.dart';
+import 'package:mcs/features/auth/screens/login_screen.dart';
 
 // ── Route Paths ────────────────────────────────────────────
 abstract class AppRoutes {
@@ -95,7 +97,7 @@ class AppRouter {
     GoRoute(
       path: AppRoutes.landing,
       name: 'landing',
-      builder: (context, state) => const _PlaceholderScreen(title: 'Landing'),
+      builder: (context, state) => const LandingScreen(),
     ),
     GoRoute(
       path: AppRoutes.features,

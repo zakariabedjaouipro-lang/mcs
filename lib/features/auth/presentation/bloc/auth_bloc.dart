@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:mcs/core/errors/failures.dart';
+import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mcs/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/register_usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/verify_otp_usecase.dart';
-import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_event.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_state.dart';
 
@@ -46,6 +47,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterSubmitted>(_onRegisterSubmitted);
     on<ForgotPasswordSubmitted>(_onForgotPasswordSubmitted);
     on<OtpSubmitted>(_onOtpSubmitted);
+    on<OtpDigitChanged>(_onOtpDigitChanged);
     on<ResendOtpRequested>(_onResendOtpRequested);
     on<ResetPasswordSubmitted>(_onResetPasswordSubmitted);
     on<ChangePasswordSubmitted>(_onChangePasswordSubmitted);
@@ -236,6 +238,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       },
       (_) => emit(const OtpVerified()),
     );
+  }
+
+  Future<void> _onOtpDigitChanged(
+    OtpDigitChanged event,
+    Emitter<AuthState> emit,
+  ) async {
+    // يمكن تخزين رقم OTP في حالة الـ bloc إذا لزم الأمر
+    // حالياً لا نحتاج إلى تغيير الحالة، فقط نستقبل الحدث
   }
 
   Future<void> _onResendOtpRequested(

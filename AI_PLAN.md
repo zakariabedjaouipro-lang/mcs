@@ -29,9 +29,9 @@
 - ✅ `lib/core/errors/exceptions.dart`
 
 ### Group 0-5: Localization
-- ⬜ `lib/core/localization/app_localizations.dart`
-- ⬜ `lib/core/localization/l10n/app_ar.arb`
-- ⬜ `lib/core/localization/l10n/app_en.arb`
+- ✅ `lib/core/localization/app_localizations.dart`
+- ✅ `lib/core/localization/l10n/app_ar.arb`
+- ✅ `lib/core/localization/l10n/app_en.arb`
 
 ### Group 0-6: Theme
 - ✅ `lib/core/theme/app_theme.dart`
@@ -47,9 +47,9 @@
 - ✅ `lib/core/services/sms_service.dart`
 
 ### Group 0-8: Services (Part 2)
-- ⬜ `lib/core/services/video_call_service.dart`
+- ✅ `lib/core/services/video_call_service.dart`
 - ✅ `lib/core/services/storage_service.dart`
-- ⬜ `lib/core/services/currency_service.dart`
+- ✅ `lib/core/services/currency_service.dart`
 - ✅ `lib/core/services/device_detection_service.dart`
 
 ### Group 0-9: Utils
@@ -69,13 +69,13 @@
 ### Group 0-11: Core Widgets (Part 2)
 - ✅ `lib/core/widgets/otp_input_widget.dart`
 - ✅ `lib/core/widgets/responsive_layout.dart`
-- ⬜ `lib/core/widgets/app_drawer.dart`
-- ⬜ `lib/core/widgets/language_switcher.dart`
-- ⬜ `lib/core/widgets/theme_switcher.dart`
+- ✅ `lib/core/widgets/app_drawer.dart`
+- ✅ `lib/core/widgets/language_switcher.dart`
+- ✅ `lib/core/widgets/theme_switcher.dart`
 
 ### Group 0-12: Core Widgets (Part 3) & Models Start
-- ⬜ `lib/core/widgets/currency_selector.dart`
-- ⬜ `lib/core/widgets/confirm_dialog.dart`
+- ✅ `lib/core/widgets/currency_selector.dart`
+- ✅ `lib/core/widgets/confirm_dialog.dart`
 
 ### Group 0-13: Models (Part 1)
 - ✅ `lib/core/models/user_model.dart`
@@ -268,8 +268,18 @@
 ## SQL Migrations
 - ✅ `supabase/migrations/001_create_enums.sql`
 - ✅ `supabase/migrations/002_create_users_table.sql`
-- ⬜ `supabase/migrations/003_create_clinics_table.sql`
-- ⬜ ... (remaining migrations)
+- ✅ `supabase/migrations/003_create_clinics_table.sql`
+- ✅ `supabase/migrations/004_create_doctors_table.sql`
+- ✅ `supabase/migrations/005_create_patients_table.sql`
+- ✅ `supabase/migrations/006_create_appointments_table.sql`
+- ✅ `supabase/migrations/007_create_employees_table.sql`
+- ✅ `supabase/migrations/008_create_prescriptions_table.sql`
+- ✅ `supabase/migrations/009_create_invoices_table.sql`
+- ✅ `supabase/migrations/010_create_inventory_table.sql`
+- ✅ `supabase/migrations/011_create_lab_results_table.sql`
+- ✅ `supabase/migrations/012_create_notifications_table.sql`
+- ✅ `supabase/migrations/013_create_video_sessions_table.sql`
+- ✅ `supabase/migrations/014_create_reports_table.sql`
 
 ---
 **Legend:** ✅ = Complete | ⬜ = Pending

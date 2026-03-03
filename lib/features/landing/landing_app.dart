@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mcs/core/theme/app_theme.dart';
 
 class LandingApp extends StatelessWidget {
   const LandingApp({super.key});

@@ -78,7 +78,7 @@ class _LandingScreenState extends State<LandingScreen> {
         boxShadow: _showElevation
             ? [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 )
@@ -210,7 +210,7 @@ class _LandingScreenState extends State<LandingScreen> {
         gradient: LinearGradient(
           colors: [
             AppColors.primary,
-            AppColors.primary.withOpacity(0.8),
+            AppColors.primary.withValues(alpha: 0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -303,14 +303,14 @@ class _LandingScreenState extends State<LandingScreen> {
 
   /// Build features section showcasing key features.
   Widget _buildFeaturesSection(BuildContext context) {
-    const features = [
+    final features = [
       (
         icon: Icons.calendar_today,
         title: 'Appointments',
         description: 'Easy scheduling and management'
       ),
       (
-        icon: Icons.prescription,
+        icon: Icons.medical_services,
         title: 'Prescriptions',
         description: 'Digital prescription management'
       ),

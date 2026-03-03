@@ -60,31 +60,27 @@ class SupabaseService {
     int? offset,
   }) async {
     try {
-      var query =
-          _client.from(table).select(select ?? '*') as PostgrestFilterBuilder;
+      dynamic query = _client.from(table).select(select ?? '*');
 
       if (filters != null) {
         for (final entry in filters.entries) {
-          query = query.eq(entry.key, entry.value as Object)
-              as PostgrestFilterBuilder;
+          query = query.eq(entry.key, entry.value as Object);
         }
       }
 
-      var finalQuery = query as PostgrestTransformBuilder;
-
       if (orderBy != null) {
-        finalQuery = finalQuery.order(orderBy, ascending: ascending);
+        query = query.order(orderBy, ascending: ascending);
       }
 
       if (limit != null) {
-        finalQuery = finalQuery.limit(limit);
+        query = query.limit(limit);
       }
 
       if (offset != null) {
-        finalQuery = finalQuery.range(offset, offset + (limit ?? 20) - 1);
+        query = query.range(offset, offset + (limit ?? 20) - 1);
       }
 
-      final data = await finalQuery;
+      final data = await query;
       return List<Map<String, dynamic>>.from(data as List);
     } catch (e, st) {
       _logError('fetchAll($table)', e, st);

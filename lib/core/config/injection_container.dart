@@ -5,11 +5,13 @@
 library;
 
 import 'package:get_it/get_it.dart';
+
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/services/notification_service.dart';
 import 'package:mcs/core/services/sms_service.dart';
 import 'package:mcs/core/services/storage_service.dart';
+import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mcs/features/auth/domain/usecases/login_usecase.dart';
@@ -26,33 +28,34 @@ final GetIt sl = GetIt.instance;
 /// Must be called once in `main()` after Supabase is initialized.
 Future<void> configureDependencies() async {
   // ── External ─────────────────────────────────────────────
-  sl.registerLazySingleton<SupabaseClient>(() => SupabaseConfig.client);
-  sl.registerLazySingleton<GoTrueClient>(() => SupabaseConfig.auth);
-
-  // ── Services ─────────────────────────────────────────────
-  sl.registerLazySingleton<AuthService>(() => AuthService());
-  sl.registerLazySingleton<StorageService>(() => StorageService());
-  sl.registerLazySingleton<NotificationService>(() => NotificationService());
-  sl.registerLazySingleton<SmsService>(() => SmsService());
-
-  // ── Repositories ─────────────────────────────────────────
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(authService: sl()),
-  );
-
-  // ── Use Cases ────────────────────────────────────────────
-  sl.registerLazySingleton(() => LoginUseCase(sl()));
-  sl.registerLazySingleton(() => RegisterUseCase(sl()));
-  sl.registerLazySingleton(() => VerifyOTPUseCase(sl()));
-
-  // ── BLoCs / Cubits ───────────────────────────────────────
-  sl.registerFactory(() => AuthBloc(
+  sl
+    ..registerLazySingleton<SupabaseClient>(() => SupabaseConfig.client)
+    ..registerLazySingleton<GoTrueClient>(() => SupabaseConfig.auth)
+    ..registerLazySingleton<AuthService>(() => AuthService())
+    ..registerLazySingleton<StorageService>(() => StorageService())
+    ..registerLazySingleton<NotificationService>(() => NotificationService())
+    ..registerLazySingleton<SupabaseService>(() => SupabaseService())
+    ..registerLazySingleton<SmsService>(
+      () => SmsService(supabaseService: sl()),
+    )
+    ..registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(authService: sl()),
+    )
+    ..registerLazySingleton(() => LoginUseCase(sl()))
+    ..registerLazySingleton(() => RegisterUseCase(sl()))
+    ..registerLazySingleton(() => VerifyOTPUseCase(sl()))
+    ..registerFactory(
+      () => AuthBloc(
         loginUseCase: sl(),
         registerUseCase: sl(),
         verifyOTPUseCase: sl(),
         authRepository: sl(),
-      ));
+      ),
+    );
 }
+
+/// Alias for [configureDependencies] for backward compatibility.
+Future<void> setupInjectionContainer() => configureDependencies();
 
 /// Resets all registered dependencies.
 ///

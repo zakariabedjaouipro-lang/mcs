@@ -6,6 +6,7 @@ import 'dart:developer';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mcs/core/config/app_config.dart';
+import 'package:mcs/core/config/env.dart';
 
 class SupabaseConfig {
   const SupabaseConfig._();
@@ -17,8 +18,8 @@ class SupabaseConfig {
   static Future<void> initialize() async {
     try {
       await Supabase.initialize(
-        url: AppConfig.supabaseUrl,
-        anonKey: AppConfig.supabaseAnonKey,
+        url: Env.supabaseUrl,
+        anonKey: Env.supabaseAnonKey,
         realtimeClientOptions: const RealtimeClientOptions(
           logLevel: RealtimeLogLevel.info,
         ),

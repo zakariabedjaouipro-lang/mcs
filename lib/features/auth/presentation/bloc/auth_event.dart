@@ -181,6 +181,20 @@ class OtpSubmitted extends AuthEvent {
   List<Object?> get props => [email, otp];
 }
 
+/// تغيير رقم OTP في حقل معين
+class OtpDigitChanged extends AuthEvent {
+  final String digit;
+  final int index;
+
+  const OtpDigitChanged({
+    required this.digit,
+    required this.index,
+  });
+
+  @override
+  List<Object?> get props => [digit, index];
+}
+
 /// إعادة محاولة إرسال OTP
 class ResendOtpRequested extends AuthEvent {
   final String email;

@@ -40,7 +40,7 @@ class ContactScreenLanding extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             AppColors.primary,
-            AppColors.primary.withOpacity(0.8),
+            AppColors.primary.withValues(alpha: 0.8),
           ],
         ),
       ),
@@ -227,7 +227,7 @@ class ContactScreenLanding extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -262,14 +262,14 @@ class ContactScreenLanding extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         height: 350,
-        color: AppColors.grey.withOpacity(0.1),
+        color: AppColors.grey.withValues(alpha: 0.1),
         child: Stack(
           alignment: Alignment.center,
           children: [
             Icon(
               Icons.location_on,
               size: 80,
-              color: AppColors.primary.withOpacity(0.3),
+              color: AppColors.primary.withValues(alpha: 0.3),
             ),
             Positioned(
               bottom: 20,
@@ -280,7 +280,7 @@ class ContactScreenLanding extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 8,
                       offset: Offset(0, 2),
                     ),

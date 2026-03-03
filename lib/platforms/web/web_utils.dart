@@ -38,7 +38,7 @@ abstract class WebUtils {
     try {
       switch (feature.toLowerCase()) {
         case 'geolocation':
-          return html.navigator.geolocation != null;
+          return html.window.navigator.geolocation != null;
         case 'notifications':
           return html.Notification.supported;
         case 'service-worker':
@@ -219,12 +219,12 @@ abstract class WebUtils {
       }
 
       final position =
-          await html.window.navigator.geolocation.getCurrentPosition().first;
+          await html.window.navigator.geolocation.getCurrentPosition();
 
       return GeolocationCoordinates(
-        latitude: position.coords!.latitude!,
-        longitude: position.coords!.longitude!,
-        accuracy: position.coords!.accuracy,
+        latitude: position.coords!.latitude!.toDouble(),
+        longitude: position.coords!.longitude!.toDouble(),
+        accuracy: position.coords!.accuracy?.toDouble(),
       );
     } catch (e) {
       debugPrint('Error getting current position: $e');
@@ -236,9 +236,9 @@ abstract class WebUtils {
   static Stream<GeolocationCoordinates> watchPosition() {
     return html.window.navigator.geolocation.watchPosition().map((position) {
       return GeolocationCoordinates(
-        latitude: position.coords!.latitude!,
-        longitude: position.coords!.longitude!,
-        accuracy: position.coords!.accuracy,
+        latitude: (position.coords!.latitude! as num).toDouble(),
+        longitude: (position.coords!.longitude! as num).toDouble(),
+        accuracy: position.coords!.accuracy?.toDouble(),
       );
     });
   }
@@ -291,7 +291,7 @@ abstract class WebUtils {
   }
 
   /// Get device pixel ratio.
-  static double get devicePixelRatio => html.window.devicePixelRatio;
+  static double get devicePixelRatio => html.window.devicePixelRatio.toDouble();
 
   /// Listen to window resize events.
   static Stream<Size> onWindowResize() {

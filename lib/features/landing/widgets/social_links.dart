@@ -30,7 +30,7 @@ class SocialLinksWidget extends StatelessWidget {
       ),
       SocialLink(
         platform: 'Twitter',
-        icon: Icons.twitter,
+        icon: Icons.close,
         url: 'https://www.twitter.com/mcs',
         color: Color(0xFF1DA1F2),
       ),

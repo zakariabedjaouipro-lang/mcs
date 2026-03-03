@@ -88,7 +88,7 @@ class _PricingCardState extends State<PricingCard> {
                     // Plan name
                     Text(
                       widget.plan.name,
-                      style: TextStyles.headlineSmall.copyWith(
+                      style: TextStyles.headline5.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
