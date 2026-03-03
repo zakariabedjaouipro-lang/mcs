@@ -81,8 +81,8 @@ class AppDrawer extends StatelessWidget {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Text(
-                          user.fullName != null && user.fullName!.isNotEmpty
-                              ? user.fullName![0].toUpperCase()
+                          user!.fullName != null && user!.fullName!.isNotEmpty
+                              ? user!.fullName![0].toUpperCase()
                               : 'U',
                           style: TextStyle(
                             fontSize: 24,

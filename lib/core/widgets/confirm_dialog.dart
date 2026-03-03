@@ -254,7 +254,7 @@ class _LoadingDialog extends StatelessWidget {
             const CircularProgressIndicator(),
             if (message != null) ...[
               const SizedBox(height: 16),
-              Text(message),
+              Text(message!),
             ] else ...[
               const SizedBox(height: 16),
               Text(localizations.loading),

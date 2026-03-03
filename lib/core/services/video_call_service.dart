@@ -36,7 +36,7 @@ class VideoCallService {
     required Function(String) onError,
     required Function(int) onJoinChannelSuccess,
     required Function(int, int) onUserJoined,
-    required Function(int, int) onUserOffline,
+    required Function(int, UserOfflineReasonType) onUserOffline,
   }) async {
     if (_engine != null) {
       debugPrint('VideoCallService: Engine already initialized');
@@ -59,8 +59,8 @@ class VideoCallService {
           },
           onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
             debugPrint('VideoCallService: Joined channel ${connection.channelId}');
-            _localUid = connection.localUid;
-            onJoinChannelSuccess(connection.localUid);
+            _localUid = connection.localUid ?? 0;
+            onJoinChannelSuccess(connection.localUid ?? 0);
           },
           onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
             debugPrint('VideoCallService: Remote user $remoteUid joined');
@@ -68,7 +68,7 @@ class VideoCallService {
             onUserJoined(remoteUid, elapsed);
           },
           onUserOffline: (RtcConnection connection, int remoteUid,
-              int reason) {
+              UserOfflineReasonType reason) {
             debugPrint('VideoCallService: Remote user $remoteUid offline');
             _remoteUids.remove(remoteUid);
             onUserOffline(remoteUid, reason);
@@ -219,7 +219,7 @@ class VideoCallService {
     if (_engine == null) return;
 
     try {
-      await _engine!.muteRemoteAudioStream(uid, mute: muted);
+      await _engine!.muteRemoteAudioStream(uid: uid, mute: muted);
       debugPrint('VideoCallService: Remote audio for $uid ${muted ? "muted" : "unmuted"}');
     } catch (e) {
       debugPrint('VideoCallService: Mute remote audio error - $e');
@@ -231,7 +231,7 @@ class VideoCallService {
     if (_engine == null) return;
 
     try {
-      await _engine!.muteRemoteVideoStream(uid, mute: muted);
+      await _engine!.muteRemoteVideoStream(uid: uid, mute: muted);
       debugPrint('VideoCallService: Remote video for $uid ${muted ? "muted" : "unmuted"}');
     } catch (e) {
       debugPrint('VideoCallService: Mute remote video error - $e');

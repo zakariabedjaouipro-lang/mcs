@@ -129,8 +129,9 @@ class CurrencySwitcherSimple extends StatelessWidget {
         subtitle: Text('${currency.name} (${currency.code})'),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => _showCurrencyDialog(context),
-      );
-    }
+      ),
+    );
+  }
 
   void _showCurrencyDialog(BuildContext context) {
     final currency = selectedCurrency ?? Currency.dzd;
