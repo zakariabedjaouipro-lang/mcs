@@ -1,0 +1,249 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:mcs/core/theme/app_colors.dart';
+import 'package:mcs/core/theme/app_theme.dart';
+import 'package:mcs/core/theme/text_styles.dart';
+import 'package:mcs/core/config/injection_container.dart';
+import 'package:mcs/core/services/supabase_service.dart';
+import 'package:mcs/features/admin/presentation/bloc/index.dart';
+import 'package:mcs/features/admin/presentation/screens/admin_stats_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/admin_subscriptions_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/admin_clinics_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/admin_currencies_screen.dart';
+
+/// Super Admin Dashboard Screen
+class AdminDashboardScreen extends StatelessWidget {
+  const AdminDashboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => AdminBloc(sl<SupabaseService>()),
+      child: const AdminDashboardView(),
+    );
+  }
+}
+
+class AdminDashboardView extends StatefulWidget {
+  const AdminDashboardView({super.key});
+
+  @override
+  State<AdminDashboardView> createState() => _AdminDashboardViewState();
+}
+
+class _AdminDashboardViewState extends State<AdminDashboardView> {
+  int _selectedIndex = 0;
+
+  late final List<_DashboardTab> _tabs = [
+    _DashboardTab(
+      title: 'الإحصائيات',
+      icon: Icons.dashboard,
+      builder: _buildStatsScreen,
+    ),
+    _DashboardTab(
+      title: 'العيادات',
+      icon: Icons.local_hospital,
+      builder: _buildClinicsScreen,
+    ),
+    _DashboardTab(
+      title: 'الاشتراكات',
+      icon: Icons.card_membership,
+      builder: _buildSubscriptionsScreen,
+    ),
+    _DashboardTab(
+      title: 'العملات',
+      icon: Icons.currency_exchange,
+      builder: _buildCurrenciesScreen,
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<AdminBloc>().add(const LoadDashboardStats());
+  }
+
+  // ── Screen Builders ──────────────────────────────────────
+
+  static Widget _buildStatsScreen(BuildContext context) {
+    return const AdminStatsScreen();
+  }
+
+  static Widget _buildClinicsScreen(BuildContext context) {
+    return const AdminClinicsScreen();
+  }
+
+  static Widget _buildSubscriptionsScreen(BuildContext context) {
+    return const AdminSubscriptionsScreen();
+  }
+
+  static Widget _buildCurrenciesScreen(BuildContext context) {
+    return const AdminCurrenciesScreen();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        children: [
+          // Sidebar
+          _buildSidebar(context),
+          // Main content
+          Expanded(
+            child: _tabs[_selectedIndex].builder(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSidebar(BuildContext context) {
+    return Container(
+      width: 280,
+      decoration: BoxDecoration(
+        color: AppTheme.light.scaffoldBackgroundColor,
+        border: Border(
+          right: BorderSide(color: Colors.grey[300]!),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Logo section
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primary,
+                  AppColors.primary.withValues(alpha: 0.8),
+                ],
+              ),
+            ),
+            child: Column(
+              children: [
+                const Icon(
+                  Icons.admin_panel_settings,
+                  color: Colors.white,
+                  size: 48,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'MCS Admin',
+                  style: TextStyles.headline4.copyWith(color: Colors.white),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'لوحة المبرمج',
+                  style: TextStyles.bodySmall.copyWith(color: Colors.white70),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          // Navigation items
+          ...List.generate(_tabs.length, (index) {
+            final tab = _tabs[index];
+            final isSelected = _selectedIndex == index;
+            return _buildSidebarItem(
+              context,
+              tab.icon,
+              tab.title,
+              isSelected,
+              () => setState(() => _selectedIndex = index),
+            );
+          }),
+          const Spacer(),
+          // Logout
+          _buildSidebarItem(
+            context,
+            Icons.logout,
+            'تسجيل الخروج',
+            false,
+            () => _handleLogout(context),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSidebarItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    bool isSelected,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : null,
+          border: Border(
+            right: BorderSide(
+              color: isSelected ? AppColors.primary : Colors.transparent,
+              width: 3,
+            ),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? AppColors.primary : Colors.grey[600],
+              size: 24,
+            ),
+            const SizedBox(width: 16),
+            Text(
+              title,
+              style: TextStyles.bodyMedium.copyWith(
+                color: isSelected ? AppColors.primary : Colors.grey[800],
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _handleLogout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('تسجيل الخروج'),
+        content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إلغاء'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // TODO: Implement logout logic
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+            ),
+            child: const Text('تسجيل الخروج'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DashboardTab {
+  final String title;
+  final IconData icon;
+  final Widget Function(BuildContext) builder;
+
+  _DashboardTab({
+    required this.title,
+    required this.icon,
+    required this.builder,
+  });
+}

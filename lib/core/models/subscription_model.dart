@@ -1,139 +1,169 @@
-/// Subscription data model mapped to the `subscriptions` Supabase table.
+/// Subscription model representing a clinic's subscription plan.
 library;
 
 import 'package:equatable/equatable.dart';
-
-import 'package:mcs/core/constants/app_constants.dart';
 import 'package:mcs/core/enums/subscription_type.dart';
 
 class SubscriptionModel extends Equatable {
   const SubscriptionModel({
     required this.id,
-    required this.clinicId,
-    required this.planType,
-    required this.status,
-    required this.startsAt,
-    required this.endsAt,
-    this.codeUsed,
-    this.amountPaid = 0,
-    this.currency = 'USD',
+    required this.code,
+    required this.type,
+    required this.priceUsd,
+    required this.priceEur,
+    required this.priceDzd,
+    this.isUsed = false,
+    this.clinicId,
+    this.usedAt,
     this.createdAt,
   });
+
+  final String id;
+  final String code; // Unique code for activation
+  final SubscriptionType type;
+  final double priceUsd;
+  final double priceEur;
+  final double priceDzd;
+  final bool isUsed;
+  final String? clinicId;
+  final DateTime? usedAt;
+  final DateTime? createdAt;
+
+  /// Get price in specified currency
+  double getPrice(String currency) {
+    switch (currency.toLowerCase()) {
+      case 'usd':
+      case '$':
+        return priceUsd;
+      case 'eur':
+      case '€':
+        return priceEur;
+      case 'dzd':
+      case 'دج':
+        return priceDzd;
+      default:
+        return priceUsd;
+    }
+  }
+
+  /// Get price formatted as string
+  String getPriceFormatted(String currency) {
+    final price = getPrice(currency);
+    switch (currency.toLowerCase()) {
+      case 'usd':
+        return '\$${price.toStringAsFixed(2)}';
+      case 'eur':
+        return '€${price.toStringAsFixed(2)}';
+      case 'dzd':
+        return '${price.toStringAsFixed(2)} دج';
+      default:
+        return '\$${price.toStringAsFixed(2)}';
+    }
+  }
+
+  /// Get duration in months
+  int get durationInMonths {
+    switch (type) {
+      case SubscriptionType.trial:
+        return 1; // 30 days trial
+      case SubscriptionType.monthly:
+        return 1;
+      case SubscriptionType.quarterly:
+        return 3;
+      case SubscriptionType.halfYearly:
+        return 6;
+      case SubscriptionType.yearly:
+        return 12;
+    }
+  }
+
+  /// Get end date based on start date
+  DateTime getEndDate(DateTime startDate) {
+    switch (type) {
+      case SubscriptionType.trial:
+        return startDate.add(const Duration(days: 30));
+      case SubscriptionType.monthly:
+        return DateTime(startDate.year, startDate.month + 1, startDate.day);
+      case SubscriptionType.quarterly:
+        return DateTime(startDate.year, startDate.month + 3, startDate.day);
+      case SubscriptionType.halfYearly:
+        return DateTime(startDate.year, startDate.month + 6, startDate.day);
+      case SubscriptionType.yearly:
+        return DateTime(startDate.year + 1, startDate.month, startDate.day);
+    }
+  }
 
   factory SubscriptionModel.fromJson(Map<String, dynamic> json) {
     return SubscriptionModel(
       id: json['id'] as String,
-      clinicId: json['clinic_id'] as String,
-      planType:
-          SubscriptionPlanType.fromDbValue(json['plan_type'] as String),
-      status:
-          SubscriptionStatus.fromDbValue(json['status'] as String),
-      startsAt: DateTime.parse(json['starts_at'] as String),
-      endsAt: DateTime.parse(json['ends_at'] as String),
-      codeUsed: json['code_used'] as String?,
-      amountPaid: (json['amount_paid'] as num?)?.toDouble() ?? 0,
-      currency: (json['currency'] as String?) ?? 'USD',
+      code: json['code'] as String,
+      type: SubscriptionType.fromDbValue(json['type'] as String),
+      priceUsd: (json['price_usd'] as num).toDouble(),
+      priceEur: (json['price_eur'] as num).toDouble(),
+      priceDzd: (json['price_dzd'] as num).toDouble(),
+      isUsed: json['is_used'] as bool? ?? false,
+      clinicId: json['clinic_id'] as String?,
+      usedAt: json['used_at'] != null
+          ? DateTime.parse(json['used_at'] as String)
+          : null,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
     );
   }
 
-  // ── Fields ─────────────────────────────────────────────
-  final String id;
-  final String clinicId;
-  final SubscriptionPlanType planType;
-  final SubscriptionStatus status;
-  final DateTime startsAt;
-  final DateTime endsAt;
-  final String? codeUsed;
-  final double amountPaid;
-  final String currency;
-  final DateTime? createdAt;
-
-  // ── Serialization ──────────────────────────────────────
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'code': code,
+      'type': type.toDbValue(),
+      'price_usd': priceUsd,
+      'price_eur': priceEur,
+      'price_dzd': priceDzd,
+      'is_used': isUsed,
       'clinic_id': clinicId,
-      'plan_type': planType.dbValue,
-      'status': status.dbValue,
-      'starts_at': startsAt.toIso8601String(),
-      'ends_at': endsAt.toIso8601String(),
-      'code_used': codeUsed,
-      'amount_paid': amountPaid,
-      'currency': currency,
+      'used_at': usedAt?.toIso8601String(),
       'created_at': createdAt?.toIso8601String(),
     };
   }
 
-  // ── Copy With ──────────────────────────────────────────
   SubscriptionModel copyWith({
     String? id,
+    String? code,
+    SubscriptionType? type,
+    double? priceUsd,
+    double? priceEur,
+    double? priceDzd,
+    bool? isUsed,
     String? clinicId,
-    SubscriptionPlanType? planType,
-    SubscriptionStatus? status,
-    DateTime? startsAt,
-    DateTime? endsAt,
-    String? codeUsed,
-    double? amountPaid,
-    String? currency,
+    DateTime? usedAt,
     DateTime? createdAt,
   }) {
     return SubscriptionModel(
       id: id ?? this.id,
+      code: code ?? this.code,
+      type: type ?? this.type,
+      priceUsd: priceUsd ?? this.priceUsd,
+      priceEur: priceEur ?? this.priceEur,
+      priceDzd: priceDzd ?? this.priceDzd,
+      isUsed: isUsed ?? this.isUsed,
       clinicId: clinicId ?? this.clinicId,
-      planType: planType ?? this.planType,
-      status: status ?? this.status,
-      startsAt: startsAt ?? this.startsAt,
-      endsAt: endsAt ?? this.endsAt,
-      codeUsed: codeUsed ?? this.codeUsed,
-      amountPaid: amountPaid ?? this.amountPaid,
-      currency: currency ?? this.currency,
+      usedAt: usedAt ?? this.usedAt,
       createdAt: createdAt ?? this.createdAt,
     );
   }
 
-  // ── Helpers ────────────────────────────────────────────
-
-  /// Whether the subscription is currently valid (active & not expired).
-  bool get isValid =>
-      status == SubscriptionStatus.active && DateTime.now().isBefore(endsAt);
-
-  /// Number of remaining days. Returns 0 if expired.
-  int get remainingDays {
-    final diff = endsAt.difference(DateTime.now()).inDays;
-    return diff > 0 ? diff : 0;
-  }
-
-  /// Whether a renewal warning should be shown.
-  bool get shouldWarn =>
-      remainingDays <= AppConstants.warningBeforeExpiryDays && isValid;
-
-  /// Whether the critical (3-day) warning threshold is reached.
-  bool get isCriticalWarning =>
-      remainingDays <= AppConstants.criticalWarningDays && isValid;
-
-  /// Whether it's the final (1-day) warning.
-  bool get isFinalWarning =>
-      remainingDays <= AppConstants.finalWarningDays && isValid;
-
-  bool get isTrial => planType == SubscriptionPlanType.trial;
-  bool get isExpired => status == SubscriptionStatus.expired;
-  bool get isSuspended => status == SubscriptionStatus.suspended;
-
-  // ── Equatable ──────────────────────────────────────────
   @override
   List<Object?> get props => [
         id,
+        code,
+        type,
+        priceUsd,
+        priceEur,
+        priceDzd,
+        isUsed,
         clinicId,
-        planType,
-        status,
-        startsAt,
-        endsAt,
-        codeUsed,
-        amountPaid,
-        currency,
+        usedAt,
         createdAt,
       ];
 }

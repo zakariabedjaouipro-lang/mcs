@@ -25,11 +25,56 @@ enum SubscriptionPlanType {
 
   String label(String locale) => locale == 'ar' ? labelAr : labelEn;
 
+  String toDbValue() => dbValue;
+
   static SubscriptionPlanType fromDbValue(String value) {
     return SubscriptionPlanType.values.firstWhere(
       (t) => t.dbValue == value,
       orElse: () =>
           throw ArgumentError('Unknown SubscriptionPlanType: $value'),
+    );
+  }
+}
+
+// ── Subscription Type (for subscription codes) ─────────────
+enum SubscriptionType {
+  trial('trial', 'تجريبي', 'Trial', 0.0, 0.0, 0.0, 30),
+  monthly('monthly', 'شهري', 'Monthly', 29.99, 27.99, 4000.0, 30),
+  quarterly('quarterly', 'ربع سنوي', 'Quarterly', 79.99, 74.99, 11000.0, 90),
+  halfYearly('half_yearly', 'نصف سنوي', 'Half-Yearly', 149.99, 139.99, 20000.0, 180),
+  yearly('yearly', 'سنوي', 'Yearly', 279.99, 259.99, 37000.0, 365);
+
+  const SubscriptionType(
+    this.dbValue,
+    this.labelAr,
+    this.labelEn,
+    this.priceUsd,
+    this.priceEur,
+    this.priceDzd,
+    this.durationDays,
+  );
+
+  final String dbValue;
+  final String labelAr;
+  final String labelEn;
+  final double priceUsd;
+  final double priceEur;
+  final double priceDzd;
+  final int durationDays;
+
+  String label(String locale) => locale == 'ar' ? labelAr : labelEn;
+
+  String toDbValue() => dbValue;
+
+  DateTime getEndDate(DateTime startDate) {
+    return startDate.add(Duration(days: durationDays));
+  }
+
+  static SubscriptionType fromDbValue(String value) {
+    return SubscriptionType.values.firstWhere(
+      (t) => t.dbValue == value,
+      orElse: () =>
+          throw ArgumentError('Unknown SubscriptionType: $value'),
     );
   }
 }

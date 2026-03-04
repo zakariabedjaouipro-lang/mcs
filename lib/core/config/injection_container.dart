@@ -18,6 +18,7 @@ import 'package:mcs/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/register_usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Global service locator instance.
@@ -51,7 +52,8 @@ Future<void> configureDependencies() async {
         verifyOTPUseCase: sl(),
         authRepository: sl(),
       ),
-    );
+    )
+    ..registerFactory(() => AdminBloc(sl()));
 }
 
 /// Alias for [configureDependencies] for backward compatibility.
