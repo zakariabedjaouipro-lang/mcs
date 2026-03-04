@@ -236,8 +236,8 @@ abstract class WebUtils {
   static Stream<GeolocationCoordinates> watchPosition() {
     return html.window.navigator.geolocation.watchPosition().map((position) {
       return GeolocationCoordinates(
-        latitude: (position.coords!.latitude! as num).toDouble(),
-        longitude: (position.coords!.longitude! as num).toDouble(),
+        latitude: position.coords!.latitude!.toDouble(),
+        longitude: position.coords!.longitude!.toDouble(),
         accuracy: position.coords!.accuracy?.toDouble(),
       );
     });

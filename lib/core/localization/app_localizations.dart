@@ -2,7 +2,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /// AppLocalizations class for managing app translations.
 class AppLocalizations {

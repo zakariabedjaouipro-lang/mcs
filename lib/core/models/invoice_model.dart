@@ -42,7 +42,6 @@ class InvoiceModel extends Equatable {
     required this.id,
     required this.clinicId,
     required this.patientId,
-    this.appointmentId,
     required this.items,
     required this.subtotal,
     required this.tax,
@@ -51,6 +50,7 @@ class InvoiceModel extends Equatable {
     required this.currency,
     required this.status,
     required this.createdAt,
+    this.appointmentId,
     this.paidAt,
   });
 

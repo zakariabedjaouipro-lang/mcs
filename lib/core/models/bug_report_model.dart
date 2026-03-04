@@ -10,10 +10,10 @@ class BugReportModel extends Equatable {
     required this.id,
     required this.userEmail,
     required this.description,
-    this.screenshotUrl,
     required this.deviceInfo,
     required this.status,
     required this.createdAt,
+    this.screenshotUrl,
   });
 
   /// Create from JSON.

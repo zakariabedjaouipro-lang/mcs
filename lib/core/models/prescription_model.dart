@@ -46,8 +46,8 @@ class PrescriptionModel extends Equatable {
     required this.doctorId,
     required this.patientId,
     required this.medications,
-    this.notes,
     required this.createdAt,
+    this.notes,
   });
 
   /// Create from JSON.

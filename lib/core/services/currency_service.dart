@@ -44,8 +44,8 @@ class CurrencyService {
       final prefs = await Supabase.instance.client.storage
           .from('app-settings')
           .download('currency-preference.json');
-      
-      if (prefs != null) {
+
+      if (prefs != null && prefs.isNotEmpty) {
         // Parse and set saved currency
         // This is a simplified example
         final savedCode = 'DZD'; // Would parse from prefs
@@ -69,8 +69,9 @@ class CurrencyService {
   /// Set the selected currency.
   void setSelectedCurrency(Currency currency) {
     _selectedCurrency = currency;
-    debugPrint('CurrencyService: Selected currency changed to ${currency.code}');
-    
+    debugPrint(
+        'CurrencyService: Selected currency changed to ${currency.code}');
+
     // Save preference (in a real app, this would persist to storage)
     _saveCurrencyPreference(currency);
   }
@@ -88,14 +89,14 @@ class CurrencyService {
       if (response.isNotEmpty && response.first != null) {
         final rates = response.first as Map<String, dynamic>;
         _exchangeRates.clear();
-        
+
         for (final currency in Currency.values) {
           final rate = rates['rate_${currency.code.toLowerCase()}'] as double?;
           if (rate != null && rate > 0) {
             _exchangeRates[currency] = rate;
           }
         }
-        
+
         debugPrint('CurrencyService: Exchange rates loaded from database');
         return;
       }
@@ -116,7 +117,7 @@ class CurrencyService {
 
     // Convert to USD first (base currency)
     final inUsd = amount / (from.exchangeRate);
-    
+
     // Then convert to target currency
     return inUsd * (to.exchangeRate);
   }
@@ -124,20 +125,22 @@ class CurrencyService {
   /// Format an amount with the selected currency symbol.
   String format(double amount, {Currency? currency}) {
     currency ??= _selectedCurrency;
-    
+
     // Convert amount to selected currency if needed
-    final convertedAmount = convert(amount, from: currency, to: _selectedCurrency);
-    
+    final convertedAmount =
+        convert(amount, from: currency, to: _selectedCurrency);
+
     // Format with appropriate decimal places
     final formattedAmount = _formatNumber(convertedAmount);
-    
+
     return '${currency.symbol}$formattedAmount';
   }
 
   /// Format an amount without the currency symbol.
   String formatWithoutSymbol(double amount, {Currency? currency}) {
     currency ??= _selectedCurrency;
-    final convertedAmount = convert(amount, from: currency, to: _selectedCurrency);
+    final convertedAmount =
+        convert(amount, from: currency, to: _selectedCurrency);
     return _formatNumber(convertedAmount);
   }
 
@@ -187,7 +190,7 @@ class CurrencyService {
     // Use 2 decimal places for most currencies
     // Use 3 decimal places for currencies with small values
     final decimalPlaces = _selectedCurrency == Currency.dzd ? 3 : 2;
-    
+
     return number.toStringAsFixed(decimalPlaces);
   }
 
@@ -205,7 +208,8 @@ class CurrencyService {
     try {
       // In a real app, this would save to SharedPreferences or similar
       // For now, just log it
-      debugPrint('CurrencyService: Saving currency preference: ${currency.code}');
+      debugPrint(
+          'CurrencyService: Saving currency preference: ${currency.code}');
     } catch (e) {
       debugPrint('CurrencyService: Save preference error - $e');
     }

@@ -14,9 +14,9 @@ class InventoryModel extends Equatable {
     required this.minQuantity,
     required this.price,
     required this.currency,
+    required this.updatedAt,
     this.supplier,
     this.expiryDate,
-    required this.updatedAt,
   });
 
   /// Create from JSON.

@@ -107,7 +107,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
               ),
               borderRadius: BorderRadius.circular(8),
               color: _isExpanded
-                  ? AppColors.primary.withOpacity(0.1)
+                  ? AppColors.primary.withValues(alpha: 0.1)
                   : Colors.transparent,
             ),
             child: Row(
@@ -188,7 +188,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
                 vertical: 12,
               ),
               color: _selectedCurrency == currency.$1
-                  ? AppColors.primary.withOpacity(0.1)
+                  ? AppColors.primary.withValues(alpha: 0.1)
                   : Colors.transparent,
               child: Row(
                 children: [

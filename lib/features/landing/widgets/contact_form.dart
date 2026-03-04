@@ -209,7 +209,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
               onPressed: _isLoading ? null : _submitForm,
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
-                disabledBackgroundColor: primaryColor.withOpacity(0.5),
+                disabledBackgroundColor: primaryColor.withValues(alpha: 0.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

@@ -222,7 +222,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
               // Quote Icon
               Icon(
                 Icons.format_quote,
-                color: primaryColor.withOpacity(0.3),
+                color: primaryColor.withValues(alpha: 0.3),
                 size: 40,
               ),
               SizedBox(height: 12),
@@ -268,7 +268,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
-                        colors: [primaryColor, primaryColor.withOpacity(0.6)],
+                        colors: [primaryColor, primaryColor.withValues(alpha: 0.6)],
                       ),
                     ),
                     child: Center(
@@ -304,7 +304,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                               ),
                               decoration: BoxDecoration(
                                 color: _getTypeColor(testimonial.type)
-                                    .withOpacity(0.1),
+                                    .withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -358,7 +358,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                 borderRadius: BorderRadius.circular(4),
                 color: _currentIndex == index
                     ? primaryColor
-                    : primaryColor.withOpacity(0.3),
+                    : primaryColor.withValues(alpha: 0.3),
               ),
             ),
           ),

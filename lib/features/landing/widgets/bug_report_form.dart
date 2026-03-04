@@ -326,7 +326,7 @@ Device Info:
                 (index) => Chip(
                   label: Text(_attachmentPaths[index]),
                   onDeleted: () => _removeAttachment(index),
-                  backgroundColor: primaryColor.withOpacity(0.1),
+                  backgroundColor: primaryColor.withValues(alpha: 0.1),
                   deleteIconColor: primaryColor,
                 ),
               ),
@@ -363,7 +363,7 @@ Device Info:
               onPressed: _isLoading ? null : _submitForm,
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
-                disabledBackgroundColor: primaryColor.withOpacity(0.5),
+                disabledBackgroundColor: primaryColor.withValues(alpha: 0.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

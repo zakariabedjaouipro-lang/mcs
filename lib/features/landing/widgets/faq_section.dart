@@ -335,8 +335,8 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
           ),
         ),
       ],
-      collapsedBackgroundColor: primaryColor.withOpacity(0.05),
-      backgroundColor: primaryColor.withOpacity(0.05),
+      collapsedBackgroundColor: primaryColor.withValues(alpha: 0.05),
+      backgroundColor: primaryColor.withValues(alpha: 0.05),
       collapsedShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),

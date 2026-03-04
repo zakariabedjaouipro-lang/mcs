@@ -2,9 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_strategy/url_strategy.dart';
-
 import 'package:mcs/app.dart';
 import 'package:mcs/core/config/app_config.dart';
 import 'package:mcs/core/config/env.dart';
@@ -21,7 +19,7 @@ void main() async {
   await SupabaseConfig.initialize();
 
   // Initialize GetIt dependency injection
-  setupInjectionContainer();
+  await setupInjectionContainer();
 
   // Initialize app config (load env variables, settings, etc.)
   AppConfig.initialize(

@@ -5,7 +5,6 @@ import 'dart:developer';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:mcs/core/config/app_config.dart';
 import 'package:mcs/core/config/env.dart';
 
 class SupabaseConfig {

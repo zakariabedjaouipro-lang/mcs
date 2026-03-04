@@ -13,8 +13,8 @@ class LabResultModel extends Equatable {
     required this.type,
     required this.title,
     required this.fileUrl,
-    this.notes,
     required this.createdAt,
+    this.notes,
   });
 
   /// Create from JSON.

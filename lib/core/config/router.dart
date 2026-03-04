@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/features/landing/screens/landing_screen.dart';
-import 'package:mcs/features/auth/screens/login_screen.dart';
 
 // ── Route Paths ────────────────────────────────────────────
 abstract class AppRoutes {

@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mcs/app.dart';
 import 'package:mcs/core/config/app_config.dart';
@@ -17,7 +18,6 @@ void main() async {
   AppConfig.initialize(
     supabaseUrl: 'https://your-project-id.supabase.co',
     supabaseAnonKey: 'your-anon-key-here',
-    environment: AppEnvironment.development,
   );
 
   // Initialize Supabase

@@ -91,7 +91,7 @@ class SocialLinksWidget extends StatelessWidget {
             height: iconSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: link.color.withOpacity(0.1),
+              color: link.color.withValues(alpha: 0.1),
               border: Border.all(color: link.color, width: 2),
             ),
             child: Center(
@@ -126,7 +126,7 @@ class SocialLinksWidget extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: link.color.withOpacity(0.1),
+                  color: link.color.withValues(alpha: 0.1),
                 ),
                 child: Center(
                   child: Icon(
@@ -157,7 +157,7 @@ class SocialLinksWidget extends StatelessWidget {
   void _openLink(String url) {
     // In a real app, use url_launcher package
     // launchUrl(Uri.parse(url));
-    print('Opening: $url');
+    debugPrint('Opening: $url');
   }
 }
 

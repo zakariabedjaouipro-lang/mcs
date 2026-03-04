@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:mcs/core/models/clinic_model.dart';
+import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
-import 'package:mcs/core/widgets/confirm_dialog.dart';
 import 'package:mcs/features/admin/presentation/bloc/index.dart';
 
 /// Admin Clinics Management Screen
@@ -12,8 +13,9 @@ class AdminClinicsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final supabaseService = SupabaseService();
     return BlocProvider(
-      create: (_) => AdminBloc(/* Inject dependencies */),
+      create: (_) => AdminBloc(supabaseService),
       child: const AdminClinicsView(),
     );
   }
@@ -69,7 +71,7 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                 ),
               );
             }
-            return _ClinicsGrid(clinics: state.clinics);
+            return _clinicsGrid(clinics: state.clinics);
           }
 
           if (state is AdminError) {
@@ -94,13 +96,13 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddClinicDialog(context),
         icon: const Icon(Icons.add_business),
-        label: 'إضافة عيادة',
+        label: const Text('إضافة عيادة'),
         backgroundColor: AppColors.primary,
       ),
     );
   }
 
-  Widget _ClinicsGrid(List<ClinicModel> clinics) {
+  Widget _clinicsGrid({required List<ClinicModel> clinics}) {
     return Padding(
       padding: const EdgeInsets.all(24),
       child: GridView.builder(
@@ -113,13 +115,13 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
         itemCount: clinics.length,
         itemBuilder: (context, index) {
           final clinic = clinics[index];
-          return _ClinicCard(clinic: clinic);
+          return _clinicCard(clinic);
         },
       ),
     );
   }
 
-  Widget _ClinicCard(ClinicModel clinic) {
+  Widget _clinicCard(ClinicModel clinic) {
     final isExpired = clinic.isSubscriptionExpired;
     final daysRemaining = clinic.daysRemaining;
 
@@ -156,7 +158,7 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                             },
                           ),
                         )
-                      : Icon(
+                      : const Icon(
                           Icons.local_hospital,
                           color: AppColors.primary,
                           size: 32,
@@ -208,17 +210,17 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () => _showClinicDetails(context, clinic),
-                    icon: Icons.info_outline,
-                    label: 'التفاصيل',
+                    icon: const Icon(Icons.info_outline),
+                    label: const Text('التفاصيل'),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () => _showEditClinicDialog(context, clinic),
-                    icon: Icons.edit,
-                    label: 'تعديل',
-                  style: ElevatedButton.styleFrom(
+                    icon: const Icon(Icons.edit),
+                    label: const Text('تعديل'),
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                     ),
                   ),
@@ -232,8 +234,8 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
   }
 
   Widget _buildStatusBadge(ClinicModel clinic) {
-    Color? badgeColor;
-    String badgeText;
+    late Color badgeColor;
+    late String badgeText;
 
     if (!clinic.isActive) {
       badgeColor = Colors.grey;
@@ -497,8 +499,8 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
     }
   }
 
-  Future<void> _showClinicDetails(BuildContext context, ClinicModel clinic) {
-    showDialog(
+  Future<void> _showClinicDetails(BuildContext context, ClinicModel clinic) async {
+    await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(clinic.name),
@@ -510,24 +512,18 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
               _buildDetailItem(Icons.email, 'البريد الإلكتروني', clinic.email),
               _buildDetailItem(Icons.phone, 'رقم الهاتف', clinic.phone),
               _buildDetailItem(Icons.location_on, 'الموقع', '${clinic.country} - ${clinic.region}'),
-              if (clinic.address != null)
-                _buildDetailItem(Icons.map, 'العنوان', clinic.address!),
-              if (clinic.description != null)
-                _buildDetailItem(Icons.description, 'الوصف', clinic.description!),
+              if (clinic.address != null) _buildDetailItem(Icons.map, 'العنوان', clinic.address!),
+              if (clinic.description != null) _buildDetailItem(Icons.description, 'الوصف', clinic.description!),
               const Divider(height: 32),
               _buildDetailItem(Icons.access_time, 'تاريخ التسجيل', _formatDate(clinic.createdAt!)),
-              if (clinic.updatedAt != null)
-                _buildDetailItem(Icons.update, 'آخر تحديث', _formatDate(clinic.updatedAt!)),
+              if (clinic.updatedAt != null) _buildDetailItem(Icons.update, 'آخر تحديث', _formatDate(clinic.updatedAt!)),
               const Divider(height: 32),
               Text('حالة الاشتراك', style: TextStyles.titleMedium),
               const SizedBox(height: 16),
               _buildDetailItem(Icons.card_membership, 'النوع', clinic.subscriptionType.label('ar')),
-              if (clinic.isTrialActive)
-                _buildDetailItem(Icons.science, 'فترة تجريبية تنتهي خلال ${clinic.daysRemaining} يوم'),
-              if (clinic.isSubscriptionExpired)
-                _buildDetailItem(Icons.warning, 'الاشتراك منتهي', '', color: Colors.red),
-              if (!clinic.isActive)
-                _buildDetailItem(Icons.block, 'الحالة', 'معطّل', color: Colors.grey),
+              _buildDetailItem(Icons.science, 'فترة تجريبية تنتهي خلال ${clinic.daysRemaining} يوم'),
+              if (clinic.isSubscriptionExpired) _buildDetailItem(Icons.warning, 'الاشتراك منتهي'),
+              if (!clinic.isActive) _buildDetailItem(Icons.block, 'الحالة', 'معطّل'),
             ],
           ),
         ),
@@ -541,12 +537,16 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
     );
   }
 
-  Widget _buildDetailItem(IconData icon, String label, String value, {Color? color}) {
+  Widget _buildDetailItem(
+    IconData icon,
+    String label, [
+    String value = '',
+  ]) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: color ?? AppColors.primary),
+          Icon(icon, size: 20, color: AppColors.primary),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -556,13 +556,14 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                   label,
                   style: TextStyles.bodySmall.copyWith(color: Colors.grey[600]),
                 ),
-                Text(
-                  value,
-                  style: TextStyles.bodyMedium.copyWith(
-                    color: color ?? Colors.black87,
-                    fontWeight: FontWeight.w500,
+                if (value.isNotEmpty)
+                  Text(
+                    value,
+                    style: TextStyles.bodyMedium.copyWith(
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
               ],
             ),
           ),

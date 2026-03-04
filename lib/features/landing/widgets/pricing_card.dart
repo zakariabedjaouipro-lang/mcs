@@ -49,7 +49,7 @@ class _PricingCardState extends State<PricingCard> {
               : _isHovered
                   ? 4
                   : 1,
-          color: widget.isPopular ? AppColors.primary.withOpacity(0.05) : null,
+          color: widget.isPopular ? AppColors.primary.withValues(alpha: 0.05) : null,
           child: Stack(
             children: [
               // Popular badge
@@ -138,7 +138,7 @@ class _PricingCardState extends State<PricingCard> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
+                          color: Colors.green.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(

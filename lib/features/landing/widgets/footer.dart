@@ -165,7 +165,7 @@ class FooterWidget extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [primaryColor, primaryColor.withOpacity(0.8)],
+                  colors: [primaryColor, primaryColor.withValues(alpha: 0.8)],
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -337,7 +337,7 @@ class FooterWidget extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: color.withOpacity(0.2),
+          color: color.withValues(alpha: 0.2),
           border: Border.all(color: color, width: 1.5),
         ),
         child: Center(

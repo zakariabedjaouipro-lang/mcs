@@ -10,8 +10,8 @@ class ReportModel extends Equatable {
     required this.patientId,
     required this.title,
     required this.content,
-    this.fileUrl,
     required this.createdAt,
+    this.fileUrl,
   });
 
   /// Create from JSON.

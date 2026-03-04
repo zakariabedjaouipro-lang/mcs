@@ -12,8 +12,8 @@ class AutismAssessmentModel extends Equatable {
     required this.therapistId,
     required this.assessmentType,
     required this.score,
-    this.notes,
     required this.assessedAt,
+    this.notes,
   });
 
   /// Create from JSON.
