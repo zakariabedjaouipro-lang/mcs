@@ -5,10 +5,10 @@ import 'package:mcs/core/theme/text_styles.dart';
 /// تذييل الموقع - يحتوي على الروابط والمعلومات والتواصل الاجتماعي
 class FooterWidget extends StatelessWidget {
   const FooterWidget({
-    Key? key,
+    super.key,
     this.primaryColor,
     this.onLogoTap,
-  }) : super(key: key);
+  });
   final Color? primaryColor;
   final VoidCallback? onLogoTap;
 
@@ -201,10 +201,16 @@ class FooterWidget extends StatelessWidget {
         Row(
           children: [
             _buildSocialIcon(
-                Icons.facebook, 'Facebook', const Color(0xFF1877F2)),
+                Icons.facebook,
+                'Facebook',
+                const Color(0xFF1877F2),
+              ),
             const SizedBox(width: 12),
             _buildSocialIcon(
-                Icons.close, 'X (Twitter)', const Color(0xFF1DA1F2)),
+                Icons.close,
+                'X (Twitter)',
+                const Color(0xFF1DA1F2),
+              ),
             const SizedBox(width: 12),
             _buildSocialIcon(
               Icons.account_circle,
@@ -213,7 +219,10 @@ class FooterWidget extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             _buildSocialIcon(
-                Icons.business, 'LinkedIn', const Color(0xFF0A66C2)),
+                Icons.business,
+                'LinkedIn',
+                const Color(0xFF0A66C2),
+              ),
             const SizedBox(width: 12),
             _buildSocialIcon(
                 Icons.play_circle, 'YouTube', const Color(0xFFFF0000)),

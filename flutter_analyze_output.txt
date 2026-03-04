@@ -1,0 +1,191 @@
+﻿Analyzing mcs...                                                
+
+   info - The method is used to change a property - lib\core\config\app_config.dart:23:15 - use_setters_to_change_properties
+   info - Missing a newline at the end of the file - lib\core\config\app_config.dart:66:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file - lib\core\config\env.dart:35:2 - eol_at_end_of_file
+   info - Sort directive sections alphabetically - lib\core\config\injection_container.dart:21:1 - directives_ordering
+   info - Missing a required trailing comma - lib\core\enums\subscription_type.dart:44:75 - require_trailing_commas
+   info - The constant name 'm_chat' isn't a lowerCamelCase identifier - lib\core\models\autism_assessment_model.dart:6:43 - constant_identifier_names
+   info - Missing a required trailing comma - lib\core\models\clinic_model.dart:22:58 - require_trailing_commas
+   info - Invalid location for the unnamed constructor - lib\core\models\clinic_model.dart:37:9 - sort_unnamed_constructors_first
+   info - Missing a newline at the end of the file - lib\core\models\clinic_model.dart:178:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file - lib\core\models\country_model.dart:170:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file - lib\core\models\region_model.dart:126:2 - eol_at_end_of_file
+   info - Invalid location for the unnamed constructor - lib\core\models\subscription_model.dart:27:9 - sort_unnamed_constructors_first
+   info - Use a raw string to avoid using escapes - lib\core\models\subscription_model.dart:54:52 - use_raw_strings
+   info - Missing a newline at the end of the file - lib\core\models\subscription_model.dart:165:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file - lib\core\services\currency_service.dart:310:2 - eol_at_end_of_file
+warning - Unused import: 'package:supabase_flutter/supabase_flutter.dart' - lib\core\services\video_call_service.dart:10:8 - unused_import
+warning - The type argument(s) of 'List' can't be inferred - lib\core\services\video_call_service.dart:45:19 - inference_failure_on_collection_literal
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:100:58 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:101:23 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:102:17 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:121:17 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:122:23 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:126:31 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:135:31 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:142:9 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:143:9 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\core\services\video_call_service.dart:144:9 - avoid_dynamic_calls
+   info - Invalid use of 'default' member in a switch - lib\core\services\video_call_service.dart:297:9 - no_default_cases
+   info - Missing a newline at the end of the file - lib\core\theme\app_text_styles.dart:63:2 - eol_at_end_of_file
+   info - The type parameter name 'Type' matches a visible type name - lib\core\usecases\usecase.dart:9:24 - avoid_types_as_parameter_names
+   info - Use 'isEven' rather than '% 2' - lib\core\utils\extensions.dart:79:22 - use_is_even_rather_than_modulo
+   info - 'textScaleFactor' is deprecated and shouldn't be used. Use textScaler instead. Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. This feature was deprecated after v3.12.0-2.0.pre - lib\core\utils\extensions.dart:379:53 - deprecated_member_use
+   info - 'bool' parameters should be named parameters - lib\core\utils\extensions.dart:468:5 - avoid_positional_boolean_parameters
+   info - Sort directive sections alphabetically - lib\core\widgets\app_drawer.dart:10:1 - directives_ordering
+warning - The type argument(s) of the function 'showDialog' can't be inferred - lib\core\widgets\confirm_dialog.dart:191:9 - inference_failure_on_function_invocation
+warning - The type argument(s) of the function 'showDialog' can't be inferred - lib\core\widgets\confirm_dialog.dart:226:3 - inference_failure_on_function_invocation
+   info - 'WillPopScope' is deprecated and shouldn't be used. Use PopScope instead. The Android predictive back feature will not work with WillPopScope. This feature was deprecated after v3.12.0-1.0.pre - lib\core\widgets\confirm_dialog.dart:242:12 - deprecated_member_use
+   info - Unnecessary duplication of receiver - lib\core\widgets\confirm_dialog.dart:273:3 - cascade_invocations
+warning - The type argument(s) of the function 'showDialog' can't be inferred - lib\core\widgets\currency_selector.dart:139:5 - inference_failure_on_function_invocation
+   info - Required named parameters should be before optional named parameters - lib\core\widgets\currency_selector.dart:248:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\core\widgets\currency_selector.dart:285:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\core\widgets\currency_selector.dart:286:19 - always_put_required_named_parameters_first
+warning - The type argument(s) of the function 'showDialog' can't be inferred - lib\core\widgets\language_switcher.dart:91:5 - inference_failure_on_function_invocation
+   info - Missing a required trailing comma - lib\core\widgets\language_switcher.dart:111:55 - require_trailing_commas
+warning - The type argument(s) of the function 'showDialog' can't be inferred - lib\core\widgets\language_switcher.dart:172:5 - inference_failure_on_function_invocation
+warning - Unused import: 'package:mcs/core/theme/app_theme.dart' - lib\core\widgets\theme_switcher.dart:6:8 - unused_import
+warning - The type argument(s) of the function 'showDialog' can't be inferred - lib\core\widgets\theme_switcher.dart:49:5 - inference_failure_on_function_invocation
+   info - Missing a required trailing comma - lib\core\widgets\theme_switcher.dart:105:59 - require_trailing_commas
+warning - The value of the local variable 'localizations' isn't used - lib\core\widgets\theme_switcher.dart:118:11 - unused_local_variable
+warning - The type argument(s) of the function 'showDialog' can't be inferred - lib\core\widgets\theme_switcher.dart:316:5 - inference_failure_on_function_invocation
+   info - Missing a required trailing comma - lib\core\widgets\theme_switcher.dart:372:59 - require_trailing_commas
+warning - The value of the local variable 'localizations' isn't used - lib\core\widgets\theme_switcher.dart:383:11 - unused_local_variable
+   info - Missing a newline at the end of the file - lib\features\admin\admin_app.dart:33:2 - eol_at_end_of_file
+   info - Missing a required trailing comma - lib\features\admin\presentation\bloc\admin_bloc.dart:45:54 - require_trailing_commas
+   info - Unnecessary braces in a string interpolation - lib\features\admin\presentation\bloc\admin_bloc.dart:248:38 - unnecessary_brace_in_string_interps
+   info - Missing a newline at the end of the file - lib\features\admin\presentation\bloc\index.dart:3:27 - eol_at_end_of_file
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:67:58 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:204:61 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:210:75 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:213:42 - require_trailing_commas
+   info - The value of the argument is redundant because it matches the default value - lib\features\admin\presentation\screens\admin_clinics_screen.dart:321:18 - avoid_redundant_argument_values
+   info - Closure should be a tearoff - lib\features\admin\presentation\screens\admin_clinics_screen.dart:323:41 - unnecessary_lambdas
+   info - Unnecessary type annotation on a local variable - lib\features\admin\presentation\screens\admin_clinics_screen.dart:325:5 - omit_local_variable_types
+   info - The value of the argument is redundant because it matches the default value - lib\features\admin\presentation\screens\admin_clinics_screen.dart:332:20 - avoid_redundant_argument_values
+   info - Closure should be a tearoff - lib\features\admin\presentation\screens\admin_clinics_screen.dart:334:33 - unnecessary_lambdas
+   info - Don't use 'BuildContext's across async gaps - lib\features\admin\presentation\screens\admin_clinics_screen.dart:341:7 - use_build_context_synchronously
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\admin\presentation\screens\admin_clinics_screen.dart:376:19 - deprecated_member_use
+   info - The value of the argument is redundant because it matches the default value - lib\features\admin\presentation\screens\admin_clinics_screen.dart:398:36 - avoid_redundant_argument_values
+   info - Closure should be a tearoff - lib\features\admin\presentation\screens\admin_clinics_screen.dart:401:51 - unnecessary_lambdas
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\admin\presentation\screens\admin_clinics_screen.dart:408:19 - deprecated_member_use
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:479:47 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:586:47 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:599:57 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:604:68 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:607:49 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:610:78 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:615:54 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\admin\presentation\screens\admin_clinics_screen.dart:617:72 - require_trailing_commas
+   info - Sort directive sections alphabetically - lib\features\admin\presentation\screens\admin_dashboard_screen.dart:7:1 - directives_ordering
+   info - Sort directive sections alphabetically - lib\features\admin\presentation\screens\admin_dashboard_screen.dart:12:1 - directives_ordering
+warning - A value for optional parameter 'key' isn't ever given - lib\features\admin\presentation\screens\admin_stats_screen.dart:48:51 - unused_element_parameter
+warning - A value for optional parameter 'key' isn't ever given - lib\features\admin\presentation\screens\admin_stats_screen.dart:124:11 - unused_element_parameter
+   info - Use 'const' with the constructor to improve performance - lib\features\admin\presentation\screens\admin_subscriptions_screen.dart:215:27 - prefer_const_constructors
+   info - Use a raw string to avoid using escapes - lib\features\admin\presentation\screens\admin_subscriptions_screen.dart:216:28 - use_raw_strings
+   info - Use 'const' with the constructor to improve performance - lib\features\admin\presentation\screens\admin_subscriptions_screen.dart:224:27 - prefer_const_constructors
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:52:61 - unnecessary_brace_in_string_interps
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:85:56 - unnecessary_brace_in_string_interps
+warning - The value of the local variable 'result' isn't used - lib\features\auth\data\repositories\auth_repository_impl.dart:95:13 - unused_local_variable
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:105:62 - unnecessary_brace_in_string_interps
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:124:55 - unnecessary_brace_in_string_interps
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:151:62 - unnecessary_brace_in_string_interps
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:182:56 - unnecessary_brace_in_string_interps
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:196:61 - unnecessary_brace_in_string_interps
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:227:65 - unnecessary_brace_in_string_interps
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:239:58 - unnecessary_brace_in_string_interps
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:278:57 - unnecessary_brace_in_string_interps
+   info - Unnecessary braces in a string interpolation - lib\features\auth\data\repositories\auth_repository_impl.dart:294:69 - unnecessary_brace_in_string_interps
+   info - 'bool' parameters should be named parameters - lib\features\auth\presentation\bloc\auth_event.dart:239:34 - avoid_positional_boolean_parameters
+   info - Parameter 'key' could be a super parameter - lib\features\auth\screens\change_password_screen.dart:11:9 - use_super_parameters
+   info - Missing a required trailing comma - lib\features\auth\screens\login_screen.dart:47:103 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\auth\screens\login_screen.dart:271:62 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\auth\screens\login_screen.dart:283:60 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\auth\screens\login_screen.dart:295:59 - require_trailing_commas
+   info - Parameter 'key' could be a super parameter - lib\features\auth\screens\otp_verification_screen.dart:12:9 - use_super_parameters
+   info - Missing a required trailing comma - lib\features\auth\screens\otp_verification_screen.dart:174:54 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\auth\screens\otp_verification_screen.dart:201:71 - require_trailing_commas
+   info - Parameter 'key' could be a super parameter - lib\features\auth\screens\otp_verification_screen.dart:380:9 - use_super_parameters
+   info - Required named parameters should be before optional named parameters - lib\features\auth\screens\otp_verification_screen.dart:382:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\auth\screens\otp_verification_screen.dart:383:19 - always_put_required_named_parameters_first
+   info - Sort directive sections alphabetically - lib\features\auth\screens\register_screen.dart:4:1 - directives_ordering
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\auth\screens\register_screen.dart:252:33 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\auth\screens\register_screen.dart:294:35 - deprecated_member_use
+   info - Missing a required trailing comma - lib\features\auth\screens\register_screen.dart:310:78 - require_trailing_commas
+warning - Unused import: 'package:mcs/core/theme/app_colors.dart' - lib\features\landing\screens\features_screen.dart:6:8 - unused_import
+warning - Unused import: 'package:mcs/features/landing/widgets/platform_buttons.dart' - lib\features\landing\screens\landing_screen.dart:10:8 - unused_import
+   info - Unnecessary duplication of receiver - lib\features\landing\screens\landing_screen.dart:33:5 - cascade_invocations
+warning - Unused import: 'package:mcs/core/services/device_detection_service.dart' - lib\features\landing\widgets\bug_report_form.dart:2:8 - unused_import
+   info - Parameter 'key' could be a super parameter - lib\features\landing\widgets\bug_report_form.dart:9:9 - use_super_parameters
+warning - The declaration '_getDeviceInfo' isn't referenced - lib\features\landing\widgets\bug_report_form.dart:72:10 - unused_element
+warning - The type argument(s) of the constructor 'Future.delayed' can't be inferred - lib\features\landing\widgets\bug_report_form.dart:92:13 - inference_failure_on_instance_creation
+   info - Parameter 'key' could be a super parameter - lib\features\landing\widgets\contact_form.dart:8:9 - use_super_parameters
+warning - The type argument(s) of the constructor 'Future.delayed' can't be inferred - lib\features\landing\widgets\contact_form.dart:47:13 - inference_failure_on_instance_creation
+warning - The value of the field '_prefKey' isn't used - lib\features\landing\widgets\currency_selector.dart:11:23 - unused_field
+warning - The declaration '_getFromPrefs' isn't referenced - lib\features\landing\widgets\currency_selector.dart:44:18 - unused_element
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\currency_selector.dart:55:19 - always_put_required_named_parameters_first
+warning - Unused import: 'package:mcs/core/theme/app_colors.dart' - lib\features\landing\widgets\device_detector.dart:6:8 - unused_import
+warning - Unused import: 'package:mcs/core/utils/extensions.dart' - lib\features\landing\widgets\device_detector.dart:8:8 - unused_import
+   info - Parameter 'key' could be a super parameter - lib\features\landing\widgets\faq_section.dart:7:9 - use_super_parameters
+warning - The value of the field '_selectedCategoryIndex' isn't used - lib\features\landing\widgets\faq_section.dart:44:13 - unused_field
+warning - The value of the field '_searchQuery' isn't used - lib\features\landing\widgets\faq_section.dart:45:10 - unused_field
+   info - Missing a required trailing comma - lib\features\landing\widgets\faq_section.dart:253:56 - require_trailing_commas
+   info - Use 'const' with the constructor to improve performance - lib\features\landing\widgets\faq_section.dart:340:20 - prefer_const_constructors
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\feature_card.dart:11:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\feature_card.dart:12:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\feature_card.dart:13:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\feature_card.dart:14:19 - always_put_required_named_parameters_first
+   info - 'translate' is deprecated and shouldn't be used. Use translateByVector3, translateByVector4, or translateByDouble instead - lib\features\landing\widgets\feature_card.dart:35:40 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\features\landing\widgets\footer.dart:7:9 - use_super_parameters
+   info - Missing a required trailing comma - lib\features\landing\widgets\footer.dart:204:68 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\landing\widgets\footer.dart:207:68 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\landing\widgets\footer.dart:216:68 - require_trailing_commas
+   info - Missing a required trailing comma - lib\features\landing\widgets\footer.dart:219:70 - require_trailing_commas
+   info - Parameter 'key' could be a super parameter - lib\features\landing\widgets\navbar.dart:7:9 - use_super_parameters
+warning - The return type of ' Function(String)?' can't be inferred - lib\features\landing\widgets\navbar.dart:18:9 - inference_failure_on_function_return_type
+warning - Unused import: 'package:mcs/core/theme/app_colors.dart' - lib\features\landing\widgets\platform_buttons.dart:6:8 - unused_import
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\platform_buttons.dart:18:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\pricing_card.dart:13:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\pricing_card.dart:14:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\pricing_card.dart:15:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\pricing_card.dart:16:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\pricing_card.dart:17:19 - always_put_required_named_parameters_first
+   info - 'translate' is deprecated and shouldn't be used. Use translateByVector3, translateByVector4, or translateByDouble instead - lib\features\landing\widgets\pricing_card.dart:44:13 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\features\landing\widgets\social_links.dart:7:9 - use_super_parameters
+   info - Required named parameters should be before optional named parameters - lib\features\landing\widgets\testimonials.dart:30:19 - always_put_required_named_parameters_first
+   info - Unnecessary type annotation on a local variable - lib\features\landing\widgets\testimonials.dart:141:11 - omit_local_variable_types
+   info - Unnecessary type annotation on a local variable - lib\features\landing\widgets\testimonials.dart:144:11 - omit_local_variable_types
+   info - Unnecessary duplication of receiver - lib\features\landing\widgets\testimonials.dart:175:17 - cascade_invocations
+   info - Unnecessary type annotation on a local variable - lib\features\landing\widgets\testimonials.dart:182:21 - omit_local_variable_types
+   info - Unnecessary use of a 'double' literal - lib\features\landing\widgets\testimonials.dart:182:36 - prefer_int_literals
+   info - Missing a required trailing comma - lib\features\landing\widgets\testimonials.dart:204:36 - require_trailing_commas
+warning - Unused import: 'package:flutter_bloc/flutter_bloc.dart' - lib\features\video_call\presentation\screens\video_call_screen.dart:5:8 - unused_import
+   info - Required named parameters should be before optional named parameters - lib\features\video_call\presentation\screens\video_call_screen.dart:16:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\video_call\presentation\screens\video_call_screen.dart:17:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\video_call\presentation\screens\video_call_screen.dart:345:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\video_call\presentation\screens\video_call_screen.dart:346:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\video_call\presentation\screens\video_call_screen.dart:347:19 - always_put_required_named_parameters_first
+   info - Required named parameters should be before optional named parameters - lib\features\video_call\presentation\screens\video_call_screen.dart:348:19 - always_put_required_named_parameters_first
+   info - Use 'const' with the constructor to improve performance - lib\features\video_call\presentation\screens\video_call_screen.dart:416:35 - prefer_const_constructors
+   info - 'dart:html' is deprecated and shouldn't be used. Use package:web and dart:js_interop instead - lib\platforms\web\web_utils.dart:4:1 - deprecated_member_use
+   info - Don't use web-only libraries outside Flutter web plugins - lib\platforms\web\web_utils.dart:4:1 - avoid_web_libraries_in_flutter
+   info - 'dart:js' is deprecated and shouldn't be used. Use dart:js_interop instead - lib\platforms\web\web_utils.dart:5:1 - deprecated_member_use
+   info - Don't use web-only libraries outside Flutter web plugins - lib\platforms\web\web_utils.dart:5:1 - avoid_web_libraries_in_flutter
+warning - The operand can't be 'null', so the condition is always 'true' - lib\platforms\web\web_utils.dart:41:52 - unnecessary_null_comparison
+warning - The operand can't be 'null', so the condition is always 'true' - lib\platforms\web\web_utils.dart:47:43 - unnecessary_null_comparison
+   info - Method invocation or property access on a 'dynamic' target - lib\platforms\web\web_utils.dart:77:27 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\platforms\web\web_utils.dart:96:7 - avoid_dynamic_calls
+warning - The type argument(s) of 'List' can't be inferred - lib\platforms\web\web_utils.dart:96:35 - inference_failure_on_collection_literal
+   info - Method invocation or property access on a 'dynamic' target - lib\platforms\web\web_utils.dart:98:28 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - lib\platforms\web\web_utils.dart:99:14 - avoid_dynamic_calls
+   info - The method is used to change a property - lib\platforms\web\web_utils.dart:112:15 - use_setters_to_change_properties
+   info - Unnecessary duplication of receiver - lib\platforms\web\web_utils.dart:323:7 - cascade_invocations
+
+flutter : 181 issues found. (ran in 3.0s)
+Au caractère Ligne:1 : 1
++ flutter analyze --no-pub 2>&1 | Out-File -FilePath "C:\Users\Administ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (181 issues found. (ran in 3.0s):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

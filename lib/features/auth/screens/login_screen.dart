@@ -44,7 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-            'تسجيل الدخول عبر $provider غير متاح حالياً. يرجى استخدام البريد الإلكتروني وكلمة المرور.'),
+            'تسجيل الدخول عبر $provider غير متاح حالياً. يرجى استخدام البريد الإلكتروني وكلمة المرور.',
+          ),
         backgroundColor: Colors.orange,
         duration: const Duration(seconds: 3),
       ),
@@ -268,7 +269,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: isLoading
                                       ? null
                                       : () => _showSocialLoginNotAvailable(
-                                          context, 'Facebook'),
+                                          context,
+                                          'Facebook',
+                                        ),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -280,7 +283,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: isLoading
                                       ? null
                                       : () => _showSocialLoginNotAvailable(
-                                          context, 'Google'),
+                                          context,
+                                          'Google',
+                                        ),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -292,7 +297,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: isLoading
                                       ? null
                                       : () => _showSocialLoginNotAvailable(
-                                          context, 'Apple'),
+                                          context,
+                                          'Apple',
+                                        ),
                                 ),
                               ),
                             ],

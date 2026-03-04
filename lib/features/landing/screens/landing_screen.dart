@@ -7,7 +7,6 @@ import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/extensions.dart';
 import 'package:mcs/features/landing/widgets/device_detector.dart';
-import 'package:mcs/features/landing/widgets/platform_buttons.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -29,8 +28,9 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
   }
 

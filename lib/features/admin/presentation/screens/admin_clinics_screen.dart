@@ -68,8 +68,9 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                     const SizedBox(height: 16),
                     Text(
                       'لا توجد عيادات مسجلة بعد',
-                      style: TextStyles.bodyMedium
-                          .copyWith(color: Colors.grey[600]),
+                      style: TextStyles.bodyMedium.copyWith(
+                        color: Colors.grey[600],
+                      ),
                     ),
                   ],
                 ),
@@ -207,10 +208,15 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                     _buildInfoRow(Icons.science, 'اشتراك تجريبي'),
                   if (!isExpired && clinic.subscriptionEndDate != null)
                     _buildInfoRow(
-                        Icons.access_time, 'ينتهي خلال $daysRemaining يوم'),
+                        Icons.access_time,
+                        'ينتهي خلال $daysRemaining يوم',
+                      ),
                   if (isExpired)
-                    _buildInfoRow(Icons.warning, 'اشتراك منتهي',
-                        color: Colors.red),
+                    _buildInfoRow(
+                                            Icons.warning,
+                                            'اشتراك منتهي',
+                                            color: Colors.red,
+                                          ),
                 ],
               ),
             ),
@@ -318,9 +324,8 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
       'countries',
       filters: {'is_supported': true},
       orderBy: 'name',
-      ascending: true,
     );
-    final countries = countriesData.map((e) => CountryModel.fromJson(e)).toList();
+    final countries = countriesData.map(CountryModel.fromJson).toList();
     
     List<RegionModel> regions = [];
     if (countries.isNotEmpty) {
@@ -329,9 +334,8 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
         'regions',
         filters: {'country_id': selectedCountryId},
         orderBy: 'name',
-        ascending: true,
       );
-      regions = regionsData.map((e) => RegionModel.fromJson(e)).toList();
+      regions = regionsData.map(RegionModel.fromJson).toList();
       if (regions.isNotEmpty) {
         selectedRegionId = regions.first.id;
       }
@@ -373,7 +377,7 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: selectedCountryId,
+                  initialValue: selectedCountryId,
                   decoration: const InputDecoration(
                     labelText: 'الدولة *',
                     border: OutlineInputBorder(),
@@ -395,17 +399,16 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                         'regions',
                         filters: {'country_id': value},
                         orderBy: 'name',
-                        ascending: true,
                       );
                       setDialogState(() {
-                        regions = regionsData.map((e) => RegionModel.fromJson(e)).toList();
+                        regions = regionsData.map(RegionModel.fromJson).toList();
                       });
                     }
                   },
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: selectedRegionId,
+                  initialValue: selectedRegionId,
                   decoration: const InputDecoration(
                     labelText: 'المنطقة *',
                     border: OutlineInputBorder(),
@@ -539,7 +542,7 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
               SwitchListTile(
                 title: const Text('نشط'),
                 subtitle: const Text('تفعيل/تعطيل العيادة'),
-                value: clinic.isActive,
+                initialValue: clinic.isActive,
                 onChanged: (value) {
                   if (context.mounted) {
                     context.read<AdminBloc>().add(
@@ -595,19 +598,31 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
             children: [
               _buildDetailItem(Icons.email, 'البريد الإلكتروني', clinic.email),
               _buildDetailItem(Icons.phone, 'رقم الهاتف', clinic.phone),
-              _buildDetailItem(Icons.location_on, 'الموقع',
-                  '${clinic.country} - ${clinic.region}'),
+              _buildDetailItem(
+                  Icons.location_on,
+                  'الموقع',
+                  '${clinic.country} - ${clinic.region}',
+                ),
               if (clinic.address != null)
                 _buildDetailItem(Icons.map, 'العنوان', clinic.address!),
               if (clinic.description != null)
                 _buildDetailItem(
-                    Icons.description, 'الوصف', clinic.description!),
+                    Icons.description,
+                    'الوصف',
+                    clinic.description!,
+                  ),
               const Divider(height: 32),
-              _buildDetailItem(Icons.access_time, 'تاريخ التسجيل',
-                  _formatDate(clinic.createdAt!)),
+              _buildDetailItem(
+                  Icons.access_time,
+                  'تاريخ التسجيل',
+                  _formatDate(clinic.createdAt!),
+                ),
               if (clinic.updatedAt != null)
                 _buildDetailItem(
-                    Icons.update, 'آخر تحديث', _formatDate(clinic.updatedAt!)),
+                    Icons.update,
+                    'آخر تحديث',
+                    _formatDate(clinic.updatedAt!),
+                  ),
               const Divider(height: 32),
               Text('حالة الاشتراك', style: TextStyles.titleMedium),
               const SizedBox(height: 16),

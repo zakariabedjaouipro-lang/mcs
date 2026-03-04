@@ -4,10 +4,10 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/core/models/user_model.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_event.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_state.dart';
-import 'package:mcs/core/models/user_model.dart';
 
 /// Main app drawer with navigation options.
 class AppDrawer extends StatelessWidget {

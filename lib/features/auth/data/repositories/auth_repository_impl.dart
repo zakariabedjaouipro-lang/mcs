@@ -49,7 +49,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل تسجيل الدخول: ${e}'));
+      return Left(ServerFailure(message: 'فشل تسجيل الدخول: $e'));
     }
   }
 
@@ -92,7 +92,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String otp,
   }) async {
     try {
-      final result = await _authService.verifyOtp(
+      await _authService.verifyOtp(
         contactInfo: email,
         token: otp,
         otpType: OtpType.email,
@@ -102,7 +102,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل التحقق من OTP: ${e}'));
+      return Left(ServerFailure(message: 'فشل التحقق من OTP: $e'));
     }
   }
 
@@ -121,7 +121,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل إرسال رمز التحقق: ${e}'),
+        ServerFailure(message: 'فشل إرسال رمز التحقق: $e'),
       );
     }
   }
@@ -148,7 +148,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل إعادة تعيين كلمة المرور: ${e}'),
+        ServerFailure(message: 'فشل إعادة تعيين كلمة المرور: $e'),
       );
     }
   }
@@ -179,7 +179,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل تغيير كلمة المرور: ${e}'),
+        ServerFailure(message: 'فشل تغيير كلمة المرور: $e'),
       );
     }
   }
@@ -193,7 +193,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل تسجيل الخروج: ${e}'));
+      return Left(ServerFailure(message: 'فشل تسجيل الخروج: $e'));
     }
   }
 
@@ -224,7 +224,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user);
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل الحصول على بيانات المستخدم: ${e}'),
+        ServerFailure(message: 'فشل الحصول على بيانات المستخدم: $e'),
       );
     }
   }
@@ -236,7 +236,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user != null);
     } catch (e) {
       return Left(
-        ServerFailure(message: 'خطأ في التحقق من الجلسة: ${e}'),
+        ServerFailure(message: 'خطأ في التحقق من الجلسة: $e'),
       );
     }
   }
@@ -275,7 +275,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل تحديث الملف الشخصي: ${e}'),
+        ServerFailure(message: 'فشل تحديث الملف الشخصي: $e'),
       );
     }
   }
@@ -291,7 +291,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل تسجيل الدخول عبر وسائل التواصل: ${e}'),
+        ServerFailure(message: 'فشل تسجيل الدخول عبر وسائل التواصل: $e'),
       );
     }
   }

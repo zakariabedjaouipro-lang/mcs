@@ -3,7 +3,7 @@ library;
 
 import 'package:equatable/equatable.dart';
 
-enum AssessmentType { ados1, ados2, cars, m_chat, aapep, other }
+enum AssessmentType { ados1, ados2, cars, mChat, aapep, other }
 
 class AutismAssessmentModel extends Equatable {
   const AutismAssessmentModel({
@@ -66,7 +66,7 @@ class AutismAssessmentModel extends Equatable {
         return 'ADOS-2';
       case AssessmentType.cars:
         return 'CARS';
-      case AssessmentType.m_chat:
+      case AssessmentType.mChat:
         return 'M-CHAT';
       case AssessmentType.aapep:
         return 'AAPEP';

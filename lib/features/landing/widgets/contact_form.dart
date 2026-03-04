@@ -6,10 +6,10 @@ import 'package:mcs/core/utils/validators.dart';
 /// نموذج الاتصال - يحتوي على حقول الاسم والبريد والرسالة مع التحقق
 class ContactFormWidget extends StatefulWidget {
   const ContactFormWidget({
-    Key? key,
+    super.key,
     this.primaryColor,
     this.onSubmitSuccess,
-  }) : super(key: key);
+  });
   final Color? primaryColor;
   final VoidCallback? onSubmitSuccess;
 
@@ -44,7 +44,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
 
     try {
       // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      await Future<void>.delayed(const Duration(seconds: 2));
 
       if (mounted) {
         // Show success message

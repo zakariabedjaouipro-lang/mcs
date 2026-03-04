@@ -5,10 +5,10 @@ import 'package:mcs/core/theme/text_styles.dart';
 /// قسم الأسئلة الشائعة - قابل لإعادة الاستخدام مع البحث والتصنيف
 class FaqSectionWidget extends StatefulWidget {
   const FaqSectionWidget({
-    Key? key,
+    super.key,
     this.primaryColor,
     this.categories,
-  }) : super(key: key);
+  });
   final Color? primaryColor;
   final List<FaqCategory>? categories;
 
@@ -41,8 +41,6 @@ class FaqItem {
 class _FaqSectionWidgetState extends State<FaqSectionWidget> {
   late List<FaqCategory> _categories;
   late List<FaqCategory> _filteredCategories;
-  final int _selectedCategoryIndex = 0;
-  String _searchQuery = '';
 
   @override
   void initState() {
@@ -337,7 +335,7 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
       collapsedIconColor: primaryColor,
       children: [
         Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Text(
             item.answer,
             style: TextStyles.body2.copyWith(

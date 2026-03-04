@@ -236,7 +236,7 @@ class ChangePasswordSubmitted extends AuthEvent {
 
 /// إظهار/إخفاء كلمة المرور
 class TogglePasswordVisibility extends AuthEvent {
-  const TogglePasswordVisibility(this.isVisible);
+  const TogglePasswordVisibility({required this.isVisible});
   final bool isVisible;
 
   @override

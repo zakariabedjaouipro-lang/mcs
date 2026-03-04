@@ -3,7 +3,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
-import 'package:mcs/core/theme/app_theme.dart';
 
 /// Theme mode enum.
 enum AppThemeMode {
@@ -46,7 +45,7 @@ class ThemeSwitcher extends StatelessWidget {
         ? AppThemeMode.dark
         : AppThemeMode.light;
 
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations.lightTheme),
@@ -115,8 +114,6 @@ class ThemeSwitcher extends StatelessWidget {
   void _changeTheme(BuildContext context, AppThemeMode mode) {
     // This would typically be handled by a BLoC or state management
     // For now, we'll show a dialog indicating the change
-    final localizations = AppLocalizations.of(context)!;
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -313,7 +310,7 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
         ? AppThemeMode.dark
         : AppThemeMode.light;
 
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations.lightTheme),
@@ -380,8 +377,6 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
   }
 
   void _changeTheme(BuildContext context, AppThemeMode mode) {
-    final localizations = AppLocalizations.of(context)!;
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(

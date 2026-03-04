@@ -9,12 +9,12 @@ import 'package:mcs/features/landing/screens/pricing_screen.dart';
 
 class PricingCard extends StatefulWidget {
   const PricingCard({
-    super.key,
     required this.plan,
     required this.currency,
     required this.billingPeriod,
     required this.isPopular,
     required this.onGetStarted,
+    super.key,
   });
   final PricingPlan plan;
   final String currency;
@@ -41,7 +41,7 @@ class _PricingCardState extends State<PricingCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         transform: Matrix4.identity()
-          ..translate(0, _isHovered && !widget.isPopular ? 4 : 0),
+          ..translateByDouble(0, _isHovered && !widget.isPopular ? 4 : 0),
         child: Card(
           elevation: widget.isPopular
               ? 8

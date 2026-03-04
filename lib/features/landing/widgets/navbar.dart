@@ -5,7 +5,7 @@ import 'package:mcs/core/theme/text_styles.dart';
 /// شريط التنقل الرئيسي - يحتوي على الروابط والأزرار والتحكم بالإعدادات
 class NavbarWidget extends StatefulWidget {
   const NavbarWidget({
-    Key? key,
+    super.key,
     this.onLogoTap,
     this.onNavigate,
     this.onLoginTap,
@@ -15,7 +15,7 @@ class NavbarWidget extends StatefulWidget {
     this.currentLanguage = 'ar',
   }) : super(key: key);
   final VoidCallback? onLogoTap;
-  final Function(String)? onNavigate;
+  final void Function(String)? onNavigate;
   final VoidCallback? onLoginTap;
   final ValueChanged<bool>? onThemeChanged;
   final ValueChanged<String>? onLanguageChanged;

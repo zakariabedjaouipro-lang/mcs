@@ -9,10 +9,10 @@ class ChangePasswordScreen extends StatefulWidget {
   // اختياري إذا أراد المستخدم تغيير كلمته الحالية
 
   const ChangePasswordScreen({
-    Key? key,
+    super.key,
     this.isForcedChange = false,
     this.currentPassword,
-  }) : super(key: key);
+  });
   final bool isForcedChange; // هل هو تغيير إجباري بعد تسجيل دخول أول مرة؟
   final String? currentPassword;
 

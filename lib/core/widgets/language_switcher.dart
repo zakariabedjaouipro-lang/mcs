@@ -88,7 +88,7 @@ class LanguageSwitcher extends StatelessWidget {
     // For now, we'll show a dialog indicating the change
     final localizations = AppLocalizations.of(context)!;
 
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations.language),
@@ -108,7 +108,10 @@ class LanguageSwitcher extends StatelessWidget {
               // In a real implementation, this would trigger a locale change
               // through a BLoC or other state management solution
               _showLanguageChangedSnackbar(
-                  context, languageCode, localizations);
+                  context,
+                  languageCode,
+                  localizations,
+                );
             },
             child: Text(localizations.confirm),
           ),
@@ -169,7 +172,7 @@ class LanguageSwitcherSimple extends StatelessWidget {
     String languageCode,
     AppLocalizations localizations,
   ) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations.language),

@@ -136,7 +136,7 @@ class CurrencySwitcherSimple extends StatelessWidget {
   void _showCurrencyDialog(BuildContext context) {
     final currency = selectedCurrency ?? Currency.dzd;
 
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Select Currency'),
@@ -284,10 +284,10 @@ class PriceDisplay extends StatelessWidget {
     super.key,
     required this.originalPrice,
     required this.originalCurrency,
+    this.showOriginal = true,
     this.targetCurrency,
     this.originalStyle,
     this.convertedStyle,
-    this.showOriginal = true,
   });
   final double originalPrice;
   final Currency originalCurrency;

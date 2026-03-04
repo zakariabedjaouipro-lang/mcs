@@ -42,7 +42,9 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       );
 
       await _supabaseService.insert(
-          'subscription_codes', subscription.toJson());
+          'subscription_codes',
+          subscription.toJson(),
+        );
 
       emit(const AdminSuccess('تم إنشاء كود الاشتراك بنجاح'));
       add(const LoadSubscriptionCodes());
@@ -245,7 +247,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         final fromCurrency = item['from_currency'] as String;
         final toCurrency = item['to_currency'] as String;
         final effectiveDate = DateTime.parse(item['effective_date'] as String);
-        final key = '${fromCurrency}_${toCurrency}';
+        final key = '$fromCurrency\_$toCurrency';
         
         // Keep only the most recent rate for each pair
         if (!latestRates.containsKey(key) || 

@@ -45,7 +45,7 @@ class AdminStatsScreen extends StatelessWidget {
 }
 
 class _StatsContent extends StatelessWidget {
-  const _StatsContent({required this.stats, super.key});
+  const _StatsContent({required this.stats});
   final DashboardStatsLoaded stats;
 
   @override
@@ -121,7 +121,6 @@ class _StatCard extends StatelessWidget {
     required this.value,
     required this.icon,
     required this.color,
-    super.key,
   });
   final String title;
   final String value;

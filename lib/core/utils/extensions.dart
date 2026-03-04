@@ -376,7 +376,7 @@ extension BuildContextExtensions on BuildContext {
   EdgeInsets get viewInsets => MediaQuery.of(this).viewInsets;
 
   /// Get text scale factor.
-  double get textScaleFactor => MediaQuery.of(this).textScaleFactor;
+  double get textScaleFactor => MediaQuery.of(this).textScaler.scale(1.0);
 
   /// Get brightness (dark/light).
   Brightness get brightness => MediaQuery.of(this).platformBrightness;
@@ -464,8 +464,8 @@ extension WidgetExtensions on Widget {
   Widget withHero(Object tag) => Hero(tag: tag, child: this);
 
   /// Add visibility wrapper.
-  Widget withVisibility(
-    bool visible, {
+  Widget withVisibility({
+    required bool visible,
     Widget replacement = const SizedBox.shrink(),
   }) =>
       Visibility(visible: visible, replacement: replacement, child: this);

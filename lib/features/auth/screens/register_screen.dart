@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/validators.dart';
 import 'package:mcs/features/auth/presentation/bloc/index.dart' as auth;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// شاشة تسجيل مستخدم جديد مع اختيار الدور والتحقق
 class RegisterScreen extends StatefulWidget {
@@ -249,7 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               }
                               final countries = snapshot.data ?? [];
                               return DropdownButtonFormField<String>(
-                                value: _selectedCountryId,
+                                initialValue: _selectedCountryId,
                                 decoration: _buildInputDecoration(
                                   label: 'الدولة',
                                   hint: 'اختر الدولة',
@@ -291,7 +291,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 }
                                 final regions = snapshot.data ?? [];
                                 return DropdownButtonFormField<String>(
-                                  value: _selectedRegionId,
+                                  initialValue: _selectedRegionId,
                                   decoration: _buildInputDecoration(
                                     label: 'المنطقة',
                                     hint: 'اختر المنطقة',
@@ -307,7 +307,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ? null
                                       : (value) {
                                           setState(
-                                              () => _selectedRegionId = value);
+                                              () => _selectedRegionId = value,
+                                            );
                                         },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {

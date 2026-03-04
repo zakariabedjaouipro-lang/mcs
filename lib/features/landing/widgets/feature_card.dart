@@ -7,11 +7,11 @@ import 'package:mcs/core/theme/text_styles.dart';
 
 class FeatureCard extends StatefulWidget {
   const FeatureCard({
-    super.key,
     required this.icon,
     required this.title,
     required this.description,
     required this.color,
+    super.key,
   });
   final IconData icon;
   final String title;

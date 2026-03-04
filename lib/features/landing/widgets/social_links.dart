@@ -5,12 +5,12 @@ import 'package:mcs/core/theme/text_styles.dart';
 /// روابط التواصل الاجتماعي - يحتوي على أيقونات وروابط التواصل
 class SocialLinksWidget extends StatelessWidget {
   const SocialLinksWidget({
-    Key? key,
+    super.key,
     this.primaryColor,
     this.iconSize = 50,
     this.padding = const EdgeInsets.symmetric(horizontal: 8),
     this.direction = Axis.horizontal,
-  }) : super(key: key);
+  });
   final Color? primaryColor;
   final double iconSize;
   final EdgeInsets padding;

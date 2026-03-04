@@ -213,7 +213,7 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
             TextField(
               controller: priceUsdController,
               decoration: InputDecoration(
-                labelText: 'السعر بالدولار (\$)',
+                labelText: r'السعر بالدولار ($)',
                 prefixText: usdPrefix,
               ),
               keyboardType: TextInputType.number,

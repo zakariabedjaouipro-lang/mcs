@@ -188,7 +188,7 @@ Future<void> showAlert({
       iconColor = colorScheme.error;
   }
 
-  await showDialog(
+  await showDialog<void>(
     context: context,
     builder: (context) => AlertDialog(
       icon: Icon(
@@ -223,7 +223,7 @@ void showLoadingDialog({
   required BuildContext context,
   String? message,
 }) {
-  showDialog(
+  showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (context) => _LoadingDialog(message: message),
@@ -239,8 +239,8 @@ class _LoadingDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
       child: AlertDialog(
         content: Column(
           mainAxisSize: MainAxisSize.min,

@@ -5,6 +5,18 @@ import 'package:equatable/equatable.dart';
 import 'package:mcs/core/enums/subscription_type.dart';
 
 class SubscriptionModel extends Equatable {
+  const SubscriptionModel({
+    required this.id,
+    required this.code,
+    required this.type,
+    required this.priceUsd,
+    required this.priceEur,
+    required this.priceDzd,
+    this.isUsed = false,
+    this.clinicId,
+    this.usedAt,
+    this.createdAt,
+  });
 
   factory SubscriptionModel.fromJson(Map<String, dynamic> json) {
     return SubscriptionModel(
@@ -24,18 +36,6 @@ class SubscriptionModel extends Equatable {
           : null,
     );
   }
-  const SubscriptionModel({
-    required this.id,
-    required this.code,
-    required this.type,
-    required this.priceUsd,
-    required this.priceEur,
-    required this.priceDzd,
-    this.isUsed = false,
-    this.clinicId,
-    this.usedAt,
-    this.createdAt,
-  });
 
   final String id;
   final String code; // Unique code for activation

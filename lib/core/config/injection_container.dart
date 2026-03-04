@@ -12,13 +12,13 @@ import 'package:mcs/core/services/notification_service.dart';
 import 'package:mcs/core/services/sms_service.dart';
 import 'package:mcs/core/services/storage_service.dart';
 import 'package:mcs/core/services/supabase_service.dart';
+import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:mcs/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mcs/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/register_usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Global service locator instance.

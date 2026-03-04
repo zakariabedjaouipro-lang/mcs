@@ -26,8 +26,8 @@ class Testimonial {
     required this.title,
     required this.comment,
     required this.rating,
-    this.imageUrl,
     required this.type,
+    this.imageUrl,
   });
   final String name;
   final String title;
@@ -138,10 +138,10 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
     final size = MediaQuery.of(context).size.width;
 
     // ✅ تم الإصلاح: استخدام int محسوب بشكل صحيح
-    final int itemCount = _testimonials.length;
+    final itemCount = _testimonials.length;
 
     // ✅ تم الإصلاح: حساب ارتفاع البطاقة بناءً على حجم الشاشة
-    final double cardHeight = size < 768 ? 380.0 : 320.0;
+    final cardHeight = size < 768 ? 380.0 : 320.0;
 
     return Column(
       children: [
@@ -201,7 +201,9 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
 
         // Indicators
         _buildIndicators(
-            primaryColor, itemCount), // ✅ تم الإصلاح: تمرير itemCount
+            primaryColor,
+            itemCount,
+          ), // ✅ تم الإصلاح: تمرير itemCount
       ],
     );
   }

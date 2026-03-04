@@ -41,7 +41,8 @@ enum SubscriptionType {
   monthly('monthly', 'شهري', 'Monthly', 29.99, 27.99, 4000, 30),
   quarterly('quarterly', 'ربع سنوي', 'Quarterly', 79.99, 74.99, 11000, 90),
   halfYearly(
-      'half_yearly', 'نصف سنوي', 'Half-Yearly', 149.99, 139.99, 20000, 180),
+      'half_yearly', 'نصف سنوي', 'Half-Yearly', 149.99, 139.99, 20000, 180,
+  ),
   yearly('yearly', 'سنوي', 'Yearly', 279.99, 259.99, 37000, 365);
 
   const SubscriptionType(

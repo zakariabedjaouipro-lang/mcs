@@ -3,7 +3,6 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/extensions.dart';
 import 'package:mcs/features/landing/widgets/feature_card.dart';

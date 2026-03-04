@@ -5,35 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:mcs/core/enums/subscription_type.dart';
 
 class ClinicModel extends Equatable {
-  factory ClinicModel.fromJson(Map<String, dynamic> json) {
-    return ClinicModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as String,
-      country: json['country'] as String,
-      region: json['region'] as String,
-      address: json['address'] as String?,
-      logoUrl: json['logo_url'] as String?,
-      description: json['description'] as String?,
-      isActive: json['is_active'] as bool? ?? true,
-      isTrial: json['is_trial'] as bool? ?? true,
-      subscriptionType: SubscriptionType.fromDbValue(
-          json['subscription_type'] as String? ?? 'trial'),
-      subscriptionStartDate: json['subscription_start_date'] != null
-          ? DateTime.parse(json['subscription_start_date'] as String)
-          : null,
-      subscriptionEndDate: json['subscription_end_date'] != null
-          ? DateTime.parse(json['subscription_end_date'] as String)
-          : null,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'] as String)
-          : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'] as String)
-          : null,
-    );
-  }
   const ClinicModel({
     required this.id,
     required this.name,
@@ -53,6 +24,36 @@ class ClinicModel extends Equatable {
     this.updatedAt,
   });
 
+  factory ClinicModel.fromJson(Map<String, dynamic> json) {
+    return ClinicModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      email: json['email'] as String,
+      phone: json['phone'] as String,
+      country: json['country'] as String,
+      region: json['region'] as String,
+      address: json['address'] as String?,
+      logoUrl: json['logo_url'] as String?,
+      description: json['description'] as String?,
+      isActive: json['is_active'] as bool? ?? true,
+      isTrial: json['is_trial'] as bool? ?? true,
+      subscriptionType: SubscriptionType.fromDbValue(
+          json['subscription_type'] as String? ?? 'trial',
+      ),
+      subscriptionStartDate: json['subscription_start_date'] != null
+          ? DateTime.parse(json['subscription_start_date'] as String)
+          : null,
+      subscriptionEndDate: json['subscription_end_date'] != null
+          ? DateTime.parse(json['subscription_end_date'] as String)
+          : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : null,
+    );
+  }
   final String id;
   final String name;
   final String email;

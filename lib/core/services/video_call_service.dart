@@ -7,8 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:mcs/core/config/env.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 
 /// WebRTC Video Call Service
 class VideoCallService {
@@ -19,7 +17,7 @@ class VideoCallService {
   MediaStream? _localStream;
   MediaStream? _remoteStream;
 
-  final List<RTCIceCandidate> _remoteIceCandidates = [];
+  final List<RTCIceCandidate> _remoteIceCandidates = <RTCIceCandidate>[];
   String? _callId;
   String? _currentUserId;
   String? _remoteUserId;
@@ -42,7 +40,7 @@ class VideoCallService {
         'minFrameRate': '30',
       },
       'facingMode': 'user',
-      'optional': [],
+      'optional': <Map<String, dynamic>>[], // قائمة من الخرائط
     },
   };
 

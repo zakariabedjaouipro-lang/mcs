@@ -10,7 +10,7 @@ import 'package:mcs/features/auth/presentation/bloc/index.dart';
 /// شاشة التحقق بـ OTP - 6 حقول أرقام مع تنقل تلقائي وعداد زمني
 class OtpVerificationScreen extends StatefulWidget {
   const OtpVerificationScreen({
-    Key? key,
+    super.key,
     this.contactInfo = '***@mail.com',
     this.contactMethod = 'email',
     this.onVerificationComplete,
@@ -171,7 +171,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(8),
@@ -198,7 +200,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                           color: Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                              color: Colors.red.withValues(alpha: 0.3)),
+                              color: Colors.red.withValues(alpha: 0.3),
+                            ),
                         ),
                         child: Row(
                           children: [
@@ -378,10 +381,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
 /// Widget لتأثير الاهتزاز
 class ShakeTransition extends StatelessWidget {
   const ShakeTransition({
-    Key? key,
     required this.animation,
     required this.child,
-  }) : super(key: key);
+    super.key,
+  });
   final Animation<double> animation;
   final Widget child;
 

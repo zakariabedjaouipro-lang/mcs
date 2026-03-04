@@ -20,7 +20,7 @@ class AppConfig {
 
   static AppEnvironment get environment => _environment;
 
-  static void setEnvironment(AppEnvironment env) {
+  static set environment(AppEnvironment env) {
     _environment = env;
   }
 

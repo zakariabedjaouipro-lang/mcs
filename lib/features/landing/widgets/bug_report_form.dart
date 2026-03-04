@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mcs/core/services/device_detection_service.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/validators.dart';
@@ -7,10 +6,10 @@ import 'package:mcs/core/utils/validators.dart';
 /// نموذج الإبلاغ عن مشكلة - يتضمن وصف المشكلة والصور واختياري
 class BugReportFormWidget extends StatefulWidget {
   const BugReportFormWidget({
-    Key? key,
+    super.key,
     this.primaryColor,
     this.onSubmitSuccess,
-  }) : super(key: key);
+  });
   final Color? primaryColor;
   final VoidCallback? onSubmitSuccess;
 
@@ -69,17 +68,6 @@ class _BugReportFormWidgetState extends State<BugReportFormWidget> {
     });
   }
 
-  String _getDeviceInfo() {
-    if (!_includeDeviceInfo) return '';
-
-    // Simulate getting device information
-    return '''
-Device Info:
-- Screen Size: ${MediaQuery.of(context).size}
-- App Version: 1.0.0
-    ''';
-  }
-
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -89,7 +77,7 @@ Device Info:
 
     try {
       // Simulate API call
-      await Future.delayed(const Duration(seconds: 3));
+      await Future<void>.delayed(const Duration(seconds: 3));
 
       if (mounted) {
         // Show success message

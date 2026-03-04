@@ -2,7 +2,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:mcs/core/services/video_call_service.dart';
 import 'package:mcs/core/theme/app_colors.dart';
@@ -12,9 +11,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Video Call Screen
 class VideoCallScreen extends StatefulWidget {
   const VideoCallScreen({
-    super.key,
     required this.remoteUserId,
     required this.remoteUserName,
+    super.key,
   });
 
   final String remoteUserId;
@@ -341,11 +340,11 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
 /// Incoming Call Screen
 class IncomingCallScreen extends StatelessWidget {
   const IncomingCallScreen({
-    super.key,
     required this.callerId,
     required this.callerName,
     required this.onAccept,
     required this.onReject,
+    super.key,
   });
 
   final String callerId;
@@ -413,7 +412,7 @@ class IncomingCallScreen extends StatelessWidget {
                     child: Container(
                       width: 80,
                       height: 80,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.green,
                         shape: BoxShape.circle,
                       ),

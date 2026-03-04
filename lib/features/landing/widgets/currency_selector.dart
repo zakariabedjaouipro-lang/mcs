@@ -8,7 +8,6 @@ import 'package:mcs/core/theme/text_styles.dart';
 
 /// Currency controller for managing currency selection.
 class CurrencyController extends ChangeNotifier {
-  static const String _prefKey = 'selected_currency';
   static const String _defaultCurrency = 'USD';
 
   String _selectedCurrency = _defaultCurrency;
@@ -39,20 +38,12 @@ class CurrencyController extends ChangeNotifier {
     //   prefs.setString(_prefKey, currency);
     // });
   }
-
-  /// Get from preferences (placeholder).
-  Future<String> _getFromPrefs() async {
-    // In real implementation:
-    // final prefs = await SharedPreferences.getInstance();
-    // return prefs.getString(_prefKey) ?? _defaultCurrency;
-    return _defaultCurrency;
-  }
 }
 
 class CurrencySelector extends StatefulWidget {
   const CurrencySelector({
-    super.key,
     required this.controller,
+    super.key,
   });
   final CurrencyController controller;
 

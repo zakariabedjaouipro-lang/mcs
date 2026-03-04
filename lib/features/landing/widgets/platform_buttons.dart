@@ -3,7 +3,6 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 
 /// Platform button data model.
@@ -14,8 +13,8 @@ class PlatformData {
     required this.icon,
     required this.color,
     required this.primaryStore,
-    this.secondaryStore,
     required this.downloadUrl,
+    this.secondaryStore,
   });
   final String name;
   final String shortName;

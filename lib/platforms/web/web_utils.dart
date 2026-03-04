@@ -1,8 +1,8 @@
 /// Web-specific utilities and helpers for the web platform.
 library;
 
-import 'dart:html' as html;
-import 'dart:js' as js;
+import 'dart:js_interop' as js_interop;
+import 'package:web/web.dart' as html;
 
 import 'package:flutter/foundation.dart';
 
@@ -40,7 +40,7 @@ abstract class WebUtils {
         case 'geolocation':
           return html.window.navigator.geolocation != null;
         case 'notifications':
-          return html.Notification.supported;
+          return html.Notification != null;
         case 'service-worker':
           return html.window.navigator.serviceWorker != null;
         case 'storage':
@@ -65,7 +65,7 @@ abstract class WebUtils {
 
       // This would normally be handled by Flutter's web build system
       // Placeholder for service worker registration
-      js.context.callMethod('navigator.serviceWorker.register', [swPath]);
+      html.window.navigator.serviceWorker?.register(swPath);
     } catch (e) {
       debugPrint('Error registering service worker: $e');
     }
@@ -74,11 +74,8 @@ abstract class WebUtils {
   /// Check if app is installed as PWA.
   static bool get isPWAInstalled {
     try {
-      final displayMode = js.context.callMethod(
-        'matchMedia',
-        ['(display-mode: standalone)'],
-      ).callMethod('matches') as bool;
-      return displayMode ||
+      final mediaQuery = html.window.matchMedia('(display-mode: standalone)');
+      return mediaQuery.matches ||
           html.window.navigator.userAgent.toLowerCase().contains('webapk');
     } catch (_) {
       return false;
@@ -88,15 +85,8 @@ abstract class WebUtils {
   /// Request PWA installation (Web Share API).
   static Future<bool> requestPWAInstall() async {
     try {
-      if (!js.context.hasProperty('beforeinstallprompt')) {
-        return false;
-      }
-
-      final prompt = js.context['beforeinstallprompt'];
-      prompt.callMethod('prompt', []);
-
-      final result = await prompt.callMethod('userChoice');
-      return result?['outcome'] == 'accepted';
+      // Simplified implementation - actual PWA install requires proper event handling
+      return false;
     } catch (e) {
       debugPrint('Error requesting PWA install: $e');
       return false;
@@ -147,7 +137,8 @@ abstract class WebUtils {
 
       final permission = html.Notification.permission;
       if (permission == 'default') {
-        return (await html.Notification.requestPermission()) == 'granted'
+        final result = await html.Notification.requestPermission();
+        return result == 'granted'
             ? NotificationPermission.granted
             : NotificationPermission.denied;
       }
@@ -166,7 +157,12 @@ abstract class WebUtils {
     try {
       if (!browserSupports('notifications')) return;
 
-      html.Notification(title, body: body, icon: icon);
+      // Create notification options object
+      final options = html.NotificationOptions();
+      if (body != null) options.body = body;
+      if (icon != null) options.icon = icon;
+
+      html.Notification(title, options);
     } catch (e) {
       debugPrint('Error showing notification: $e');
     }
@@ -177,7 +173,7 @@ abstract class WebUtils {
   /// Store value in local storage.
   static void setLocalStorage(String key, String value) {
     try {
-      html.window.localStorage[key] = value;
+      html.window.localStorage.setItem(key, value);
     } catch (e) {
       debugPrint('Error setting local storage: $e');
     }
@@ -186,7 +182,7 @@ abstract class WebUtils {
   /// Get value from local storage.
   static String? getLocalStorage(String key) {
     try {
-      return html.window.localStorage[key];
+      return html.window.localStorage.getItem(key);
     } catch (e) {
       debugPrint('Error getting local storage: $e');
       return null;
@@ -196,7 +192,7 @@ abstract class WebUtils {
   /// Remove value from local storage.
   static void removeLocalStorage(String key) {
     try {
-      html.window.localStorage.remove(key);
+      html.window.localStorage.removeItem(key);
     } catch (e) {
       debugPrint('Error removing from local storage: $e');
     }
@@ -220,13 +216,18 @@ abstract class WebUtils {
         return null;
       }
 
-      final position =
-          await html.window.navigator.geolocation.getCurrentPosition();
+      final position = await html.window.navigator.geolocation.getCurrentPosition(
+        html.PositionOptions(
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        ),
+      );
 
       return GeolocationCoordinates(
-        latitude: position.coords!.latitude!.toDouble(),
-        longitude: position.coords!.longitude!.toDouble(),
-        accuracy: position.coords!.accuracy?.toDouble(),
+        latitude: position.coords.latitude.toDouble(),
+        longitude: position.coords.longitude.toDouble(),
+        accuracy: position.coords.accuracy?.toDouble(),
       );
     } catch (e) {
       debugPrint('Error getting current position: $e');
@@ -236,11 +237,27 @@ abstract class WebUtils {
 
   /// Watch user's position (continuous updates).
   static Stream<GeolocationCoordinates> watchPosition() {
-    return html.window.navigator.geolocation.watchPosition().map((position) {
+    final controller = html.StreamController<html.GeolocationPosition>();
+
+    html.window.navigator.geolocation.watchPosition(
+      html.PositionOptions(
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      ),
+      (position) {
+        controller.add(position);
+      },
+      (error) {
+        controller.addError(error);
+      },
+    );
+
+    return controller.stream.map((position) {
       return GeolocationCoordinates(
-        latitude: position.coords!.latitude!.toDouble(),
-        longitude: position.coords!.longitude!.toDouble(),
-        accuracy: position.coords!.accuracy?.toDouble(),
+        latitude: position.coords.latitude.toDouble(),
+        longitude: position.coords.longitude.toDouble(),
+        accuracy: position.coords.accuracy?.toDouble(),
       );
     });
   }
@@ -250,9 +267,7 @@ abstract class WebUtils {
   /// Copy text to clipboard.
   static Future<bool> copyToClipboard(String text) async {
     try {
-      await js.context.callMethod('eval', [
-        '''navigator.clipboard.writeText("$text")''',
-      ]);
+      await html.Navigator.clipboard.writeText(text);
       return true;
     } catch (e) {
       debugPrint('Error copying to clipboard: $e');
@@ -263,10 +278,7 @@ abstract class WebUtils {
   /// Read text from clipboard.
   static Future<String?> readFromClipboard() async {
     try {
-      final result = await js.context.callMethod('eval', [
-        '''navigator.clipboard.readText()''',
-      ]);
-      return result as String?;
+      return await html.Navigator.clipboard.readText();
     } catch (e) {
       debugPrint('Error reading from clipboard: $e');
       return null;
@@ -278,8 +290,8 @@ abstract class WebUtils {
   /// Get current window dimensions.
   static Size getWindowSize() {
     return Size(
-      html.window.innerWidth?.toDouble() ?? 0,
-      html.window.innerHeight?.toDouble() ?? 0,
+      html.window.innerWidth.toDouble(),
+      html.window.innerHeight.toDouble(),
     );
   }
 
@@ -297,7 +309,13 @@ abstract class WebUtils {
 
   /// Listen to window resize events.
   static Stream<Size> onWindowResize() {
-    return html.window.onResize.map((_) => getWindowSize());
+    final controller = html.StreamController<Size>();
+    
+    html.window.addEventListener('resize', (event) {
+      controller.add(getWindowSize());
+    });
+
+    return controller.stream;
   }
 
   // ── Development Helpers ──────────────────────────────────
@@ -311,20 +329,7 @@ abstract class WebUtils {
 
   /// Check if DevTools is open.
   static bool get isDevToolsOpen {
-    final start = DateTime.now().millisecondsSinceEpoch;
-    html.Element? element;
-    try {
-      element = html.document.createElement('div');
-      html.document.body?.append(element);
-      bool checkTime() => DateTime.now().millisecondsSinceEpoch - start > 100;
-      element.addEventListener('DOMNodeInserted', (_) {
-        if (checkTime()) return;
-      });
-      element.addEventListener('DOMNodeRemoved', (_) {
-        if (checkTime()) return;
-      });
-    } catch (_) {}
-    return false;
+    return false; // Simplified implementation
   }
 }
 
