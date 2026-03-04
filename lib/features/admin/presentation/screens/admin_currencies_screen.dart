@@ -54,7 +54,7 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
           }
 
           if (state is ExchangeRatesLoaded) {
-            return _ExchangeRatesTable(state.rates);
+            return _exchangeRatesTable(state.rates);
           }
 
           if (state is AdminError) {
@@ -79,7 +79,7 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
     );
   }
 
-  Widget _ExchangeRatesTable(Map<String, double> rates) {
+  Widget _exchangeRatesTable(Map<String, double> rates) {
     final currencies = [
       {'code': 'USD', 'name': 'دولار أمريكي', 'symbol': r'$'},
       {'code': 'EUR', 'name': 'يورو', 'symbol': '€'},
@@ -106,6 +106,7 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
           ),
           const SizedBox(height: 24),
           _ConversionCalculator(currencies, exchangeRates),
+
           const SizedBox(height: 32),
           Text(
             'جدول أسعار الصرف',
@@ -159,12 +160,12 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            currency['code'],
+            currency['code']!,
             style: TextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 8),
           Text(
-            currency['symbol'],
+            currency['symbol']!,
             style: TextStyles.bodyMedium,
           ),
         ],
@@ -192,7 +193,7 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '${_getCurrencyInfo(rate['from'])} إلى ${_getCurrencyInfo(rate['to'])}',
+              '${_getCurrencyInfo(rate['from'] as String)['name']!} إلى ${_getCurrencyInfo(rate['to'] as String)['name']!}',
               style: TextStyles.bodyMedium,
             ),
             const SizedBox(height: 16),
@@ -232,7 +233,10 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
 }
 
 class _ConversionCalculator extends StatefulWidget {
-  const _ConversionCalculator();
+  final List<Map<String, String>> currencies;
+  final List<Map<String, dynamic>> exchangeRates;
+
+  const _ConversionCalculator(this.currencies, this.exchangeRates);
 
   @override
   State<_ConversionCalculator> createState() => _ConversionCalculatorState();
