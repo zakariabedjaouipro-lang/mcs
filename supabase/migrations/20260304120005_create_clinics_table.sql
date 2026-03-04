@@ -177,7 +177,6 @@ COMMENT ON COLUMN clinics.longitude IS 'Geographic longitude for map display';
 COMMENT ON COLUMN clinics.subscription_id IS 'Foreign key reference to subscription_codes table';
 COMMENT ON COLUMN clinics.subscription_type IS 'Type of subscription plan';
 COMMENT ON COLUMN clinics.is_trial IS 'Whether this is a trial subscription';
-COMMENT ON COLUMN clinics.agora_app_id IS 'Agora App ID for video calls';
 COMMENT ON COLUMN clinics.is_active IS 'Whether the clinic is active';
 COMMENT ON COLUMN clinics.is_verified IS 'Whether the clinic has been verified';
 COMMENT ON COLUMN clinics.is_featured IS 'Whether this clinic is featured';

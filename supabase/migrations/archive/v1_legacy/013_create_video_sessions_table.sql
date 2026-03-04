@@ -101,7 +101,7 @@ CREATE TRIGGER update_video_sessions_updated_at
 
 -- Add comments
 COMMENT ON TABLE video_sessions IS 'Video call session information';
-COMMENT ON COLUMN video_sessions.channel_name IS 'Agora channel name for the video call';
+COMMENT ON COLUMN video_sessions.channel_name IS 'WebRTC channel name for the video call';
 COMMENT ON COLUMN video_sessions.room_id IS 'Unique room identifier for the video call';
 COMMENT ON COLUMN video_sessions.status IS 'Session status: scheduled, in_progress, completed, cancelled, failed';
 COMMENT ON COLUMN video_sessions.duration_seconds IS 'Actual duration of the video call in seconds';

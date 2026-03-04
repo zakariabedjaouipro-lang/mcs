@@ -4,9 +4,10 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:mcs/core/services/webrtc_video_call_service.dart';
+import 'package:mcs/core/services/video_call_service.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Video Call Screen
 class VideoCallScreen extends StatefulWidget {
@@ -15,73 +16,66 @@ class VideoCallScreen extends StatefulWidget {
     required this.remoteUserId,
     required this.remoteUserName,
   });
-  
+
   final String remoteUserId;
   final String remoteUserName;
-  
+
   @override
   State<VideoCallScreen> createState() => _VideoCallScreenState();
 }
 
 class _VideoCallScreenState extends State<VideoCallScreen> {
-  late WebRTCVideoCallService _videoCallService;
+  late VideoCallService _videoCallService;
   MediaStream? _localStream;
   MediaStream? _remoteStream;
   VideoCallState _callState = VideoCallState.idle;
-  String? _errorMessage;
-  
+
   final RTCVideoRenderer _localRenderer = RTCVideoRenderer();
   final RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
-  
+
   bool _isCameraEnabled = true;
   bool _isMicrophoneEnabled = true;
   bool _isSpeakerEnabled = false;
-  
+
   @override
   void initState() {
     super.initState();
     _initializeService();
   }
-  
+
   Future<void> _initializeService() async {
-    _videoCallService = WebRTCVideoCallService();
-    
+    _videoCallService = VideoCallService();
+
     await _localRenderer.initialize();
     await _remoteRenderer.initialize();
-    
+
     final userId = Supabase.instance.client.auth.currentUser?.id ?? '';
     await _videoCallService.initialize(userId: userId);
-    
-    _videoCallService.localStream.listen((stream) {
+
+    _videoCallService.localStream.listen((MediaStream stream) {
       setState(() {
         _localStream = stream;
         _localRenderer.srcObject = stream;
       });
     });
-    
-    _videoCallService.remoteStream.listen((stream) {
+
+    _videoCallService.remoteStream.listen((MediaStream stream) {
       setState(() {
         _remoteStream = stream;
         _remoteRenderer.srcObject = stream;
       });
     });
-    
-    _videoCallService.callState.listen((state) {
+
+    _videoCallService.callState.listen((VideoCallState state) {
       setState(() {
         _callState = state;
       });
     });
-    
-    _videoCallService.errors.listen((error) {
-      setState(() {
-        _errorMessage = error;
-      });
-    });
-    
+
     // Start the call
     await _videoCallService.startCall(remoteUserId: widget.remoteUserId);
   }
-  
+
   @override
   void dispose() {
     _localRenderer.dispose();
@@ -89,7 +83,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     _videoCallService.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,7 +98,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
               )
             else
               _buildPlaceholder(),
-            
+
             // Local video (picture-in-picture)
             if (_localStream != null)
               Positioned(
@@ -117,7 +111,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                   child: RTCVideoView(_localRenderer),
                 ),
               ),
-            
+
             // Top bar
             Positioned(
               top: 16,
@@ -125,7 +119,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
               right: 16,
               child: _buildTopBar(),
             ),
-            
+
             // Bottom controls
             Positioned(
               bottom: 32,
@@ -133,7 +127,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
               right: 16,
               child: _buildControls(),
             ),
-            
+
             // Connection status
             Positioned(
               top: 80,
@@ -145,7 +139,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       ),
     );
   }
-  
+
   Widget _buildPlaceholder() {
     return Container(
       color: Colors.grey[900],
@@ -179,7 +173,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       ),
     );
   }
-  
+
   Widget _buildTopBar() {
     return Row(
       children: [
@@ -194,7 +188,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Text(
@@ -205,12 +199,12 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       ],
     );
   }
-  
+
   Widget _buildConnectionStatus() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: _getStatusColor().withOpacity(0.8),
+        color: _getStatusColor().withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -235,12 +229,12 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       ),
     );
   }
-  
+
   Widget _buildControls() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(32),
       ),
       child: Row(
@@ -289,12 +283,12 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       ),
     );
   }
-  
+
   Widget _buildControlButton({
     required IconData icon,
     required Color color,
-    Color? backgroundColor,
     required VoidCallback onTap,
+    Color? backgroundColor,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -302,7 +296,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
         width: 56,
         height: 56,
         decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.white.withOpacity(0.2),
+          color: backgroundColor ?? Colors.white.withValues(alpha: 0.2),
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -313,7 +307,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       ),
     );
   }
-  
+
   String _getConnectionStatusText() {
     switch (_callState) {
       case VideoCallState.idle:
@@ -328,7 +322,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
         return 'Call ended';
     }
   }
-  
+
   Color _getStatusColor() {
     switch (_callState) {
       case VideoCallState.idle:
@@ -353,12 +347,12 @@ class IncomingCallScreen extends StatelessWidget {
     required this.onAccept,
     required this.onReject,
   });
-  
+
   final String callerId;
   final String callerName;
   final VoidCallback onAccept;
   final VoidCallback onReject;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

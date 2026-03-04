@@ -1345,9 +1345,6 @@ CREATE TABLE IF NOT EXISTS clinics (
   subscription_end_date TIMESTAMP WITH TIME ZONE,
   is_trial BOOLEAN DEFAULT true,
   
-  -- Agora Integration (for video calls)
-  agora_app_id VARCHAR(255),
-  
   -- Status
   is_active BOOLEAN NOT NULL DEFAULT true,
   is_verified BOOLEAN DEFAULT false,
@@ -1477,7 +1474,6 @@ COMMENT ON COLUMN clinics.longitude IS 'Geographic longitude for map display';
 COMMENT ON COLUMN clinics.subscription_id IS 'Foreign key reference to subscription_codes table';
 COMMENT ON COLUMN clinics.subscription_type IS 'Type of subscription plan';
 COMMENT ON COLUMN clinics.is_trial IS 'Whether this is a trial subscription';
-COMMENT ON COLUMN clinics.agora_app_id IS 'Agora App ID for video calls';
 COMMENT ON COLUMN clinics.is_active IS 'Whether the clinic is active';
 COMMENT ON COLUMN clinics.is_verified IS 'Whether the clinic has been verified';
 COMMENT ON COLUMN clinics.is_featured IS 'Whether this clinic is featured';
@@ -3402,7 +3398,7 @@ CREATE TABLE IF NOT EXISTS video_sessions (
   doctor_id UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
   clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
 
-  -- Agora Information
+  -- WebRTC Information
   channel_name VARCHAR(255) NOT NULL,
   room_id VARCHAR(255) UNIQUE NOT NULL,
   token TEXT,
@@ -3579,7 +3575,7 @@ CREATE TRIGGER calculate_video_duration_on_completion
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 COMMENT ON TABLE video_sessions IS 'Video call session information';
-COMMENT ON COLUMN video_sessions.channel_name IS 'Agora channel name for the video call';
+COMMENT ON COLUMN video_sessions.channel_name IS 'WebRTC channel name for the video call';
 COMMENT ON COLUMN video_sessions.room_id IS 'Unique room identifier for the video call';
 COMMENT ON COLUMN video_sessions.status IS 'Session status: scheduled, in_progress, completed, cancelled, failed, no_show';
 COMMENT ON COLUMN video_sessions.duration_seconds IS 'Actual duration of the video call in seconds';
