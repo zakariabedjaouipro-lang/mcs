@@ -54,7 +54,9 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
       body: BlocBuilder<AdminBloc, AdminState>(
         builder: (context, state) {
           if (state is AdminLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           if (state is ClinicsLoaded) {
@@ -63,8 +65,11 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.local_hospital_outlined,
-                        size: 64, color: Colors.grey[400]),
+                    Icon(
+                      Icons.local_hospital_outlined,
+                      size: 64,
+                      color: Colors.grey[400],
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       'لا توجد عيادات مسجلة بعد',
@@ -84,19 +89,26 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     state.message,
-                    style:
-                        TextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
+                    style: TextStyles.bodyMedium.copyWith(
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ],
               ),
             );
           }
 
-          return const Center(child: Text('جاري تحميل البيانات...'));
+          return const Center(
+            child: Text('جاري تحميل البيانات...'),
+          );
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -177,16 +189,18 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                     children: [
                       Text(
                         clinic.name,
-                        style: TextStyles.titleMedium
-                            .copyWith(fontWeight: FontWeight.bold),
+                        style: TextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
                       Text(
                         clinic.email,
-                        style: TextStyles.bodySmall
-                            .copyWith(color: Colors.grey[600]),
+                        style: TextStyles.bodySmall.copyWith(
+                          color: Colors.grey[600],
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -201,22 +215,30 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInfoRow(Icons.location_on,
-                      '${clinic.country} - ${clinic.region}'),
-                  _buildInfoRow(Icons.phone, clinic.phone),
+                  _buildInfoRow(
+                    Icons.location_on,
+                    '${clinic.country} - ${clinic.region}',
+                  ),
+                  _buildInfoRow(
+                    Icons.phone,
+                    clinic.phone,
+                  ),
                   if (clinic.isTrialActive)
-                    _buildInfoRow(Icons.science, 'اشتراك تجريبي'),
+                    _buildInfoRow(
+                      Icons.science,
+                      'اشتراك تجريبي',
+                    ),
                   if (!isExpired && clinic.subscriptionEndDate != null)
                     _buildInfoRow(
-                        Icons.access_time,
-                        'ينتهي خلال $daysRemaining يوم',
-                      ),
+                      Icons.access_time,
+                      'ينتهي خلال $daysRemaining يوم',
+                    ),
                   if (isExpired)
                     _buildInfoRow(
-                                            Icons.warning,
-                                            'اشتراك منتهي',
-                                            color: Colors.red,
-                                          ),
+                      Icons.warning,
+                      'اشتراك منتهي',
+                      color: Colors.red,
+                    ),
                 ],
               ),
             ),
@@ -250,8 +272,8 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
   }
 
   Widget _buildStatusBadge(ClinicModel clinic) {
-    late Color badgeColor;
-    late String badgeText;
+    Color badgeColor;
+    String badgeText;
 
     if (!clinic.isActive) {
       badgeColor = Colors.grey;
@@ -314,10 +336,10 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
     final phoneController = TextEditingController();
     final addressController = TextEditingController();
     final descriptionController = TextEditingController();
-    
+
     String? selectedCountryId;
     String? selectedRegionId;
-    
+
     // Load countries and regions
     final supabaseService = SupabaseService();
     final countriesData = await supabaseService.fetchAll(
@@ -326,7 +348,7 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
       orderBy: 'name',
     );
     final countries = countriesData.map(CountryModel.fromJson).toList();
-    
+
     List<RegionModel> regions = [];
     if (countries.isNotEmpty) {
       selectedCountryId = countries.first.id;
@@ -401,7 +423,8 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                         orderBy: 'name',
                       );
                       setDialogState(() {
-                        regions = regionsData.map(RegionModel.fromJson).toList();
+                        regions =
+                            regionsData.map(RegionModel.fromJson).toList();
                       });
                     }
                   },
@@ -453,7 +476,9 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context, true),
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+              ),
               child: const Text('إضافة'),
             ),
           ],
@@ -461,9 +486,14 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
       ),
     );
 
-    if ((result ?? false) && context.mounted && selectedCountryId != null && selectedRegionId != null) {
-      final selectedCountry = countries.firstWhere((c) => c.id == selectedCountryId);
-      final selectedRegion = regions.firstWhere((r) => r.id == selectedRegionId);
+    if ((result ?? false) &&
+        context.mounted &&
+        selectedCountryId != null &&
+        selectedRegionId != null) {
+      final selectedCountry =
+          countries.firstWhere((c) => c.id == selectedCountryId);
+      final selectedRegion =
+          regions.firstWhere((r) => r.id == selectedRegionId);
       context.read<AdminBloc>().add(
             CreateClinic(
               name: nameController.text,
@@ -542,7 +572,7 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
               SwitchListTile(
                 title: const Text('نشط'),
                 subtitle: const Text('تفعيل/تعطيل العيادة'),
-                initialValue: clinic.isActive,
+                value: clinic.isActive,
                 onChanged: (value) {
                   if (context.mounted) {
                     context.read<AdminBloc>().add(
@@ -564,7 +594,9 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+            ),
             child: const Text('حفظ التغييرات'),
           ),
         ],
@@ -596,44 +628,71 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDetailItem(Icons.email, 'البريد الإلكتروني', clinic.email),
-              _buildDetailItem(Icons.phone, 'رقم الهاتف', clinic.phone),
               _buildDetailItem(
-                  Icons.location_on,
-                  'الموقع',
-                  '${clinic.country} - ${clinic.region}',
-                ),
+                Icons.email,
+                'البريد الإلكتروني',
+                clinic.email,
+              ),
+              _buildDetailItem(
+                Icons.phone,
+                'رقم الهاتف',
+                clinic.phone,
+              ),
+              _buildDetailItem(
+                Icons.location_on,
+                'الموقع',
+                '${clinic.country} - ${clinic.region}',
+              ),
               if (clinic.address != null)
-                _buildDetailItem(Icons.map, 'العنوان', clinic.address!),
+                _buildDetailItem(
+                  Icons.map,
+                  'العنوان',
+                  clinic.address!,
+                ),
               if (clinic.description != null)
                 _buildDetailItem(
-                    Icons.description,
-                    'الوصف',
-                    clinic.description!,
-                  ),
+                  Icons.description,
+                  'الوصف',
+                  clinic.description!,
+                ),
               const Divider(height: 32),
               _buildDetailItem(
-                  Icons.access_time,
-                  'تاريخ التسجيل',
-                  _formatDate(clinic.createdAt!),
-                ),
+                Icons.access_time,
+                'تاريخ التسجيل',
+                _formatDate(clinic.createdAt!),
+              ),
               if (clinic.updatedAt != null)
                 _buildDetailItem(
-                    Icons.update,
-                    'آخر تحديث',
-                    _formatDate(clinic.updatedAt!),
-                  ),
+                  Icons.update,
+                  'آخر تحديث',
+                  _formatDate(clinic.updatedAt!),
+                ),
               const Divider(height: 32),
-              Text('حالة الاشتراك', style: TextStyles.titleMedium),
+              Text(
+                'حالة الاشتراك',
+                style: TextStyles.titleMedium,
+              ),
               const SizedBox(height: 16),
-              _buildDetailItem(Icons.card_membership, 'النوع',
-                  clinic.subscriptionType.label('ar')),
-              _buildDetailItem(Icons.science,
-                  'فترة تجريبية تنتهي خلال ${clinic.daysRemaining} يوم'),
+              _buildDetailItem(
+                Icons.card_membership,
+                'النوع',
+                clinic.subscriptionType.label('ar'),
+              ),
+              _buildDetailItem(
+                Icons.science,
+                'فترة تجريبية تنتهي خلال ${clinic.daysRemaining} يوم',
+              ),
               if (clinic.isSubscriptionExpired)
-                _buildDetailItem(Icons.warning, 'الاشتراك منتهي'),
+                _buildDetailItem(
+                  Icons.warning,
+                  'الاشتراك منتهي',
+                ),
               if (!clinic.isActive)
-                _buildDetailItem(Icons.block, 'الحالة', 'معطّل'),
+                _buildDetailItem(
+                  Icons.block,
+                  'الحالة',
+                  'معطّل',
+                ),
             ],
           ),
         ),
@@ -664,7 +723,9 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
               children: [
                 Text(
                   label,
-                  style: TextStyles.bodySmall.copyWith(color: Colors.grey[600]),
+                  style: TextStyles.bodySmall.copyWith(
+                    color: Colors.grey[600],
+                  ),
                 ),
                 if (value.isNotEmpty)
                   Text(

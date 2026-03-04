@@ -40,7 +40,7 @@ class VideoCallService {
         'minFrameRate': '30',
       },
       'facingMode': 'user',
-      'optional': <Map<String, dynamic>>[], // قائمة من الخرائط
+      'optional': <Map<String, dynamic>>[],
     },
   };
 
@@ -94,52 +94,60 @@ class VideoCallService {
       _endCall();
     });
 
-    _socket!.on('incoming-call', (data) async {
-      debugPrint('VideoCallService: Incoming call from ${data['callerId']}');
-      _remoteUserId = data['callerId'] as String?;
-      _callId = data['callId'] as String?;
+    _socket!.on('incoming-call', (dynamic data) {
+      final callData = data as Map<String, dynamic>;
+      debugPrint(
+        'VideoCallService: Incoming call from ${callData['callerId']}',
+      ); // ✅ أضف الفاصلة هنا
+      _remoteUserId = callData['callerId'] as String?;
+      _callId = callData['callId'] as String?;
       _callStateController.add(VideoCallState.incoming);
     });
 
-    _socket!.on('call-accepted', (data) async {
+    _socket!.on('call-accepted', (dynamic data) async {
+      // تم إزالة المتغير غير المستخدم
       debugPrint('VideoCallService: Call accepted');
       _callStateController.add(VideoCallState.connected);
       await _createPeerConnection();
       await _createOffer();
     });
 
-    _socket!.on('call-rejected', (data) {
+    _socket!.on('call-rejected', (dynamic data) {
+      // تم إزالة المتغير غير المستخدم
       debugPrint('VideoCallService: Call rejected');
       _callStateController.add(VideoCallState.ended);
       _errorController.add('Call was rejected');
     });
 
-    _socket!.on('offer', (data) async {
+    _socket!.on('offer', (dynamic data) async {
+      final offerData = data as Map<String, dynamic>;
       debugPrint('VideoCallService: Received offer');
-      _callId = data['callId'] as String?;
-      _remoteUserId = data['callerId'] as String?;
+      _callId = offerData['callId'] as String?;
+      _remoteUserId = offerData['callerId'] as String?;
 
       await _createPeerConnection();
       await _peerConnection!.setRemoteDescription(
-        RTCSessionDescription(data['sdp'] as String, 'offer'),
+        RTCSessionDescription(offerData['sdp'] as String, 'offer'),
       );
 
       await _createAnswer();
     });
 
-    _socket!.on('answer', (data) async {
+    _socket!.on('answer', (dynamic data) async {
+      final answerData = data as Map<String, dynamic>;
       debugPrint('VideoCallService: Received answer');
       await _peerConnection!.setRemoteDescription(
-        RTCSessionDescription(data['sdp'] as String, 'answer'),
+        RTCSessionDescription(answerData['sdp'] as String, 'answer'),
       );
     });
 
-    _socket!.on('ice-candidate', (data) async {
+    _socket!.on('ice-candidate', (dynamic data) async {
+      final candidateData = data as Map<String, dynamic>;
       debugPrint('VideoCallService: Received ICE candidate');
       final candidate = RTCIceCandidate(
-        data['candidate'] as String,
-        data['sdpMid'] as String?,
-        data['sdpMLineIndex'] as int?,
+        candidateData['candidate'] as String,
+        candidateData['sdpMid'] as String?,
+        candidateData['sdpMLineIndex'] as int?,
       );
 
       if (_peerConnection != null) {
@@ -282,17 +290,17 @@ class VideoCallService {
       debugPrint('VideoCallService: ICE connection state: $state');
 
       switch (state) {
-        case RTCIceConnectionState.RTCIceConnectionStateNew:
-        case RTCIceConnectionState.RTCIceConnectionStateChecking:
-        case RTCIceConnectionState.RTCIceConnectionStateCompleted:
-          break;
         case RTCIceConnectionState.RTCIceConnectionStateConnected:
           _callStateController.add(VideoCallState.connected);
         case RTCIceConnectionState.RTCIceConnectionStateDisconnected:
         case RTCIceConnectionState.RTCIceConnectionStateFailed:
         case RTCIceConnectionState.RTCIceConnectionStateClosed:
           _callStateController.add(VideoCallState.ended);
-        default:
+        case RTCIceConnectionState.RTCIceConnectionStateNew:
+        case RTCIceConnectionState.RTCIceConnectionStateChecking:
+        case RTCIceConnectionState.RTCIceConnectionStateCompleted:
+        case RTCIceConnectionState.RTCIceConnectionStateCount:
+          // لا تفعل شيئاً للحالات المؤقتة
           break;
       }
     };
