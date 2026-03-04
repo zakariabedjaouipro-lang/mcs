@@ -180,7 +180,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                 return AnimatedBuilder(
                   animation: _pageController,
                   builder: (context, child) {
-                    double value = 1.0;
+                    var value = 1.0;
                     if (_pageController.position.haveDimensions) {
                       value = _pageController.page! - index;
                       value = (1 - (value.abs() * 0.5)).clamp(0.0, 1.0);

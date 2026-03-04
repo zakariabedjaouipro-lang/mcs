@@ -225,7 +225,10 @@ class FooterWidget extends StatelessWidget {
               ),
             const SizedBox(width: 12),
             _buildSocialIcon(
-                Icons.play_circle, 'YouTube', const Color(0xFFFF0000)),
+              Icons.play_circle,
+              'YouTube',
+              const Color(0xFFFF0000),
+            ),
           ],
         ),
       ],

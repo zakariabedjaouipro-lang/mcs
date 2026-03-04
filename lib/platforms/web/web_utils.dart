@@ -4,8 +4,8 @@ library;
 import 'dart:async';
 import 'dart:js_interop';
 
-import 'package:web/web.dart' as web;
 import 'package:flutter/foundation.dart';
+import 'package:web/web.dart' as web;
 
 abstract class WebUtils {
   // ── Browser Detection ────────────────────────────────────
@@ -90,7 +90,7 @@ abstract class WebUtils {
   static String getCurrentUrl() => web.window.location.href;
 
   /// Navigate to URL.
-  static void navigateToUrl(String url) {
+  static set navigateToUrl(String url) {
     web.window.location.href = url;
   }
 

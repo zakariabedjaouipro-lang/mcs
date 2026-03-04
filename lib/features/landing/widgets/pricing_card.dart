@@ -43,10 +43,10 @@ class _PricingCardState extends State<PricingCard> {
         duration: const Duration(milliseconds: 300),
         transform: Matrix4.identity()
           ..translateByDouble(
-            0.0,
-            _isHovered && !widget.isPopular ? 4.0 : 0.0,
-            0.0,
-            0.0,
+            0,
+            _isHovered && !widget.isPopular ? 4 : 0,
+            0,
+            0,
           ),
         child: Card(
           elevation: widget.isPopular
