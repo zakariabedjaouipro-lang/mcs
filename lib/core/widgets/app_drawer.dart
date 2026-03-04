@@ -3,11 +3,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../localization/app_localizations.dart';
-import '../../features/auth/presentation/bloc/auth_bloc.dart';
-import '../../features/auth/presentation/bloc/auth_event.dart';
-import '../../features/auth/presentation/bloc/auth_state.dart';
-import '../../core/models/user_model.dart';
+import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mcs/features/auth/presentation/bloc/auth_event.dart';
+import 'package:mcs/features/auth/presentation/bloc/auth_state.dart';
+import 'package:mcs/core/models/user_model.dart';
 
 /// Main app drawer with navigation options.
 class AppDrawer extends StatelessWidget {
@@ -81,8 +81,8 @@ class AppDrawer extends StatelessWidget {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Text(
-                          user!.fullName != null && user!.fullName!.isNotEmpty
-                              ? user!.fullName![0].toUpperCase()
+                          user!.fullName != null && user.fullName!.isNotEmpty
+                              ? user.fullName![0].toUpperCase()
                               : 'U',
                           style: TextStyle(
                             fontSize: 24,
@@ -94,7 +94,8 @@ class AppDrawer extends StatelessWidget {
                     ),
                   )
                 : Text(
-                    user?.fullName != null && user?.fullName!.isNotEmpty == true
+                    user?.fullName != null &&
+                            (user?.fullName!.isNotEmpty ?? false)
                         ? user!.fullName![0].toUpperCase()
                         : 'U',
                     style: TextStyle(
@@ -216,7 +217,7 @@ class AppDrawer extends StatelessWidget {
                     style: const TextStyle(color: Colors.red),
                   ),
                   onTap: () {
-                    context.read<AuthBloc>().add(LogoutRequested());
+                    context.read<AuthBloc>().add(const LogoutRequested());
                     Navigator.pop(context);
                   },
                 ),

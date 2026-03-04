@@ -8,9 +8,8 @@ import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
 /// حالة الاستخدام لتسجيل الدخول
 /// يحول طلب تسجيل الدخول إلى [Either<Failure, UserModel>]
 class LoginUseCase implements UseCase<UserModel, LoginParams> {
-  final AuthRepository repository;
-
   LoginUseCase(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, UserModel>> call(LoginParams params) async {
@@ -23,13 +22,12 @@ class LoginUseCase implements UseCase<UserModel, LoginParams> {
 
 /// معاملات حالة الاستخدام LoginUseCase
 class LoginParams extends Equatable {
-  final String email;
-  final String password;
-
   const LoginParams({
     required this.email,
     required this.password,
   });
+  final String email;
+  final String password;
 
   @override
   List<Object> get props => [email, password];

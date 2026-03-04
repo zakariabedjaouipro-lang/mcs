@@ -2,8 +2,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:mcs/app.dart';
 import 'package:mcs/core/config/app_config.dart';
 import 'package:mcs/core/config/injection_container.dart';

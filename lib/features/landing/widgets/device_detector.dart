@@ -21,13 +21,13 @@ enum DeviceTypeDetection {
 }
 
 class DeviceDetector extends StatefulWidget {
-  /// Whether to show all platforms or just detected ones.
-  final bool showRecommended;
-
   const DeviceDetector({
     super.key,
     this.showRecommended = true,
   });
+
+  /// Whether to show all platforms or just detected ones.
+  final bool showRecommended;
 
   @override
   State<DeviceDetector> createState() => _DeviceDetectorState();
@@ -76,7 +76,6 @@ class _DeviceDetectorState extends State<DeviceDetector> {
         // Recommended buttons
         if (widget.showRecommended)
           Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 'Recommended for you',
@@ -119,7 +118,6 @@ class _DeviceDetectorState extends State<DeviceDetector> {
             backgroundColor: Colors.black,
           ),
         );
-        break;
 
       case DeviceTypeDetection.android:
       case DeviceTypeDetection.androidTablet:
@@ -132,7 +130,6 @@ class _DeviceDetectorState extends State<DeviceDetector> {
             backgroundColor: Colors.green,
           ),
         );
-        break;
 
       case DeviceTypeDetection.windows:
         buttons.add(
@@ -144,7 +141,6 @@ class _DeviceDetectorState extends State<DeviceDetector> {
             backgroundColor: const Color(0xFF0078D4),
           ),
         );
-        break;
 
       case DeviceTypeDetection.macOS:
         buttons.add(
@@ -156,7 +152,6 @@ class _DeviceDetectorState extends State<DeviceDetector> {
             backgroundColor: Colors.black87,
           ),
         );
-        break;
 
       case DeviceTypeDetection.web:
       case DeviceTypeDetection.unknown:
@@ -178,7 +173,6 @@ class _DeviceDetectorState extends State<DeviceDetector> {
             backgroundColor: Colors.green,
           ),
         ]);
-        break;
     }
 
     return Wrap(

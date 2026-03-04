@@ -11,22 +11,6 @@ import 'package:mcs/features/auth/presentation/bloc/auth_state.dart';
 /// BLoC الرئيسي للمصادقة
 /// يتعامل مع جميع عمليات تسجيل الدخول والتسجيل واستعادة كلمة المرور والتحقق من OTP
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final LoginUseCase loginUseCase;
-  final RegisterUseCase registerUseCase;
-  final VerifyOTPUseCase verifyOTPUseCase;
-  final AuthRepository authRepository;
-
-  /// متغيرات للحفاظ على حالة النموذج
-  String _loginEmail = '';
-  String _loginPassword = '';
-  String _registerName = '';
-  String _registerEmail = '';
-  String _registerPhone = '';
-  String _registerPassword = '';
-  String _registerConfirmPassword = '';
-  String _registerRole = 'patient'; // الدور الافتراضي
-  bool _isPasswordVisible = false;
-
   AuthBloc({
     required this.loginUseCase,
     required this.registerUseCase,
@@ -57,6 +41,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<ClearAuthState>(_onClearAuthState);
     on<SetLoading>(_onSetLoading);
   }
+  final LoginUseCase loginUseCase;
+  final RegisterUseCase registerUseCase;
+  final VerifyOTPUseCase verifyOTPUseCase;
+  final AuthRepository authRepository;
+
+  /// متغيرات للحفاظ على حالة النموذج
+  String _loginEmail = '';
+  String _loginPassword = '';
+  String _registerName = '';
+  String _registerEmail = '';
+  String _registerPhone = '';
+  String _registerPassword = '';
+  String _registerConfirmPassword = '';
+  String _registerRole = 'patient'; // الدور الافتراضي
+  bool _isPasswordVisible = false;
 
   /// ==============================
   /// معالجات أحداث تسجيل الدخول

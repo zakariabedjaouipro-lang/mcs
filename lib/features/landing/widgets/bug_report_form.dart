@@ -6,14 +6,13 @@ import 'package:mcs/core/utils/validators.dart';
 
 /// نموذج الإبلاغ عن مشكلة - يتضمن وصف المشكلة والصور واختياري
 class BugReportFormWidget extends StatefulWidget {
-  final Color? primaryColor;
-  final VoidCallback? onSubmitSuccess;
-
   const BugReportFormWidget({
     Key? key,
     this.primaryColor,
     this.onSubmitSuccess,
   }) : super(key: key);
+  final Color? primaryColor;
+  final VoidCallback? onSubmitSuccess;
 
   @override
   State<BugReportFormWidget> createState() => _BugReportFormWidgetState();
@@ -28,7 +27,7 @@ class _BugReportFormWidgetState extends State<BugReportFormWidget> {
   bool _isLoading = false;
   String _selectedSeverity = 'متوسط';
   String _selectedCategory = 'عام';
-  List<String> _attachmentPaths = [];
+  final List<String> _attachmentPaths = [];
   bool _includeDeviceInfo = true;
 
   final List<String> _severityLevels = ['منخفض', 'متوسط', 'مرتفع', 'حرج'];
@@ -38,7 +37,7 @@ class _BugReportFormWidgetState extends State<BugReportFormWidget> {
     'الأداء',
     'الأمان',
     'البيانات',
-    'التكامل'
+    'التكامل',
   ];
 
   @override
@@ -57,7 +56,7 @@ class _BugReportFormWidgetState extends State<BugReportFormWidget> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('تم إضافة المرفق بنجاح'),
         behavior: SnackBarBehavior.floating,
       ),
@@ -81,7 +80,7 @@ Device Info:
     ''';
   }
 
-  void _submitForm() async {
+  Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -90,12 +89,12 @@ Device Info:
 
     try {
       // Simulate API call
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 3));
 
       if (mounted) {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('شكراً لك! تم استقبال بلاغك بنجاح.'),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
@@ -116,7 +115,7 @@ Device Info:
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('حدث خطأ. يرجى المحاولة لاحقاً.'),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
@@ -144,12 +143,12 @@ Device Info:
             'الإبلاغ عن مشكلة',
             style: TextStyles.heading2.copyWith(fontWeight: FontWeight.w700),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             'ساعدنا في تحسين التطبيق بإخبارنا عن أي مشكلة تواجهها',
             style: TextStyles.body2.copyWith(color: AppColors.grey),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
           // Title Field
           TextFormField(
@@ -171,7 +170,7 @@ Device Info:
             },
             enabled: !_isLoading,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Category and Severity Row
           Row(
@@ -186,20 +185,23 @@ Device Info:
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      value: _selectedCategory,
+                      initialValue: _selectedCategory,
                       items: _categories
-                          .map((cat) => DropdownMenuItem(
-                                value: cat,
-                                child: Text(cat),
-                              ))
+                          .map(
+                            (cat) => DropdownMenuItem(
+                              value: cat,
+                              child: Text(cat),
+                            ),
+                          )
                           .toList(),
                       onChanged: _isLoading
                           ? null
                           : (value) {
                               setState(
-                                  () => _selectedCategory = value ?? 'عام');
+                                () => _selectedCategory = value ?? 'عام',
+                              );
                             },
                       decoration: _buildInputDecoration(
                         label: '',
@@ -211,7 +213,7 @@ Device Info:
                   ],
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,20 +224,23 @@ Device Info:
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     DropdownButtonFormField<String>(
-                      value: _selectedSeverity,
+                      initialValue: _selectedSeverity,
                       items: _severityLevels
-                          .map((level) => DropdownMenuItem(
-                                value: level,
-                                child: Text(level),
-                              ))
+                          .map(
+                            (level) => DropdownMenuItem(
+                              value: level,
+                              child: Text(level),
+                            ),
+                          )
                           .toList(),
                       onChanged: _isLoading
                           ? null
                           : (value) {
                               setState(
-                                  () => _selectedSeverity = value ?? 'متوسط');
+                                () => _selectedSeverity = value ?? 'متوسط',
+                              );
                             },
                       decoration: _buildInputDecoration(
                         label: '',
@@ -249,7 +254,7 @@ Device Info:
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Description Field
           TextFormField(
@@ -274,7 +279,7 @@ Device Info:
             },
             enabled: !_isLoading,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Email Field
           TextFormField(
@@ -296,18 +301,18 @@ Device Info:
             },
             enabled: !_isLoading,
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
           // Attachments Section
           Text(
             'المرفقات (اختياري)',
             style: TextStyles.subtitle2.copyWith(fontWeight: FontWeight.w600),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           ElevatedButton.icon(
             onPressed: _isLoading ? null : _addAttachment,
-            icon: Icon(Icons.add_photo_alternate),
-            label: Text('إضافة صورة أو ملف'),
+            icon: const Icon(Icons.add_photo_alternate),
+            label: const Text('إضافة صورة أو ملف'),
             style: ElevatedButton.styleFrom(
               backgroundColor: primaryColor.withOpacity(0.1),
               foregroundColor: primaryColor,
@@ -317,7 +322,7 @@ Device Info:
             ),
           ),
           if (_attachmentPaths.isNotEmpty) ...[
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -332,7 +337,7 @@ Device Info:
               ),
             ),
           ],
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
           // Device Info Checkbox
           CheckboxListTile(
@@ -353,7 +358,7 @@ Device Info:
             activeColor: primaryColor,
             controlAffinity: ListTileControlAffinity.leading,
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
           // Submit Button
           SizedBox(
@@ -369,7 +374,7 @@ Device Info:
                 ),
               ),
               child: _isLoading
-                  ? SizedBox(
+                  ? const SizedBox(
                       height: 24,
                       width: 24,
                       child: CircularProgressIndicator(
@@ -404,11 +409,11 @@ Device Info:
       prefixIcon: Icon(icon, color: primaryColor),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -416,15 +421,15 @@ Device Info:
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.red),
+        borderSide: const BorderSide(color: Colors.red),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.red, width: 2),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       labelStyle: TextStyles.body2,
       hintStyle: TextStyles.body2.copyWith(color: AppColors.grey),
       errorStyle: TextStyles.caption.copyWith(color: Colors.red),

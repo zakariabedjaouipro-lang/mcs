@@ -2,12 +2,12 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:url_strategy/url_strategy.dart';
 import 'package:mcs/app.dart';
 import 'package:mcs/core/config/app_config.dart';
 import 'package:mcs/core/config/env.dart';
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/config/supabase_config.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -4,14 +4,6 @@ import 'package:mcs/core/theme/text_styles.dart';
 
 /// شريط التنقل الرئيسي - يحتوي على الروابط والأزرار والتحكم بالإعدادات
 class NavbarWidget extends StatefulWidget {
-  final VoidCallback? onLogoTap;
-  final Function(String)? onNavigate;
-  final VoidCallback? onLoginTap;
-  final ValueChanged<bool>? onThemeChanged;
-  final ValueChanged<String>? onLanguageChanged;
-  final bool isDarkMode;
-  final String currentLanguage;
-
   const NavbarWidget({
     Key? key,
     this.onLogoTap,
@@ -22,6 +14,13 @@ class NavbarWidget extends StatefulWidget {
     this.isDarkMode = false,
     this.currentLanguage = 'ar',
   }) : super(key: key);
+  final VoidCallback? onLogoTap;
+  final Function(String)? onNavigate;
+  final VoidCallback? onLoginTap;
+  final ValueChanged<bool>? onThemeChanged;
+  final ValueChanged<String>? onLanguageChanged;
+  final bool isDarkMode;
+  final String currentLanguage;
 
   @override
   State<NavbarWidget> createState() => _NavbarWidgetState();
@@ -75,13 +74,13 @@ class _NavbarWidgetState extends State<NavbarWidget> {
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: isMobile ? _buildMobileNavbar() : _buildDesktopNavbar(),
         ),
       ),
@@ -93,12 +92,11 @@ class _NavbarWidgetState extends State<NavbarWidget> {
       children: [
         // Logo
         _buildLogo(),
-        SizedBox(width: 40),
+        const SizedBox(width: 40),
 
         // Navigation Items
         Expanded(
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: List.generate(
               _navItems.length,
               (index) => _buildNavItem(_navItems[index]),
@@ -115,7 +113,7 @@ class _NavbarWidgetState extends State<NavbarWidget> {
               tooltip: 'تبديل اللغة',
               onPressed: _toggleLanguage,
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
 
             // Theme Toggle
             _buildIconButton(
@@ -123,7 +121,7 @@ class _NavbarWidgetState extends State<NavbarWidget> {
               tooltip: _isDarkMode ? 'الوضع الفاتح' : 'الوضع الداكن',
               onPressed: () => _toggleTheme(!_isDarkMode),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
 
             // Login Button
             _buildLoginButton(),
@@ -148,13 +146,13 @@ class _NavbarWidgetState extends State<NavbarWidget> {
               tooltip: 'تبديل اللغة',
               onPressed: _toggleLanguage,
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             _buildIconButton(
               icon: _isDarkMode ? Icons.light_mode : Icons.dark_mode,
               tooltip: _isDarkMode ? 'الوضع الفاتح' : 'الوضع الداكن',
               onPressed: () => _toggleTheme(!_isDarkMode),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             _buildIconButton(
               icon: _isMenuOpen ? Icons.close : Icons.menu,
               tooltip: 'القائمة',
@@ -177,7 +175,7 @@ class _NavbarWidgetState extends State<NavbarWidget> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [AppColors.primary, AppColors.secondary],
                 ),
                 borderRadius: BorderRadius.circular(8),
@@ -192,7 +190,7 @@ class _NavbarWidgetState extends State<NavbarWidget> {
                 ),
               ),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,7 +222,7 @@ class _NavbarWidgetState extends State<NavbarWidget> {
       child: GestureDetector(
         onTap: () => _navigate(item.route),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Text(
             item.label,
             style: TextStyles.subtitle2.copyWith(
@@ -250,7 +248,7 @@ class _NavbarWidgetState extends State<NavbarWidget> {
           onTap: onPressed,
           borderRadius: BorderRadius.circular(8),
           child: Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Icon(
               icon,
               color: _isDarkMode ? Colors.white70 : Colors.black87,
@@ -265,7 +263,7 @@ class _NavbarWidgetState extends State<NavbarWidget> {
   Widget _buildLoginButton() {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [AppColors.primary, AppColors.secondary],
         ),
         borderRadius: BorderRadius.circular(8),
@@ -276,11 +274,11 @@ class _NavbarWidgetState extends State<NavbarWidget> {
           onTap: widget.onLoginTap,
           borderRadius: BorderRadius.circular(8),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Row(
               children: [
-                Icon(Icons.login, color: Colors.white, size: 18),
-                SizedBox(width: 8),
+                const Icon(Icons.login, color: Colors.white, size: 18),
+                const SizedBox(width: 8),
                 Text(
                   'دخول',
                   style: TextStyles.subtitle2.copyWith(
@@ -310,11 +308,10 @@ class _NavbarWidgetState extends State<NavbarWidget> {
 
 /// عنصر التنقل
 class NavItem {
-  final String label;
-  final String route;
-
   NavItem({
     required this.label,
     required this.route,
   });
+  final String label;
+  final String route;
 }

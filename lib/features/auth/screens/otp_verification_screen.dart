@@ -9,16 +9,15 @@ import 'package:mcs/features/auth/presentation/bloc/index.dart';
 
 /// شاشة التحقق بـ OTP - 6 حقول أرقام مع تنقل تلقائي وعداد زمني
 class OtpVerificationScreen extends StatefulWidget {
-  final String contactInfo; // البريد أو الهاتف
-  final String contactMethod; // email أو phone
-  final VoidCallback? onVerificationComplete;
-
   const OtpVerificationScreen({
     Key? key,
     this.contactInfo = '***@mail.com',
     this.contactMethod = 'email',
     this.onVerificationComplete,
   }) : super(key: key);
+  final String contactInfo; // البريد أو الهاتف
+  final String contactMethod; // email أو phone
+  final VoidCallback? onVerificationComplete;
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -38,7 +37,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
 
   void _setupShakeAnimation() {
     _shakeController = AnimationController(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
   }
@@ -48,12 +47,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
 
     if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('الرجاء إدخال الرمز كاملاً'),
           backgroundColor: Colors.red,
         ),
       );
-      _shakeController.forward(from: 0.0);
+      _shakeController.forward(from: 0);
       return;
     }
 
@@ -63,15 +62,17 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
   }
 
   void _handleResendOtp(BuildContext context) {
-    context.read<AuthBloc>().add(ResendOtpRequested(
-      email: widget.contactInfo,
-      method: widget.contactMethod,
-    ));
+    context.read<AuthBloc>().add(
+          ResendOtpRequested(
+            email: widget.contactInfo,
+            method: widget.contactMethod,
+          ),
+        );
   }
 
   @override
   void dispose() {
-    for (var controller in _otpControllers) {
+    for (final controller in _otpControllers) {
       controller.dispose();
     }
     _shakeController.dispose();
@@ -84,7 +85,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
       listener: (context, state) {
         if (state is OtpVerified) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('تم التحقق بنجاح!'),
               backgroundColor: Colors.green,
             ),
@@ -102,10 +103,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
               backgroundColor: Colors.red,
             ),
           );
-          _shakeController.forward(from: 0.0);
+          _shakeController.forward(from: 0);
         } else if (state is OtpSent) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('تم إعادة إرسال الرمز'),
               backgroundColor: Colors.green,
             ),
@@ -115,13 +116,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           final isLoading = state is AuthLoading;
-          final remainingSeconds = 0;
+          const remainingSeconds = 0;
 
           return Scaffold(
             appBar: AppBar(
-              title: Text('التحقق من الهوية',
-                  style: TextStyles.subtitle1
-                      .copyWith(fontWeight: FontWeight.w700)),
+              title: Text(
+                'التحقق من الهوية',
+                style:
+                    TextStyles.subtitle1.copyWith(fontWeight: FontWeight.w700),
+              ),
               centerTitle: true,
               elevation: 0,
               backgroundColor: Colors.white,
@@ -129,11 +132,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
 
                     // Illustration
                     Container(
@@ -143,13 +145,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                         color: AppColors.primary.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.verified_user,
                         size: 60,
                         color: AppColors.primary,
                       ),
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
                     // Header
                     Text(
@@ -160,16 +162,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'أدخل رمز التحقق المكون من 6 أرقام\nالذي تم إرساله إلى:',
                       style: TextStyles.body1.copyWith(color: AppColors.grey),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.05),
                         borderRadius: BorderRadius.circular(8),
@@ -182,16 +184,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                         ),
                       ),
                     ),
-                    SizedBox(height: 48),
+                    const SizedBox(height: 48),
 
                     // OTP Input Fields
                     _buildOtpInput(),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
                     // Error Message
                     if (state is OtpFailure)
                       Container(
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.red.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
@@ -200,9 +202,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.error_outline,
-                                color: Colors.red, size: 18),
-                            SizedBox(width: 12),
+                            const Icon(
+                              Icons.error_outline,
+                              color: Colors.red,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 12),
                             Text(
                               state.message,
                               style:
@@ -212,7 +217,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                         ),
                       )
                     else
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
                     // Verify Button
                     SizedBox(
@@ -230,7 +235,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                           ),
                         ),
                         child: isLoading
-                            ? SizedBox(
+                            ? const SizedBox(
                                 height: 24,
                                 width: 24,
                                 child: CircularProgressIndicator(
@@ -248,7 +253,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                               ),
                       ),
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
                     // Resend Code Section
                     Column(
@@ -258,7 +263,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                           style:
                               TextStyles.body2.copyWith(color: AppColors.grey),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         if (remainingSeconds > 0)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -272,7 +277,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                               Text(
                                 '${remainingSeconds}s',
                                 style: TextStyles.body2.copyWith(
-                                  color: Color(0xFFF59E0B),
+                                  color: const Color(0xFFF59E0B),
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -293,7 +298,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                           ),
                       ],
                     ),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -312,7 +317,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
         children: List.generate(
           6,
           (index) => Padding(
-            padding: EdgeInsets.symmetric(horizontal: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 6),
             child: _buildOtpField(index),
           ),
         ),
@@ -372,14 +377,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
 
 /// Widget لتأثير الاهتزاز
 class ShakeTransition extends StatelessWidget {
-  final Animation<double> animation;
-  final Widget child;
-
   const ShakeTransition({
     Key? key,
     required this.animation,
     required this.child,
   }) : super(key: key);
+  final Animation<double> animation;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

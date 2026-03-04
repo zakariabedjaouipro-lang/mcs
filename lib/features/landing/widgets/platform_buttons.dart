@@ -8,14 +8,6 @@ import 'package:mcs/core/theme/text_styles.dart';
 
 /// Platform button data model.
 class PlatformData {
-  final String name;
-  final String shortName;
-  final IconData icon;
-  final Color color;
-  final String primaryStore;
-  final String? secondaryStore;
-  final String downloadUrl;
-
   const PlatformData({
     required this.name,
     required this.shortName,
@@ -25,16 +17,23 @@ class PlatformData {
     this.secondaryStore,
     required this.downloadUrl,
   });
+  final String name;
+  final String shortName;
+  final IconData icon;
+  final Color color;
+  final String primaryStore;
+  final String? secondaryStore;
+  final String downloadUrl;
 }
 
 class PlatformButtons extends StatelessWidget {
-  /// Whether to show all platforms or just primary ones.
-  final bool showAll;
-
   const PlatformButtons({
     super.key,
     this.showAll = false,
   });
+
+  /// Whether to show all platforms or just primary ones.
+  final bool showAll;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +92,7 @@ class PlatformButtons extends StatelessWidget {
   /// Get supported platforms list.
   List<PlatformData> _getPlatforms() {
     return [
-      PlatformData(
+      const PlatformData(
         name: 'iPhone',
         shortName: 'iOS',
         icon: Icons.apple,
@@ -119,15 +118,15 @@ class PlatformButtons extends StatelessWidget {
         downloadUrl:
             'https://play.google.com/store/apps/details?id=com.mcs.clinic',
       ),
-      PlatformData(
+      const PlatformData(
         name: 'Windows',
         shortName: 'Windows',
         icon: Icons.computer,
-        color: const Color(0xFF0078D4),
+        color: Color(0xFF0078D4),
         primaryStore: 'Microsoft Store',
         downloadUrl: 'https://www.microsoft.com/store/apps/...',
       ),
-      PlatformData(
+      const PlatformData(
         name: 'Mac',
         shortName: 'macOS',
         icon: Icons.laptop_mac,
@@ -143,7 +142,7 @@ class PlatformButtons extends StatelessWidget {
         primaryStore: 'Download',
         downloadUrl: 'https://mcs-clinic.com/download/linux',
       ),
-      PlatformData(
+      const PlatformData(
         name: 'Web',
         shortName: 'Web',
         icon: Icons.language,

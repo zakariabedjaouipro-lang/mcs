@@ -7,7 +7,7 @@ import 'package:mcs/features/landing/widgets/social_links.dart';
 
 /// صفحة الاتصال بنا - تحتوي على نموذج الاتصال ومعلومات التواصل
 class ContactScreenLanding extends StatelessWidget {
-  const ContactScreenLanding({Key? key}) : super(key: key);
+  const ContactScreenLanding({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ContactScreenLanding extends StatelessWidget {
         children: [
           // Header Section
           _buildHeaderSection(context),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
 
           // Contact Content
           ResponsiveLayout(
@@ -24,7 +24,7 @@ class ContactScreenLanding extends StatelessWidget {
             tablet: _buildTabletLayout(context),
             desktop: _buildDesktopLayout(context),
           ),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
         ],
       ),
     );
@@ -33,7 +33,7 @@ class ContactScreenLanding extends StatelessWidget {
   Widget _buildHeaderSection(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -51,7 +51,7 @@ class ContactScreenLanding extends StatelessWidget {
             style: TextStyles.heading1.copyWith(color: Colors.white),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'نحن هنا للإجابة على جميع استفساراتك',
             style: TextStyles.body1.copyWith(color: Colors.white70),
@@ -64,7 +64,7 @@ class ContactScreenLanding extends StatelessWidget {
 
   Widget _buildMobileLayout(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           _buildInfoCard(
@@ -73,25 +73,25 @@ class ContactScreenLanding extends StatelessWidget {
             value: '+966123456789',
             onTap: () {},
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildInfoCard(
             icon: Icons.email,
             label: 'البريد الإلكتروني',
             value: 'info@mcs.com',
             onTap: () {},
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildInfoCard(
             icon: Icons.location_on,
             label: 'العنوان',
             value: 'الرياض، المملكة العربية السعودية',
             onTap: () {},
           ),
-          SizedBox(height: 32),
+          const SizedBox(height: 32),
           _buildMapPlaceholder(),
-          SizedBox(height: 32),
-          ContactFormWidget(),
-          SizedBox(height: 32),
+          const SizedBox(height: 32),
+          const ContactFormWidget(),
+          const SizedBox(height: 32),
           _buildSocialSection(),
         ],
       ),
@@ -100,7 +100,7 @@ class ContactScreenLanding extends StatelessWidget {
 
   Widget _buildTabletLayout(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
           Row(
@@ -113,7 +113,7 @@ class ContactScreenLanding extends StatelessWidget {
                   onTap: () {},
                 ),
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               Expanded(
                 child: _buildInfoCard(
                   icon: Icons.email,
@@ -124,27 +124,27 @@ class ContactScreenLanding extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           _buildInfoCard(
             icon: Icons.location_on,
             label: 'العنوان',
             value: 'الرياض، المملكة العربية السعودية',
             onTap: () {},
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: _buildMapPlaceholder(),
               ),
-              SizedBox(width: 40),
-              Expanded(
+              const SizedBox(width: 40),
+              const Expanded(
                 child: ContactFormWidget(),
               ),
             ],
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           _buildSocialSection(),
         ],
       ),
@@ -153,7 +153,7 @@ class ContactScreenLanding extends StatelessWidget {
 
   Widget _buildDesktopLayout(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 80),
+      padding: const EdgeInsets.symmetric(horizontal: 80),
       child: Column(
         children: [
           Row(
@@ -166,7 +166,7 @@ class ContactScreenLanding extends StatelessWidget {
                   onTap: () {},
                 ),
               ),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               Expanded(
                 child: _buildInfoCard(
                   icon: Icons.email,
@@ -175,7 +175,7 @@ class ContactScreenLanding extends StatelessWidget {
                   onTap: () {},
                 ),
               ),
-              SizedBox(width: 30),
+              const SizedBox(width: 30),
               Expanded(
                 child: _buildInfoCard(
                   icon: Icons.location_on,
@@ -186,22 +186,20 @@ class ContactScreenLanding extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
                 child: _buildMapPlaceholder(),
               ),
-              SizedBox(width: 60),
-              Expanded(
-                flex: 1,
+              const SizedBox(width: 60),
+              const Expanded(
                 child: ContactFormWidget(),
               ),
             ],
           ),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           _buildSocialSection(),
         ],
       ),
@@ -218,14 +216,14 @@ class ContactScreenLanding extends StatelessWidget {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: InkWell(
           onTap: onTap,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
@@ -236,7 +234,7 @@ class ContactScreenLanding extends StatelessWidget {
                   size: 24,
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Text(
                 label,
                 style: TextStyles.subtitle1.copyWith(
@@ -244,7 +242,7 @@ class ContactScreenLanding extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 value,
                 style: TextStyles.body2,
@@ -274,7 +272,8 @@ class ContactScreenLanding extends StatelessWidget {
             Positioned(
               bottom: 20,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
@@ -282,7 +281,7 @@ class ContactScreenLanding extends StatelessWidget {
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 8,
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -309,8 +308,8 @@ class ContactScreenLanding extends StatelessWidget {
           style: TextStyles.heading3.copyWith(fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 20),
-        SocialLinksWidget(),
+        const SizedBox(height: 20),
+        const SocialLinksWidget(),
       ],
     );
   }

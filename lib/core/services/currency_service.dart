@@ -6,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Supported currencies in the application.
 enum Currency {
-  usd('USD', '\$', 'US Dollar', 1.0),
+  usd('USD', r'$', 'US Dollar', 1),
   eur('EUR', '€', 'Euro', 0.92),
   dzd('DZD', 'د.ج', 'Algerian Dinar', 134.5);
 
@@ -45,10 +45,10 @@ class CurrencyService {
           .from('app-settings')
           .download('currency-preference.json');
 
-      if (prefs != null && prefs.isNotEmpty) {
+      if (prefs.isNotEmpty) {
         // Parse and set saved currency
         // This is a simplified example
-        final savedCode = 'DZD'; // Would parse from prefs
+        const savedCode = 'DZD'; // Would parse from prefs
         _selectedCurrency = Currency.values.firstWhere(
           (c) => c.code == savedCode,
           orElse: () => Currency.dzd,
@@ -70,7 +70,8 @@ class CurrencyService {
   void setSelectedCurrency(Currency currency) {
     _selectedCurrency = currency;
     debugPrint(
-        'CurrencyService: Selected currency changed to ${currency.code}');
+      'CurrencyService: Selected currency changed to ${currency.code}',
+    );
 
     // Save preference (in a real app, this would persist to storage)
     _saveCurrencyPreference(currency);
@@ -86,8 +87,8 @@ class CurrencyService {
           .order('updated_at', ascending: false)
           .limit(1);
 
-      if (response.isNotEmpty && response.first != null) {
-        final rates = response.first as Map<String, dynamic>;
+      if (response.isNotEmpty) {
+        final rates = response.first;
         _exchangeRates.clear();
 
         for (final currency in Currency.values) {
@@ -209,7 +210,8 @@ class CurrencyService {
       // In a real app, this would save to SharedPreferences or similar
       // For now, just log it
       debugPrint(
-          'CurrencyService: Saving currency preference: ${currency.code}');
+        'CurrencyService: Saving currency preference: ${currency.code}',
+      );
     } catch (e) {
       debugPrint('CurrencyService: Save preference error - $e');
     }

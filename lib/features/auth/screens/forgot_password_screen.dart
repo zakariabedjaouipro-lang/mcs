@@ -7,7 +7,7 @@ import 'package:mcs/features/auth/presentation/bloc/index.dart';
 
 /// شاشة استعادة كلمة المرور - إدخال البريد أو الهاتف وإرسال رمز التحقق
 class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  const ForgotPasswordScreen({super.key});
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -69,9 +69,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
           return Scaffold(
             appBar: AppBar(
-              title: Text('استعادة كلمة المرور',
-                  style: TextStyles.subtitle1
-                      .copyWith(fontWeight: FontWeight.w700)),
+              title: Text(
+                'استعادة كلمة المرور',
+                style:
+                    TextStyles.subtitle1.copyWith(fontWeight: FontWeight.w700),
+              ),
               centerTitle: true,
               elevation: 0,
               backgroundColor: Colors.white,
@@ -79,11 +81,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
 
                     // Illustration
                     Center(
@@ -94,14 +96,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           color: AppColors.primary.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.lock_reset,
                           size: 60,
                           color: AppColors.primary,
                         ),
                       ),
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
                     // Header
                     Text(
@@ -111,12 +113,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         color: AppColors.primary,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'لا تقلق! أدخل بريدك الإلكتروني أو رقم هاتفك وسنرسل لك رمز التحقق',
                       style: TextStyles.body1.copyWith(color: AppColors.grey),
                     ),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
 
                     // Contact Method Tabs
                     Container(
@@ -124,7 +126,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         color: AppColors.grey.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       child: Row(
                         children: [
                           Expanded(
@@ -135,7 +137,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               isLoading: isLoading,
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: _buildMethodButton(
                               label: 'رقم الهاتف',
@@ -147,7 +149,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
                     // Form
                     Form(
@@ -178,7 +180,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
 
                           // Submit Button
                           SizedBox(
@@ -188,7 +190,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               onPressed: isLoading
                                   ? null
                                   : () => _handleSendVerification(context),
-                              icon: Icon(Icons.send),
+                              icon: const Icon(Icons.send),
                               label: Text(
                                 'إرسال رمز التحقق',
                                 style: TextStyles.subtitle1.copyWith(
@@ -205,7 +207,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 32),
+                          const SizedBox(height: 32),
 
                           // Back to Login
                           Center(
@@ -222,14 +224,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                         ],
                       ),
                     ),
 
                     // Info Box
                     Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.05),
                         borderRadius: BorderRadius.circular(8),
@@ -240,12 +242,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.info_outline,
                             color: AppColors.primary,
                             size: 20,
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               'سيتم إرسال رمز تحقق من 6 أرقام. سيكون الرمز صالحاً لمدة 10 دقائق',
@@ -280,7 +282,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         onTap: isLoading ? null : () => setState(() => _contactMethod = method),
         borderRadius: BorderRadius.circular(6),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Center(
             child: Text(
               label,
@@ -305,23 +307,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.primary, width: 2),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.red),
+        borderSide: const BorderSide(color: Colors.red),
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
   }
 }

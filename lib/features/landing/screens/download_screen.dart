@@ -77,7 +77,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
-                )
+                ),
               ]
             : [],
       ),
@@ -202,7 +202,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
                 requirements: [
                   'iOS 12.0 or later',
                   '100 MB storage',
-                  'Internet connection'
+                  'Internet connection',
                 ],
               ),
               _buildRequirementCard(
@@ -211,7 +211,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
                 requirements: [
                   'Android 6.0 or later',
                   '85 MB storage',
-                  'Internet connection'
+                  'Internet connection',
                 ],
               ),
               _buildRequirementCard(
@@ -220,7 +220,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
                 requirements: [
                   'Windows 10 or later',
                   '150 MB storage',
-                  'Internet connection'
+                  'Internet connection',
                 ],
               ),
               _buildRequirementCard(
@@ -229,7 +229,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
                 requirements: [
                   'macOS 10.15 or later',
                   '150 MB storage',
-                  'Internet connection'
+                  'Internet connection',
                 ],
               ),
             ],
@@ -271,8 +271,11 @@ class _DownloadScreenState extends State<DownloadScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
                   children: [
-                    const Icon(Icons.check_circle,
-                        size: 16, color: Colors.green),
+                    const Icon(
+                      Icons.check_circle,
+                      size: 16,
+                      color: Colors.green,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -357,7 +360,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
         Container(
           width: 40,
           height: 40,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.primary,
             shape: BoxShape.circle,
           ),

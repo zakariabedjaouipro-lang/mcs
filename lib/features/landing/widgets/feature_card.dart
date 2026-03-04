@@ -6,11 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 
 class FeatureCard extends StatefulWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final Color color;
-
   const FeatureCard({
     super.key,
     required this.icon,
@@ -18,6 +13,10 @@ class FeatureCard extends StatefulWidget {
     required this.description,
     required this.color,
   });
+  final IconData icon;
+  final String title;
+  final String description;
+  final Color color;
 
   @override
   State<FeatureCard> createState() => _FeatureCardState();
@@ -40,7 +39,6 @@ class _FeatureCardState extends State<FeatureCard> {
             padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 // Icon
                 Container(

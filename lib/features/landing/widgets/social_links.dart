@@ -4,11 +4,6 @@ import 'package:mcs/core/theme/text_styles.dart';
 
 /// روابط التواصل الاجتماعي - يحتوي على أيقونات وروابط التواصل
 class SocialLinksWidget extends StatelessWidget {
-  final Color? primaryColor;
-  final double iconSize;
-  final EdgeInsets padding;
-  final Axis direction;
-
   const SocialLinksWidget({
     Key? key,
     this.primaryColor,
@@ -16,6 +11,10 @@ class SocialLinksWidget extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 8),
     this.direction = Axis.horizontal,
   }) : super(key: key);
+  final Color? primaryColor;
+  final double iconSize;
+  final EdgeInsets padding;
+  final Axis direction;
 
   @override
   Widget build(BuildContext context) {
@@ -26,37 +25,37 @@ class SocialLinksWidget extends StatelessWidget {
         platform: 'Facebook',
         icon: Icons.facebook,
         url: 'https://www.facebook.com/mcs',
-        color: Color(0xFF1877F2),
+        color: const Color(0xFF1877F2),
       ),
       SocialLink(
         platform: 'Twitter',
         icon: Icons.close,
         url: 'https://www.twitter.com/mcs',
-        color: Color(0xFF1DA1F2),
+        color: const Color(0xFF1DA1F2),
       ),
       SocialLink(
         platform: 'Instagram',
         icon: Icons.account_circle,
         url: 'https://www.instagram.com/mcs',
-        color: Color(0xFFE4405F),
+        color: const Color(0xFFE4405F),
       ),
       SocialLink(
         platform: 'LinkedIn',
         icon: Icons.business,
         url: 'https://www.linkedin.com/company/mcs',
-        color: Color(0xFF0A66C2),
+        color: const Color(0xFF0A66C2),
       ),
       SocialLink(
         platform: 'YouTube',
         icon: Icons.play_circle,
         url: 'https://www.youtube.com/@mcs',
-        color: Color(0xFFFF0000),
+        color: const Color(0xFFFF0000),
       ),
       SocialLink(
         platform: 'WhatsApp',
         icon: Icons.message,
         url: 'https://wa.me/966501234567',
-        color: Color(0xFF25D366),
+        color: const Color(0xFF25D366),
       ),
     ];
 
@@ -113,7 +112,7 @@ class SocialLinksWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: () => _openLink(link.url),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(color: link.color),
@@ -136,7 +135,7 @@ class SocialLinksWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   link.platform,
@@ -163,15 +162,14 @@ class SocialLinksWidget extends StatelessWidget {
 
 /// فئة تمثل وسيلة تواصل اجتماعي
 class SocialLink {
-  final String platform;
-  final IconData icon;
-  final String url;
-  final Color color;
-
   SocialLink({
     required this.platform,
     required this.icon,
     required this.url,
     required this.color,
   });
+  final String platform;
+  final IconData icon;
+  final String url;
+  final Color color;
 }

@@ -52,12 +52,12 @@ abstract class WindowsUtils {
   /// Convert forward slashes to backslashes (Windows format).
   static String convertToWindowsPath(String path) {
     if (kIsWeb) return path;
-    return path.replaceAll('/', '\\');
+    return path.replaceAll('/', r'\');
   }
 
   /// Convert backslashes to forward slashes (cross-platform format).
   static String convertToCrossPlatformPath(String path) {
-    return path.replaceAll('\\', '/');
+    return path.replaceAll(r'\', '/');
   }
 
   /// Check if a file or directory exists.
@@ -95,7 +95,7 @@ abstract class WindowsUtils {
   /// Get file name from path (without extension).
   static String getFileNameWithoutExtension(String filePath) {
     if (filePath.isEmpty) return '';
-    var name = filePath.split('\\').last.split('/').last;
+    var name = filePath.split(r'\').last.split('/').last;
     final lastDot = name.lastIndexOf('.');
     if (lastDot > 0) name = name.substring(0, lastDot);
     return name;

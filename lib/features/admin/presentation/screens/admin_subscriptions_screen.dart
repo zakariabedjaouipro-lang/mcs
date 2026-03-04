@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
+import 'package:mcs/core/enums/subscription_type.dart';
+import 'package:mcs/core/models/subscription_model.dart';
+import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
-import 'package:mcs/core/enums/subscription_type.dart';
 import 'package:mcs/core/widgets/confirm_dialog.dart';
 import 'package:mcs/features/admin/presentation/bloc/index.dart';
 
@@ -14,7 +17,7 @@ class AdminSubscriptionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AdminBloc(/* Inject dependencies */),
+      create: (_) => AdminBloc(GetIt.I<SupabaseService>()),
       child: const AdminSubscriptionsView(),
     );
   }
@@ -55,7 +58,7 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
           }
 
           if (state is SubscriptionCodesLoaded) {
-            return _SubscriptionCodesTable(subscriptions: state.subscriptions);
+            return _subscriptionCodesTable(subscriptions: state.subscriptions);
           }
 
           if (state is AdminError) {
@@ -80,28 +83,28 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showGenerateCodeDialog(context),
         icon: const Icon(Icons.add),
-        label: 'إنشاء كود جديد',
+        label: const Text('إنشاء كود جديد'),
         backgroundColor: AppColors.primary,
       ),
     );
   }
 
-  Widget _SubscriptionCodesTable({required List subscriptions}) {
+  Widget _subscriptionCodesTable({required List<SubscriptionModel> subscriptions}) {
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Card(
         child: SingleChildScrollView(
           child: DataTable(
             columns: const [
-              DataColumn(label: 'الكود'),
-              DataColumn(label: 'النوع'),
-              DataColumn(label: 'السعر (USD)'),
-              DataColumn(label: 'السعر (EUR)'),
-              DataColumn(label: 'السعر (دج)'),
-              DataColumn(label: 'الحالة'),
-              DataColumn(label: 'العيادة'),
-              DataColumn(label: 'استخدم في'),
-              DataColumn(label: 'الإجراءات'),
+              DataColumn(label: Text('الكود')),
+              DataColumn(label: Text('النوع')),
+              DataColumn(label: Text('السعر (USD)')),
+              DataColumn(label: Text('السعر (EUR)')),
+              DataColumn(label: Text('السعر (دج)')),
+              DataColumn(label: Text('الحالة')),
+              DataColumn(label: Text('العيادة')),
+              DataColumn(label: Text('استخدم في')),
+              DataColumn(label: Text('الإجراءات')),
             ],
             rows: subscriptions.map((sub) {
               return DataRow(
@@ -156,17 +159,14 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
         switch (value) {
           case 'copy':
             _copyCodeToClipboard(context, sub.code);
-            break;
           case 'activate':
             if (!sub.isUsed) {
               _showActivateDialog(context, sub);
             }
-            break;
           case 'delete':
             if (!sub.isUsed) {
               _confirmDeleteCode(context, sub);
             }
-            break;
         }
       },
       itemBuilder: (context) => [
@@ -183,16 +183,15 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
   Future<void> _showGenerateCodeDialog(BuildContext context) async {
     final selectedType = await showDialog<SubscriptionType>(
       context: context,
-      builder: (context) => _SelectSubscriptionTypeDialog(),
+      builder: (context) => const _SelectSubscriptionTypeDialog(),
     );
 
     if (selectedType != null && context.mounted) {
-      await _showPriceDialog(context, selectedType!);
+      await _showPriceDialog(context, selectedType);
     }
   }
 
   Future<void> _showPriceDialog(BuildContext context, SubscriptionType type) async {
-    final priceController = TextEditingController();
     final priceUsdController = TextEditingController();
     final priceEurController = TextEditingController();
     final priceDzdController = TextEditingController();
@@ -200,6 +199,9 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
     priceUsdController.text = type.priceUsd.toString();
     priceEurController.text = type.priceEur.toString();
     priceDzdController.text = type.priceDzd.toString();
+
+    const usdPrefix = r'$ ';
+    const eurPrefix = '€ ';
 
     final result = await showDialog<bool>(
       context: context,
@@ -210,18 +212,18 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
           children: [
             TextField(
               controller: priceUsdController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'السعر بالدولار ($)',
-                prefixText: '\$ ',
+                prefixText: usdPrefix,
               ),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16),
             TextField(
               controller: priceEurController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'السعر باليورو (€)',
-                prefixText: '€ ',
+                prefixText: eurPrefix,
               ),
               keyboardType: TextInputType.number,
             ),
@@ -252,27 +254,28 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
       ),
     );
 
-    if (result == true && context.mounted) {
+    if (result ?? false) {
+      if (!context.mounted) return;
       context.read<AdminBloc>().add(GenerateSubscriptionCode(
         type: type,
         priceUsd: double.parse(priceUsdController.text),
         priceEur: double.parse(priceEurController.text),
         priceDzd: double.parse(priceDzdController.text),
-      ));
+      ),);
     }
   }
 
   Future<void> _showActivateDialog(BuildContext context, SubscriptionModel sub) async {
     final clinicId = await showDialog<String>(
       context: context,
-      builder: (context) => _SelectClinicDialog(),
+      builder: (context) => const _SelectClinicDialog(),
     );
 
     if (clinicId != null && context.mounted) {
       context.read<AdminBloc>().add(ActivateSubscriptionCode(
         code: sub.code,
-        clinicId: clinicId!,
-      ));
+        clinicId: clinicId,
+      ),);
     }
   }
 
@@ -287,7 +290,6 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
     );
 
     if (confirmed && context.mounted) {
-      // TODO: Implement delete functionality
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('سيتم حذف الكود بنجاح')),
       );
@@ -295,7 +297,6 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
   }
 
   void _copyCodeToClipboard(BuildContext context, String code) {
-    // TODO: Implement clipboard copy
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('تم نسخ الكود: $code')),
     );
@@ -308,7 +309,7 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
 
 /// Dialog for selecting subscription type
 class _SelectSubscriptionTypeDialog extends StatelessWidget {
-  const _SelectSubscriptionTypeDialog({super.key});
+  const _SelectSubscriptionTypeDialog();
 
   @override
   Widget build(BuildContext context) {
@@ -317,16 +318,12 @@ class _SelectSubscriptionTypeDialog extends StatelessWidget {
       content: ListView.separated(
         shrinkWrap: true,
         itemCount: SubscriptionType.values.length,
+        separatorBuilder: (context, index) => const Divider(),
         itemBuilder: (context, index) {
           final type = SubscriptionType.values[index];
           return ListTile(
             title: Text(type.labelAr),
             subtitle: Text(type.labelEn),
-            trailing: Radio<SubscriptionType>(
-              value: type,
-              groupValue: type, // Will be set by parent
-              onChanged: (_) {},
-            ),
             onTap: () => Navigator.pop(context, type),
           );
         },
@@ -337,7 +334,7 @@ class _SelectSubscriptionTypeDialog extends StatelessWidget {
 
 /// Dialog for selecting clinic
 class _SelectClinicDialog extends StatelessWidget {
-  const _SelectClinicDialog({super.key});
+  const _SelectClinicDialog();
 
   @override
   Widget build(BuildContext context) {
@@ -349,6 +346,7 @@ class _SelectClinicDialog extends StatelessWidget {
             return ListView.separated(
               shrinkWrap: true,
               itemCount: state.clinics.length,
+              separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (context, index) {
                 final clinic = state.clinics[index];
                 return ListTile(

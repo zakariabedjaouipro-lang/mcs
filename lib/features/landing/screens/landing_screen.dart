@@ -81,7 +81,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
-                )
+                ),
               ]
             : [],
       ),
@@ -111,7 +111,7 @@ class _LandingScreenState extends State<LandingScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ]
+                  ],
                 ],
               ),
 

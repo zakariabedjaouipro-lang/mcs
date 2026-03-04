@@ -5,14 +5,13 @@ import 'package:mcs/core/utils/validators.dart';
 
 /// نموذج الاتصال - يحتوي على حقول الاسم والبريد والرسالة مع التحقق
 class ContactFormWidget extends StatefulWidget {
-  final Color? primaryColor;
-  final VoidCallback? onSubmitSuccess;
-
   const ContactFormWidget({
     Key? key,
     this.primaryColor,
     this.onSubmitSuccess,
   }) : super(key: key);
+  final Color? primaryColor;
+  final VoidCallback? onSubmitSuccess;
 
   @override
   State<ContactFormWidget> createState() => _ContactFormWidgetState();
@@ -36,7 +35,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
     super.dispose();
   }
 
-  void _submitForm() async {
+  Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -45,12 +44,12 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
 
     try {
       // Simulate API call
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
       if (mounted) {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('تم إرسال رسالتك بنجاح! سنرد عليك قريباً.'),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
@@ -69,7 +68,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('حدث خطأ. يرجى المحاولة لاحقاً.'),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
@@ -111,7 +110,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
             },
             enabled: !_isLoading,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Email Field
           TextFormField(
@@ -134,7 +133,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
             },
             enabled: !_isLoading,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Phone Field
           TextFormField(
@@ -156,7 +155,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
             },
             enabled: !_isLoading,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Subject Field
           TextFormField(
@@ -174,7 +173,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
             },
             enabled: !_isLoading,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Message Field
           TextFormField(
@@ -199,7 +198,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
             },
             enabled: !_isLoading,
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
           // Submit Button
           SizedBox(
@@ -215,7 +214,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
                 ),
               ),
               child: _isLoading
-                  ? SizedBox(
+                  ? const SizedBox(
                       height: 24,
                       width: 24,
                       child: CircularProgressIndicator(
@@ -234,7 +233,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
           ),
 
           // Info Text
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'سنرد على رسالتك خلال 24 ساعة',
             style: TextStyles.caption.copyWith(color: AppColors.grey),
@@ -258,11 +257,11 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
       prefixIcon: Icon(icon, color: primaryColor),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
@@ -270,15 +269,15 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.red),
+        borderSide: const BorderSide(color: Colors.red),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.red, width: 2),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       labelStyle: TextStyles.body2,
       hintStyle: TextStyles.body2.copyWith(color: AppColors.grey),
       errorStyle: TextStyles.caption.copyWith(color: Colors.red),

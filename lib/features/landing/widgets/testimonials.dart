@@ -4,14 +4,13 @@ import 'package:mcs/core/theme/text_styles.dart';
 
 /// شهادات المستخدمين - عرض آراء المستخدمين مع تقييمات وصور
 class TestimonialsWidget extends StatefulWidget {
-  final Color? primaryColor;
-  final List<Testimonial>? testimonials;
-
   const TestimonialsWidget({
     Key? key,
     this.primaryColor,
     this.testimonials,
   }) : super(key: key);
+  final Color? primaryColor;
+  final List<Testimonial>? testimonials;
 
   @override
   State<TestimonialsWidget> createState() => _TestimonialsWidgetState();
@@ -19,12 +18,7 @@ class TestimonialsWidget extends StatefulWidget {
 
 /// فئة تمثل شهادة مستخدم
 class Testimonial {
-  final String name;
-  final String title;
-  final String comment;
-  final int rating;
-  final String? imageUrl;
-  final String type; // 'patient', 'doctor', 'staff'
+  // 'patient', 'doctor', 'staff'
 
   Testimonial({
     required this.name,
@@ -34,6 +28,12 @@ class Testimonial {
     this.imageUrl,
     required this.type,
   });
+  final String name;
+  final String title;
+  final String comment;
+  final int rating;
+  final String? imageUrl;
+  final String type;
 }
 
 class _TestimonialsWidgetState extends State<TestimonialsWidget>
@@ -50,7 +50,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
     _testimonials = widget.testimonials ?? _getDefaultTestimonials();
     _pageController = PageController(viewportFraction: 0.9);
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
     _slideAnimation =
@@ -58,7 +58,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
     _animationController.forward();
 
     // Auto-scroll every 5 seconds
-    Future.delayed(Duration(seconds: 5), _autoScroll);
+    Future.delayed(const Duration(seconds: 5), _autoScroll);
   }
 
   List<Testimonial> _getDefaultTestimonials() {
@@ -117,10 +117,10 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
   void _autoScroll() {
     if (mounted) {
       _pageController.nextPage(
-        duration: Duration(milliseconds: 800),
+        duration: const Duration(milliseconds: 800),
         curve: Curves.easeInOutCubic,
       );
-      Future.delayed(Duration(seconds: 5), _autoScroll);
+      Future.delayed(const Duration(seconds: 5), _autoScroll);
     }
   }
 
@@ -144,7 +144,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
           style: TextStyles.heading2.copyWith(fontWeight: FontWeight.w700),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Text(
           'استمع إلى ما يقوله مستخدمونا',
           style: TextStyles.body1.copyWith(
@@ -152,7 +152,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: 48),
+        const SizedBox(height: 48),
 
         // Testimonials Carousel
         ScaleTransition(
@@ -171,7 +171,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                 return AnimatedBuilder(
                   animation: _pageController,
                   builder: (context, child) {
-                    double value = 1.0;
+                    var value = 1;
                     if (_pageController.position.haveDimensions) {
                       value = _pageController.page! - index;
                       value = (1 - (value.abs() * 0.5)).clamp(0.0, 1.0);
@@ -189,7 +189,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
             ),
           ),
         ),
-        SizedBox(height: 32),
+        const SizedBox(height: 32),
 
         // Indicators
         _buildIndicators(primaryColor),
@@ -199,7 +199,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
 
   Widget _buildTestimonialCard(Testimonial testimonial, Color primaryColor) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Card(
         elevation: 8,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -215,7 +215,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
               ],
             ),
           ),
-          padding: EdgeInsets.all(32),
+          padding: const EdgeInsets.all(32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -225,7 +225,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                 color: primaryColor.withValues(alpha: 0.3),
                 size: 40,
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
 
               // Comment
               Expanded(
@@ -238,14 +238,14 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                   ),
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
 
               // Rating
               Row(
                 children: List.generate(
                   5,
                   (index) => Padding(
-                    padding: EdgeInsets.only(right: 4),
+                    padding: const EdgeInsets.only(right: 4),
                     child: Icon(
                       index < testimonial.rating
                           ? Icons.star
@@ -256,7 +256,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Author Info
               Row(
@@ -268,7 +268,10 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
-                        colors: [primaryColor, primaryColor.withValues(alpha: 0.6)],
+                        colors: [
+                          primaryColor,
+                          primaryColor.withValues(alpha: 0.6)
+                        ],
                       ),
                     ),
                     child: Center(
@@ -281,7 +284,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                       ),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
 
                   // Name & Title
                   Expanded(
@@ -294,11 +297,11 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Row(
                           children: [
                             Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 4,
                               ),
@@ -315,7 +318,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                                 ),
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text(
                               testimonial.title,
                               style: TextStyles.caption.copyWith(
@@ -342,12 +345,12 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
       children: List.generate(
         _testimonials.length,
         (index) => Padding(
-          padding: EdgeInsets.symmetric(horizontal: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 6),
           child: GestureDetector(
             onTap: () {
               _pageController.animateToPage(
                 index,
-                duration: Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 500),
                 curve: Curves.easeInOut,
               );
             },
@@ -370,11 +373,11 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
   Color _getTypeColor(String type) {
     switch (type) {
       case 'doctor':
-        return Color(0xFF3B82F6); // Blue
+        return const Color(0xFF3B82F6); // Blue
       case 'patient':
-        return Color(0xFF10B981); // Green
+        return const Color(0xFF10B981); // Green
       case 'staff':
-        return Color(0xFFF59E0B); // Amber
+        return const Color(0xFFF59E0B); // Amber
       default:
         return AppColors.primary;
     }

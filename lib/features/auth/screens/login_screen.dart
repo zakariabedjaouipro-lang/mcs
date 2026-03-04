@@ -43,7 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void _showSocialLoginNotAvailable(BuildContext context, String provider) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('تسجيل الدخول عبر $provider غير متاح حالياً. يرجى استخدام البريد الإلكتروني وكلمة المرور.'),
+        content: Text(
+            'تسجيل الدخول عبر $provider غير متاح حالياً. يرجى استخدام البريد الإلكتروني وكلمة المرور.'),
         backgroundColor: Colors.orange,
         duration: const Duration(seconds: 3),
       ),
@@ -56,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         if (state is LoginSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('تم تسجيل الدخول بنجاح!'),
               backgroundColor: Colors.green,
             ),
@@ -83,11 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
           return Scaffold(
             body: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 60),
+                    const SizedBox(height: 60),
 
                     // Header
                     Text(
@@ -97,12 +98,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: AppColors.primary,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'أهلاً بعودتك! تسجيل دخول للمتابعة',
                       style: TextStyles.body1.copyWith(color: AppColors.grey),
                     ),
-                    SizedBox(height: 48),
+                    const SizedBox(height: 48),
 
                     // Form
                     Form(
@@ -134,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
                           // Password Field
                           TextFormField(
@@ -156,8 +157,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: AppColors.grey,
                                 ),
                                 onPressed: () {
-                                  setState(() =>
-                                      _obscurePassword = !_obscurePassword);
+                                  setState(
+                                    () => _obscurePassword = !_obscurePassword,
+                                  );
                                 },
                               ),
                             ),
@@ -173,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
 
                           // Forgot Password Link
                           Align(
@@ -192,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 30),
+                          const SizedBox(height: 30),
 
                           // Login Button
                           SizedBox(
@@ -211,12 +213,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               child: isLoading
-                                  ? SizedBox(
+                                  ? const SizedBox(
                                       height: 24,
                                       width: 24,
                                       child: CircularProgressIndicator(
                                         valueColor: AlwaysStoppedAnimation(
-                                            Colors.white),
+                                          Colors.white,
+                                        ),
                                         strokeWidth: 2,
                                       ),
                                     )
@@ -229,16 +232,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                             ),
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
 
                           // Divider
                           Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: Divider(color: AppColors.grey),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
                                 child: Text(
                                   'أو',
                                   style: TextStyles.body2.copyWith(
@@ -246,12 +250,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                              Expanded(
+                              const Expanded(
                                 child: Divider(color: AppColors.grey),
                               ),
                             ],
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
 
                           // Social Login Buttons
                           Row(
@@ -260,24 +264,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: _buildSocialButton(
                                   icon: Icons.facebook,
                                   label: 'Facebook',
-                                  color: Color(0xFF1877F2),
+                                  color: const Color(0xFF1877F2),
                                   onPressed: isLoading
                                       ? null
-                                      : () => _showSocialLoginNotAvailable(context, 'Facebook'),
+                                      : () => _showSocialLoginNotAvailable(
+                                          context, 'Facebook'),
                                 ),
                               ),
-                              SizedBox(width: 12),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: _buildSocialButton(
                                   icon: Icons.g_mobiledata,
                                   label: 'Google',
-                                  color: Color(0xFF4285F4),
+                                  color: const Color(0xFF4285F4),
                                   onPressed: isLoading
                                       ? null
-                                      : () => _showSocialLoginNotAvailable(context, 'Google'),
+                                      : () => _showSocialLoginNotAvailable(
+                                          context, 'Google'),
                                 ),
                               ),
-                              SizedBox(width: 12),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: _buildSocialButton(
                                   icon: Icons.apple,
@@ -285,12 +291,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: Colors.black,
                                   onPressed: isLoading
                                       ? null
-                                      : () => _showSocialLoginNotAvailable(context, 'Apple'),
+                                      : () => _showSocialLoginNotAvailable(
+                                          context, 'Apple'),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
 
                           // Sign Up Link
                           Center(
@@ -323,7 +330,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                         ],
                       ),
                     ),
@@ -350,23 +357,23 @@ class _LoginScreenState extends State<LoginScreen> {
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.primary, width: 2),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.red),
+        borderSide: const BorderSide(color: Colors.red),
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
   }
 
@@ -383,7 +390,7 @@ class _LoginScreenState extends State<LoginScreen> {
       style: OutlinedButton.styleFrom(
         foregroundColor: color,
         side: BorderSide(color: color.withOpacity(0.3)),
-        padding: EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

@@ -32,10 +32,10 @@ Future<void> configureDependencies() async {
   sl
     ..registerLazySingleton<SupabaseClient>(() => SupabaseConfig.client)
     ..registerLazySingleton<GoTrueClient>(() => SupabaseConfig.auth)
-    ..registerLazySingleton<AuthService>(() => AuthService())
-    ..registerLazySingleton<StorageService>(() => StorageService())
-    ..registerLazySingleton<NotificationService>(() => NotificationService())
-    ..registerLazySingleton<SupabaseService>(() => SupabaseService())
+    ..registerLazySingleton<AuthService>(AuthService.new)
+    ..registerLazySingleton<StorageService>(StorageService.new)
+    ..registerLazySingleton<NotificationService>(NotificationService.new)
+    ..registerLazySingleton<SupabaseService>(SupabaseService.new)
     ..registerLazySingleton<SmsService>(
       () => SmsService(supabaseService: sl()),
     )

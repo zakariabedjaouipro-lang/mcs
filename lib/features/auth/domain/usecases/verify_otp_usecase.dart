@@ -7,9 +7,8 @@ import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
 /// حالة الاستخدام للتحقق من OTP
 /// يحول طلب التحقق من رمز OTP إلى [Either<Failure, bool>]
 class VerifyOTPUseCase implements UseCase<bool, VerifyOTPParams> {
-  final AuthRepository repository;
-
   VerifyOTPUseCase(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, bool>> call(VerifyOTPParams params) async {
@@ -22,13 +21,12 @@ class VerifyOTPUseCase implements UseCase<bool, VerifyOTPParams> {
 
 /// معاملات حالة الاستخدام VerifyOTPUseCase
 class VerifyOTPParams extends Equatable {
-  final String email;
-  final String otp;
-
   const VerifyOTPParams({
     required this.email,
     required this.otp,
   });
+  final String email;
+  final String otp;
 
   @override
   List<Object> get props => [email, otp];

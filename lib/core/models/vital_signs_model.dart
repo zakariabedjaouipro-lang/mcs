@@ -19,8 +19,8 @@ class VitalSignsModel extends Equatable {
     required this.weight,
     required this.height,
     required this.oxygenSaturation,
-    this.notes,
     required this.recordedAt,
+    this.notes,
   });
 
   /// Create from JSON.

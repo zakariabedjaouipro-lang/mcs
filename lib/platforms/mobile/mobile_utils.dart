@@ -112,8 +112,9 @@ abstract class MobileUtils {
   }
 
   /// Get camera resolution recommendations.
-  static CameraResolution getRecommendedResolution(
-      {required DeviceType deviceType}) {
+  static CameraResolution getRecommendedResolution({
+    required DeviceType deviceType,
+  }) {
     if (deviceType == DeviceType.tablet) {
       return CameraResolution(width: 1920, height: 1440);
     }
@@ -303,10 +304,9 @@ enum BatteryState {
 
 /// Camera resolution specifications.
 class CameraResolution {
+  CameraResolution({required this.width, required this.height});
   final int width;
   final int height;
-
-  CameraResolution({required this.width, required this.height});
 
   /// Get resolution as formatted string.
   String toFormattedString() => '${width}x$height';
@@ -322,6 +322,6 @@ abstract class Math {
     // Simple power calculation using exp and log
     if (x == 0) return 0;
     if (y == 0) return 1;
-    return 1.0; // Placeholder - actual implementation would use dart:math
+    return 1; // Placeholder - actual implementation would use dart:math
   }
 }

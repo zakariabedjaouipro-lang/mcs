@@ -6,7 +6,7 @@ import 'package:mcs/features/landing/widgets/faq_section.dart';
 
 /// صفحة الدعم الفني - تحتوي على أسئلة شائعة وروابط سريعة ودروس فيديو
 class SupportScreenLanding extends StatefulWidget {
-  const SupportScreenLanding({Key? key}) : super(key: key);
+  const SupportScreenLanding({super.key});
 
   @override
   State<SupportScreenLanding> createState() => _SupportScreenLandingState();
@@ -21,11 +21,11 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
       child: Column(
         children: [
           _buildHeaderSection(),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           _buildTabsSection(),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           _buildContentSection(),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
         ],
       ),
     );
@@ -34,7 +34,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
   Widget _buildHeaderSection() {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -52,7 +52,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
             style: TextStyles.heading1.copyWith(color: Colors.white),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             'احصل على المساعدة والدعم من فريقنا المتخصص',
             style: TextStyles.body1.copyWith(color: Colors.white70),
@@ -65,15 +65,15 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
 
   Widget _buildTabsSection() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
             _buildTabButton('الأسئلة الشائعة', 0),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             _buildTabButton('دروس فيديو', 1),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             _buildTabButton('روابط سريعة', 2),
           ],
         ),
@@ -87,7 +87,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
       child: InkWell(
         onTap: () => setState(() => _selectedTab = index),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
@@ -111,13 +111,13 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
   Widget _buildContentSection() {
     switch (_selectedTab) {
       case 0:
-        return FaqSectionWidget();
+        return const FaqSectionWidget();
       case 1:
         return _buildVideoTutorialsSection();
       case 2:
         return _buildQuickLinksSection();
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 
@@ -170,10 +170,10 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
 
   Widget _buildVideoGrid(List<Map<String, dynamic>> videos, int columns) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GridView.builder(
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columns,
           crossAxisSpacing: 20,
@@ -201,9 +201,10 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
             height: 140,
             decoration: BoxDecoration(
               color: AppColors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
             ),
-            child: Center(
+            child: const Center(
               child: Icon(
                 Icons.play_circle_outline,
                 size: 50,
@@ -214,7 +215,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
           // Content
           Expanded(
             child: Padding(
-              padding: EdgeInsets.all(12),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -229,7 +230,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
                     backgroundColor: AppColors.primary,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     video['title'] as String,
                     style: TextStyles.subtitle2.copyWith(
@@ -238,12 +239,15 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.play_arrow,
-                          size: 16, color: AppColors.primary),
+                      const Icon(
+                        Icons.play_arrow,
+                        size: 16,
+                        color: AppColors.primary,
+                      ),
                       Text(
                         video['duration'] as String,
                         style:
@@ -266,37 +270,37 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
         'title': 'التوثيق الكامل',
         'description': 'اطّلع على جميع الميزات والشروحات',
         'icon': Icons.description_outlined,
-        'color': Color(0xFF6366F1),
+        'color': const Color(0xFF6366F1),
       },
       {
         'title': 'مركز المساعدة',
         'description': 'إجابات سريعة على الأسئلة الشائعة',
         'icon': Icons.help_outline,
-        'color': Color(0xFF3B82F6),
+        'color': const Color(0xFF3B82F6),
       },
       {
         'title': 'المدونة',
         'description': 'نصائح وأفكار حول استخدام التطبيق',
         'icon': Icons.article_outlined,
-        'color': Color(0xFF8B5CF6),
+        'color': const Color(0xFF8B5CF6),
       },
       {
         'title': 'المجتمع',
         'description': 'تواصل مع المستخدمين الآخرين',
         'icon': Icons.groups_outlined,
-        'color': Color(0xFFEC4899),
+        'color': const Color(0xFFEC4899),
       },
       {
         'title': 'تطبيق الجوال',
         'description': 'حمّل التطبيق على هاتفك',
         'icon': Icons.phone_android,
-        'color': Color(0xFF10B981),
+        'color': const Color(0xFF10B981),
       },
       {
         'title': 'الإصدارات الجديدة',
         'description': 'اطّلع على أحدث التحديثات',
         'icon': Icons.update,
-        'color': Color(0xFFF59E0B),
+        'color': const Color(0xFFF59E0B),
       },
     ];
 
@@ -309,10 +313,10 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
 
   Widget _buildLinksGrid(List<Map<String, dynamic>> links, int columns) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GridView.builder(
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columns,
           crossAxisSpacing: 20,
@@ -337,7 +341,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border(
@@ -356,7 +360,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
                   color: link['color'] as Color,
                   size: 32,
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Text(
                   link['description'] as String,
                   style: TextStyles.subtitle1.copyWith(
@@ -364,7 +368,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
                     color: link['color'] as Color,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   link['description'] as String,
                   style: TextStyles.caption.copyWith(

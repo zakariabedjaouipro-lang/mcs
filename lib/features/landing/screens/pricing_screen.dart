@@ -56,7 +56,6 @@ class _PricingScreenState extends State<PricingScreen> {
           vertical: context.isSmall ? 24 : 40,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Introduction
             _buildIntroduction(context),
@@ -88,7 +87,6 @@ class _PricingScreenState extends State<PricingScreen> {
   /// Build introduction section.
   Widget _buildIntroduction(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           'Simple, Transparent Pricing',
@@ -148,7 +146,7 @@ class _PricingScreenState extends State<PricingScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ]
+                      ],
                     ],
                   ),
                   backgroundColor: Colors.transparent,
@@ -349,17 +347,16 @@ enum BillingPeriod {
 
 /// Pricing plan data model.
 class PricingPlan {
-  final String name;
-  final double monthlyPrice;
-  final String description;
-  final List<String> features;
-
   PricingPlan({
     required this.name,
     required this.monthlyPrice,
     required this.description,
     required this.features,
   });
+  final String name;
+  final double monthlyPrice;
+  final String description;
+  final List<String> features;
 
   /// Calculate price based on billing period.
   double getPriceForPeriod(BillingPeriod period, int discount) {

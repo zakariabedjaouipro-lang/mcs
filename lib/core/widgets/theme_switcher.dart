@@ -2,8 +2,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import '../localization/app_localizations.dart';
-import '../theme/app_theme.dart';
+import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/core/theme/app_theme.dart';
 
 /// Theme mode enum.
 enum AppThemeMode {
@@ -27,13 +27,10 @@ class ThemeSwitcher extends StatelessWidget {
     switch (themeMode) {
       case AppThemeMode.light:
         iconData = Icons.light_mode_outlined;
-        break;
       case AppThemeMode.dark:
         iconData = Icons.dark_mode_outlined;
-        break;
       case AppThemeMode.system:
         iconData = Icons.brightness_auto_outlined;
-        break;
     }
 
     return IconButton(
@@ -104,7 +101,8 @@ class ThemeSwitcher extends StatelessWidget {
       leading: Icon(icon),
       title: Text(label),
       trailing: isSelected
-          ? Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary)
+          ? Icon(Icons.check_circle,
+              color: Theme.of(context).colorScheme.primary)
           : null,
       onTap: () {
         Navigator.pop(context);
@@ -118,7 +116,7 @@ class ThemeSwitcher extends StatelessWidget {
     // This would typically be handled by a BLoC or state management
     // For now, we'll show a dialog indicating the change
     final localizations = AppLocalizations.of(context)!;
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -166,9 +164,7 @@ class ThemeSwitcherSimple extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          isDark
-              ? 'تم تفعيل الوضع الداكن'
-              : 'تم تفعيل الوضع الفاتح',
+          isDark ? 'تم تفعيل الوضع الداكن' : 'تم تفعيل الوضع الفاتح',
         ),
         duration: const Duration(seconds: 2),
       ),
@@ -178,11 +174,6 @@ class ThemeSwitcherSimple extends StatelessWidget {
 
 /// Theme selector dropdown for forms.
 class ThemeSelector extends StatelessWidget {
-  final AppThemeMode? selectedTheme;
-  final ValueChanged<AppThemeMode?>? onChanged;
-  final String? label;
-  final String? hint;
-
   const ThemeSelector({
     super.key,
     this.selectedTheme,
@@ -190,13 +181,17 @@ class ThemeSelector extends StatelessWidget {
     this.label,
     this.hint,
   });
+  final AppThemeMode? selectedTheme;
+  final ValueChanged<AppThemeMode?>? onChanged;
+  final String? label;
+  final String? hint;
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
     return DropdownButtonFormField<AppThemeMode>(
-      value: selectedTheme,
+      initialValue: selectedTheme,
       decoration: InputDecoration(
         labelText: label ?? localizations.lightTheme,
         hintText: hint ?? localizations.lightTheme,
@@ -282,7 +277,7 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     // Update state when theme changes
     if (_isDark != isDark) {
       _isDark = isDark;
@@ -373,7 +368,8 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
       leading: Icon(icon),
       title: Text(label),
       trailing: isSelected
-          ? Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary)
+          ? Icon(Icons.check_circle,
+              color: Theme.of(context).colorScheme.primary)
           : null,
       onTap: () {
         Navigator.pop(context);
@@ -385,7 +381,7 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
 
   void _changeTheme(BuildContext context, AppThemeMode mode) {
     final localizations = AppLocalizations.of(context)!;
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(

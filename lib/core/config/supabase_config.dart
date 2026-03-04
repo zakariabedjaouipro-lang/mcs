@@ -3,9 +3,8 @@ library;
 
 import 'dart:developer';
 
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:mcs/core/config/env.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseConfig {
   const SupabaseConfig._();

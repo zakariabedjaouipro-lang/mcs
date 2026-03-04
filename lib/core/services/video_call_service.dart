@@ -45,10 +45,12 @@ class VideoCallService {
 
     try {
       _engine = createAgoraRtcEngine();
-      await _engine!.initialize(RtcEngineContext(
-        appId: _appId,
-        channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
-      ));
+      await _engine!.initialize(
+        const RtcEngineContext(
+          appId: _appId,
+          channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
+        ),
+      );
 
       // Set event handlers
       _engine!.registerEventHandler(
@@ -58,7 +60,8 @@ class VideoCallService {
             onError(msg);
           },
           onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-            debugPrint('VideoCallService: Joined channel ${connection.channelId}');
+            debugPrint(
+                'VideoCallService: Joined channel ${connection.channelId}');
             _localUid = connection.localUid ?? 0;
             onJoinChannelSuccess(connection.localUid ?? 0);
           },
@@ -67,8 +70,11 @@ class VideoCallService {
             _remoteUids.add(remoteUid);
             onUserJoined(remoteUid, elapsed);
           },
-          onUserOffline: (RtcConnection connection, int remoteUid,
-              UserOfflineReasonType reason) {
+          onUserOffline: (
+            RtcConnection connection,
+            int remoteUid,
+            UserOfflineReasonType reason,
+          ) {
             debugPrint('VideoCallService: Remote user $remoteUid offline');
             _remoteUids.remove(remoteUid);
             onUserOffline(remoteUid, reason);
@@ -172,7 +178,8 @@ class VideoCallService {
 
     try {
       await _engine!.enableLocalVideo(enabled);
-      debugPrint('VideoCallService: Local video ${enabled ? "enabled" : "disabled"}');
+      debugPrint(
+          'VideoCallService: Local video ${enabled ? "enabled" : "disabled"}');
     } catch (e) {
       debugPrint('VideoCallService: Enable local video error - $e');
     }
@@ -184,7 +191,8 @@ class VideoCallService {
 
     try {
       await _engine!.enableLocalAudio(enabled);
-      debugPrint('VideoCallService: Local audio ${enabled ? "enabled" : "disabled"}');
+      debugPrint(
+          'VideoCallService: Local audio ${enabled ? "enabled" : "disabled"}');
     } catch (e) {
       debugPrint('VideoCallService: Enable local audio error - $e');
     }
@@ -196,7 +204,8 @@ class VideoCallService {
 
     try {
       await _engine!.muteLocalAudioStream(muted);
-      debugPrint('VideoCallService: Local audio ${muted ? "muted" : "unmuted"}');
+      debugPrint(
+          'VideoCallService: Local audio ${muted ? "muted" : "unmuted"}');
     } catch (e) {
       debugPrint('VideoCallService: Mute local audio error - $e');
     }
@@ -208,7 +217,8 @@ class VideoCallService {
 
     try {
       await _engine!.muteLocalVideoStream(muted);
-      debugPrint('VideoCallService: Local video ${muted ? "muted" : "unmuted"}');
+      debugPrint(
+          'VideoCallService: Local video ${muted ? "muted" : "unmuted"}');
     } catch (e) {
       debugPrint('VideoCallService: Mute local video error - $e');
     }
@@ -220,7 +230,8 @@ class VideoCallService {
 
     try {
       await _engine!.muteRemoteAudioStream(uid: uid, mute: muted);
-      debugPrint('VideoCallService: Remote audio for $uid ${muted ? "muted" : "unmuted"}');
+      debugPrint(
+          'VideoCallService: Remote audio for $uid ${muted ? "muted" : "unmuted"}');
     } catch (e) {
       debugPrint('VideoCallService: Mute remote audio error - $e');
     }
@@ -232,7 +243,8 @@ class VideoCallService {
 
     try {
       await _engine!.muteRemoteVideoStream(uid: uid, mute: muted);
-      debugPrint('VideoCallService: Remote video for $uid ${muted ? "muted" : "unmuted"}');
+      debugPrint(
+          'VideoCallService: Remote video for $uid ${muted ? "muted" : "unmuted"}');
     } catch (e) {
       debugPrint('VideoCallService: Mute remote video error - $e');
     }
@@ -272,7 +284,8 @@ class VideoCallService {
 
   /// Generate a random token for development purposes.
   String _generateRandomToken() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const chars =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     final random = DateTime.now().millisecondsSinceEpoch;
     final sb = StringBuffer();
     for (var i = 0; i < 32; i++) {

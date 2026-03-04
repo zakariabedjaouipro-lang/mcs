@@ -5,6 +5,25 @@ import 'package:equatable/equatable.dart';
 import 'package:mcs/core/enums/subscription_type.dart';
 
 class SubscriptionModel extends Equatable {
+
+  factory SubscriptionModel.fromJson(Map<String, dynamic> json) {
+    return SubscriptionModel(
+      id: json['id'] as String,
+      code: json['code'] as String,
+      type: SubscriptionType.fromDbValue(json['type'] as String),
+      priceUsd: (json['price_usd'] as num).toDouble(),
+      priceEur: (json['price_eur'] as num).toDouble(),
+      priceDzd: (json['price_dzd'] as num).toDouble(),
+      isUsed: json['is_used'] as bool? ?? false,
+      clinicId: json['clinic_id'] as String?,
+      usedAt: json['used_at'] != null
+          ? DateTime.parse(json['used_at'] as String)
+          : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : null,
+    );
+  }
   const SubscriptionModel({
     required this.id,
     required this.code,
@@ -91,25 +110,6 @@ class SubscriptionModel extends Equatable {
       case SubscriptionType.yearly:
         return DateTime(startDate.year + 1, startDate.month, startDate.day);
     }
-  }
-
-  factory SubscriptionModel.fromJson(Map<String, dynamic> json) {
-    return SubscriptionModel(
-      id: json['id'] as String,
-      code: json['code'] as String,
-      type: SubscriptionType.fromDbValue(json['type'] as String),
-      priceUsd: (json['price_usd'] as num).toDouble(),
-      priceEur: (json['price_eur'] as num).toDouble(),
-      priceDzd: (json['price_dzd'] as num).toDouble(),
-      isUsed: json['is_used'] as bool? ?? false,
-      clinicId: json['clinic_id'] as String?,
-      usedAt: json['used_at'] != null
-          ? DateTime.parse(json['used_at'] as String)
-          : null,
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'] as String)
-          : null,
-    );
   }
 
   Map<String, dynamic> toJson() {

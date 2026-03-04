@@ -87,7 +87,7 @@ class LanguageSwitcher extends StatelessWidget {
     // This would typically be handled by a BLoC or state management
     // For now, we'll show a dialog indicating the change
     final localizations = AppLocalizations.of(context)!;
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -107,7 +107,8 @@ class LanguageSwitcher extends StatelessWidget {
               Navigator.pop(context);
               // In a real implementation, this would trigger a locale change
               // through a BLoC or other state management solution
-              _showLanguageChangedSnackbar(context, languageCode, localizations);
+              _showLanguageChangedSnackbar(
+                  context, languageCode, localizations);
             },
             child: Text(localizations.confirm),
           ),
@@ -154,9 +155,8 @@ class LanguageSwitcherSimple extends StatelessWidget {
         trailing: Switch(
           value: !isArabic,
           onChanged: (value) {
-            final newLanguage = value
-                ? AppConstants.englishCode
-                : AppConstants.arabicCode;
+            final newLanguage =
+                value ? AppConstants.englishCode : AppConstants.arabicCode;
             _changeLanguage(context, newLanguage, localizations);
           },
         ),
@@ -207,11 +207,6 @@ class LanguageSwitcherSimple extends StatelessWidget {
 
 /// Language selector dropdown for forms.
 class LanguageSelector extends StatelessWidget {
-  final String? selectedLanguage;
-  final ValueChanged<String?>? onChanged;
-  final String? label;
-  final String? hint;
-
   const LanguageSelector({
     super.key,
     this.selectedLanguage,
@@ -219,13 +214,17 @@ class LanguageSelector extends StatelessWidget {
     this.label,
     this.hint,
   });
+  final String? selectedLanguage;
+  final ValueChanged<String?>? onChanged;
+  final String? label;
+  final String? hint;
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
     return DropdownButtonFormField<String>(
-      value: selectedLanguage,
+      initialValue: selectedLanguage,
       decoration: InputDecoration(
         labelText: label ?? localizations.language,
         hintText: hint ?? localizations.language,

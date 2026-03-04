@@ -30,13 +30,12 @@ class AuthLoading extends AuthState {
 
 /// نجاح تسجيل الدخول
 class LoginSuccess extends AuthState {
-  final UserModel user;
-  final String message;
-
   const LoginSuccess({
     required this.user,
     this.message = 'تم تسجيل الدخول بنجاح',
   });
+  final UserModel user;
+  final String message;
 
   @override
   List<Object?> get props => [user, message];
@@ -44,9 +43,8 @@ class LoginSuccess extends AuthState {
 
 /// فشل تسجيل الدخول
 class LoginFailure extends AuthState {
-  final String message;
-
   const LoginFailure(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -58,13 +56,12 @@ class LoginFailure extends AuthState {
 
 /// نجاح التسجيل
 class RegisterSuccess extends AuthState {
-  final UserModel user;
-  final String message;
-
   const RegisterSuccess({
     required this.user,
     this.message = 'تم التسجيل بنجاح',
   });
+  final UserModel user;
+  final String message;
 
   @override
   List<Object?> get props => [user, message];
@@ -72,9 +69,8 @@ class RegisterSuccess extends AuthState {
 
 /// فشل التسجيل
 class RegisterFailure extends AuthState {
-  final String message;
-
   const RegisterFailure(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -86,13 +82,14 @@ class RegisterFailure extends AuthState {
 
 /// تم إرسال طلب استعادة كلمة المرور
 class ForgotPasswordSent extends AuthState {
-  final String message;
-  final String method; // 'email' or 'phone'
+  // 'email' or 'phone'
 
   const ForgotPasswordSent({
     required this.message,
     required this.method,
   });
+  final String message;
+  final String method;
 
   @override
   List<Object?> get props => [message, method];
@@ -100,9 +97,8 @@ class ForgotPasswordSent extends AuthState {
 
 /// فشل إرسال طلب استعادة كلمة المرور
 class ForgotPasswordFailure extends AuthState {
-  final String message;
-
   const ForgotPasswordFailure(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -114,15 +110,14 @@ class ForgotPasswordFailure extends AuthState {
 
 /// تم إرسال OTP
 class OtpSent extends AuthState {
-  final String email;
-  final String method; // 'email' or 'phone'
-  final String message;
-
   const OtpSent({
     required this.email,
     required this.method,
     this.message = 'تم إرسال رمز التحقق',
   });
+  final String email;
+  final String method; // 'email' or 'phone'
+  final String message;
 
   @override
   List<Object?> get props => [email, method, message];
@@ -130,11 +125,10 @@ class OtpSent extends AuthState {
 
 /// تم التحقق من OTP بنجاح
 class OtpVerified extends AuthState {
-  final String message;
-
   const OtpVerified({
     this.message = 'تم التحقق من رمز OTP بنجاح',
   });
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -142,13 +136,12 @@ class OtpVerified extends AuthState {
 
 /// فشل التحقق من OTP
 class OtpFailure extends AuthState {
-  final String message;
-  final int? attemptsRemaining;
-
   const OtpFailure(
     this.message, {
     this.attemptsRemaining,
   });
+  final String message;
+  final int? attemptsRemaining;
 
   @override
   List<Object?> get props => [message, attemptsRemaining];
@@ -156,11 +149,10 @@ class OtpFailure extends AuthState {
 
 /// OTP منتهي الصلاحية
 class OtpExpired extends AuthState {
-  final String message;
-
   const OtpExpired({
     this.message = 'انتهت صلاحية رمز التحقق',
   });
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -172,11 +164,10 @@ class OtpExpired extends AuthState {
 
 /// نجاح إعادة تعيين كلمة المرور
 class PasswordResetSuccess extends AuthState {
-  final String message;
-
   const PasswordResetSuccess({
     this.message = 'تم إعادة تعيين كلمة المرور بنجاح',
   });
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -184,9 +175,8 @@ class PasswordResetSuccess extends AuthState {
 
 /// فشل إعادة تعيين كلمة المرور
 class PasswordResetFailure extends AuthState {
-  final String message;
-
   const PasswordResetFailure(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -194,11 +184,10 @@ class PasswordResetFailure extends AuthState {
 
 /// نجاح تغيير كلمة المرور
 class PasswordChangeSuccess extends AuthState {
-  final String message;
-
   const PasswordChangeSuccess({
     this.message = 'تم تغيير كلمة المرور بنجاح',
   });
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -206,9 +195,8 @@ class PasswordChangeSuccess extends AuthState {
 
 /// فشل تغيير كلمة المرور
 class PasswordChangeFailure extends AuthState {
-  final String message;
-
   const PasswordChangeFailure(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -220,9 +208,8 @@ class PasswordChangeFailure extends AuthState {
 
 /// المستخدم مسجل دخول
 class Authenticated extends AuthState {
-  final UserModel user;
-
   const Authenticated(this.user);
+  final UserModel user;
 
   @override
   List<Object?> get props => [user];
@@ -239,13 +226,12 @@ class Unauthenticated extends AuthState {
 
 /// حالة توجيه المستخدم بناءً على دوره
 class AuthRedirect extends AuthState {
-  final String role; // 'patient', 'doctor', 'staff', 'admin'
-  final String message;
-
   const AuthRedirect({
     required this.role,
     this.message = 'جاري التوجيه...',
   });
+  final String role; // 'patient', 'doctor', 'staff', 'admin'
+  final String message;
 
   @override
   List<Object?> get props => [role, message];
@@ -253,13 +239,12 @@ class AuthRedirect extends AuthState {
 
 /// يجب تحديث الملف الشخصي قبل المتابعة
 class ProfileCompletionRequired extends AuthState {
-  final UserModel user;
-  final String message;
-
   const ProfileCompletionRequired({
     required this.user,
     this.message = 'يرجى إكمال ملفك الشخصي',
   });
+  final UserModel user;
+  final String message;
 
   @override
   List<Object?> get props => [user, message];
@@ -271,11 +256,10 @@ class ProfileCompletionRequired extends AuthState {
 
 /// تم تسجيل الخروج بنجاح
 class LogoutSuccess extends AuthState {
-  final String message;
-
   const LogoutSuccess({
     this.message = 'تم تسجيل الخروج',
   });
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -283,9 +267,8 @@ class LogoutSuccess extends AuthState {
 
 /// فشل تسجيل الخروج
 class LogoutFailure extends AuthState {
-  final String message;
-
   const LogoutFailure(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];

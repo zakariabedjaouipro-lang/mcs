@@ -8,12 +8,6 @@ import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/features/landing/screens/pricing_screen.dart';
 
 class PricingCard extends StatefulWidget {
-  final PricingPlan plan;
-  final String currency;
-  final BillingPeriod billingPeriod;
-  final bool isPopular;
-  final VoidCallback onGetStarted;
-
   const PricingCard({
     super.key,
     required this.plan,
@@ -22,6 +16,11 @@ class PricingCard extends StatefulWidget {
     required this.isPopular,
     required this.onGetStarted,
   });
+  final PricingPlan plan;
+  final String currency;
+  final BillingPeriod billingPeriod;
+  final bool isPopular;
+  final VoidCallback onGetStarted;
 
   @override
   State<PricingCard> createState() => _PricingCardState();
@@ -49,7 +48,9 @@ class _PricingCardState extends State<PricingCard> {
               : _isHovered
                   ? 4
                   : 1,
-          color: widget.isPopular ? AppColors.primary.withValues(alpha: 0.05) : null,
+          color: widget.isPopular
+              ? AppColors.primary.withValues(alpha: 0.05)
+              : null,
           child: Stack(
             children: [
               // Popular badge
@@ -62,9 +63,9 @@ class _PricingCardState extends State<PricingCard> {
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColors.primary,
-                      borderRadius: const BorderRadius.only(
+                      borderRadius: BorderRadius.only(
                         topRight: Radius.circular(12),
                         bottomLeft: Radius.circular(12),
                       ),
@@ -191,7 +192,7 @@ class _PricingCardState extends State<PricingCard> {
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.check_circle,
                               size: 18,
                               color: AppColors.primary,
@@ -206,7 +207,7 @@ class _PricingCardState extends State<PricingCard> {
                           ],
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),
@@ -235,13 +236,13 @@ class _PricingCardState extends State<PricingCard> {
   String _getCurrencySymbol() {
     switch (widget.currency) {
       case 'USD':
-        return '\$';
+        return r'$';
       case 'EUR':
         return '€';
       case 'DZD':
         return 'دج';
       default:
-        return '\$';
+        return r'$';
     }
   }
 }

@@ -313,13 +313,12 @@ class FeaturesScreen extends StatelessWidget {
 
 /// Feature item data model.
 class FeatureItem {
-  final IconData icon;
-  final String title;
-  final String description;
-
   FeatureItem({
     required this.icon,
     required this.title,
     required this.description,
   });
+  final IconData icon;
+  final String title;
+  final String description;
 }

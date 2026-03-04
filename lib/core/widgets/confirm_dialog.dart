@@ -2,10 +2,10 @@
 library;
 
 import 'package:flutter/material.dart';
-import '../localization/app_localizations.dart';
+import 'package:mcs/core/localization/app_localizations.dart';
 
 /// Shows a confirmation dialog.
-/// 
+///
 /// Returns `true` if the user confirms, `false` otherwise.
 Future<bool> showConfirmDialog({
   required BuildContext context,
@@ -17,7 +17,7 @@ Future<bool> showConfirmDialog({
   IconData? icon,
 }) async {
   final localizations = AppLocalizations.of(context)!;
-  
+
   final result = await showDialog<bool>(
     context: context,
     builder: (context) => _ConfirmDialog(
@@ -29,7 +29,7 @@ Future<bool> showConfirmDialog({
       icon: icon,
     ),
   );
-  
+
   return result ?? false;
 }
 
@@ -39,7 +39,7 @@ Future<bool> showDeleteConfirmDialog({
   required String itemName,
 }) async {
   final localizations = AppLocalizations.of(context)!;
-  
+
   return showConfirmDialog(
     context: context,
     title: localizations.delete,
@@ -56,7 +56,7 @@ Future<bool> showLogoutConfirmDialog({
   required BuildContext context,
 }) async {
   final localizations = AppLocalizations.of(context)!;
-  
+
   return showConfirmDialog(
     context: context,
     title: localizations.logout,
@@ -94,13 +94,6 @@ Future<T?> showCustomConfirmDialog<T>({
 
 /// Internal confirm dialog widget.
 class _ConfirmDialog extends StatelessWidget {
-  final String title;
-  final String message;
-  final String confirmText;
-  final String cancelText;
-  final bool isDestructive;
-  final IconData? icon;
-
   const _ConfirmDialog({
     required this.title,
     required this.message,
@@ -109,6 +102,12 @@ class _ConfirmDialog extends StatelessWidget {
     required this.isDestructive,
     this.icon,
   });
+  final String title;
+  final String message;
+  final String confirmText;
+  final String cancelText;
+  final bool isDestructive;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -178,19 +177,15 @@ Future<void> showAlert({
     case AlertSeverity.info:
       icon = Icons.info_outline;
       iconColor = colorScheme.primary;
-      break;
     case AlertSeverity.success:
       icon = Icons.check_circle_outline;
       iconColor = Colors.green;
-      break;
     case AlertSeverity.warning:
       icon = Icons.warning_amber_outlined;
       iconColor = Colors.orange;
-      break;
     case AlertSeverity.error:
       icon = Icons.error_outline;
       iconColor = colorScheme.error;
-      break;
   }
 
   await showDialog(
@@ -222,7 +217,7 @@ Future<void> showAlert({
 }
 
 /// Shows a loading dialog.
-/// 
+///
 /// Returns a function that should be called to dismiss the dialog.
 void showLoadingDialog({
   required BuildContext context,
@@ -237,9 +232,8 @@ void showLoadingDialog({
 
 /// Internal loading dialog widget.
 class _LoadingDialog extends StatelessWidget {
-  final String? message;
-
   const _LoadingDialog({this.message});
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -275,7 +269,7 @@ void showConfirmationSnackBar({
   Duration duration = const Duration(seconds: 4),
 }) {
   final scaffoldMessenger = ScaffoldMessenger.of(context);
-  
+
   scaffoldMessenger.showSnackBar(
     SnackBar(
       content: Text(message),

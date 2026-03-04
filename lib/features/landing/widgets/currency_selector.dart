@@ -50,12 +50,11 @@ class CurrencyController extends ChangeNotifier {
 }
 
 class CurrencySelector extends StatefulWidget {
-  final CurrencyController controller;
-
   const CurrencySelector({
     super.key,
     required this.controller,
   });
+  final CurrencyController controller;
 
   @override
   State<CurrencySelector> createState() => _CurrencySelectorState();
@@ -113,7 +112,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
+                const Icon(
                   Icons.language,
                   size: 20,
                   color: AppColors.primary,
@@ -149,7 +148,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
                   color: Colors.black12,
                   blurRadius: 8,
                   offset: Offset(0, 4),
-                )
+                ),
               ],
             ),
             child: Column(
@@ -163,7 +162,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
   /// Build currency option buttons.
   List<Widget> _buildCurrencyOptions() {
     final currencies = [
-      ('USD', '\$', 'United States Dollar'),
+      ('USD', r'$', 'United States Dollar'),
       ('EUR', '€', 'Euro'),
       ('DZD', 'دج', 'Algerian Dinar'),
     ];
@@ -193,7 +192,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
               child: Row(
                 children: [
                   if (_selectedCurrency == currency.$1)
-                    Icon(
+                    const Icon(
                       Icons.check_circle,
                       size: 20,
                       color: AppColors.primary,
@@ -261,7 +260,7 @@ class CurrencyRates {
   static String _getCurrencySymbol(String currency) {
     switch (currency) {
       case 'USD':
-        return '\$';
+        return r'$';
       case 'EUR':
         return '€';
       case 'DZD':

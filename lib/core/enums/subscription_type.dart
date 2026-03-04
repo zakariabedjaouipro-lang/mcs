@@ -30,19 +30,19 @@ enum SubscriptionPlanType {
   static SubscriptionPlanType fromDbValue(String value) {
     return SubscriptionPlanType.values.firstWhere(
       (t) => t.dbValue == value,
-      orElse: () =>
-          throw ArgumentError('Unknown SubscriptionPlanType: $value'),
+      orElse: () => throw ArgumentError('Unknown SubscriptionPlanType: $value'),
     );
   }
 }
 
 // ── Subscription Type (for subscription codes) ─────────────
 enum SubscriptionType {
-  trial('trial', 'تجريبي', 'Trial', 0.0, 0.0, 0.0, 30),
-  monthly('monthly', 'شهري', 'Monthly', 29.99, 27.99, 4000.0, 30),
-  quarterly('quarterly', 'ربع سنوي', 'Quarterly', 79.99, 74.99, 11000.0, 90),
-  halfYearly('half_yearly', 'نصف سنوي', 'Half-Yearly', 149.99, 139.99, 20000.0, 180),
-  yearly('yearly', 'سنوي', 'Yearly', 279.99, 259.99, 37000.0, 365);
+  trial('trial', 'تجريبي', 'Trial', 0, 0, 0, 30),
+  monthly('monthly', 'شهري', 'Monthly', 29.99, 27.99, 4000, 30),
+  quarterly('quarterly', 'ربع سنوي', 'Quarterly', 79.99, 74.99, 11000, 90),
+  halfYearly(
+      'half_yearly', 'نصف سنوي', 'Half-Yearly', 149.99, 139.99, 20000, 180),
+  yearly('yearly', 'سنوي', 'Yearly', 279.99, 259.99, 37000, 365);
 
   const SubscriptionType(
     this.dbValue,
@@ -73,8 +73,7 @@ enum SubscriptionType {
   static SubscriptionType fromDbValue(String value) {
     return SubscriptionType.values.firstWhere(
       (t) => t.dbValue == value,
-      orElse: () =>
-          throw ArgumentError('Unknown SubscriptionType: $value'),
+      orElse: () => throw ArgumentError('Unknown SubscriptionType: $value'),
     );
   }
 }
@@ -97,8 +96,7 @@ enum SubscriptionStatus {
   static SubscriptionStatus fromDbValue(String value) {
     return SubscriptionStatus.values.firstWhere(
       (s) => s.dbValue == value,
-      orElse: () =>
-          throw ArgumentError('Unknown SubscriptionStatus: $value'),
+      orElse: () => throw ArgumentError('Unknown SubscriptionStatus: $value'),
     );
   }
 

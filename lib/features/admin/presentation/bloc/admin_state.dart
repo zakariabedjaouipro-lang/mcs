@@ -22,9 +22,8 @@ class AdminLoading extends AdminState {
 
 /// Subscription codes loaded
 class SubscriptionCodesLoaded extends AdminState {
-  final List<SubscriptionModel> subscriptions;
-
   const SubscriptionCodesLoaded(this.subscriptions);
+  final List<SubscriptionModel> subscriptions;
 
   @override
   List<Object?> get props => [subscriptions];
@@ -32,9 +31,8 @@ class SubscriptionCodesLoaded extends AdminState {
 
 /// Clinics loaded
 class ClinicsLoaded extends AdminState {
-  final List<ClinicModel> clinics;
-
   const ClinicsLoaded(this.clinics);
+  final List<ClinicModel> clinics;
 
   @override
   List<Object?> get props => [clinics];
@@ -42,13 +40,6 @@ class ClinicsLoaded extends AdminState {
 
 /// Dashboard stats loaded
 class DashboardStatsLoaded extends AdminState {
-  final int totalClinics;
-  final int activeSubscriptions;
-  final int trialSubscriptions;
-  final int expiredSubscriptions;
-  final double totalRevenueUsd;
-  final int totalUsers;
-
   const DashboardStatsLoaded({
     required this.totalClinics,
     required this.activeSubscriptions,
@@ -57,6 +48,12 @@ class DashboardStatsLoaded extends AdminState {
     required this.totalRevenueUsd,
     required this.totalUsers,
   });
+  final int totalClinics;
+  final int activeSubscriptions;
+  final int trialSubscriptions;
+  final int expiredSubscriptions;
+  final double totalRevenueUsd;
+  final int totalUsers;
 
   @override
   List<Object?> get props => [
@@ -71,9 +68,8 @@ class DashboardStatsLoaded extends AdminState {
 
 /// Exchange rates loaded
 class ExchangeRatesLoaded extends AdminState {
-  final Map<String, double> rates;
-
   const ExchangeRatesLoaded(this.rates);
+  final Map<String, double> rates;
 
   @override
   List<Object?> get props => [rates];
@@ -81,9 +77,8 @@ class ExchangeRatesLoaded extends AdminState {
 
 /// Error state
 class AdminError extends AdminState {
-  final String message;
-
   const AdminError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -91,9 +86,8 @@ class AdminError extends AdminState {
 
 /// Success state (generic)
 class AdminSuccess extends AdminState {
-  final String message;
-
   const AdminSuccess(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];

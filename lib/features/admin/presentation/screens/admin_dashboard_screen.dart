@@ -237,13 +237,12 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
 }
 
 class _DashboardTab {
-  final String title;
-  final IconData icon;
-  final Widget Function(BuildContext) builder;
-
   _DashboardTab({
     required this.title,
     required this.icon,
     required this.builder,
   });
+  final String title;
+  final IconData icon;
+  final Widget Function(BuildContext) builder;
 }

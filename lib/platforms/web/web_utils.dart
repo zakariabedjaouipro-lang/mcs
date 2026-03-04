@@ -74,8 +74,10 @@ abstract class WebUtils {
   /// Check if app is installed as PWA.
   static bool get isPWAInstalled {
     try {
-      final displayMode = js.context.callMethod('matchMedia',
-          ['(display-mode: standalone)']).callMethod('matches') as bool;
+      final displayMode = js.context.callMethod(
+        'matchMedia',
+        ['(display-mode: standalone)'],
+      ).callMethod('matches') as bool;
       return displayMode ||
           html.window.navigator.userAgent.toLowerCase().contains('webapk');
     } catch (_) {

@@ -15,9 +15,8 @@ abstract class AuthEvent extends Equatable {
 
 /// تغيير قيمة البريد الإلكتروني في نموذج تسجيل الدخول
 class LoginEmailChanged extends AuthEvent {
-  final String email;
-
   const LoginEmailChanged(this.email);
+  final String email;
 
   @override
   List<Object?> get props => [email];
@@ -25,9 +24,8 @@ class LoginEmailChanged extends AuthEvent {
 
 /// تغيير قيمة كلمة المرور في نموذج تسجيل الدخول
 class LoginPasswordChanged extends AuthEvent {
-  final String password;
-
   const LoginPasswordChanged(this.password);
+  final String password;
 
   @override
   List<Object?> get props => [password];
@@ -35,13 +33,12 @@ class LoginPasswordChanged extends AuthEvent {
 
 /// إرسال طلب تسجيل الدخول
 class LoginSubmitted extends AuthEvent {
-  final String email;
-  final String password;
-
   const LoginSubmitted({
     required this.email,
     required this.password,
   });
+  final String email;
+  final String password;
 
   @override
   List<Object?> get props => [email, password];
@@ -49,13 +46,12 @@ class LoginSubmitted extends AuthEvent {
 
 /// تسجيل الدخول عبر وسائل التواصل الاجتماعية
 class LoginWithSocialSubmitted extends AuthEvent {
-  final String provider; // 'google', 'facebook', 'apple'
-  final String token;
-
   const LoginWithSocialSubmitted({
     required this.provider,
     required this.token,
   });
+  final String provider; // 'google', 'facebook', 'apple'
+  final String token;
 
   @override
   List<Object?> get props => [provider, token];
@@ -67,9 +63,8 @@ class LoginWithSocialSubmitted extends AuthEvent {
 
 /// تغيير قيمة الاسم في نموذج التسجيل
 class RegisterNameChanged extends AuthEvent {
-  final String name;
-
   const RegisterNameChanged(this.name);
+  final String name;
 
   @override
   List<Object?> get props => [name];
@@ -77,9 +72,8 @@ class RegisterNameChanged extends AuthEvent {
 
 /// تغيير قيمة البريد الإلكتروني في نموذج التسجيل
 class RegisterEmailChanged extends AuthEvent {
-  final String email;
-
   const RegisterEmailChanged(this.email);
+  final String email;
 
   @override
   List<Object?> get props => [email];
@@ -87,9 +81,8 @@ class RegisterEmailChanged extends AuthEvent {
 
 /// تغيير قيمة رقم الهاتف في نموذج التسجيل
 class RegisterPhoneChanged extends AuthEvent {
-  final String phone;
-
   const RegisterPhoneChanged(this.phone);
+  final String phone;
 
   @override
   List<Object?> get props => [phone];
@@ -97,9 +90,8 @@ class RegisterPhoneChanged extends AuthEvent {
 
 /// تغيير قيمة كلمة المرور في نموذج التسجيل
 class RegisterPasswordChanged extends AuthEvent {
-  final String password;
-
   const RegisterPasswordChanged(this.password);
+  final String password;
 
   @override
   List<Object?> get props => [password];
@@ -107,9 +99,8 @@ class RegisterPasswordChanged extends AuthEvent {
 
 /// تأكيد كلمة المرور
 class RegisterConfirmPasswordChanged extends AuthEvent {
-  final String confirmPassword;
-
   const RegisterConfirmPasswordChanged(this.confirmPassword);
+  final String confirmPassword;
 
   @override
   List<Object?> get props => [confirmPassword];
@@ -117,9 +108,8 @@ class RegisterConfirmPasswordChanged extends AuthEvent {
 
 /// تغيير اختيار الدور (مريض/طبيب/موظف)
 class RegisterRoleChanged extends AuthEvent {
-  final String role;
-
   const RegisterRoleChanged(this.role);
+  final String role;
 
   @override
   List<Object?> get props => [role];
@@ -127,12 +117,6 @@ class RegisterRoleChanged extends AuthEvent {
 
 /// إرسال طلب التسجيل
 class RegisterSubmitted extends AuthEvent {
-  final String name;
-  final String email;
-  final String phone;
-  final String password;
-  final String role;
-
   const RegisterSubmitted({
     required this.name,
     required this.email,
@@ -140,6 +124,11 @@ class RegisterSubmitted extends AuthEvent {
     required this.password,
     required this.role,
   });
+  final String name;
+  final String email;
+  final String phone;
+  final String password;
+  final String role;
 
   @override
   List<Object?> get props => [name, email, phone, password, role];
@@ -151,13 +140,14 @@ class RegisterSubmitted extends AuthEvent {
 
 /// إرسال طلب استعادة كلمة المرور
 class ForgotPasswordSubmitted extends AuthEvent {
-  final String contactInfo; // email or phone
-  final String method; // 'email' or 'phone'
+  // 'email' or 'phone'
 
   const ForgotPasswordSubmitted({
     required this.contactInfo,
     required this.method,
   });
+  final String contactInfo; // email or phone
+  final String method;
 
   @override
   List<Object?> get props => [contactInfo, method];
@@ -169,13 +159,12 @@ class ForgotPasswordSubmitted extends AuthEvent {
 
 /// إرسال طلب التحقق من OTP
 class OtpSubmitted extends AuthEvent {
-  final String email;
-  final String otp;
-
   const OtpSubmitted({
     required this.email,
     required this.otp,
   });
+  final String email;
+  final String otp;
 
   @override
   List<Object?> get props => [email, otp];
@@ -183,13 +172,12 @@ class OtpSubmitted extends AuthEvent {
 
 /// تغيير رقم OTP في حقل معين
 class OtpDigitChanged extends AuthEvent {
-  final String digit;
-  final int index;
-
   const OtpDigitChanged({
     required this.digit,
     required this.index,
   });
+  final String digit;
+  final int index;
 
   @override
   List<Object?> get props => [digit, index];
@@ -197,13 +185,14 @@ class OtpDigitChanged extends AuthEvent {
 
 /// إعادة محاولة إرسال OTP
 class ResendOtpRequested extends AuthEvent {
-  final String email;
-  final String method; // 'email' or 'phone'
+  // 'email' or 'phone'
 
   const ResendOtpRequested({
     required this.email,
     required this.method,
   });
+  final String email;
+  final String method;
 
   @override
   List<Object?> get props => [email, method];
@@ -215,15 +204,14 @@ class ResendOtpRequested extends AuthEvent {
 
 /// إرسال طلب إعادة تعيين كلمة المرور
 class ResetPasswordSubmitted extends AuthEvent {
-  final String email;
-  final String otp;
-  final String newPassword;
-
   const ResetPasswordSubmitted({
     required this.email,
     required this.otp,
     required this.newPassword,
   });
+  final String email;
+  final String otp;
+  final String newPassword;
 
   @override
   List<Object?> get props => [email, otp, newPassword];
@@ -231,13 +219,12 @@ class ResetPasswordSubmitted extends AuthEvent {
 
 /// إرسال طلب تغيير كلمة المرور الحالية
 class ChangePasswordSubmitted extends AuthEvent {
-  final String currentPassword;
-  final String newPassword;
-
   const ChangePasswordSubmitted({
     required this.currentPassword,
     required this.newPassword,
   });
+  final String currentPassword;
+  final String newPassword;
 
   @override
   List<Object?> get props => [currentPassword, newPassword];
@@ -249,9 +236,8 @@ class ChangePasswordSubmitted extends AuthEvent {
 
 /// إظهار/إخفاء كلمة المرور
 class TogglePasswordVisibility extends AuthEvent {
-  final bool isVisible;
-
   const TogglePasswordVisibility(this.isVisible);
+  final bool isVisible;
 
   @override
   List<Object?> get props => [isVisible];

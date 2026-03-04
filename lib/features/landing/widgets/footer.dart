@@ -4,27 +4,26 @@ import 'package:mcs/core/theme/text_styles.dart';
 
 /// تذييل الموقع - يحتوي على الروابط والمعلومات والتواصل الاجتماعي
 class FooterWidget extends StatelessWidget {
-  final Color? primaryColor;
-  final VoidCallback? onLogoTap;
-
   const FooterWidget({
     Key? key,
     this.primaryColor,
     this.onLogoTap,
   }) : super(key: key);
+  final Color? primaryColor;
+  final VoidCallback? onLogoTap;
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = this.primaryColor ?? AppColors.primary;
     final isMobile = MediaQuery.of(context).size.width < 768;
 
-    return Container(
-      color: Color(0xFF1A1A1A),
+    return ColoredBox(
+      color: const Color(0xFF1A1A1A),
       child: Column(
         children: [
           // Main Footer Content
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 60,
             ),
@@ -41,7 +40,7 @@ class FooterWidget extends StatelessWidget {
 
           // Bottom Bar
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 20,
             ),
@@ -61,11 +60,10 @@ class FooterWidget extends StatelessWidget {
           flex: 2,
           child: _buildCompanySection(primaryColor),
         ),
-        SizedBox(width: 60),
+        const SizedBox(width: 60),
 
         // Quick Links
         Expanded(
-          flex: 1,
           child: _buildLinksSection(
             title: 'روابط سريعة',
             links: [
@@ -81,7 +79,6 @@ class FooterWidget extends StatelessWidget {
 
         // Resources
         Expanded(
-          flex: 1,
           child: _buildLinksSection(
             title: 'الموارد',
             links: [
@@ -97,7 +94,6 @@ class FooterWidget extends StatelessWidget {
 
         // Legal
         Expanded(
-          flex: 1,
           child: _buildLinksSection(
             title: 'القوانين',
             links: [
@@ -112,7 +108,6 @@ class FooterWidget extends StatelessWidget {
 
         // Contact Info
         Expanded(
-          flex: 1,
           child: _buildContactSection(primaryColor),
         ),
       ],
@@ -124,7 +119,7 @@ class FooterWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildCompanySection(primaryColor),
-        SizedBox(height: 40),
+        const SizedBox(height: 40),
         _buildLinksSection(
           title: 'روابط سريعة',
           links: [
@@ -136,7 +131,7 @@ class FooterWidget extends StatelessWidget {
           ],
           primaryColor: primaryColor,
         ),
-        SizedBox(height: 40),
+        const SizedBox(height: 40),
         _buildLinksSection(
           title: 'الموارد',
           links: [
@@ -147,7 +142,7 @@ class FooterWidget extends StatelessWidget {
           ],
           primaryColor: primaryColor,
         ),
-        SizedBox(height: 40),
+        const SizedBox(height: 40),
         _buildContactSection(primaryColor),
       ],
     );
@@ -179,7 +174,7 @@ class FooterWidget extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Text(
               'MCS',
               style: TextStyles.heading3.copyWith(
@@ -189,7 +184,7 @@ class FooterWidget extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
 
         // Description
         Text(
@@ -200,21 +195,28 @@ class FooterWidget extends StatelessWidget {
           ),
           maxLines: 3,
         ),
-        SizedBox(height: 24),
+        const SizedBox(height: 24),
 
         // Social Links
         Row(
           children: [
-            _buildSocialIcon(Icons.facebook, 'Facebook', Color(0xFF1877F2)),
-            SizedBox(width: 12),
-            _buildSocialIcon(Icons.close, 'X (Twitter)', Color(0xFF1DA1F2)),
-            SizedBox(width: 12),
             _buildSocialIcon(
-                Icons.account_circle, 'Instagram', Color(0xFFE4405F)),
-            SizedBox(width: 12),
-            _buildSocialIcon(Icons.business, 'LinkedIn', Color(0xFF0A66C2)),
-            SizedBox(width: 12),
-            _buildSocialIcon(Icons.play_circle, 'YouTube', Color(0xFFFF0000)),
+                Icons.facebook, 'Facebook', const Color(0xFF1877F2)),
+            const SizedBox(width: 12),
+            _buildSocialIcon(
+                Icons.close, 'X (Twitter)', const Color(0xFF1DA1F2)),
+            const SizedBox(width: 12),
+            _buildSocialIcon(
+              Icons.account_circle,
+              'Instagram',
+              const Color(0xFFE4405F),
+            ),
+            const SizedBox(width: 12),
+            _buildSocialIcon(
+                Icons.business, 'LinkedIn', const Color(0xFF0A66C2)),
+            const SizedBox(width: 12),
+            _buildSocialIcon(
+                Icons.play_circle, 'YouTube', const Color(0xFFFF0000)),
           ],
         ),
       ],
@@ -236,13 +238,13 @@ class FooterWidget extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: List.generate(
             links.length,
             (index) => Padding(
-              padding: EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: 12),
               child: _buildFooterLink(links[index], primaryColor),
             ),
           ),
@@ -262,19 +264,19 @@ class FooterWidget extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         _buildContactItem(
           icon: Icons.phone,
           label: '+966 123 456 789',
           primaryColor: primaryColor,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _buildContactItem(
           icon: Icons.email,
           label: 'info@mcs.com',
           primaryColor: primaryColor,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _buildContactItem(
           icon: Icons.location_on,
           label: 'الرياض، السعودية',
@@ -312,7 +314,7 @@ class FooterWidget extends StatelessWidget {
           color: primaryColor,
           size: 18,
         ),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         Expanded(
           child: Text(
             label,
@@ -364,9 +366,9 @@ class FooterWidget extends StatelessWidget {
             Row(
               children: [
                 _buildBottomLink('سياسة الخصوصية', primaryColor),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 _buildBottomLink('شروط الاستخدام', primaryColor),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 _buildBottomLink('اتصل بنا', primaryColor),
               ],
             ),

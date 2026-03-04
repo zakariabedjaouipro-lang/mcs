@@ -4,10 +4,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
-import 'package:mcs/core/constants/app_constants.dart';
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/config/router.dart';
+import 'package:mcs/core/constants/app_constants.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/theme/app_theme.dart';
 import 'package:mcs/features/auth/presentation/bloc/index.dart';

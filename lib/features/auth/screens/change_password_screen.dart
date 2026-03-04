@@ -6,14 +6,15 @@ import 'package:mcs/features/auth/presentation/bloc/index.dart';
 
 /// شاشة تغيير كلمة المرور - مع شروط قوة كلمة المرور
 class ChangePasswordScreen extends StatefulWidget {
-  final bool isForcedChange; // هل هو تغيير إجباري بعد تسجيل دخول أول مرة؟
-  final String? currentPassword; // اختياري إذا أراد المستخدم تغيير كلمته الحالية
+  // اختياري إذا أراد المستخدم تغيير كلمته الحالية
 
   const ChangePasswordScreen({
     Key? key,
     this.isForcedChange = false,
     this.currentPassword,
   }) : super(key: key);
+  final bool isForcedChange; // هل هو تغيير إجباري بعد تسجيل دخول أول مرة؟
+  final String? currentPassword;
 
   @override
   State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
@@ -47,10 +48,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   void _updatePasswordStrength(String password) {
     setState(() {
       _hasMinLength = password.length >= 8;
-      _hasUppercase = password.contains(RegExp(r'[A-Z]'));
-      _hasLowercase = password.contains(RegExp(r'[a-z]'));
+      _hasUppercase = password.contains(RegExp('[A-Z]'));
+      _hasLowercase = password.contains(RegExp('[a-z]'));
       _hasNumber = password.contains(RegExp(r'\d'));
-      _hasSpecialChar = password.contains(RegExp(r'[!@#$%^&*()_+\-=\[\]{}:";,.<>?]'));
+      _hasSpecialChar =
+          password.contains(RegExp(r'[!@#$%^&*()_+\-=\[\]{}:";,.<>?]'));
     });
   }
 
@@ -90,12 +92,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     // If forced change (after password reset via email), use ChangePasswordSubmitted
     // because the user needs to provide new password only
     context.read<AuthBloc>().add(
-      ChangePasswordSubmitted(
-        currentPassword:
-            widget.isForcedChange ? '' : _currentPasswordController.text,
-        newPassword: _newPasswordController.text,
-      ),
-    );
+          ChangePasswordSubmitted(
+            currentPassword:
+                widget.isForcedChange ? '' : _currentPasswordController.text,
+            newPassword: _newPasswordController.text,
+          ),
+        );
   }
 
   @override
@@ -104,7 +106,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       listener: (context, state) {
         if (state is PasswordResetSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('تم تغيير كلمة المرور بنجاح!'),
               backgroundColor: Colors.green,
             ),
@@ -135,8 +137,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             appBar: widget.isForcedChange
                 ? null
                 : AppBar(
-                    title: Text('تغيير كلمة المرور',
-                        style: TextStyles.subtitle1.copyWith(fontWeight: FontWeight.w700)),
+                    title: Text(
+                      'تغيير كلمة المرور',
+                      style: TextStyles.subtitle1
+                          .copyWith(fontWeight: FontWeight.w700),
+                    ),
                     centerTitle: true,
                     elevation: 0,
                     backgroundColor: Colors.white,
@@ -144,7 +149,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -162,13 +167,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               color: Colors.amber.withOpacity(0.1),
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.security,
                               size: 40,
                               color: Colors.amber,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                         ],
                       ),
 
@@ -181,14 +186,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         color: AppColors.primary,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       widget.isForcedChange
                           ? 'لحماية حسابك، يجب عليك تغيير كلمة المرور عند تسجيل الدخول للمرة الأولى'
                           : 'اختر كلمة مرور قوية وآمنة',
                       style: TextStyles.body1.copyWith(color: AppColors.grey),
                     ),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
 
                     // Form
                     Form(
@@ -210,9 +215,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     color: AppColors.grey,
                                   ),
                                   onPressed: () {
-                                    setState(() =>
-                                        _obscureCurrentPassword =
-                                        !_obscureCurrentPassword);
+                                    setState(
+                                      () => _obscureCurrentPassword =
+                                          !_obscureCurrentPassword,
+                                    );
                                   },
                                 ),
                               ),
@@ -225,7 +231,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               },
                               enabled: !isLoading,
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                           ],
 
                           // New Password Field
@@ -242,8 +248,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   color: AppColors.grey,
                                 ),
                                 onPressed: () {
-                                  setState(() =>
-                                      _obscureNewPassword = !_obscureNewPassword);
+                                  setState(
+                                    () => _obscureNewPassword =
+                                        !_obscureNewPassword,
+                                  );
                                 },
                               ),
                             ),
@@ -257,11 +265,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
 
                           // Password Strength Indicators
                           _buildPasswordStrengthIndicators(),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
                           // Confirm Password Field
                           TextFormField(
@@ -277,8 +285,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                   color: AppColors.grey,
                                 ),
                                 onPressed: () {
-                                  setState(() => _obscureConfirmPassword =
-                                      !_obscureConfirmPassword);
+                                  setState(
+                                    () => _obscureConfirmPassword =
+                                        !_obscureConfirmPassword,
+                                  );
                                 },
                               ),
                             ),
@@ -291,7 +301,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 32),
+                          const SizedBox(height: 32),
 
                           // Submit Button
                           SizedBox(
@@ -310,12 +320,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 ),
                               ),
                               child: isLoading
-                                  ? SizedBox(
+                                  ? const SizedBox(
                                       height: 24,
                                       width: 24,
                                       child: CircularProgressIndicator(
                                         valueColor: AlwaysStoppedAnimation(
-                                            Colors.white),
+                                          Colors.white,
+                                        ),
                                         strokeWidth: 2,
                                       ),
                                     )
@@ -328,7 +339,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     ),
                             ),
                           ),
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                         ],
                       ),
                     ),
@@ -350,18 +361,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           'متطلبات كلمة المرور القوية:',
           style: TextStyles.subtitle2.copyWith(fontWeight: FontWeight.w600),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         _buildStrengthItem('8 أحرف على الأقل', _hasMinLength),
         _buildStrengthItem('أحرف كبيرة وصغيرة', _hasUppercase && _hasLowercase),
         _buildStrengthItem('رقم واحد على الأقل', _hasNumber),
-        _buildStrengthItem('رمز خاص (مثل !@#\$%)', _hasSpecialChar),
+        _buildStrengthItem(r'رمز خاص (مثل !@#$%)', _hasSpecialChar),
       ],
     );
   }
 
   Widget _buildStrengthItem(String label, bool isValid) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
           Container(
@@ -372,10 +383,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               shape: BoxShape.circle,
             ),
             child: isValid
-                ? Icon(Icons.check, size: 12, color: Colors.white)
+                ? const Icon(Icons.check, size: 12, color: Colors.white)
                 : null,
           ),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Text(
             label,
             style: TextStyles.body2.copyWith(
@@ -399,23 +410,23 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.primary, width: 2),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.red),
+        borderSide: const BorderSide(color: Colors.red),
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
   }
 }

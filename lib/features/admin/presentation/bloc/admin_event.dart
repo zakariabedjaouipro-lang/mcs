@@ -13,17 +13,16 @@ abstract class AdminEvent extends Equatable {
 
 /// Generate new subscription code
 class GenerateSubscriptionCode extends AdminEvent {
-  final SubscriptionType type;
-  final double priceUsd;
-  final double priceEur;
-  final double priceDzd;
-
   const GenerateSubscriptionCode({
     required this.type,
     required this.priceUsd,
     required this.priceEur,
     required this.priceDzd,
   });
+  final SubscriptionType type;
+  final double priceUsd;
+  final double priceEur;
+  final double priceDzd;
 
   @override
   List<Object?> get props => [type, priceUsd, priceEur, priceDzd];
@@ -36,13 +35,12 @@ class LoadSubscriptionCodes extends AdminEvent {
 
 /// Activate subscription code for clinic
 class ActivateSubscriptionCode extends AdminEvent {
-  final String code;
-  final String clinicId;
-
   const ActivateSubscriptionCode({
     required this.code,
     required this.clinicId,
   });
+  final String code;
+  final String clinicId;
 
   @override
   List<Object?> get props => [code, clinicId];
@@ -57,14 +55,6 @@ class LoadClinics extends AdminEvent {
 
 /// Create new clinic
 class CreateClinic extends AdminEvent {
-  final String name;
-  final String email;
-  final String phone;
-  final String country;
-  final String region;
-  final String? address;
-  final String? description;
-
   const CreateClinic({
     required this.name,
     required this.email,
@@ -74,22 +64,21 @@ class CreateClinic extends AdminEvent {
     this.address,
     this.description,
   });
+  final String name;
+  final String email;
+  final String phone;
+  final String country;
+  final String region;
+  final String? address;
+  final String? description;
 
   @override
-  List<Object?> get props => [name, email, phone, country, region, address, description];
+  List<Object?> get props =>
+      [name, email, phone, country, region, address, description];
 }
 
 /// Update clinic
 class UpdateClinic extends AdminEvent {
-  final String clinicId;
-  final String? name;
-  final String? email;
-  final String? phone;
-  final String? address;
-  final String? description;
-  final String? logoUrl;
-  final bool? isActive;
-
   const UpdateClinic({
     required this.clinicId,
     this.name,
@@ -100,16 +89,24 @@ class UpdateClinic extends AdminEvent {
     this.logoUrl,
     this.isActive,
   });
+  final String clinicId;
+  final String? name;
+  final String? email;
+  final String? phone;
+  final String? address;
+  final String? description;
+  final String? logoUrl;
+  final bool? isActive;
 
   @override
-  List<Object?> get props => [clinicId, name, email, phone, address, description, logoUrl, isActive];
+  List<Object?> get props =>
+      [clinicId, name, email, phone, address, description, logoUrl, isActive];
 }
 
 /// Deactivate clinic
 class DeactivateClinic extends AdminEvent {
-  final String clinicId;
-
   const DeactivateClinic({required this.clinicId});
+  final String clinicId;
 
   @override
   List<Object?> get props => [clinicId];
@@ -124,15 +121,14 @@ class LoadExchangeRates extends AdminEvent {
 
 /// Update exchange rate
 class UpdateExchangeRate extends AdminEvent {
-  final String fromCurrency;
-  final String toCurrency;
-  final double rate;
-
   const UpdateExchangeRate({
     required this.fromCurrency,
     required this.toCurrency,
     required this.rate,
   });
+  final String fromCurrency;
+  final String toCurrency;
+  final double rate;
 
   @override
   List<Object?> get props => [fromCurrency, toCurrency, rate];

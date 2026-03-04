@@ -7,10 +7,9 @@ library;
 import 'dart:developer';
 import 'dart:typed_data';
 
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/errors/exceptions.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StorageService {
   StorageService({SupabaseClient? client})

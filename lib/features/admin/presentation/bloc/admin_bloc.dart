@@ -7,8 +7,6 @@ import 'package:mcs/features/admin/presentation/bloc/admin_state.dart';
 
 /// Admin BLoC for managing Super Admin operations
 class AdminBloc extends Bloc<AdminEvent, AdminState> {
-  final SupabaseService _supabaseService;
-
   AdminBloc(this._supabaseService) : super(const AdminInitial()) {
     on<GenerateSubscriptionCode>(_onGenerateSubscriptionCode);
     on<LoadSubscriptionCodes>(_onLoadSubscriptionCodes);
@@ -21,6 +19,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     on<UpdateExchangeRate>(_onUpdateExchangeRate);
     on<LoadDashboardStats>(_onLoadDashboardStats);
   }
+  final SupabaseService _supabaseService;
 
   // ── Subscription Handlers ───────────────────────────────────
 
@@ -31,7 +30,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     emit(const AdminLoading());
     try {
       final code = _generateUniqueCode();
-      
+
       final subscription = SubscriptionModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         code: code,
@@ -42,8 +41,9 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         createdAt: DateTime.now(),
       );
 
-      await _supabaseService.insert('subscription_codes', subscription.toJson());
-      
+      await _supabaseService.insert(
+          'subscription_codes', subscription.toJson());
+
       emit(const AdminSuccess('تم إنشاء كود الاشتراك بنجاح'));
       add(const LoadSubscriptionCodes());
     } catch (e) {
@@ -63,9 +63,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         ascending: false,
       );
 
-      final subscriptions = data
-          .map((json) => SubscriptionModel.fromJson(json))
-          .toList();
+      final subscriptions = data.map(SubscriptionModel.fromJson).toList();
 
       emit(SubscriptionCodesLoaded(subscriptions));
     } catch (e) {
@@ -145,9 +143,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         ascending: false,
       );
 
-      final clinics = data
-          .map((json) => ClinicModel.fromJson(json))
-          .toList();
+      final clinics = data.map(ClinicModel.fromJson).toList();
 
       emit(ClinicsLoaded(clinics));
     } catch (e) {
@@ -175,7 +171,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       );
 
       await _supabaseService.insert('clinics', clinic.toJson());
-      
+
       emit(const AdminSuccess('تم إنشاء العيادة بنجاح'));
       add(const LoadClinics());
     } catch (e) {
@@ -190,7 +186,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     emit(const AdminLoading());
     try {
       final updates = <String, dynamic>{};
-      
+
       if (event.name != null) updates['name'] = event.name;
       if (event.email != null) updates['email'] = event.email;
       if (event.phone != null) updates['phone'] = event.phone;
@@ -201,7 +197,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       updates['updated_at'] = DateTime.now().toIso8601String();
 
       await _supabaseService.update('clinics', event.clinicId, updates);
-      
+
       emit(const AdminSuccess('تم تحديث العيادة بنجاح'));
       add(const LoadClinics());
     } catch (e) {
@@ -220,7 +216,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         event.clinicId,
         {'is_active': false, 'updated_at': DateTime.now().toIso8601String()},
       );
-      
+
       emit(const AdminSuccess('تم إلغاء تفعيل العيادة بنجاح'));
       add(const LoadClinics());
     } catch (e) {
@@ -237,12 +233,13 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     emit(const AdminLoading());
     try {
       final data = await _supabaseService.fetchAll('exchange_rates');
-      
+
       final rates = <String, double>{};
       for (final item in data) {
-        rates[item['from_currency'] as String] = (item['rate'] as num).toDouble();
+        rates[item['from_currency'] as String] =
+            (item['rate'] as num).toDouble();
       }
-      
+
       emit(ExchangeRatesLoaded(rates));
     } catch (e) {
       emit(AdminError('فشل تحميل أسعار الصرف: $e'));
@@ -260,7 +257,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         '${event.fromCurrency}_to_${event.toCurrency}',
         {'rate': event.rate, 'updated_at': DateTime.now().toIso8601String()},
       );
-      
+
       emit(const AdminSuccess('تم تحديث سعر الصرف بنجاح'));
       add(const LoadExchangeRates());
     } catch (e) {
@@ -277,12 +274,13 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     emit(const AdminLoading());
     try {
       final clinicsData = await _supabaseService.fetchAll('clinics');
-      final clinics = clinicsData.map((json) => ClinicModel.fromJson(json)).toList();
+      final clinics = clinicsData.map(ClinicModel.fromJson).toList();
 
-      final activeSubs = clinics.where((c) => c.isActive && !c.isTrialActive).length;
+      final activeSubs =
+          clinics.where((c) => c.isActive && !c.isTrialActive).length;
       final trialSubs = clinics.where((c) => c.isTrialActive).length;
       final expiredSubs = clinics.where((c) => c.isSubscriptionExpired).length;
-      
+
       final totalRevenue = clinics.fold<double>(0, (sum, clinic) {
         if (clinic.isTrial) return sum;
         return sum + clinic.subscriptionType.priceUsd;
@@ -291,14 +289,16 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       // Get total users from user table
       final usersData = await _supabaseService.fetchAll('users');
 
-      emit(DashboardStatsLoaded(
-        totalClinics: clinics.length,
-        activeSubscriptions: activeSubs,
-        trialSubscriptions: trialSubs,
-        expiredSubscriptions: expiredSubs,
-        totalRevenueUsd: totalRevenue,
-        totalUsers: usersData.length,
-      ));
+      emit(
+        DashboardStatsLoaded(
+          totalClinics: clinics.length,
+          activeSubscriptions: activeSubs,
+          trialSubscriptions: trialSubs,
+          expiredSubscriptions: expiredSubs,
+          totalRevenueUsd: totalRevenue,
+          totalUsers: usersData.length,
+        ),
+      );
     } catch (e) {
       emit(AdminError('فشل تحميل الإحصائيات: $e'));
     }

@@ -32,8 +32,9 @@ abstract class Validators {
   static final _phoneRegex = RegExp(r'^\+?[0-9]{8,15}$');
 
   static String? phone(String? value) {
-    if (value == null || value.trim().isEmpty)
+    if (value == null || value.trim().isEmpty) {
       return 'Phone number is required';
+    }
     final cleaned = value.replaceAll(RegExp(r'[\s\-()]'), '');
     if (!_phoneRegex.hasMatch(cleaned)) return 'Invalid phone number';
     return null;
@@ -86,8 +87,9 @@ abstract class Validators {
     if (value.length != AppConstants.otpLength) {
       return 'OTP must be ${AppConstants.otpLength} digits';
     }
-    if (!RegExp(r'^\d+$').hasMatch(value))
+    if (!RegExp(r'^\d+$').hasMatch(value)) {
       return 'OTP must contain only digits';
+    }
     return null;
   }
 

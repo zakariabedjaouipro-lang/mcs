@@ -11,7 +11,7 @@ class LandingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
+      providers: const [
         // Landing-specific BLoC providers
         // BlocProvider(create: (context) => getIt<DownloadBloc>()),
         // BlocProvider(create: (context) => getIt<DeviceDetectionBloc>()),

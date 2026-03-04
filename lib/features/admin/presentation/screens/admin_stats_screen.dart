@@ -30,7 +30,8 @@ class AdminStatsScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   state.message,
-                  style: TextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
+                  style:
+                      TextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
                 ),
               ],
             ),
@@ -44,9 +45,8 @@ class AdminStatsScreen extends StatelessWidget {
 }
 
 class _StatsContent extends StatelessWidget {
-  final DashboardStatsLoaded stats;
-
   const _StatsContent({required this.stats, super.key});
+  final DashboardStatsLoaded stats;
 
   @override
   Widget build(BuildContext context) {
@@ -116,11 +116,6 @@ class _StatsContent extends StatelessWidget {
 }
 
 class _StatCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData icon;
-  final Color color;
-
   const _StatCard({
     required this.title,
     required this.value,
@@ -128,6 +123,10 @@ class _StatCard extends StatelessWidget {
     required this.color,
     super.key,
   });
+  final String title;
+  final String value;
+  final IconData icon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +144,8 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             value,
-            style: TextStyles.headline4.copyWith(color: color, fontWeight: FontWeight.bold),
+            style: TextStyles.headline4
+                .copyWith(color: color, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(

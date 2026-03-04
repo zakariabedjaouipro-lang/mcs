@@ -12,9 +12,9 @@ class VideoSessionModel extends Equatable {
     required this.roomId,
     required this.tokenDoctor,
     required this.tokenPatient,
+    required this.status,
     this.startedAt,
     this.endedAt,
-    required this.status,
   });
 
   /// Create from JSON.

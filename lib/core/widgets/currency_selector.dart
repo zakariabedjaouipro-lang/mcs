@@ -2,21 +2,20 @@
 library;
 
 import 'package:flutter/material.dart';
-import '../localization/app_localizations.dart';
-import '../services/currency_service.dart';
+import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/core/services/currency_service.dart';
 
 /// Currency selector button widget.
 class CurrencySelector extends StatelessWidget {
-  final Currency? selectedCurrency;
-  final ValueChanged<Currency>? onChanged;
-  final bool showLabel;
-
   const CurrencySelector({
     super.key,
     this.selectedCurrency,
     this.onChanged,
     this.showLabel = false,
   });
+  final Currency? selectedCurrency;
+  final ValueChanged<Currency>? onChanged;
+  final bool showLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +76,9 @@ class CurrencySelector extends StatelessWidget {
                   Text(
                     curr.name,
                     style: TextStyle(
-                      fontWeight: currency == curr ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: currency == curr
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -103,14 +104,13 @@ class CurrencySelector extends StatelessWidget {
 
 /// Simple currency switcher for use in settings pages.
 class CurrencySwitcherSimple extends StatelessWidget {
-  final Currency? selectedCurrency;
-  final ValueChanged<Currency>? onChanged;
-
   const CurrencySwitcherSimple({
     super.key,
     this.selectedCurrency,
     this.onChanged,
   });
+  final Currency? selectedCurrency;
+  final ValueChanged<Currency>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -154,9 +154,8 @@ class CurrencySwitcherSimple extends StatelessWidget {
                   ),
                   title: Text(curr.name),
                   subtitle: Text(curr.code),
-                  trailing: currency == curr
-                      ? const Icon(Icons.check_circle)
-                      : null,
+                  trailing:
+                      currency == curr ? const Icon(Icons.check_circle) : null,
                   onTap: () {
                     Navigator.pop(context);
                     onChanged?.call(curr);
@@ -179,11 +178,6 @@ class CurrencySwitcherSimple extends StatelessWidget {
 
 /// Currency selector dropdown for forms.
 class CurrencySelectorDropdown extends StatelessWidget {
-  final Currency? selectedCurrency;
-  final ValueChanged<Currency?>? onChanged;
-  final String? label;
-  final String? hint;
-
   const CurrencySelectorDropdown({
     super.key,
     this.selectedCurrency,
@@ -191,13 +185,17 @@ class CurrencySelectorDropdown extends StatelessWidget {
     this.label,
     this.hint,
   });
+  final Currency? selectedCurrency;
+  final ValueChanged<Currency?>? onChanged;
+  final String? label;
+  final String? hint;
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
     return DropdownButtonFormField<Currency>(
-      value: selectedCurrency,
+      initialValue: selectedCurrency,
       decoration: InputDecoration(
         labelText: label ?? 'Currency',
         hintText: hint ?? 'Select currency',
@@ -245,12 +243,6 @@ class CurrencySelectorDropdown extends StatelessWidget {
 
 /// Currency display widget with auto-conversion.
 class CurrencyDisplay extends StatelessWidget {
-  final double amount;
-  final Currency? fromCurrency;
-  final Currency? toCurrency;
-  final TextStyle? style;
-  final int? decimalPlaces;
-
   const CurrencyDisplay({
     super.key,
     required this.amount,
@@ -259,21 +251,26 @@ class CurrencyDisplay extends StatelessWidget {
     this.style,
     this.decimalPlaces,
   });
+  final double amount;
+  final Currency? fromCurrency;
+  final Currency? toCurrency;
+  final TextStyle? style;
+  final int? decimalPlaces;
 
   @override
   Widget build(BuildContext context) {
     final currencyService = CurrencyService();
     final displayCurrency = toCurrency ?? fromCurrency ?? Currency.dzd;
-    
+
     // Convert amount if needed
     final convertedAmount = fromCurrency != null && toCurrency != null
         ? currencyService.convert(amount, from: fromCurrency, to: toCurrency)
         : amount;
-    
+
     // Format with appropriate decimal places
     final places = decimalPlaces ?? (displayCurrency == Currency.dzd ? 3 : 2);
     final formattedAmount = convertedAmount.toStringAsFixed(places);
-    
+
     return Text(
       '${displayCurrency.symbol}$formattedAmount',
       style: style,
@@ -283,13 +280,6 @@ class CurrencyDisplay extends StatelessWidget {
 
 /// Price display with original and converted prices.
 class PriceDisplay extends StatelessWidget {
-  final double originalPrice;
-  final Currency originalCurrency;
-  final Currency? targetCurrency;
-  final TextStyle? originalStyle;
-  final TextStyle? convertedStyle;
-  final bool showOriginal;
-
   const PriceDisplay({
     super.key,
     required this.originalPrice,
@@ -299,18 +289,24 @@ class PriceDisplay extends StatelessWidget {
     this.convertedStyle,
     this.showOriginal = true,
   });
+  final double originalPrice;
+  final Currency originalCurrency;
+  final Currency? targetCurrency;
+  final TextStyle? originalStyle;
+  final TextStyle? convertedStyle;
+  final bool showOriginal;
 
   @override
   Widget build(BuildContext context) {
     final currencyService = CurrencyService();
     final displayCurrency = targetCurrency ?? originalCurrency;
-    
+
     final convertedPrice = currencyService.convert(
       originalPrice,
       from: originalCurrency,
       to: displayCurrency,
     );
-    
+
     final places = displayCurrency == Currency.dzd ? 3 : 2;
     final formattedOriginal = originalPrice.toStringAsFixed(places);
     final formattedConverted = convertedPrice.toStringAsFixed(places);

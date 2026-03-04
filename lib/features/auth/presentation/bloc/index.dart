@@ -1,5 +1,6 @@
 /// تصدير ملفات BLoC للمصادقة
 /// يوفر واجهة موحدة لاستيراد جميع مكونات BLoC
+library;
 
 export 'auth_bloc.dart';
 export 'auth_event.dart';

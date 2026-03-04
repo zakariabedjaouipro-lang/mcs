@@ -10,11 +10,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// تنفيذ مستودع المصادقة
 /// يتعامل مع تحويل الاستثناءات إلى [Failure] objects
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthService _authService;
-
   AuthRepositoryImpl({
     required AuthService authService,
   }) : _authService = authService;
+  final AuthService _authService;
 
   @override
   Future<Either<Failure, UserModel>> login({
@@ -29,7 +28,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
       final authUser = result.user;
       if (authUser == null) {
-        return Left(AuthFailure(message: 'فشل تسجيل الدخول'));
+        return const Left(AuthFailure(message: 'فشل تسجيل الدخول'));
       }
 
       final roleStr = authUser.userMetadata?['role'] as String? ?? 'patient';
@@ -50,7 +49,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل تسجيل الدخول: ${e.toString()}'));
+      return Left(ServerFailure(message: 'فشل تسجيل الدخول: ${e}'));
     }
   }
 
@@ -83,7 +82,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل التسجيل: ${e.toString()}'));
+      return Left(ServerFailure(message: 'فشل التسجيل: ${e}'));
     }
   }
 
@@ -103,7 +102,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل التحقق من OTP: ${e.toString()}'));
+      return Left(ServerFailure(message: 'فشل التحقق من OTP: ${e}'));
     }
   }
 
@@ -122,7 +121,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل إرسال رمز التحقق: ${e.toString()}'),
+        ServerFailure(message: 'فشل إرسال رمز التحقق: ${e}'),
       );
     }
   }
@@ -142,7 +141,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       if (verifyResult.user == null) {
-        return Left(AuthFailure(message: 'رمز التحقق غير صحيح'));
+        return const Left(AuthFailure(message: 'رمز التحقق غير صحيح'));
       }
 
       // Then update the password
@@ -153,7 +152,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل إعادة تعيين كلمة المرور: ${e.toString()}'),
+        ServerFailure(message: 'فشل إعادة تعيين كلمة المرور: ${e}'),
       );
     }
   }
@@ -167,7 +166,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // Get current user's email
       final authUser = _authService.currentUser;
       if (authUser == null || authUser.email == null) {
-        return Left(AuthFailure(message: 'المستخدم غير مسجل الدخول'));
+        return const Left(AuthFailure(message: 'المستخدم غير مسجل الدخول'));
       }
 
       // Re-authenticate with current password to verify it's correct
@@ -184,7 +183,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل تغيير كلمة المرور: ${e.toString()}'),
+        ServerFailure(message: 'فشل تغيير كلمة المرور: ${e}'),
       );
     }
   }
@@ -198,7 +197,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل تسجيل الخروج: ${e.toString()}'));
+      return Left(ServerFailure(message: 'فشل تسجيل الخروج: ${e}'));
     }
   }
 
@@ -229,7 +228,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user);
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل الحصول على بيانات المستخدم: ${e.toString()}'),
+        ServerFailure(message: 'فشل الحصول على بيانات المستخدم: ${e}'),
       );
     }
   }
@@ -241,7 +240,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user != null);
     } catch (e) {
       return Left(
-        ServerFailure(message: 'خطأ في التحقق من الجلسة: ${e.toString()}'),
+        ServerFailure(message: 'خطأ في التحقق من الجلسة: ${e}'),
       );
     }
   }
@@ -256,7 +255,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
       final authUser = _authService.currentUser;
       if (authUser == null) {
-        return Left(AuthFailure(message: 'المستخدم غير مصرح'));
+        return const Left(AuthFailure(message: 'المستخدم غير مصرح'));
       }
 
       final roleStr = updates['role'] as String? ??
@@ -280,7 +279,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل تحديث الملف الشخصي: ${e.toString()}'),
+        ServerFailure(message: 'فشل تحديث الملف الشخصي: ${e}'),
       );
     }
   }
@@ -296,7 +295,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'فشل تسجيل الدخول عبر وسائل التواصل: ${e.toString()}'),
+        ServerFailure(message: 'فشل تسجيل الدخول عبر وسائل التواصل: ${e}'),
       );
     }
   }

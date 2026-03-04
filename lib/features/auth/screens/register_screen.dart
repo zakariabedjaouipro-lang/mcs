@@ -7,7 +7,7 @@ import 'package:mcs/features/auth/presentation/bloc/index.dart';
 
 /// شاشة تسجيل مستخدم جديد مع اختيار الدور والتحقق
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (_passwordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('كلمات المرور غير متطابقة'),
           backgroundColor: Colors.red,
         ),
@@ -88,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       listener: (context, state) {
         if (state is RegisterSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('تم إنشاء الحساب بنجاح!'),
               backgroundColor: Colors.green,
             ),
@@ -114,11 +114,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           return Scaffold(
             body: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 60),
+                    const SizedBox(height: 60),
 
                     // Header
                     Text(
@@ -128,12 +128,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         color: AppColors.primary,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'انضم إلينا الآن والاستمتع بالخدمات',
                       style: TextStyles.body1.copyWith(color: AppColors.grey),
                     ),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
 
                     // Role Selection
                     Text(
@@ -142,14 +142,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Column(
                       children: List.generate(
                         _roles.length,
                         (index) => _buildRoleOption(_roles[index], isLoading),
                       ),
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
                     // Form
                     Form(
@@ -180,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
 
                           // Email Field
                           TextFormField(
@@ -207,7 +207,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
 
                           // Phone Field
                           TextFormField(
@@ -234,7 +234,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
 
                           // Password Field
                           TextFormField(
@@ -256,8 +256,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: AppColors.grey,
                                 ),
                                 onPressed: () {
-                                  setState(() =>
-                                      _obscurePassword = !_obscurePassword);
+                                  setState(
+                                    () => _obscurePassword = !_obscurePassword,
+                                  );
                                 },
                               ),
                             ),
@@ -276,7 +277,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
 
                           // Confirm Password Field
                           TextFormField(
@@ -298,8 +299,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: AppColors.grey,
                                 ),
                                 onPressed: () {
-                                  setState(() => _obscureConfirmPassword =
-                                      !_obscureConfirmPassword);
+                                  setState(
+                                    () => _obscureConfirmPassword =
+                                        !_obscureConfirmPassword,
+                                  );
                                 },
                               ),
                             ),
@@ -312,7 +315,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
 
                           // Register Button
                           SizedBox(
@@ -331,12 +334,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               ),
                               child: isLoading
-                                  ? SizedBox(
+                                  ? const SizedBox(
                                       height: 24,
                                       width: 24,
                                       child: CircularProgressIndicator(
                                         valueColor: AlwaysStoppedAnimation(
-                                            Colors.white),
+                                          Colors.white,
+                                        ),
                                         strokeWidth: 2,
                                       ),
                                     )
@@ -349,7 +353,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
 
                           // Login Link
                           Center(
@@ -382,7 +386,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                         ],
                       ),
                     ),
@@ -407,8 +411,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               context.read<AuthBloc>().add(RegisterRoleChanged(role.value));
             },
       child: Container(
-        margin: EdgeInsets.only(bottom: 12),
-        padding: EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.grey,
@@ -434,7 +438,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 color: isSelected ? Colors.white : AppColors.primary,
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -446,7 +450,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       color: isSelected ? AppColors.primary : Colors.black,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     role.description,
                     style: TextStyles.caption.copyWith(color: AppColors.grey),
@@ -465,7 +469,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               child: isSelected
-                  ? Center(
+                  ? const Center(
                       child: Icon(
                         Icons.check,
                         color: AppColors.primary,
@@ -493,29 +497,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.grey),
+        borderSide: const BorderSide(color: AppColors.grey),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.primary, width: 2),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Colors.red),
+        borderSide: const BorderSide(color: Colors.red),
       ),
       filled: true,
       fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
   }
 
   bool _isStrongPassword(String password) {
     // Check for at least one letter, one number, and one special character
-    final hasLetter = password.contains(RegExp(r'[a-zA-Z]'));
+    final hasLetter = password.contains(RegExp('[a-zA-Z]'));
     final hasNumber = password.contains(RegExp(r'\d'));
     final hasSpecialChar =
         password.contains(RegExp(r'''[!@#$%^&*()_+\-=\[\]{};:'".<>?]'''));
@@ -526,15 +530,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
 /// فئة تمثل خيار دور
 class RoleOption {
-  final String value;
-  final String label;
-  final String description;
-  final IconData icon;
-
   RoleOption({
     required this.value,
     required this.label,
     required this.description,
     required this.icon,
   });
+  final String value;
+  final String label;
+  final String description;
+  final IconData icon;
 }

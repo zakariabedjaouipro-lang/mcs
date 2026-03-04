@@ -81,7 +81,7 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
 
   Widget _ExchangeRatesTable(Map<String, double> rates) {
     final currencies = [
-      {'code': 'USD', 'name': 'دولار أمريكي', 'symbol': '\$'},
+      {'code': 'USD', 'name': 'دولار أمريكي', 'symbol': r'$'},
       {'code': 'EUR', 'name': 'يورو', 'symbol': '€'},
       {'code': 'DZD', 'name': 'دينار جزائري', 'symbol': 'دج'},
     ];
@@ -174,7 +174,7 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
 
   Map<String, String> _getCurrencyInfo(String code) {
     const currencies = {
-      'USD': {'code': 'USD', 'name': 'دولار أمريكي', 'symbol': '\$'},
+      'USD': {'code': 'USD', 'name': 'دولار أمريكي', 'symbol': r'$'},
       'EUR': {'code': 'EUR', 'name': 'يورو', 'symbol': '€'},
       'DZD': {'code': 'DZD', 'name': 'دينار جزائري', 'symbol': 'دج'},
     };
@@ -187,7 +187,7 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('تعديل سعر الصرف'),
+        title: const Text('تعديل سعر الصرف'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -221,18 +221,18 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
       ),
     );
 
-    if (result == true && context.mounted) {
+    if ((result ?? false) && context.mounted) {
       context.read<AdminBloc>().add(UpdateExchangeRate(
         fromCurrency: rate['from'] as String,
         toCurrency: rate['to'] as String,
         rate: double.parse(rateController.text),
-      ));
+      ),);
     }
   }
 }
 
 class _ConversionCalculator extends StatefulWidget {
-  const _ConversionCalculator({super.key});
+  const _ConversionCalculator();
 
   @override
   State<_ConversionCalculator> createState() => _ConversionCalculatorState();
@@ -245,10 +245,11 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
   String _result = '';
 
   @override
-  void Widget build(BuildContext context) {
+  void Widget @override
+  BlocBuilder<AdminBloc, AdminState> build(BuildContext context) {
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
-        Map<String, double> rates = {};
+        var rates = <String, double>{};
         if (state is ExchangeRatesLoaded) {
           rates = state.rates;
         }
@@ -261,7 +262,7 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.calculate, color: AppColors.primary),
+                      const Icon(Icons.calculate, color: AppColors.primary),
                       const SizedBox(width: 12),
                       Text(
                         'حاسبة العملات',
@@ -278,7 +279,7 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
                           decoration: const InputDecoration(
                             labelText: 'المبلغ',
                             border: OutlineInputBorder(),
-                            prefixText: '\$ ',
+                            prefixText: r'$ ',
                           ),
                           keyboardType:
                               const TextInputType.numberWithOptions(decimal: true),
@@ -346,7 +347,7 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
           );
         },
       ),
-    );
+    )
   }
 
   void _calculate(Map<String, double> rates) {

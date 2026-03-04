@@ -4,14 +4,13 @@ import 'package:mcs/core/theme/text_styles.dart';
 
 /// قسم الأسئلة الشائعة - قابل لإعادة الاستخدام مع البحث والتصنيف
 class FaqSectionWidget extends StatefulWidget {
-  final Color? primaryColor;
-  final List<FaqCategory>? categories;
-
   const FaqSectionWidget({
     Key? key,
     this.primaryColor,
     this.categories,
   }) : super(key: key);
+  final Color? primaryColor;
+  final List<FaqCategory>? categories;
 
   @override
   State<FaqSectionWidget> createState() => _FaqSectionWidgetState();
@@ -19,32 +18,30 @@ class FaqSectionWidget extends StatefulWidget {
 
 /// فئة الأسئلة الشائعة
 class FaqCategory {
-  final String title;
-  final String icon;
-  final List<FaqItem> items;
-
   FaqCategory({
     required this.title,
     required this.icon,
     required this.items,
   });
+  final String title;
+  final String icon;
+  final List<FaqItem> items;
 }
 
 /// عنصر سؤال وجواب
 class FaqItem {
-  final String question;
-  final String answer;
-
   FaqItem({
     required this.question,
     required this.answer,
   });
+  final String question;
+  final String answer;
 }
 
 class _FaqSectionWidgetState extends State<FaqSectionWidget> {
   late List<FaqCategory> _categories;
   late List<FaqCategory> _filteredCategories;
-  int _selectedCategoryIndex = 0;
+  final int _selectedCategoryIndex = 0;
   String _searchQuery = '';
 
   @override
@@ -194,15 +191,19 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
         _filteredCategories = List.from(_categories);
       } else {
         _filteredCategories = _categories
-            .map((category) => FaqCategory(
-                  title: category.title,
-                  icon: category.icon,
-                  items: category.items
-                      .where((item) =>
+            .map(
+              (category) => FaqCategory(
+                title: category.title,
+                icon: category.icon,
+                items: category.items
+                    .where(
+                      (item) =>
                           item.question.contains(query) ||
-                          item.answer.contains(query))
-                      .toList(),
-                ))
+                          item.answer.contains(query),
+                    )
+                    .toList(),
+              ),
+            )
             .where((category) => category.items.isNotEmpty)
             .toList();
       }
@@ -214,7 +215,7 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
     final primaryColor = widget.primaryColor ?? AppColors.primary;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           // Search Bar
@@ -224,11 +225,11 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
               prefixIcon: Icon(Icons.search, color: primaryColor),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: AppColors.grey),
+                borderSide: const BorderSide(color: AppColors.grey),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: AppColors.grey),
+                borderSide: const BorderSide(color: AppColors.grey),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -239,17 +240,18 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
             ),
             onChanged: _filterFaq,
           ),
-          SizedBox(height: 32),
+          const SizedBox(height: 32),
 
           // Categories and FAQ Items
           if (_filteredCategories.isEmpty)
             Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 40),
+                padding: const EdgeInsets.symmetric(vertical: 40),
                 child: Column(
                   children: [
-                    Icon(Icons.search_off, size: 48, color: AppColors.grey),
-                    SizedBox(height: 16),
+                    const Icon(Icons.search_off,
+                        size: 48, color: AppColors.grey),
+                    const SizedBox(height: 16),
                     Text(
                       'لم نجد نتائج',
                       style: TextStyles.subtitle1.copyWith(
@@ -277,7 +279,7 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
 
   Widget _buildCategorySection(FaqCategory category, Color primaryColor) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 32),
+      padding: const EdgeInsets.only(bottom: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -286,9 +288,9 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
             children: [
               Text(
                 category.icon,
-                style: TextStyle(fontSize: 28),
+                style: const TextStyle(fontSize: 28),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Text(
                 category.title,
                 style: TextStyles.heading3.copyWith(
@@ -298,14 +300,14 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // FAQ Items
           Column(
             children: List.generate(
               category.items.length,
               (index) => Padding(
-                padding: EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.only(bottom: 12),
                 child: _buildFaqItem(category.items[index], primaryColor),
               ),
             ),
@@ -323,6 +325,16 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
           fontWeight: FontWeight.w600,
         ),
       ),
+      collapsedBackgroundColor: primaryColor.withValues(alpha: 0.05),
+      backgroundColor: primaryColor.withValues(alpha: 0.05),
+      collapsedShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      iconColor: primaryColor,
+      collapsedIconColor: primaryColor,
       children: [
         Padding(
           padding: EdgeInsets.all(16),
@@ -335,16 +347,6 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
           ),
         ),
       ],
-      collapsedBackgroundColor: primaryColor.withValues(alpha: 0.05),
-      backgroundColor: primaryColor.withValues(alpha: 0.05),
-      collapsedShape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      iconColor: primaryColor,
-      collapsedIconColor: primaryColor,
     );
   }
 }
