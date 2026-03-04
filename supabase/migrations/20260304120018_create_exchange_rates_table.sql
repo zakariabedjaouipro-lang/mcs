@@ -50,10 +50,33 @@ INSERT INTO exchange_rates (id, from_currency, to_currency, rate, effective_date
   ('550e8400-e29b-41d4-a716-446655440004', 'EUR', 'USD', 1.09, '2026-03-04'),
   ('550e8400-e29b-41d4-a716-446655440005', 'EUR', 'EUR', 1.0, '2026-03-04'),
   ('550e8400-e29b-41d4-a716-446655440006', 'EUR', 'DZD', 146.2, '2026-03-04'),
-  ('550e8400-e29b-41d4-a716-4466554407', 'DZD', 'USD', 0.0074, '2026-03-04'),
-  ('550e8400-e29b-41d4-a716-4466554408', 'DZD', 'EUR', 0.0068, '2026-03-04'),
-  ('550e8400-e29b-41d4-a716-4466554409', 'DZD', 'DZD', 1.0, '2026-03-04')
+  ('550e8400-e29b-41d4-a716-446655440007', 'DZD', 'USD', 0.0074, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-446655440008', 'DZD', 'EUR', 0.0068, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-446655440009', 'DZD', 'DZD', 1.0, '2026-03-04')
 ON CONFLICT (from_currency, to_currency, effective_date) DO NOTHING;
+
+-- ══════════════════════════════════════════════════════════════
+-- Row Level Security (RLS) Policies
+-- ══════════════════════════════════════════════════════════════
+
+-- Enable RLS on exchange_rates table
+ALTER TABLE exchange_rates ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view active exchange rates
+CREATE POLICY "Active exchange rates are viewable by everyone"
+  ON exchange_rates FOR SELECT
+  USING (is_active = true);
+
+-- Policy: Super admins can manage exchange rates
+CREATE POLICY "Super admins can manage exchange rates"
+  ON exchange_rates FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
 
 -- Trigger to update updated_at
 CREATE OR REPLACE FUNCTION update_exchange_rates_updated_at()
