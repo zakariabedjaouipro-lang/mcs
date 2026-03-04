@@ -2,8 +2,9 @@
 library;
 
 import 'dart:async';
-import 'package:web/web.dart' as web;
+import 'dart:js_interop';
 
+import 'package:web/web.dart' as web;
 import 'package:flutter/foundation.dart';
 
 abstract class WebUtils {
@@ -37,13 +38,13 @@ abstract class WebUtils {
   static bool browserSupports(String feature) {
     switch (feature.toLowerCase()) {
       case 'geolocation':
-        return web.window.navigator.geolocation != null;
+        return true;
       case 'notifications':
-        return web.Notification != null;
+        return true;
       case 'service-worker':
-        return web.window.navigator.serviceWorker != null;
+        return true;
       case 'storage':
-        return web.window.localStorage != null;
+        return true;
       default:
         return false;
     }
@@ -54,15 +55,13 @@ abstract class WebUtils {
   /// Register service worker for PWA.
   static Future<void> registerServiceWorker(String swPath) async {
     try {
-      if (!kIsWeb || !browserSupports('service-worker')) {
+      if (!browserSupports('service-worker')) {
         debugPrint('Service workers not supported');
         return;
       }
 
       final serviceWorker = web.window.navigator.serviceWorker;
-      if (serviceWorker != null) {
-        serviceWorker.register(swPath.toJS);
-      }
+      await serviceWorker.register(swPath.toJS).toDart;
     } catch (e) {
       debugPrint('Error registering service worker: $e');
     }
@@ -96,12 +95,12 @@ abstract class WebUtils {
   }
 
   /// Push state to browser history.
-  static void pushState(String title, String url) {
+  static void pushHistoryState(String title, String url) {
     web.window.history.pushState(null, title, url);
   }
 
   /// Replace state in browser history.
-  static void replaceState(String title, String url) {
+  static void replaceHistoryState(String title, String url) {
     web.window.history.replaceState(null, title, url);
   }
 
@@ -127,10 +126,15 @@ abstract class WebUtils {
         return NotificationPermission.denied;
       }
 
-      final permission = web.Notification.permission;
+      // هذه القيمة من JS
+      final permission = (web.Notification.permission as JSString).toDart;
+
       if (permission == 'default') {
-        final result = await web.Notification.requestPermission();
-        return result == 'granted'
+        // هنا requestPermission() تعطي JSPromise<JSString>
+        final result = await web.Notification.requestPermission().toDart;
+        final resultStr = result.toDart;
+
+        return resultStr == 'granted'
             ? NotificationPermission.granted
             : NotificationPermission.denied;
       }
@@ -207,20 +211,33 @@ abstract class WebUtils {
       return null;
     }
 
+    final completer = Completer<GeolocationCoordinates?>();
+
     try {
-      final position = await web.window.navigator.geolocation.getCurrentPosition(
-        web.PositionOptions(
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        ),
+      final options = web.PositionOptions(
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
       );
 
-      return GeolocationCoordinates(
-        latitude: position.coords.latitude.toDouble(),
-        longitude: position.coords.longitude.toDouble(),
-        accuracy: position.coords.accuracy?.toDouble(),
+      web.window.navigator.geolocation.getCurrentPosition(
+        ((web.GeolocationPosition position) {
+          completer.complete(
+            GeolocationCoordinates(
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy,
+            ),
+          );
+        }).toJS,
+        ((web.GeolocationPositionError error) {
+          debugPrint('Error getting position: ${error.message}');
+          completer.complete(null);
+        }).toJS,
+        options,
       );
+
+      return completer.future;
     } catch (e) {
       debugPrint('Error getting current position: $e');
       return null;
@@ -237,16 +254,31 @@ abstract class WebUtils {
     }
 
     try {
-      final watchId = web.window.navigator.geolocation.watchPosition(
-        web.PositionOptions(
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        ),
+      final options = web.PositionOptions(
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
       );
 
-      // Note: Simplified implementation - actual implementation would need proper event handling
-      controller.addError('Watch position not fully implemented');
+      web.window.navigator.geolocation.watchPosition(
+        ((web.GeolocationPosition position) {
+          if (!controller.isClosed) {
+            controller.add(
+              GeolocationCoordinates(
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                accuracy: position.coords.accuracy,
+              ),
+            );
+          }
+        }).toJS,
+        ((web.GeolocationPositionError error) {
+          if (!controller.isClosed) {
+            controller.addError('Error: ${error.message}');
+          }
+        }).toJS,
+        options,
+      );
     } catch (e) {
       controller.addError('Error watching position: $e');
     }
@@ -259,7 +291,8 @@ abstract class WebUtils {
   /// Copy text to clipboard.
   static Future<bool> copyToClipboard(String text) async {
     try {
-      await web.Navigator.clipboard.writeText(text);
+      final clipboard = web.window.navigator.clipboard;
+      await clipboard.writeText(text).toDart;
       return true;
     } catch (e) {
       debugPrint('Error copying to clipboard: $e');
@@ -270,7 +303,8 @@ abstract class WebUtils {
   /// Read text from clipboard.
   static Future<String?> readFromClipboard() async {
     try {
-      final text = await web.Navigator.clipboard.readText();
+      final clipboard = web.window.navigator.clipboard;
+      final text = (await clipboard.readText().toDart).toDart;
       return text;
     } catch (e) {
       debugPrint('Error reading from clipboard: $e');
@@ -298,17 +332,19 @@ abstract class WebUtils {
   }
 
   /// Get device pixel ratio.
-  static double get devicePixelRatio => web.window.devicePixelRatio.toDouble();
+  static double get devicePixelRatio => web.window.devicePixelRatio;
 
   /// Listen to window resize events.
   static Stream<Size> onWindowResize() {
     final controller = StreamController<Size>.broadcast();
 
-    web.window.addEventListener('resize', (web.Event event) {
+    void handleResize(web.Event event) {
       if (!controller.isClosed) {
         controller.add(getWindowSize());
       }
-    });
+    }
+
+    web.window.addEventListener('resize', handleResize as web.EventListener);
 
     return controller.stream;
   }
@@ -318,7 +354,7 @@ abstract class WebUtils {
   /// Log to browser console.
   static void consoleLog(Object? object) {
     if (kDebugMode) {
-      web.console.log(object);
+      web.console.log((object as JSAny?) ?? 'null'.toJS);
     }
   }
 

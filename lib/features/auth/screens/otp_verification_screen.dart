@@ -14,9 +14,10 @@ class OtpVerificationScreen extends StatefulWidget {
     this.contactInfo = '***@mail.com',
     this.contactMethod = 'email',
     this.onVerificationComplete,
-  }) : super(key: key);
-  final String contactInfo; // البريد أو الهاتف
-  final String contactMethod; // email أو phone
+  });
+
+  final String contactInfo;
+  final String contactMethod;
   final VoidCallback? onVerificationComplete;
 
   @override
@@ -171,9 +172,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(8),
@@ -200,8 +201,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                           color: Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                              color: Colors.red.withValues(alpha: 0.3),
-                            ),
+                            color: Colors.red.withValues(alpha: 0.3),
+                          ),
                         ),
                         child: Row(
                           children: [

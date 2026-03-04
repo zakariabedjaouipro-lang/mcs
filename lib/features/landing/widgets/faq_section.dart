@@ -184,7 +184,8 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
 
   void _filterFaq(String query) {
     setState(() {
-      _searchQuery = query;
+      final lowerQuery = query.toLowerCase();
+
       if (query.isEmpty) {
         _filteredCategories = List.from(_categories);
       } else {
@@ -196,8 +197,8 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
                 items: category.items
                     .where(
                       (item) =>
-                          item.question.contains(query) ||
-                          item.answer.contains(query),
+                          item.question.toLowerCase().contains(lowerQuery) ||
+                          item.answer.toLowerCase().contains(lowerQuery),
                     )
                     .toList(),
               ),

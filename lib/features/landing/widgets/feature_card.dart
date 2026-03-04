@@ -2,7 +2,6 @@
 library;
 
 import 'package:flutter/material.dart';
-
 import 'package:mcs/core/theme/text_styles.dart';
 
 class FeatureCard extends StatefulWidget {
@@ -13,6 +12,7 @@ class FeatureCard extends StatefulWidget {
     required this.color,
     super.key,
   });
+
   final IconData icon;
   final String title;
   final String description;
@@ -32,7 +32,9 @@ class _FeatureCardState extends State<FeatureCard> {
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        transform: Matrix4.identity()..translate(0, _isHovered ? -8 : 0),
+        // translateByDouble needs 4 arguments: x, y, z, w
+        transform: Matrix4.identity()
+          ..translateByDouble(0, _isHovered ? -8 : 0, 0, 0),
         child: Card(
           elevation: _isHovered ? 8 : 2,
           child: Padding(
@@ -44,7 +46,8 @@ class _FeatureCardState extends State<FeatureCard> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: widget.color.withValues(alpha: 0.1),
+                    color: widget.color.withValues(
+                        alpha: 0.1), // use withValues instead of withOpacity
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(

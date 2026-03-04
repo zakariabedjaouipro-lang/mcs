@@ -13,7 +13,7 @@ class NavbarWidget extends StatefulWidget {
     this.onLanguageChanged,
     this.isDarkMode = false,
     this.currentLanguage = 'ar',
-  }) : super(key: key);
+  });
   final VoidCallback? onLogoTap;
   final void Function(String)? onNavigate;
   final VoidCallback? onLoginTap;

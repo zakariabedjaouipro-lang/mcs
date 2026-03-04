@@ -16,6 +16,7 @@ class PricingCard extends StatefulWidget {
     required this.onGetStarted,
     super.key,
   });
+
   final PricingPlan plan;
   final String currency;
   final BillingPeriod billingPeriod;
@@ -41,7 +42,12 @@ class _PricingCardState extends State<PricingCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         transform: Matrix4.identity()
-          ..translateByDouble(0, _isHovered && !widget.isPopular ? 4 : 0),
+          ..translateByDouble(
+            0.0,
+            _isHovered && !widget.isPopular ? 4.0 : 0.0,
+            0.0,
+            0.0,
+          ),
         child: Card(
           elevation: widget.isPopular
               ? 8
