@@ -337,27 +337,49 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
     final addressController = TextEditingController();
     final descriptionController = TextEditingController();
 
+    final supabaseService = SupabaseService();
+
     String? selectedCountryId;
     String? selectedRegionId;
 
-    // Load countries and regions
-    final supabaseService = SupabaseService();
+    // Fetch countries
     final countriesData = await supabaseService.fetchAll(
       'countries',
       filters: {'is_supported': true},
       orderBy: 'name',
     );
-    final countries = countriesData.map(CountryModel.fromJson).toList();
 
-    List<RegionModel> regions = [];
+    if (!context.mounted) return;
+
+    final countries = (countriesData as List)
+        .map(
+          (e) => CountryModel.fromJson(
+            e as Map<String, dynamic>,
+          ),
+        )
+        .toList();
+
+    var regions = <RegionModel>[];
+
     if (countries.isNotEmpty) {
       selectedCountryId = countries.first.id;
+
       final regionsData = await supabaseService.fetchAll(
         'regions',
         filters: {'country_id': selectedCountryId},
         orderBy: 'name',
       );
-      regions = regionsData.map(RegionModel.fromJson).toList();
+
+      if (!context.mounted) return;
+
+      regions = (regionsData as List)
+          .map(
+            (e) => RegionModel.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList();
+
       if (regions.isNotEmpty) {
         selectedRegionId = regions.first.id;
       }
@@ -365,8 +387,8 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
 
     final result = await showDialog<bool>(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
           title: const Text('إضافة عيادة جديدة'),
           content: SingleChildScrollView(
             child: Column(
@@ -404,29 +426,44 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                     labelText: 'الدولة *',
                     border: OutlineInputBorder(),
                   ),
-                  items: countries.map((country) {
-                    return DropdownMenuItem(
-                      value: country.id,
-                      child: Text(country.getName('ar')),
-                    );
-                  }).toList(),
+                  items: countries
+                      .map(
+                        (CountryModel country) => DropdownMenuItem(
+                          value: country.id,
+                          child: Text(country.getName('ar')),
+                        ),
+                      )
+                      .toList(),
                   onChanged: (value) async {
-                    if (value != null) {
-                      setDialogState(() {
-                        selectedCountryId = value;
-                        selectedRegionId = null;
-                      });
-                      // Load regions for selected country
-                      final regionsData = await supabaseService.fetchAll(
-                        'regions',
-                        filters: {'country_id': value},
-                        orderBy: 'name',
-                      );
-                      setDialogState(() {
-                        regions =
-                            regionsData.map(RegionModel.fromJson).toList();
-                      });
-                    }
+                    if (value == null) return;
+
+                    setDialogState(() {
+                      selectedCountryId = value;
+                      selectedRegionId = null;
+                      regions = <RegionModel>[];
+                    });
+
+                    final regionsData = await supabaseService.fetchAll(
+                      'regions',
+                      filters: {'country_id': value},
+                      orderBy: 'name',
+                    );
+
+                    if (!dialogContext.mounted) return;
+
+                    setDialogState(() {
+                      regions = (regionsData as List)
+                          .map(
+                            (e) => RegionModel.fromJson(
+                              e as Map<String, dynamic>,
+                            ),
+                          )
+                          .toList();
+
+                      if (regions.isNotEmpty) {
+                        selectedRegionId = regions.first.id;
+                      }
+                    });
                   },
                 ),
                 const SizedBox(height: 16),
@@ -436,12 +473,14 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                     labelText: 'المنطقة *',
                     border: OutlineInputBorder(),
                   ),
-                  items: regions.map((region) {
-                    return DropdownMenuItem(
-                      value: region.id,
-                      child: Text(region.getName('ar')),
-                    );
-                  }).toList(),
+                  items: regions
+                      .map(
+                        (RegionModel region) => DropdownMenuItem(
+                          value: region.id,
+                          child: Text(region.getName('ar')),
+                        ),
+                      )
+                      .toList(),
                   onChanged: (value) {
                     setDialogState(() {
                       selectedRegionId = value;
@@ -471,11 +510,11 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context, false),
+              onPressed: () => Navigator.pop(dialogContext, false),
               child: const Text('إلغاء'),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
+              onPressed: () => Navigator.pop(dialogContext, true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
               ),
@@ -486,132 +525,28 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
       ),
     );
 
+    if (!context.mounted) return;
+
     if ((result ?? false) &&
-        context.mounted &&
         selectedCountryId != null &&
         selectedRegionId != null) {
-      final selectedCountry =
-          countries.firstWhere((c) => c.id == selectedCountryId);
-      final selectedRegion =
-          regions.firstWhere((r) => r.id == selectedRegionId);
+      final selectedCountry = countries.firstWhere(
+        (CountryModel c) => c.id == selectedCountryId,
+      );
+
+      final selectedRegion = regions.firstWhere(
+        (RegionModel r) => r.id == selectedRegionId,
+      );
+
       context.read<AdminBloc>().add(
             CreateClinic(
-              name: nameController.text,
-              email: emailController.text,
-              phone: phoneController.text,
+              name: nameController.text.trim(),
+              email: emailController.text.trim(),
+              phone: phoneController.text.trim(),
               country: selectedCountry.getName('ar'),
               region: selectedRegion.getName('ar'),
-              address: addressController.text,
-              description: descriptionController.text,
-            ),
-          );
-    }
-  }
-
-  Future<void> _showEditClinicDialog(
-      BuildContext context, ClinicModel clinic) async {
-    final nameController = TextEditingController(text: clinic.name);
-    final emailController = TextEditingController(text: clinic.email);
-    final phoneController = TextEditingController(text: clinic.phone);
-    final addressController = TextEditingController(text: clinic.address ?? '');
-    final descriptionController =
-        TextEditingController(text: clinic.description ?? '');
-
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('تعديل: ${clinic.name}'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'اسم العيادة',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'البريد الإلكتروني',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'رقم الهاتف',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: addressController,
-                decoration: const InputDecoration(
-                  labelText: 'العنوان',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'الوصف',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 16),
-              SwitchListTile(
-                title: const Text('نشط'),
-                subtitle: const Text('تفعيل/تعطيل العيادة'),
-                value: clinic.isActive,
-                onChanged: (value) {
-                  if (context.mounted) {
-                    context.read<AdminBloc>().add(
-                          UpdateClinic(
-                            clinicId: clinic.id,
-                            isActive: value,
-                          ),
-                        );
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('إلغاء'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-            ),
-            child: const Text('حفظ التغييرات'),
-          ),
-        ],
-      ),
-    );
-
-    if ((result ?? false) && context.mounted) {
-      context.read<AdminBloc>().add(
-            UpdateClinic(
-              clinicId: clinic.id,
-              name: nameController.text,
-              email: emailController.text,
-              phone: phoneController.text,
-              address: addressController.text,
-              description: descriptionController.text,
+              address: addressController.text.trim(),
+              description: descriptionController.text.trim(),
             ),
           );
     }
@@ -745,5 +680,261 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  Future<void> _showEditClinicDialog(
+      BuildContext context, ClinicModel clinic) async {
+    final nameController = TextEditingController(text: clinic.name);
+    final emailController = TextEditingController(text: clinic.email);
+    final phoneController = TextEditingController(text: clinic.phone);
+    final addressController = TextEditingController(text: clinic.address ?? '');
+    final descriptionController =
+        TextEditingController(text: clinic.description ?? '');
+
+    final supabaseService = SupabaseService();
+
+    String? selectedCountryId;
+    String? selectedRegionId;
+
+    // Fetch countries
+    final countriesData = await supabaseService.fetchAll(
+      'countries',
+      filters: {'is_supported': true},
+      orderBy: 'name',
+    );
+
+    if (!context.mounted) return;
+
+    final countries = (countriesData as List)
+        .map(
+          (e) => CountryModel.fromJson(
+            e as Map<String, dynamic>,
+          ),
+        )
+        .toList();
+
+    var regions = <RegionModel>[];
+
+    // Set initial country and region
+    final initialCountry = countries.cast<CountryModel?>().firstWhere(
+          (c) => c?.getName('ar') == clinic.country,
+          orElse: () => null,
+        );
+    if (initialCountry != null) {
+      selectedCountryId = initialCountry.id;
+
+      final regionsData = await supabaseService.fetchAll(
+        'regions',
+        filters: {'country_id': selectedCountryId},
+        orderBy: 'name',
+      );
+
+      if (!context.mounted) return;
+
+      regions = (regionsData as List)
+          .map(
+            (e) => RegionModel.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList();
+
+      final initialRegion = regions.cast<RegionModel?>().firstWhere(
+            (r) => r?.getName('ar') == clinic.region,
+            orElse: () => null,
+          );
+      if (initialRegion != null) {
+        selectedRegionId = initialRegion.id;
+      } else if (regions.isNotEmpty) {
+        selectedRegionId = regions.first.id;
+      }
+    } else if (countries.isNotEmpty) {
+      selectedCountryId = countries.first.id;
+
+      final regionsData = await supabaseService.fetchAll(
+        'regions',
+        filters: {'country_id': selectedCountryId},
+        orderBy: 'name',
+      );
+
+      if (!context.mounted) return;
+
+      regions = (regionsData as List)
+          .map(
+            (e) => RegionModel.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList();
+
+      if (regions.isNotEmpty) {
+        selectedRegionId = regions.first.id;
+      }
+    }
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          title: const Text('تعديل العيادة'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'اسم العيادة *',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'البريد الإلكتروني *',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: phoneController,
+                  decoration: const InputDecoration(
+                    labelText: 'رقم الهاتف *',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: selectedCountryId,
+                  decoration: const InputDecoration(
+                    labelText: 'الدولة *',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: countries
+                      .map(
+                        (CountryModel country) => DropdownMenuItem(
+                          value: country.id,
+                          child: Text(country.getName('ar')),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) async {
+                    if (value == null) return;
+
+                    setDialogState(() {
+                      selectedCountryId = value;
+                      selectedRegionId = null;
+                      regions = <RegionModel>[];
+                    });
+
+                    final regionsData = await supabaseService.fetchAll(
+                      'regions',
+                      filters: {'country_id': value},
+                      orderBy: 'name',
+                    );
+
+                    if (!dialogContext.mounted) return;
+
+                    setDialogState(() {
+                      regions = (regionsData as List)
+                          .map(
+                            (e) => RegionModel.fromJson(
+                              e as Map<String, dynamic>,
+                            ),
+                          )
+                          .toList();
+
+                      if (regions.isNotEmpty) {
+                        selectedRegionId = regions.first.id;
+                      }
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: selectedRegionId,
+                  decoration: const InputDecoration(
+                    labelText: 'المنطقة *',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: regions
+                      .map(
+                        (RegionModel region) => DropdownMenuItem(
+                          value: region.id,
+                          child: Text(region.getName('ar')),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setDialogState(() {
+                      selectedRegionId = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: addressController,
+                  decoration: const InputDecoration(
+                    labelText: 'العنوان',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 2,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'الوصف',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('إلغاء'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+              ),
+              child: const Text('حفظ'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (!context.mounted) return;
+
+    if ((result ?? false) &&
+        selectedCountryId != null &&
+        selectedRegionId != null) {
+      final selectedCountry = countries.firstWhere(
+        (CountryModel c) => c.id == selectedCountryId,
+      );
+
+      final selectedRegion = regions.firstWhere(
+        (RegionModel r) => r.id == selectedRegionId,
+      );
+
+      context.read<AdminBloc>().add(
+            UpdateClinic(
+              clinicId: clinic.id,
+              name: nameController.text.trim(),
+              email: emailController.text.trim(),
+              phone: phoneController.text.trim(),
+              address: addressController.text.trim(),
+              description: descriptionController.text.trim(),
+            ),
+          );
+    }
   }
 }

@@ -171,8 +171,9 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
               itemCount: itemCount, // ✅ تم الإصلاح: استخدام int
               onPageChanged: (index) {
                 setState(() => _currentIndex = index);
-                _animationController.reset();
-                _animationController.forward();
+                _animationController
+                  ..reset()
+                  ..forward();
               },
               itemBuilder: (context, index) {
                 final testimonial = _testimonials[index];
