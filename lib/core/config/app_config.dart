@@ -16,17 +16,11 @@ class AppConfig {
   static const String defaultLocale = 'ar';
 
   // ── Environment ──────────────────────────────────────────
-  static AppEnvironment _environment = AppEnvironment.development;
+  static AppEnvironment environment = AppEnvironment.development;
 
-  static AppEnvironment get environment => _environment;
-
-  static set environment(AppEnvironment env) {
-    _environment = env;
-  }
-
-  static bool get isDevelopment => _environment == AppEnvironment.development;
-  static bool get isStaging => _environment == AppEnvironment.staging;
-  static bool get isProduction => _environment == AppEnvironment.production;
+  static bool get isDevelopment => environment == AppEnvironment.development;
+  static bool get isStaging => environment == AppEnvironment.staging;
+  static bool get isProduction => environment == AppEnvironment.production;
 
   // ── Supabase ─────────────────────────────────────────────
   /// Loaded at runtime from environment variables.
@@ -61,6 +55,6 @@ class AppConfig {
     AppConfig.supabaseUrl = supabaseUrl;
     AppConfig.supabaseAnonKey = supabaseAnonKey;
     if (signalingUrl != null) AppConfig.signalingUrl = signalingUrl;
-    _environment = environment;
+    AppConfig.environment = environment;
   }
 }

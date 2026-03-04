@@ -51,7 +51,7 @@ class SubscriptionModel extends Equatable {
   /// Get price in specified currency
   double getPrice(String currency) {
     final lowerCurrency = currency.toLowerCase();
-    if (lowerCurrency == 'usd' || lowerCurrency == '\$') {
+    if (lowerCurrency == 'usd' || lowerCurrency == r'$') {
       return priceUsd;
     } else if (lowerCurrency == 'eur' || lowerCurrency == '€') {
       return priceEur;
