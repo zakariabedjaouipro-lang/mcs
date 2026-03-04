@@ -1,301 +1,388 @@
-/// Video call service for managing video consultations.
+/// WebRTC Video Call Service (Updated)
+/// Uses WebRTC for peer-to-peer video calls with signaling via Socket.IO
 library;
 
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:mcs/core/config/env.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Service for managing video calls using Agora RTC Engine.
+
+/// WebRTC Video Call Service
 class VideoCallService {
-  static const String _appId = 'YOUR_AGORA_APP_ID';
-  static const String _appCertificate = 'YOUR_AGORA_APP_CERTIFICATE';
+  static String get _signalingUrl => Env.signalingUrl;
 
-  RtcEngine? _engine;
-  String? _channelName;
-  String? _token;
-  int? _localUid;
-  final List<int> _remoteUids = [];
+  io.Socket? _socket;
+  RTCPeerConnection? _peerConnection;
+  MediaStream? _localStream;
+  MediaStream? _remoteStream;
 
-  /// Get the current Agora RTC engine instance.
-  RtcEngine? get engine => _engine;
+  final List<RTCIceCandidate> _remoteIceCandidates = [];
+  String? _callId;
+  String? _currentUserId;
+  String? _remoteUserId;
 
-  /// Get the current channel name.
-  String? get channelName => _channelName;
+  // Configuration for WebRTC
+  final Map<String, dynamic> _configuration = {
+    'iceServers': [
+      {'urls': 'stun:stun.l.google.com:19302'},
+      {'urls': 'stun:stun1.l.google.com:19302'},
+      {'urls': 'stun:stun2.l.google.com:19302'},
+    ],
+  };
 
-  /// Get the current local user ID.
-  int? get localUid => _localUid;
+  final Map<String, dynamic> _constraints = {
+    'audio': true,
+    'video': {
+      'mandatory': {
+        'minWidth': '640',
+        'minHeight': '480',
+        'minFrameRate': '30',
+      },
+      'facingMode': 'user',
+      'optional': [],
+    },
+  };
 
-  /// Get the list of remote user IDs.
-  List<int> get remoteUids => List.unmodifiable(_remoteUids);
+  // Streams
+  final _localStreamController = StreamController<MediaStream>.broadcast();
+  final _remoteStreamController = StreamController<MediaStream>.broadcast();
+  final _callStateController = StreamController<VideoCallState>.broadcast();
+  final _errorController = StreamController<String>.broadcast();
 
-  /// Check if a call is currently active.
-  bool get isInCall => _engine != null && _channelName != null;
+  Stream<MediaStream> get localStream => _localStreamController.stream;
+  Stream<MediaStream> get remoteStream => _remoteStreamController.stream;
+  Stream<VideoCallState> get callState => _callStateController.stream;
+  Stream<String> get errors => _errorController.stream;
 
-  /// Initialize the Agora RTC engine.
-  Future<void> initialize({
-    required Function(String) onError,
-    required Function(int) onJoinChannelSuccess,
-    required Function(int, int) onUserJoined,
-    required Function(int, UserOfflineReasonType) onUserOffline,
-  }) async {
-    if (_engine != null) {
-      debugPrint('VideoCallService: Engine already initialized');
-      return;
-    }
+  bool get isInCall => _peerConnection != null && _callId != null;
+  String? get callId => _callId;
+
+  /// Initialize the service
+  Future<void> initialize({required String userId}) async {
+    _currentUserId = userId;
 
     try {
-      _engine = createAgoraRtcEngine();
-      await _engine!.initialize(
-        const RtcEngineContext(
-          appId: _appId,
-          channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
-        ),
-      );
-
-      // Set event handlers
-      _engine!.registerEventHandler(
-        RtcEngineEventHandler(
-          onError: (ErrorCodeType err, String msg) {
-            debugPrint('VideoCallService: Error $err - $msg');
-            onError(msg);
-          },
-          onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-            debugPrint(
-                'VideoCallService: Joined channel ${connection.channelId}');
-            _localUid = connection.localUid ?? 0;
-            onJoinChannelSuccess(connection.localUid ?? 0);
-          },
-          onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
-            debugPrint('VideoCallService: Remote user $remoteUid joined');
-            _remoteUids.add(remoteUid);
-            onUserJoined(remoteUid, elapsed);
-          },
-          onUserOffline: (
-            RtcConnection connection,
-            int remoteUid,
-            UserOfflineReasonType reason,
-          ) {
-            debugPrint('VideoCallService: Remote user $remoteUid offline');
-            _remoteUids.remove(remoteUid);
-            onUserOffline(remoteUid, reason);
-          },
-        ),
-      );
-
-      debugPrint('VideoCallService: Engine initialized successfully');
+      await _connectToSignalingServer();
+      debugPrint('VideoCallService: Initialized successfully');
     } catch (e) {
       debugPrint('VideoCallService: Initialization error - $e');
+      _errorController.add('Failed to initialize: $e');
       rethrow;
     }
   }
 
-  /// Generate a token for the channel.
-  Future<String> generateToken({
-    required String channelName,
-    required int uid,
-    required int expireTime,
-  }) async {
-    try {
-      // For now, use a placeholder token
-      // In production, this should call your backend server
-      // which will generate the token using Agora's Token Builder
-      final response = await Supabase.instance.client.functions.invoke(
-        'generate-agora-token',
-        body: {
-          'channelName': channelName,
-          'uid': uid,
-          'expireTime': expireTime,
-        },
+  /// Connect to signaling server
+  Future<void> _connectToSignalingServer() async {
+    _socket = io.io(
+      _signalingUrl,
+      <String, dynamic>{
+        'transports': ['websocket'],
+        'autoConnect': false,
+      },
+    );
+
+    _socket!.connect();
+
+    _socket!.on('connect', (_) {
+      debugPrint('VideoCallService: Connected to signaling server');
+      _socket!.emit('join', {'userId': _currentUserId});
+    });
+
+    _socket!.on('disconnect', (_) {
+      debugPrint('VideoCallService: Disconnected from signaling server');
+      _endCall();
+    });
+
+    _socket!.on('incoming-call', (data) async {
+      debugPrint('VideoCallService: Incoming call from ${data['callerId']}');
+      _remoteUserId = data['callerId'] as String?;
+      _callId = data['callId'] as String?;
+      _callStateController.add(VideoCallState.incoming);
+    });
+
+    _socket!.on('call-accepted', (data) async {
+      debugPrint('VideoCallService: Call accepted');
+      _callStateController.add(VideoCallState.connected);
+      await _createPeerConnection();
+      await _createOffer();
+    });
+
+    _socket!.on('call-rejected', (data) {
+      debugPrint('VideoCallService: Call rejected');
+      _callStateController.add(VideoCallState.ended);
+      _errorController.add('Call was rejected');
+    });
+
+    _socket!.on('offer', (data) async {
+      debugPrint('VideoCallService: Received offer');
+      _callId = data['callId'] as String?;
+      _remoteUserId = data['callerId'] as String?;
+
+      await _createPeerConnection();
+      await _peerConnection!.setRemoteDescription(
+        RTCSessionDescription(data['sdp'] as String, 'offer'),
       );
 
-      final token = response.data['token'] as String?;
-      if (token == null || token.isEmpty) {
-        throw Exception('Failed to generate token');
+      await _createAnswer();
+    });
+
+    _socket!.on('answer', (data) async {
+      debugPrint('VideoCallService: Received answer');
+      await _peerConnection!.setRemoteDescription(
+        RTCSessionDescription(data['sdp'] as String, 'answer'),
+      );
+    });
+
+    _socket!.on('ice-candidate', (data) async {
+      debugPrint('VideoCallService: Received ICE candidate');
+      final candidate = RTCIceCandidate(
+        data['candidate'] as String,
+        data['sdpMid'] as String?,
+        data['sdpMLineIndex'] as int?,
+      );
+
+      if (_peerConnection != null) {
+        await _peerConnection!.addCandidate(candidate);
+      } else {
+        _remoteIceCandidates.add(candidate);
+      }
+    });
+  }
+
+  /// Start a video call
+  Future<void> startCall({required String remoteUserId}) async {
+    if (_socket == null || !_socket!.connected) {
+      throw Exception('Not connected to signaling server');
+    }
+
+    _remoteUserId = remoteUserId;
+    _callId = 'call_${DateTime.now().millisecondsSinceEpoch}';
+
+    try {
+      await _createPeerConnection();
+      await _getUserMedia();
+
+      _socket!.emit('call', {
+        'callerId': _currentUserId,
+        'calleeId': remoteUserId,
+        'callId': _callId ?? '',
+      });
+
+      _callStateController.add(VideoCallState.calling);
+      debugPrint('VideoCallService: Call started');
+    } catch (e) {
+      debugPrint('VideoCallService: Start call error - $e');
+      _errorController.add('Failed to start call: $e');
+      rethrow;
+    }
+  }
+
+  /// Accept an incoming call
+  Future<void> acceptCall() async {
+    if (_socket == null || !_socket!.connected) {
+      throw Exception('Not connected to signaling server');
+    }
+
+    try {
+      await _createPeerConnection();
+      await _getUserMedia();
+
+      _socket!.emit('accept-call', {
+        'callerId': _remoteUserId ?? '',
+        'calleeId': _currentUserId,
+        'callId': _callId ?? '',
+      });
+
+      _callStateController.add(VideoCallState.connected);
+      debugPrint('VideoCallService: Call accepted');
+    } catch (e) {
+      debugPrint('VideoCallService: Accept call error - $e');
+      _errorController.add('Failed to accept call: $e');
+      rethrow;
+    }
+  }
+
+  /// Reject an incoming call
+  Future<void> rejectCall() async {
+    if (_socket == null) return;
+
+    _socket!.emit('reject-call', {
+      'callerId': _remoteUserId ?? '',
+      'calleeId': _currentUserId,
+      'callId': _callId ?? '',
+    });
+
+    _endCall();
+    debugPrint('VideoCallService: Call rejected');
+  }
+
+  /// End the current call
+  Future<void> endCall() async {
+    if (_socket == null) return;
+
+    _socket!.emit('end-call', {
+      'callerId': _currentUserId,
+      'calleeId': _remoteUserId ?? '',
+      'callId': _callId ?? '',
+    });
+
+    _endCall();
+    debugPrint('VideoCallService: Call ended');
+  }
+
+  /// Toggle camera
+  Future<void> toggleCamera() async {
+    if (_localStream == null) return;
+
+    final videoTrack = _localStream!.getVideoTracks()[0];
+    await Helper.switchCamera(videoTrack);
+    debugPrint('VideoCallService: Camera toggled');
+  }
+
+  /// Toggle microphone
+  Future<void> toggleMicrophone() async {
+    if (_localStream == null) return;
+
+    final audioTrack = _localStream!.getAudioTracks()[0];
+    audioTrack.enabled = !audioTrack.enabled;
+    debugPrint('VideoCallService: Microphone toggled');
+  }
+
+  /// Toggle video
+  Future<void> toggleVideo() async {
+    if (_localStream == null) return;
+
+    final videoTrack = _localStream!.getVideoTracks()[0];
+    videoTrack.enabled = !videoTrack.enabled;
+    debugPrint('VideoCallService: Video toggled');
+  }
+
+  /// Create peer connection
+  Future<void> _createPeerConnection() async {
+    _peerConnection = await createPeerConnection(_configuration);
+
+    _peerConnection!.onIceCandidate = (RTCIceCandidate candidate) {
+      debugPrint('VideoCallService: ICE candidate generated');
+      _socket!.emit('ice-candidate', {
+        'candidate': candidate.candidate,
+        'sdpMid': candidate.sdpMid,
+        'sdpMLineIndex': candidate.sdpMLineIndex,
+        'targetId': _remoteUserId ?? '',
+      });
+    };
+
+    _peerConnection!.onAddStream = (MediaStream stream) {
+      debugPrint('VideoCallService: Remote stream added');
+      _remoteStream = stream;
+      _remoteStreamController.add(stream);
+    };
+
+    _peerConnection!.onIceConnectionState = (RTCIceConnectionState state) {
+      debugPrint('VideoCallService: ICE connection state: $state');
+
+      switch (state) {
+        case RTCIceConnectionState.RTCIceConnectionStateNew:
+        case RTCIceConnectionState.RTCIceConnectionStateChecking:
+        case RTCIceConnectionState.RTCIceConnectionStateCompleted:
+          break;
+        case RTCIceConnectionState.RTCIceConnectionStateConnected:
+          _callStateController.add(VideoCallState.connected);
+        case RTCIceConnectionState.RTCIceConnectionStateDisconnected:
+        case RTCIceConnectionState.RTCIceConnectionStateFailed:
+        case RTCIceConnectionState.RTCIceConnectionStateClosed:
+          _callStateController.add(VideoCallState.ended);
+        default:
+          break;
+      }
+    };
+  }
+
+  /// Create offer
+  Future<void> _createOffer() async {
+    final offer = await _peerConnection!.createOffer(_constraints);
+    await _peerConnection!.setLocalDescription(offer);
+
+    _socket!.emit('offer', {
+      'sdp': offer.sdp,
+      'callerId': _currentUserId,
+      'calleeId': _remoteUserId ?? '',
+      'callId': _callId ?? '',
+    });
+  }
+
+  /// Create answer
+  Future<void> _createAnswer() async {
+    final answer = await _peerConnection!.createAnswer(_constraints);
+    await _peerConnection!.setLocalDescription(answer);
+
+    _socket!.emit('answer', {
+      'sdp': answer.sdp,
+      'callerId': _currentUserId,
+      'calleeId': _remoteUserId ?? '',
+      'callId': _callId ?? '',
+    });
+  }
+
+  /// Get user media
+  Future<void> _getUserMedia() async {
+    try {
+      _localStream = await navigator.mediaDevices.getUserMedia(_constraints);
+      _localStreamController.add(_localStream!);
+
+      if (_peerConnection != null) {
+        _localStream!.getTracks().forEach((track) {
+          _peerConnection!.addTrack(track, _localStream!);
+        });
       }
 
-      return token;
+      debugPrint('VideoCallService: User media obtained');
     } catch (e) {
-      debugPrint('VideoCallService: Token generation error - $e');
-      // Fallback: return a temporary token for development
-      return '006$_appId${_uidToString(uid)}${_generateRandomToken()}';
-    }
-  }
-
-  /// Join a video call channel.
-  Future<void> joinChannel({
-    required String channelName,
-    required String token,
-    required int uid,
-    ClientRoleType role = ClientRoleType.clientRoleBroadcaster,
-  }) async {
-    if (_engine == null) {
-      throw Exception('Engine not initialized. Call initialize() first.');
-    }
-
-    try {
-      _channelName = channelName;
-      _token = token;
-
-      await _engine!.setClientRole(role: role);
-      await _engine!.joinChannel(
-        token: token,
-        channelId: channelName,
-        uid: uid,
-        options: const ChannelMediaOptions(
-          channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
-          clientRoleType: ClientRoleType.clientRoleBroadcaster,
-        ),
-      );
-
-      debugPrint('VideoCallService: Joined channel $channelName');
-    } catch (e) {
-      debugPrint('VideoCallService: Join channel error - $e');
+      debugPrint('VideoCallService: Get user media error - $e');
+      _errorController.add('Failed to access camera/microphone: $e');
       rethrow;
     }
   }
 
-  /// Leave the current channel.
-  Future<void> leaveChannel() async {
-    if (_engine == null) return;
+  /// End call internally
+  void _endCall() {
+    _localStream?.getTracks().forEach((track) => track.stop());
+    _localStream?.dispose();
+    _localStream = null;
 
-    try {
-      await _engine!.leaveChannel();
-      _channelName = null;
-      _token = null;
-      _localUid = null;
-      _remoteUids.clear();
+    _remoteStream?.dispose();
+    _remoteStream = null;
 
-      debugPrint('VideoCallService: Left channel');
-    } catch (e) {
-      debugPrint('VideoCallService: Leave channel error - $e');
-      rethrow;
-    }
+    _peerConnection?.close();
+    _peerConnection = null;
+
+    _callId = null;
+    _remoteUserId = null;
+
+    _callStateController.add(VideoCallState.ended);
   }
 
-  /// Enable/disable local video.
-  Future<void> enableLocalVideo(bool enabled) async {
-    if (_engine == null) return;
-
-    try {
-      await _engine!.enableLocalVideo(enabled);
-      debugPrint(
-          'VideoCallService: Local video ${enabled ? "enabled" : "disabled"}');
-    } catch (e) {
-      debugPrint('VideoCallService: Enable local video error - $e');
-    }
-  }
-
-  /// Enable/disable local audio.
-  Future<void> enableLocalAudio(bool enabled) async {
-    if (_engine == null) return;
-
-    try {
-      await _engine!.enableLocalAudio(enabled);
-      debugPrint(
-          'VideoCallService: Local audio ${enabled ? "enabled" : "disabled"}');
-    } catch (e) {
-      debugPrint('VideoCallService: Enable local audio error - $e');
-    }
-  }
-
-  /// Mute/unmute local audio stream.
-  Future<void> muteLocalAudioStream(bool muted) async {
-    if (_engine == null) return;
-
-    try {
-      await _engine!.muteLocalAudioStream(muted);
-      debugPrint(
-          'VideoCallService: Local audio ${muted ? "muted" : "unmuted"}');
-    } catch (e) {
-      debugPrint('VideoCallService: Mute local audio error - $e');
-    }
-  }
-
-  /// Mute/unmute local video stream.
-  Future<void> muteLocalVideoStream(bool muted) async {
-    if (_engine == null) return;
-
-    try {
-      await _engine!.muteLocalVideoStream(muted);
-      debugPrint(
-          'VideoCallService: Local video ${muted ? "muted" : "unmuted"}');
-    } catch (e) {
-      debugPrint('VideoCallService: Mute local video error - $e');
-    }
-  }
-
-  /// Mute/unmute remote audio stream.
-  Future<void> muteRemoteAudioStream(int uid, bool muted) async {
-    if (_engine == null) return;
-
-    try {
-      await _engine!.muteRemoteAudioStream(uid: uid, mute: muted);
-      debugPrint(
-          'VideoCallService: Remote audio for $uid ${muted ? "muted" : "unmuted"}');
-    } catch (e) {
-      debugPrint('VideoCallService: Mute remote audio error - $e');
-    }
-  }
-
-  /// Mute/unmute remote video stream.
-  Future<void> muteRemoteVideoStream(int uid, bool muted) async {
-    if (_engine == null) return;
-
-    try {
-      await _engine!.muteRemoteVideoStream(uid: uid, mute: muted);
-      debugPrint(
-          'VideoCallService: Remote video for $uid ${muted ? "muted" : "unmuted"}');
-    } catch (e) {
-      debugPrint('VideoCallService: Mute remote video error - $e');
-    }
-  }
-
-  /// Switch camera.
-  Future<void> switchCamera() async {
-    if (_engine == null) return;
-
-    try {
-      await _engine!.switchCamera();
-      debugPrint('VideoCallService: Camera switched');
-    } catch (e) {
-      debugPrint('VideoCallService: Switch camera error - $e');
-    }
-  }
-
-  /// Release the engine resources.
-  Future<void> release() async {
-    if (_engine == null) return;
-
-    try {
-      await leaveChannel();
-      await _engine!.release();
-      _engine = null;
-
-      debugPrint('VideoCallService: Engine released');
-    } catch (e) {
-      debugPrint('VideoCallService: Release engine error - $e');
-    }
-  }
-
-  /// Convert UID to string for token generation.
-  String _uidToString(int uid) {
-    return uid.toString().padLeft(10, '0');
-  }
-
-  /// Generate a random token for development purposes.
-  String _generateRandomToken() {
-    const chars =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    final random = DateTime.now().millisecondsSinceEpoch;
-    final sb = StringBuffer();
-    for (var i = 0; i < 32; i++) {
-      sb.write(chars[(random + i) % chars.length]);
-    }
-    return sb.toString();
-  }
-
-  /// Dispose of the service.
+  /// Dispose resources
   void dispose() {
-    release();
+    _endCall();
+    _socket?.disconnect();
+    _socket?.dispose();
+    _socket = null;
+
+    _localStreamController.close();
+    _remoteStreamController.close();
+    _callStateController.close();
+    _errorController.close();
   }
+}
+
+/// Video call states
+enum VideoCallState {
+  idle,
+  calling,
+  incoming,
+  connected,
+  ended,
 }

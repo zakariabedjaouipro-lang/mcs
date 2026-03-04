@@ -19,8 +19,7 @@ CREATE TABLE IF NOT EXISTS video_sessions (
   doctor_id UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
   clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
 
-  -- Agora Information
-  channel_name VARCHAR(255) NOT NULL,
+  -- WebRTC Information\n  channel_name VARCHAR(255) NOT NULL,
   room_id VARCHAR(255) UNIQUE NOT NULL,
   token TEXT,
 
@@ -196,8 +195,9 @@ CREATE TRIGGER calculate_video_duration_on_completion
 -- ══════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE video_sessions IS 'Video call session information';
-COMMENT ON COLUMN video_sessions.channel_name IS 'Agora channel name for the video call';
+COMMENT ON COLUMN video_sessions.channel_name IS 'WebRTC channel name for the video call';
 COMMENT ON COLUMN video_sessions.room_id IS 'Unique room identifier for the video call';
 COMMENT ON COLUMN video_sessions.status IS 'Session status: scheduled, in_progress, completed, cancelled, failed, no_show';
 COMMENT ON COLUMN video_sessions.duration_seconds IS 'Actual duration of the video call in seconds';
 COMMENT ON COLUMN video_sessions.quality_rating IS 'User rating of video call quality (1-5)';
+

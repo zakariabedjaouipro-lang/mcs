@@ -33,8 +33,8 @@ class AppConfig {
   static String supabaseUrl = '';
   static String supabaseAnonKey = '';
 
-  // ── Agora (Video Calls) ──────────────────────────────────
-  static String agoraAppId = '';
+  // ── Signaling Server (WebRTC) ───────────────────────────────
+  static String signalingUrl = '';
 
   // ── Firebase ─────────────────────────────────────────────
   // Firebase is configured via google-services.json / GoogleService-Info.plist
@@ -55,12 +55,12 @@ class AppConfig {
   static void initialize({
     required String supabaseUrl,
     required String supabaseAnonKey,
-    String? agoraAppId,
+    String? signalingUrl,
     AppEnvironment environment = AppEnvironment.development,
   }) {
     AppConfig.supabaseUrl = supabaseUrl;
     AppConfig.supabaseAnonKey = supabaseAnonKey;
-    if (agoraAppId != null) AppConfig.agoraAppId = agoraAppId;
+    if (signalingUrl != null) AppConfig.signalingUrl = signalingUrl;
     _environment = environment;
   }
 }

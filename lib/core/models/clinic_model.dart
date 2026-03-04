@@ -26,7 +26,6 @@ class ClinicModel extends Equatable {
       subscriptionEndDate: json['subscription_end_date'] != null
           ? DateTime.parse(json['subscription_end_date'] as String)
           : null,
-      agoraAppId: json['agora_app_id'] as String?,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
@@ -50,7 +49,6 @@ class ClinicModel extends Equatable {
     this.subscriptionType = SubscriptionType.trial,
     this.subscriptionStartDate,
     this.subscriptionEndDate,
-    this.agoraAppId,
     this.createdAt,
     this.updatedAt,
   });
@@ -69,7 +67,6 @@ class ClinicModel extends Equatable {
   final SubscriptionType subscriptionType;
   final DateTime? subscriptionStartDate;
   final DateTime? subscriptionEndDate;
-  final String? agoraAppId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -115,7 +112,6 @@ class ClinicModel extends Equatable {
       'subscription_type': subscriptionType.toDbValue(),
       'subscription_start_date': subscriptionStartDate?.toIso8601String(),
       'subscription_end_date': subscriptionEndDate?.toIso8601String(),
-      'agora_app_id': agoraAppId,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
@@ -136,7 +132,6 @@ class ClinicModel extends Equatable {
     SubscriptionType? subscriptionType,
     DateTime? subscriptionStartDate,
     DateTime? subscriptionEndDate,
-    String? agoraAppId,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -156,7 +151,6 @@ class ClinicModel extends Equatable {
       subscriptionStartDate:
           subscriptionStartDate ?? this.subscriptionStartDate,
       subscriptionEndDate: subscriptionEndDate ?? this.subscriptionEndDate,
-      agoraAppId: agoraAppId ?? this.agoraAppId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -178,7 +172,6 @@ class ClinicModel extends Equatable {
         subscriptionType,
         subscriptionStartDate,
         subscriptionEndDate,
-        agoraAppId,
         createdAt,
         updatedAt,
       ];

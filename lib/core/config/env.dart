@@ -17,9 +17,10 @@ class Env {
     'SUPABASE_ANON_KEY',
   );
 
-  // ── Agora ────────────────────────────────────────────────
-  static const String agoraAppId = String.fromEnvironment(
-    'AGORA_APP_ID',
+  // ── Signaling Server (WebRTC) ──────────────────────────────
+  static const String signalingUrl = String.fromEnvironment(
+    'SIGNALING_URL',
+    defaultValue: 'http://localhost:3001',
   );
 
   // ── Environment ──────────────────────────────────────────

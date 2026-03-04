@@ -46,8 +46,7 @@ CREATE TABLE IF NOT EXISTS clinics (
   subscription_end_date TIMESTAMP WITH TIME ZONE,
   is_trial BOOLEAN DEFAULT true,
   
-  -- Agora Integration (for video calls)
-  agora_app_id VARCHAR(255),
+
   
   -- Status
   is_active BOOLEAN NOT NULL DEFAULT true,
