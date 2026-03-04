@@ -41,7 +41,8 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => context.read<AdminBloc>().add(const LoadExchangeRates()),
+            onPressed: () =>
+                context.read<AdminBloc>().add(const LoadExchangeRates()),
             tooltip: 'تحديث',
           ),
           const SizedBox(width: 8),
@@ -66,7 +67,8 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
                   const SizedBox(height: 16),
                   Text(
                     state.message,
-                    style: TextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
+                    style:
+                        TextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -106,7 +108,6 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
           ),
           const SizedBox(height: 24),
           _ConversionCalculator(currencies, exchangeRates),
-
           const SizedBox(height: 32),
           Text(
             'جدول أسعار الصرف',
@@ -125,10 +126,10 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
                 rows: exchangeRates.map((rate) {
                   return DataRow(
                     cells: [
-                      DataCell(_buildCurrencyBadge(rate['from'] as String)),
-                      DataCell(_buildCurrencyBadge(rate['to'] as String)),
+                      DataCell(_buildCurrencyBadge(rate['from']! as String)),
+                      DataCell(_buildCurrencyBadge(rate['to']! as String)),
                       DataCell(
-                        Text((rate['rate'] as double).toStringAsFixed(4)),
+                        Text((rate['rate']! as double).toStringAsFixed(4)),
                       ),
                       DataCell(
                         IconButton(
@@ -182,7 +183,8 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
     return currencies[code] ?? {'code': code, 'name': code, 'symbol': ''};
   }
 
-  Future<void> _showEditRateDialog(BuildContext context, Map<String, dynamic> rate) async {
+  Future<void> _showEditRateDialog(
+      BuildContext context, Map<String, dynamic> rate) async {
     final rateController = TextEditingController(text: rate['rate'].toString());
 
     final result = await showDialog<bool>(
@@ -204,7 +206,8 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
                 border: OutlineInputBorder(),
                 suffixText: 'X',
               ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
             ),
           ],
         ),
@@ -224,10 +227,10 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
 
     if ((result ?? false) && context.mounted) {
       context.read<AdminBloc>().add(UpdateExchangeRate(
-        fromCurrency: rate['from'] as String,
-        toCurrency: rate['to'] as String,
-        rate: double.parse(rateController.text),
-      ));
+            fromCurrency: rate['from'] as String,
+            toCurrency: rate['to'] as String,
+            rate: double.parse(rateController.text),
+          ));
     }
   }
 }
@@ -259,107 +262,108 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
 
         return Card(
           child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            padding: const EdgeInsets.all(24), // ✅ إصلاح: indent صحيح
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.calculate, color: AppColors.primary),
+                    const SizedBox(width: 12),
+                    Text(
+                      'حاسبة العملات',
+                      style: TextStyles.titleMedium
+                          .copyWith(color: AppColors.primary),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _amountController,
+                        decoration: const InputDecoration(
+                          labelText: 'المبلغ',
+                          border: OutlineInputBorder(),
+                          prefixText: r'$ ',
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        onChanged: (_) => _calculate(rates),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    DropdownButton<String>(
+                      value: _fromCurrency,
+                      items: const ['USD', 'EUR', 'DZD']
+                          .map((currency) => DropdownMenuItem(
+                                value: currency,
+                                child: Text(currency),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _fromCurrency = value ?? 'USD';
+                          _calculate(rates);
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.arrow_forward),
+                    const SizedBox(width: 8),
+                    DropdownButton<String>(
+                      value: _toCurrency,
+                      items: const ['USD', 'EUR', 'DZD']
+                          .map((currency) => DropdownMenuItem(
+                                value: currency,
+                                child: Text(currency),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _toCurrency = value ?? 'EUR';
+                          _calculate(rates);
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Column(
                     children: [
-                      const Icon(Icons.calculate, color: AppColors.primary),
-                      const SizedBox(width: 12),
                       Text(
-                        'حاسبة العملات',
-                        style: TextStyles.titleMedium.copyWith(color: AppColors.primary),
+                        'النتيجة',
+                        style: TextStyles.bodyMedium.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _result,
+                        style: TextStyles.headline3.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _amountController,
-                          decoration: const InputDecoration(
-                            labelText: 'المبلغ',
-                            border: OutlineInputBorder(),
-                            prefixText: r'$ ',
-                          ),
-                          keyboardType:
-                              const TextInputType.numberWithOptions(decimal: true),
-                          onChanged: (_) => _calculate(rates),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      DropdownButton<String>(
-                        value: _fromCurrency,
-                        items: const ['USD', 'EUR', 'DZD']
-                            .map((currency) => DropdownMenuItem(
-                                  value: currency,
-                                  child: Text(currency),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _fromCurrency = value ?? 'USD';
-                            _calculate(rates);
-                          });
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward),
-                      const SizedBox(width: 8),
-                      DropdownButton<String>(
-                        value: _toCurrency,
-                        items: const ['USD', 'EUR', 'DZD']
-                            .map((currency) => DropdownMenuItem(
-                                  value: currency,
-                                  child: Text(currency),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _toCurrency = value ?? 'EUR';
-                            _calculate(rates);
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          'النتيجة',
-                          style: TextStyles.bodyMedium.copyWith(
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          _result,
-                          style: TextStyles.headline3.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -375,10 +379,18 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
       return;
     }
 
-    final rateKey = '${_fromCurrency}_${_toCurrency}';
-    final rate = rates[rateKey] ?? 1.0;
-    final result = amount * rate;
+    // ✅ تحسين: استخدام مفتاح موحد مع تحويل الأحرف
+    final fromKey = _fromCurrency.toLowerCase();
+    final toKey = _toCurrency.toLowerCase();
+    final rateKey = '$fromKey\_to_$toKey';
 
+    // ✅ تحسين: البحث بعدة صيغ مختلفة
+    final rate = rates[rateKey] ??
+        rates['$fromKey\_$toKey'] ??
+        rates['$_fromCurrency\_$_toCurrency'] ??
+        1.0;
+
+    final result = amount * rate;
     setState(() => _result = result.toStringAsFixed(2));
   }
 }

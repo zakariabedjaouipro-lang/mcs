@@ -75,7 +75,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     context.read<auth.AuthBloc>().add(
-          RegisterSubmitted(
+          auth.RegisterSubmitted(
             name: _nameController.text.trim(),
             email: _emailController.text.trim(),
             phone: _phoneController.text.trim(),
@@ -89,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return BlocListener<auth.AuthBloc, auth.AuthState>(
       listener: (context, state) {
-        if (state is RegisterSuccess) {
+        if (state is auth.RegisterSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('تم إنشاء الحساب بنجاح!'),
@@ -101,7 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             '/otp-verification',
             arguments: _emailController.text,
           );
-        } else if (state is RegisterFailure) {
+        } else if (state is auth.RegisterFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -164,7 +164,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _nameController,
                             onChanged: (value) {
                               context.read<auth.AuthBloc>().add(
-                                    RegisterNameChanged(value),
+                                    auth.RegisterNameChanged(value),
                                   );
                             },
                             decoration: _buildInputDecoration(
@@ -190,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _emailController,
                             onChanged: (value) {
                               context.read<auth.AuthBloc>().add(
-                                    RegisterEmailChanged(value),
+                                    auth.RegisterEmailChanged(value),
                                   );
                             },
                             decoration: _buildInputDecoration(
@@ -217,7 +217,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _phoneController,
                             onChanged: (value) {
                               context.read<auth.AuthBloc>().add(
-                                    RegisterPhoneChanged(value),
+                                    auth.RegisterPhoneChanged(value),
                                   );
                             },
                             decoration: _buildInputDecoration(
@@ -320,7 +320,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _passwordController,
                             onChanged: (value) {
                               context.read<auth.AuthBloc>().add(
-                                    RegisterPasswordChanged(value),
+                                    auth.RegisterPasswordChanged(value),
                                   );
                             },
                             decoration: _buildInputDecoration(
@@ -363,7 +363,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _confirmPasswordController,
                             onChanged: (value) {
                               context.read<auth.AuthBloc>().add(
-                                    RegisterConfirmPasswordChanged(value),
+                                    auth.RegisterConfirmPasswordChanged(value),
                                   );
                             },
                             decoration: _buildInputDecoration(
@@ -487,7 +487,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ? null
           : () {
               setState(() => _selectedRole = role.value);
-              context.read<auth.AuthBloc>().add(RegisterRoleChanged(role.value));
+              context.read<auth.AuthBloc>().add(auth.RegisterRoleChanged(role.value));
             },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
