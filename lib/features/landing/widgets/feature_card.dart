@@ -47,7 +47,8 @@ class _FeatureCardState extends State<FeatureCard> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: widget.color.withValues(
-                        alpha: 0.1), // use withValues instead of withOpacity
+                      alpha: 0.1,
+                    ), // use withValues instead of withOpacity
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(

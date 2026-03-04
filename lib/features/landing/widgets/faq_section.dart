@@ -248,8 +248,11 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
                 padding: const EdgeInsets.symmetric(vertical: 40),
                 child: Column(
                   children: [
-                    const Icon(Icons.search_off,
-                        size: 48, color: AppColors.grey),
+                    const Icon(
+                      Icons.search_off,
+                      size: 48,
+                      color: AppColors.grey,
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       'لم نجد نتائج',

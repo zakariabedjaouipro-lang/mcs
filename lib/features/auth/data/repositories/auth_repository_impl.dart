@@ -82,7 +82,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AppException catch (e) {
       return Left(AuthFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل التسجيل: ${e}'));
+      return Left(ServerFailure(message: 'فشل التسجيل: $e'));
     }
   }
 

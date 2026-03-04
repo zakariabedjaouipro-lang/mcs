@@ -212,7 +212,7 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
           children: [
             TextField(
               controller: priceUsdController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: r'السعر بالدولار ($)',
                 prefixText: usdPrefix,
               ),
@@ -221,7 +221,7 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
             const SizedBox(height: 16),
             TextField(
               controller: priceEurController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'السعر باليورو (€)',
                 prefixText: eurPrefix,
               ),
