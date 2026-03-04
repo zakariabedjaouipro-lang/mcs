@@ -11,11 +11,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize app config (load env variables, settings, etc.)
-  // IMPORTANT: Replace these placeholder values with your actual Supabase credentials
-  // You can get these from your Supabase project settings: https://supabase.com/dashboard
+  // Supabase credentials - Production
+  // Project: rxwtdbvhxqxvckkllgep
   AppConfig.initialize(
-    supabaseUrl: 'https://your-project-id.supabase.co',
-    supabaseAnonKey: 'your-anon-key-here',
+    supabaseUrl: 'https://rxwtdbvhxqxvckkllgep.supabase.com',
+    supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4d3RkYnZoeHF4dmNra2xsZ2VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MTA1NTMsImV4cCI6MjA4ODE4NjU1M30.RZfSJBgb9DUq6Fqq_HhgG1dCgtAN-_hBmzHRuaUDP38',
   );
 
   // Initialize Supabase

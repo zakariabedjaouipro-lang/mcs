@@ -1,20 +1,21 @@
 /// User roles in the system.
 ///
-/// Values match the `user_role` PostgreSQL enum in Supabase.
+/// Values match the `user_role` PostgreSQL enum in Supabase exactly.
+/// Database migration: 001_create_enums.sql
+/// Version: 1.0.0
 library;
 
 enum UserRole {
   superAdmin('super_admin', 'مدير النظام', 'Super Admin'),
-  clinicManager('clinic_manager', 'مدير العيادة', 'Clinic Manager'),
+  clinicAdmin('clinic_admin', 'مدير العيادة', 'Clinic Administrator'),
   doctor('doctor', 'طبيب', 'Doctor'),
-  patient('patient', 'مريض', 'Patient'),
-  remotePatient('remote_patient', 'مريض عن بعد', 'Remote Patient'),
-  guardian('guardian', 'ولي أمر', 'Guardian'),
-  autismTherapist('autism_therapist', 'معالج توحد', 'Autism Therapist'),
-  receptionist('receptionist', 'موظف استقبال', 'Receptionist'),
   nurse('nurse', 'ممرض', 'Nurse'),
-  technician('technician', 'فني مختبر', 'Technician'),
-  administrative('administrative', 'إداري', 'Administrative');
+  receptionist('receptionist', 'موظف استقبال', 'Receptionist'),
+  pharmacist('pharmacist', 'صيدلي', 'Pharmacist'),
+  labTechnician('lab_technician', 'فني مختبر', 'Lab Technician'),
+  radiographer('radiographer', 'أخصائي أشعة', 'Radiographer'),
+  patient('patient', 'مريض', 'Patient'),
+  relative('relative', 'قريب', 'Relative');
 
   const UserRole(this.dbValue, this.labelAr, this.labelEn);
 
@@ -43,19 +44,28 @@ enum UserRole {
   // ── Role Group Helpers ───────────────────────────────────
 
   /// Whether this role has admin-level access.
-  bool get isAdmin => this == superAdmin || this == clinicManager;
+  bool get isAdmin => this == superAdmin || this == clinicAdmin;
 
-  /// Whether this role is a type of patient.
+  /// Whether this role is a type of patient or family member.
   bool get isPatientType =>
-      this == patient || this == remotePatient || this == guardian;
+      this == patient || this == relative;
 
   /// Whether this role is a clinic employee (non-doctor).
   bool get isEmployee =>
       this == receptionist ||
       this == nurse ||
-      this == technician ||
-      this == administrative;
+      this == pharmacist ||
+      this == labTechnician ||
+      this == radiographer;
 
   /// Whether this role is a medical professional.
-  bool get isMedical => this == doctor || this == nurse || this == technician;
+  bool get isMedical =>
+      this == doctor ||
+      this == nurse ||
+      this == pharmacist ||
+      this == labTechnician ||
+      this == radiographer;
+
+  /// Whether this role is technical staff.
+  bool get isTechnical => this == labTechnician || this == radiographer;
 }

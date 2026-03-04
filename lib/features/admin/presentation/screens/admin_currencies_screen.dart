@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
-import 'package:mcs/core/widgets/confirm_dialog.dart';
 import 'package:mcs/features/admin/presentation/bloc/index.dart';
 
 /// Admin Currency Management Screen
@@ -13,7 +13,7 @@ class AdminCurrenciesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AdminBloc(/* Inject dependencies */),
+      create: (_) => sl<AdminBloc>(),
       child: const AdminCurrenciesView(),
     );
   }
@@ -54,7 +54,7 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
           }
 
           if (state is ExchangeRatesLoaded) {
-            return _ExchangeRatesTable(rates: state.rates);
+            return _ExchangeRatesTable(state.rates);
           }
 
           if (state is AdminError) {
@@ -116,18 +116,18 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
             child: SingleChildScrollView(
               child: DataTable(
                 columns: const [
-                  DataColumn(label: 'من'),
-                  DataColumn(label: 'إلى'),
-                  DataColumn(label: 'سعر الصرف'),
-                  DataColumn(label: 'الإجراءات'),
+                  DataColumn(label: Text('من')),
+                  DataColumn(label: Text('إلى')),
+                  DataColumn(label: Text('سعر الصرف')),
+                  DataColumn(label: Text('الإجراءات')),
                 ],
                 rows: exchangeRates.map((rate) {
                   return DataRow(
                     cells: [
-                      DataCell(_buildCurrencyBadge(rate['from'])),
-                      DataCell(_buildCurrencyBadge(rate['to'])),
+                      DataCell(_buildCurrencyBadge(rate['from'] as String)),
+                      DataCell(_buildCurrencyBadge(rate['to'] as String)),
                       DataCell(
-                        Text(rate['rate'].toStringAsFixed(4)),
+                        Text((rate['rate'] as double).toStringAsFixed(4)),
                       ),
                       DataCell(
                         IconButton(
@@ -226,7 +226,7 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
         fromCurrency: rate['from'] as String,
         toCurrency: rate['to'] as String,
         rate: double.parse(rateController.text),
-      ),);
+      ));
     }
   }
 }
@@ -245,8 +245,7 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
   String _result = '';
 
   @override
-  void Widget @override
-  BlocBuilder<AdminBloc, AdminState> build(BuildContext context) {
+  Widget build(BuildContext context) {
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
         var rates = <String, double>{};
@@ -289,10 +288,15 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
                       const SizedBox(width: 16),
                       DropdownButton<String>(
                         value: _fromCurrency,
-                        items: const ['USD', 'EUR', 'DZD'],
+                        items: const ['USD', 'EUR', 'DZD']
+                            .map((currency) => DropdownMenuItem(
+                                  value: currency,
+                                  child: Text(currency),
+                                ))
+                            .toList(),
                         onChanged: (value) {
                           setState(() {
-                            _fromCurrency = value;
+                            _fromCurrency = value ?? 'USD';
                             _calculate(rates);
                           });
                         },
@@ -302,10 +306,15 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
                       const SizedBox(width: 8),
                       DropdownButton<String>(
                         value: _toCurrency,
-                        items: const ['USD', 'EUR', 'DZD'],
+                        items: const ['USD', 'EUR', 'DZD']
+                            .map((currency) => DropdownMenuItem(
+                                  value: currency,
+                                  child: Text(currency),
+                                ))
+                            .toList(),
                         onChanged: (value) {
                           setState(() {
-                            _toCurrency = value;
+                            _toCurrency = value ?? 'EUR';
                             _calculate(rates);
                           });
                         },
@@ -347,7 +356,7 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
           );
         },
       ),
-    )
+    );
   }
 
   void _calculate(Map<String, double> rates) {
