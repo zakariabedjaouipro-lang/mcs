@@ -87,12 +87,12 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
     ];
 
     final exchangeRates = [
-      {'from': 'USD', 'to': 'EUR', 'rate': rates['usd_to_eur'] ?? 0.0},
-      {'from': 'USD', 'to': 'DZD', 'rate': rates['usd_to_dzd'] ?? 0.0},
-      {'from': 'EUR', 'to': 'USD', 'rate': rates['eur_to_usd'] ?? 0.0},
-      {'from': 'EUR', 'to': 'DZD', 'rate': rates['eur_to_dzd'] ?? 0.0},
-      {'from': 'DZD', 'to': 'USD', 'rate': rates['dzd_to_usd'] ?? 0.0},
-      {'from': 'DZ', 'to': 'EUR', 'rate': rates['dzd_to_eur'] ?? 0.0},
+      {'from': 'USD', 'to': 'EUR', 'rate': rates['USD_EUR'] ?? 0.0},
+      {'from': 'USD', 'to': 'DZD', 'rate': rates['USD_DZD'] ?? 0.0},
+      {'from': 'EUR', 'to': 'USD', 'rate': rates['EUR_USD'] ?? 0.0},
+      {'from': 'EUR', 'to': 'DZD', 'rate': rates['EUR_DZD'] ?? 0.0},
+      {'from': 'DZD', 'to': 'USD', 'rate': rates['DZD_USD'] ?? 0.0},
+      {'from': 'DZD', 'to': 'EUR', 'rate': rates['DZD_EUR'] ?? 0.0},
     ];
 
     return Padding(
@@ -375,7 +375,7 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
       return;
     }
 
-    final rateKey = '${_fromCurrency.toLowerCase()}_to_${_toCurrency.toLowerCase()}';
+    final rateKey = '${_fromCurrency}_${_toCurrency}';
     final rate = rates[rateKey] ?? 1.0;
     final result = amount * rate;
 

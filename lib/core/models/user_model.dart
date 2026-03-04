@@ -114,9 +114,7 @@ class UserModel extends Equatable {
 
   // ── Role Shortcuts ─────────────────────────────────────
   bool get isDoctor => role == UserRole.doctor;
-  bool get isPatient => role == UserRole.patient;
-  bool get isRemotePatient => role == UserRole.remotePatient;
-  bool get isGuardian => role == UserRole.guardian;
+  bool get isPatient => role.isPatientType;
   bool get isAdmin => role.isAdmin;
   bool get isEmployee => role.isEmployee;
 

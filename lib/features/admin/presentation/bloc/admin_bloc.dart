@@ -232,12 +232,32 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   ) async {
     emit(const AdminLoading());
     try {
-      final data = await _supabaseService.fetchAll('exchange_rates');
+      final data = await _supabaseService.fetchAll(
+        'exchange_rates',
+        filters: {'is_active': true},
+      );
 
       final rates = <String, double>{};
+      
+      // Group by from_currency and get the most recent rate for each pair
+      final latestRates = <String, Map<String, dynamic>>{};
       for (final item in data) {
-        rates[item['from_currency'] as String] =
-            (item['rate'] as num).toDouble();
+        final fromCurrency = item['from_currency'] as String;
+        final toCurrency = item['to_currency'] as String;
+        final effectiveDate = DateTime.parse(item['effective_date'] as String);
+        final key = '${fromCurrency}_${toCurrency}';
+        
+        // Keep only the most recent rate for each pair
+        if (!latestRates.containsKey(key) || 
+            effectiveDate.isAfter(DateTime.parse(latestRates[key]!['effective_date'] as String))) {
+          latestRates[key] = item;
+        }
+      }
+
+      // Build rates map with 'FROM_TO' keys
+      for (final rate in latestRates.values) {
+        final key = '${rate['from_currency']}_${rate['to_currency']}';
+        rates[key] = (rate['rate'] as num).toDouble();
       }
 
       emit(ExchangeRatesLoaded(rates));
@@ -252,11 +272,16 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   ) async {
     emit(const AdminLoading());
     try {
-      await _supabaseService.update(
-        'exchange_rates',
-        '${event.fromCurrency}_to_${event.toCurrency}',
-        {'rate': event.rate, 'updated_at': DateTime.now().toIso8601String()},
-      );
+      // Insert new exchange rate record with UUID
+      final exchangeRateData = {
+        'from_currency': event.fromCurrency,
+        'to_currency': event.toCurrency,
+        'rate': event.rate,
+        'effective_date': DateTime.now().toIso8601String(),
+        'is_active': true,
+      };
+
+      await _supabaseService.insert('exchange_rates', exchangeRateData);
 
       emit(const AdminSuccess('تم تحديث سعر الصرف بنجاح'));
       add(const LoadExchangeRates());

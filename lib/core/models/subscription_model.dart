@@ -50,19 +50,15 @@ class SubscriptionModel extends Equatable {
 
   /// Get price in specified currency
   double getPrice(String currency) {
-    switch (currency.toLowerCase()) {
-      case 'usd':
-      case '$':
-        return priceUsd;
-      case 'eur':
-      case '€':
-        return priceEur;
-      case 'dzd':
-      case 'دج':
-        return priceDzd;
-      default:
-        return priceUsd;
+    final lowerCurrency = currency.toLowerCase();
+    if (lowerCurrency == 'usd' || lowerCurrency == '\$') {
+      return priceUsd;
+    } else if (lowerCurrency == 'eur' || lowerCurrency == '€') {
+      return priceEur;
+    } else if (lowerCurrency == 'dzd' || lowerCurrency == 'دج') {
+      return priceDzd;
     }
+    return priceUsd;
   }
 
   /// Get price formatted as string

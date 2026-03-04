@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mcs/core/models/clinic_model.dart';
+import 'package:mcs/core/models/country_model.dart';
+import 'package:mcs/core/models/region_model.dart';
 import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
@@ -304,103 +306,168 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
     final nameController = TextEditingController();
     final emailController = TextEditingController();
     final phoneController = TextEditingController();
-    final countryController = TextEditingController();
-    final regionController = TextEditingController();
     final addressController = TextEditingController();
     final descriptionController = TextEditingController();
+    
+    String? selectedCountryId;
+    String? selectedRegionId;
+    
+    // Load countries and regions
+    final supabaseService = SupabaseService();
+    final countriesData = await supabaseService.fetchAll(
+      'countries',
+      filters: {'is_supported': true},
+      orderBy: 'name',
+      ascending: true,
+    );
+    final countries = countriesData.map((e) => CountryModel.fromJson(e)).toList();
+    
+    List<RegionModel> regions = [];
+    if (countries.isNotEmpty) {
+      selectedCountryId = countries.first.id;
+      final regionsData = await supabaseService.fetchAll(
+        'regions',
+        filters: {'country_id': selectedCountryId},
+        orderBy: 'name',
+        ascending: true,
+      );
+      regions = regionsData.map((e) => RegionModel.fromJson(e)).toList();
+      if (regions.isNotEmpty) {
+        selectedRegionId = regions.first.id;
+      }
+    }
 
     final result = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('إضافة عيادة جديدة'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'اسم العيادة *',
-                  border: OutlineInputBorder(),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('إضافة عيادة جديدة'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'اسم العيادة *',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'البريد الإلكتروني *',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'البريد الإلكتروني *',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
                 ),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'رقم الهاتف *',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: phoneController,
+                  decoration: const InputDecoration(
+                    labelText: 'رقم الهاتف *',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.phone,
                 ),
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: countryController,
-                decoration: const InputDecoration(
-                  labelText: 'الدولة *',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: selectedCountryId,
+                  decoration: const InputDecoration(
+                    labelText: 'الدولة *',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: countries.map((country) {
+                    return DropdownMenuItem(
+                      value: country.id,
+                      child: Text(country.getName('ar')),
+                    );
+                  }).toList(),
+                  onChanged: (value) async {
+                    if (value != null) {
+                      setDialogState(() {
+                        selectedCountryId = value;
+                        selectedRegionId = null;
+                      });
+                      // Load regions for selected country
+                      final regionsData = await supabaseService.fetchAll(
+                        'regions',
+                        filters: {'country_id': value},
+                        orderBy: 'name',
+                        ascending: true,
+                      );
+                      setDialogState(() {
+                        regions = regionsData.map((e) => RegionModel.fromJson(e)).toList();
+                      });
+                    }
+                  },
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: regionController,
-                decoration: const InputDecoration(
-                  labelText: 'المنطقة *',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: selectedRegionId,
+                  decoration: const InputDecoration(
+                    labelText: 'المنطقة *',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: regions.map((region) {
+                    return DropdownMenuItem(
+                      value: region.id,
+                      child: Text(region.getName('ar')),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setDialogState(() {
+                      selectedRegionId = value;
+                    });
+                  },
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: addressController,
-                decoration: const InputDecoration(
-                  labelText: 'العنوان',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: addressController,
+                  decoration: const InputDecoration(
+                    labelText: 'العنوان',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 2,
                 ),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'الوصف',
-                  border: OutlineInputBorder(),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'الوصف',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
                 ),
-                maxLines: 3,
-              ),
-            ],
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('إلغاء'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+              child: const Text('إضافة'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('إلغاء'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('إضافة'),
-          ),
-        ],
       ),
     );
 
-    if ((result ?? false) && context.mounted) {
+    if ((result ?? false) && context.mounted && selectedCountryId != null && selectedRegionId != null) {
+      final selectedCountry = countries.firstWhere((c) => c.id == selectedCountryId);
+      final selectedRegion = regions.firstWhere((r) => r.id == selectedRegionId);
       context.read<AdminBloc>().add(
             CreateClinic(
               name: nameController.text,
               email: emailController.text,
               phone: phoneController.text,
-              country: countryController.text,
-              region: regionController.text,
+              country: selectedCountry.getName('ar'),
+              region: selectedRegion.getName('ar'),
               address: addressController.text,
               description: descriptionController.text,
             ),

@@ -6,27 +6,66 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Supported currencies in the application.
 enum Currency {
-  usd('USD', r'$', 'US Dollar', 1),
-  eur('EUR', '€', 'Euro', 0.92),
-  dzd('DZD', 'د.ج', 'Algerian Dinar', 134.5);
+  usd('USD', r'$', 'US Dollar'),
+  eur('EUR', '€', 'Euro'),
+  dzd('DZD', 'د.ج', 'Algerian Dinar');
 
   const Currency(
     this.code,
     this.symbol,
     this.name,
-    this.exchangeRate,
   );
 
   final String code;
   final String symbol;
   final String name;
-  final double exchangeRate;
+}
+
+/// Exchange rate model for storing exchange rate information.
+class ExchangeRateModel {
+  const ExchangeRateModel({
+    required this.id,
+    required this.fromCurrency,
+    required this.toCurrency,
+    required this.rate,
+    required this.effectiveDate,
+    this.isActive = true,
+    this.source,
+  });
+
+  factory ExchangeRateModel.fromJson(Map<String, dynamic> json) => ExchangeRateModel(
+        id: json['id'] as String,
+        fromCurrency: json['from_currency'] as String,
+        toCurrency: json['to_currency'] as String,
+        rate: (json['rate'] as num).toDouble(),
+        effectiveDate: DateTime.parse(json['effective_date'] as String),
+        isActive: (json['is_active'] as bool?) ?? true,
+        source: json['source'] as String?,
+      );
+
+  final String id; // UUID
+  final String fromCurrency;
+  final String toCurrency;
+  final double rate;
+  final DateTime effectiveDate;
+  final bool isActive;
+  final String? source;
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'from_currency': fromCurrency,
+        'to_currency': toCurrency,
+        'rate': rate,
+        'effective_date': effectiveDate.toIso8601String(),
+        'is_active': isActive,
+        'source': source,
+      };
 }
 
 /// Service for managing currency conversions and formatting.
 class CurrencyService {
   Currency _selectedCurrency = Currency.dzd;
-  final Map<Currency, double> _exchangeRates = {};
+  final Map<String, double> _exchangeRates = {}; // Key: "FROM_TO", Value: rate
 
   /// Get the currently selected currency.
   Currency get selectedCurrency => _selectedCurrency;
@@ -35,7 +74,7 @@ class CurrencyService {
   List<Currency> get supportedCurrencies => Currency.values;
 
   /// Get the current exchange rates.
-  Map<Currency, double> get exchangeRates => Map.unmodifiable(_exchangeRates);
+  Map<String, double> get exchangeRates => Map.unmodifiable(_exchangeRates);
 
   /// Initialize the currency service and fetch exchange rates.
   Future<void> initialize() async {
@@ -77,28 +116,39 @@ class CurrencyService {
     _saveCurrencyPreference(currency);
   }
 
-  /// Fetch current exchange rates from the database or API.
+  /// Fetch current exchange rates from the database.
   Future<void> fetchExchangeRates() async {
     try {
-      // Try to fetch from database first
+      // Fetch from exchange_rates table
       final response = await Supabase.instance.client
           .from('exchange_rates')
           .select()
-          .order('updated_at', ascending: false)
-          .limit(1);
+          .eq('is_active', true)
+          .lte('effective_date', DateTime.now().toIso8601String())
+          .order('effective_date', ascending: false);
 
       if (response.isNotEmpty) {
-        final rates = response.first;
         _exchangeRates.clear();
 
-        for (final currency in Currency.values) {
-          final rate = rates['rate_${currency.code.toLowerCase()}'] as double?;
-          if (rate != null && rate > 0) {
-            _exchangeRates[currency] = rate;
+        // Group by from_currency and get the most recent rate for each pair
+        final latestRates = <String, ExchangeRateModel>{};
+        for (final item in response) {
+          final rate = ExchangeRateModel.fromJson(item);
+          final key = '${rate.fromCurrency}_${rate.toCurrency}';
+          
+          // Keep only the most recent rate for each pair
+          if (!latestRates.containsKey(key) || 
+              rate.effectiveDate.isAfter(latestRates[key]!.effectiveDate)) {
+            latestRates[key] = rate;
           }
         }
 
-        debugPrint('CurrencyService: Exchange rates loaded from database');
+        // Build exchange rate map
+        for (final rate in latestRates.values) {
+          _exchangeRates['${rate.fromCurrency}_${rate.toCurrency}'] = rate.rate;
+        }
+
+        debugPrint('CurrencyService: Exchange rates loaded from database (${_exchangeRates.length} pairs)');
         return;
       }
     } catch (e) {
@@ -116,11 +166,27 @@ class CurrencyService {
 
     if (from == to) return amount;
 
-    // Convert to USD first (base currency)
-    final inUsd = amount / (from.exchangeRate);
+    // Get direct exchange rate
+    final key = '${from.code}_${to.code}';
+    final rate = _exchangeRates[key];
 
-    // Then convert to target currency
-    return inUsd * (to.exchangeRate);
+    if (rate != null) {
+      return amount * rate;
+    }
+
+    // Try to convert via USD as base currency
+    if (from.code != 'USD' && to.code != 'USD') {
+      final toUsd = _exchangeRates['${from.code}_USD'];
+      final fromUsd = _exchangeRates['USD_${to.code}'];
+      
+      if (toUsd != null && fromUsd != null) {
+        return (amount / toUsd) * fromUsd;
+      }
+    }
+
+    // Fallback to default conversion
+    debugPrint('CurrencyService: No exchange rate found for $key, using default');
+    return amount; // Return original amount if no rate found
   }
 
   /// Format an amount with the selected currency symbol.
@@ -157,29 +223,41 @@ class CurrencyService {
     }
   }
 
-  /// Get the exchange rate for a specific currency.
-  double? getExchangeRate(Currency currency) {
-    return _exchangeRates[currency] ?? currency.exchangeRate;
+  /// Get the exchange rate for a specific currency pair.
+  double? getExchangeRate(Currency from, Currency to) {
+    final key = '${from.code}_${to.code}';
+    return _exchangeRates[key];
   }
 
   /// Update exchange rates (admin function).
-  Future<void> updateExchangeRates(Map<Currency, double> newRates) async {
+  Future<void> updateExchangeRates(Map<String, double> newRates) async {
     try {
-      // Update local cache
-      _exchangeRates.addAll(newRates);
+      final effectiveDate = DateTime.now();
+      final records = <Map<String, dynamic>>[];
 
-      // Save to database
-      final ratesData = <String, dynamic>{};
+      // Parse keys in format "FROM_TO" and create records
       for (final entry in newRates.entries) {
-        ratesData['rate_${entry.key.code.toLowerCase()}'] = entry.value;
+        final parts = entry.key.split('_');
+        if (parts.length == 2) {
+          records.add({
+            'from_currency': parts[0],
+            'to_currency': parts[1],
+            'rate': entry.value,
+            'effective_date': effectiveDate.toIso8601String(),
+            'is_active': true,
+          });
+        }
       }
 
-      await Supabase.instance.client.from('exchange_rates').insert({
-        'rates': ratesData,
-        'updated_at': DateTime.now().toIso8601String(),
-      });
-
-      debugPrint('CurrencyService: Exchange rates updated');
+      // Insert new exchange rates
+      if (records.isNotEmpty) {
+        await Supabase.instance.client.from('exchange_rates').insert(records);
+        
+        // Refresh local cache
+        await fetchExchangeRates();
+        
+        debugPrint('CurrencyService: ${records.length} exchange rates updated');
+      }
     } catch (e) {
       debugPrint('CurrencyService: Update exchange rates error - $e');
       rethrow;
@@ -198,9 +276,17 @@ class CurrencyService {
   /// Set default exchange rates.
   void _setDefaultExchangeRates() {
     _exchangeRates.clear();
-    for (final currency in Currency.values) {
-      _exchangeRates[currency] = currency.exchangeRate;
-    }
+    // Default rates (USD as base)
+    _exchangeRates['USD_USD'] = 1.0;
+    _exchangeRates['USD_EUR'] = 0.92;
+    _exchangeRates['USD_DZD'] = 134.5;
+    _exchangeRates['EUR_USD'] = 1.09;
+    _exchangeRates['EUR_EUR'] = 1.0;
+    _exchangeRates['EUR_DZD'] = 146.2;
+    _exchangeRates['DZD_USD'] = 0.0074;
+    _exchangeRates['DZD_EUR'] = 0.0068;
+    _exchangeRates['DZD_DZD'] = 1.0;
+    
     debugPrint('CurrencyService: Default exchange rates set');
   }
 

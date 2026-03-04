@@ -1,0 +1,52 @@
+# V1 Legacy Migration Archive
+# Archived: March 4, 2026
+# Reason: Complete database rebuild with v2 baseline
+
+## Archived Migrations (18 files)
+
+001_create_enums.sql
+002_create_users_table.sql
+003_create_clinics_table.sql
+004_create_doctors_table.sql [DUPLICATE - See 017]
+005_create_patients_table.sql
+006_create_appointments_table.sql
+007_create_employees_table.sql
+008_create_prescriptions_table.sql
+009_create_invoices_table.sql
+010_create_inventory_table.sql
+011_create_lab_results_table.sql
+012_create_notifications_table.sql
+013_create_video_sessions_table.sql
+014_create_reports_table.sql
+015_create_subscription_codes_table.sql
+016_create_exchange_rates_table.sql
+017_create_doctors_table.sql [DUPLICATE - See 004]
+018_create_specialties_table.sql
+
+## Known Issues in V1
+
+1. **Duplicate doctors table**: Files 004 and 017 both create doctors table
+2. **ID type inconsistency**: Mixed UUID, TEXT, and INT primary keys
+3. **Missing tables**: countries, regions, subscriptions
+4. **Enum mismatch**: subscription_type enum values don't match Dart models
+5. **Foreign key violations**: Some FKs reference non-existent tables
+6. **RLS policy violations**: Incomplete security policies
+
+## V2 Improvements
+
+1. **UUID standardization**: All primary keys are UUID
+2. **Deterministic numbering**: v2_P{PHASE}_{SEQUENCE} format
+3. **Complete table set**: All 27 tables included
+4. **Clean foreign keys**: All FKs properly defined
+5. **Comprehensive RLS**: All tables have proper security policies
+6. **Zero duplicates**: No duplicate tables or migrations
+
+## Migration Count
+
+V1 Legacy: 18 migrations (with duplicate)
+V2 Baseline: 28 migrations (clean)
+
+## Database Reset
+
+This archive was created as part of a complete database reset.
+The v2 baseline will be executed on a fresh database with zero residual objects.

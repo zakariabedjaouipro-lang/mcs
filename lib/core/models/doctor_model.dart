@@ -25,7 +25,7 @@ class DoctorModel extends Equatable {
       id: json['id'] as String,
       userId: json['user_id'] as String,
       clinicId: json['clinic_id'] as String,
-      specialtyId: json['specialty_id'] as int,
+      specialtyId: json['specialty_id'] as String,
       licenseNumber: json['license_number'] as String?,
       bioAr: json['bio_ar'] as String?,
       bioEn: json['bio_en'] as String?,
@@ -45,7 +45,7 @@ class DoctorModel extends Equatable {
   final String id;
   final String userId;
   final String clinicId;
-  final int specialtyId;
+  final String specialtyId;
   final String? licenseNumber;
   final String? bioAr;
   final String? bioEn;
@@ -91,7 +91,7 @@ class DoctorModel extends Equatable {
     String? id,
     String? userId,
     String? clinicId,
-    int? specialtyId,
+    String? specialtyId,
     String? licenseNumber,
     String? bioAr,
     String? bioEn,

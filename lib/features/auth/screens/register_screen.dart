@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/validators.dart';
-import 'package:mcs/features/auth/presentation/bloc/index.dart';
+import 'package:mcs/features/auth/presentation/bloc/index.dart' as auth;
 
 /// شاشة تسجيل مستخدم جديد مع اختيار الدور والتحقق
 class RegisterScreen extends StatefulWidget {
@@ -24,6 +25,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   String _selectedRole = 'patient'; // patient, doctor, staff
+  String? _selectedCountryId;
+  String? _selectedRegionId;
 
   final List<RoleOption> _roles = [
     RoleOption(
@@ -71,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    context.read<AuthBloc>().add(
+    context.read<auth.AuthBloc>().add(
           RegisterSubmitted(
             name: _nameController.text.trim(),
             email: _emailController.text.trim(),
@@ -84,7 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
+    return BlocListener<auth.AuthBloc, auth.AuthState>(
       listener: (context, state) {
         if (state is RegisterSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -107,9 +110,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         }
       },
-      child: BlocBuilder<AuthBloc, AuthState>(
+      child: BlocBuilder<auth.AuthBloc, auth.AuthState>(
         builder: (context, state) {
-          final isLoading = state is AuthLoading;
+          final isLoading = state is auth.AuthLoading;
 
           return Scaffold(
             body: SingleChildScrollView(
@@ -160,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TextFormField(
                             controller: _nameController,
                             onChanged: (value) {
-                              context.read<AuthBloc>().add(
+                              context.read<auth.AuthBloc>().add(
                                     RegisterNameChanged(value),
                                   );
                             },
@@ -186,7 +189,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TextFormField(
                             controller: _emailController,
                             onChanged: (value) {
-                              context.read<AuthBloc>().add(
+                              context.read<auth.AuthBloc>().add(
                                     RegisterEmailChanged(value),
                                   );
                             },
@@ -213,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TextFormField(
                             controller: _phoneController,
                             onChanged: (value) {
-                              context.read<AuthBloc>().add(
+                              context.read<auth.AuthBloc>().add(
                                     RegisterPhoneChanged(value),
                                   );
                             },
@@ -236,11 +239,87 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: 16),
 
+                          // Country Selection
+                          FutureBuilder<List<Map<String, dynamic>>>(
+                            future: _loadCountries(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              }
+                              final countries = snapshot.data ?? [];
+                              return DropdownButtonFormField<String>(
+                                value: _selectedCountryId,
+                                decoration: _buildInputDecoration(
+                                  label: 'الدولة',
+                                  hint: 'اختر الدولة',
+                                  icon: Icons.location_on,
+                                ),
+                                items: countries.map((country) {
+                                  return DropdownMenuItem(
+                                    value: country['id'] as String,
+                                    child: Text(country['name_ar'] as String),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedCountryId = value;
+                                    _selectedRegionId = null;
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'الرجاء اختيار الدولة';
+                                  }
+                                  return null;
+                                },
+                                enabled: !isLoading,
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Region Selection
+                          if (_selectedCountryId != null)
+                            FutureBuilder<List<Map<String, dynamic>>>(
+                              future: _loadRegions(_selectedCountryId!),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                }
+                                final regions = snapshot.data ?? [];
+                                return DropdownButtonFormField<String>(
+                                  value: _selectedRegionId,
+                                  decoration: _buildInputDecoration(
+                                    label: 'المنطقة',
+                                    hint: 'اختر المنطقة',
+                                    icon: Icons.map,
+                                  ),
+                                  items: regions.map((region) {
+                                    return DropdownMenuItem(
+                                      value: region['id'] as String,
+                                      child: Text(region['name_ar'] as String),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() => _selectedRegionId = value);
+                                  },
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'الرجاء اختيار المنطقة';
+                                    }
+                                    return null;
+                                  },
+                                  enabled: !isLoading,
+                                );
+                              },
+                            ),
+                          if (_selectedCountryId != null) const SizedBox(height: 16),
+
                           // Password Field
                           TextFormField(
                             controller: _passwordController,
                             onChanged: (value) {
-                              context.read<AuthBloc>().add(
+                              context.read<auth.AuthBloc>().add(
                                     RegisterPasswordChanged(value),
                                   );
                             },
@@ -283,7 +362,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TextFormField(
                             controller: _confirmPasswordController,
                             onChanged: (value) {
-                              context.read<AuthBloc>().add(
+                              context.read<auth.AuthBloc>().add(
                                     RegisterConfirmPasswordChanged(value),
                                   );
                             },
@@ -408,7 +487,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ? null
           : () {
               setState(() => _selectedRole = role.value);
-              context.read<AuthBloc>().add(RegisterRoleChanged(role.value));
+              context.read<auth.AuthBloc>().add(RegisterRoleChanged(role.value));
             },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -525,6 +604,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password.contains(RegExp(r'''[!@#$%^&*()_+\-=\[\]{};:'".<>?]'''));
 
     return hasLetter && hasNumber && hasSpecialChar;
+  }
+
+  Future<List<Map<String, dynamic>>> _loadCountries() async {
+    try {
+      final supabase = Supabase.instance.client;
+      final data = await supabase
+          .from('countries')
+          .select()
+          .eq('is_supported', true)
+          .order('name', ascending: true);
+      return data;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _loadRegions(String countryId) async {
+    try {
+      final supabase = Supabase.instance.client;
+      final data = await supabase
+          .from('regions')
+          .select()
+          .eq('country_id', countryId)
+          .order('name', ascending: true);
+      return data;
+    } catch (e) {
+      return [];
+    }
   }
 }
 
