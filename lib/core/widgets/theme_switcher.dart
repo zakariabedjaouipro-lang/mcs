@@ -100,8 +100,10 @@ class ThemeSwitcher extends StatelessWidget {
       leading: Icon(icon),
       title: Text(label),
       trailing: isSelected
-          ? Icon(Icons.check_circle,
-              color: Theme.of(context).colorScheme.primary)
+          ? Icon(
+              Icons.check_circle,
+              color: Theme.of(context).colorScheme.primary,
+            )
           : null,
       onTap: () {
         Navigator.pop(context);
@@ -365,8 +367,10 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
       leading: Icon(icon),
       title: Text(label),
       trailing: isSelected
-          ? Icon(Icons.check_circle,
-              color: Theme.of(context).colorScheme.primary)
+          ? Icon(
+              Icons.check_circle,
+              color: Theme.of(context).colorScheme.primary,
+            )
           : null,
       onTap: () {
         Navigator.pop(context);

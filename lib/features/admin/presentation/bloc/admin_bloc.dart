@@ -42,9 +42,9 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       );
 
       await _supabaseService.insert(
-          'subscription_codes',
-          subscription.toJson(),
-        );
+        'subscription_codes',
+        subscription.toJson(),
+      );
 
       emit(const AdminSuccess('تم إنشاء كود الاشتراك بنجاح'));
       add(const LoadSubscriptionCodes());
@@ -240,7 +240,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       );
 
       final rates = <String, double>{};
-      
+
       // Group by from_currency and get the most recent rate for each pair
       final latestRates = <String, Map<String, dynamic>>{};
       for (final item in data) {
@@ -248,10 +248,11 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         final toCurrency = item['to_currency'] as String;
         final effectiveDate = DateTime.parse(item['effective_date'] as String);
         final key = '$fromCurrency\_$toCurrency';
-        
+
         // Keep only the most recent rate for each pair
-        if (!latestRates.containsKey(key) || 
-            effectiveDate.isAfter(DateTime.parse(latestRates[key]!['effective_date'] as String))) {
+        if (!latestRates.containsKey(key) ||
+            effectiveDate.isAfter(DateTime.parse(
+                latestRates[key]!['effective_date'] as String))) {
           latestRates[key] = item;
         }
       }
