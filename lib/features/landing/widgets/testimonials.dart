@@ -5,10 +5,11 @@ import 'package:mcs/core/theme/text_styles.dart';
 /// شهادات المستخدمين - عرض آراء المستخدمين مع تقييمات وصور
 class TestimonialsWidget extends StatefulWidget {
   const TestimonialsWidget({
-    Key? key,
+    super.key, // ✅ تم الإصلاح: استخدام super parameter
     this.primaryColor,
     this.testimonials,
-  }) : super(key: key);
+  });
+
   final Color? primaryColor;
   final List<Testimonial>? testimonials;
 
@@ -134,7 +135,13 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
   @override
   Widget build(BuildContext context) {
     final primaryColor = widget.primaryColor ?? AppColors.primary;
-    final isMobile = MediaQuery.of(context).size.width < 768;
+    final size = MediaQuery.of(context).size.width;
+
+    // ✅ تم الإصلاح: استخدام int محسوب بشكل صحيح
+    final int itemCount = _testimonials.length;
+
+    // ✅ تم الإصلاح: حساب ارتفاع البطاقة بناءً على حجم الشاشة
+    final double cardHeight = size < 768 ? 380.0 : 320.0;
 
     return Column(
       children: [
@@ -158,20 +165,21 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
         ScaleTransition(
           scale: _slideAnimation,
           child: SizedBox(
-            height: isMobile ? 380 : 320,
+            height: cardHeight, // ✅ تم الإصلاح: استخدام double
             child: PageView.builder(
               controller: _pageController,
+              itemCount: itemCount, // ✅ تم الإصلاح: استخدام int
               onPageChanged: (index) {
-                setState(() => _currentIndex = index % _testimonials.length);
+                setState(() => _currentIndex = index);
                 _animationController.reset();
                 _animationController.forward();
               },
               itemBuilder: (context, index) {
-                final testimonial = _testimonials[index % _testimonials.length];
+                final testimonial = _testimonials[index];
                 return AnimatedBuilder(
                   animation: _pageController,
                   builder: (context, child) {
-                    var value = 1;
+                    double value = 1.0;
                     if (_pageController.position.haveDimensions) {
                       value = _pageController.page! - index;
                       value = (1 - (value.abs() * 0.5)).clamp(0.0, 1.0);
@@ -192,7 +200,8 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
         const SizedBox(height: 32),
 
         // Indicators
-        _buildIndicators(primaryColor),
+        _buildIndicators(
+            primaryColor, itemCount), // ✅ تم الإصلاح: تمرير itemCount
       ],
     );
   }
@@ -270,7 +279,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                       gradient: LinearGradient(
                         colors: [
                           primaryColor,
-                          primaryColor.withValues(alpha: 0.6)
+                          primaryColor.withValues(alpha: 0.6),
                         ],
                       ),
                     ),
@@ -339,11 +348,11 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
     );
   }
 
-  Widget _buildIndicators(Color primaryColor) {
+  Widget _buildIndicators(Color primaryColor, int itemCount) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
-        _testimonials.length,
+        itemCount,
         (index) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6),
           child: GestureDetector(

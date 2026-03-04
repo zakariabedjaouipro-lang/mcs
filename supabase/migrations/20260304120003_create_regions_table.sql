@@ -72,15 +72,11 @@ CREATE POLICY "Supported regions are viewable by everyone"
   USING (is_supported = true);
 
 -- Policy: Super admins can manage regions
-CREATE POLICY "Super admins can manage regions"
+-- Note: This policy will be updated after users table is created
+-- For now, allow service role to manage regions
+CREATE POLICY "Service role can manage regions"
   ON regions FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM users
-      WHERE id = auth.uid()
-      AND role = 'super_admin'
-    )
-  );
+  USING (auth.role() = 'service_role');
 
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers

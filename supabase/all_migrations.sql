@@ -1,0 +1,5427 @@
+﻿=== 20260304120000_create_enums.sql ===
+-- Migration: Create Enums for MCS Database
+-- Purpose: Define PostgreSQL enum types used throughout the application
+-- Version: v2_P01_001
+-- Created: 2026-03-04
+-- Dependencies: None
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- User and Auth Enums
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- User role enumeration
+-- Defines different roles in the clinic system
+CREATE TYPE user_role AS ENUM (
+  'super_admin',         -- Platform administrator
+  'clinic_admin',        -- Clinic manager/administrator
+  'doctor',              -- Medical doctor/physician
+  'nurse',               -- Nursing staff
+  'receptionist',        -- Reception/front desk
+  'pharmacist',          -- Pharmacy staff
+  'lab_technician',      -- Laboratory technician
+  'radiographer',        -- X-ray/imaging technician
+  'patient',             -- Patient/client
+  'relative'             -- Family member of patient
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Appointment and Medical Enums
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Appointment status enumeration
+-- Tracks the lifecycle of appointments
+CREATE TYPE appointment_status AS ENUM (
+  'pending',             -- Waiting for confirmation
+  'confirmed',           -- Appointment confirmed
+  'in_progress',         -- Currently in consultation
+  'completed',           -- Appointment finished
+  'no_show',             -- Patient didn't show up
+  'cancelled',           -- Cancelled by clinic or patient
+  'rescheduled'          -- Moved to different time
+);
+
+-- Invoice status enumeration
+-- Tracks payment status throughout the lifecycle
+CREATE TYPE invoice_status AS ENUM (
+  'draft',               -- Not yet issued
+  'issued',              -- Sent to patient
+  'pending',             -- Awaiting payment
+  'paid',                -- Payment received
+  'overdue',             -- Payment past due date
+  'cancelled',           -- Transaction cancelled
+  'refunded'             -- Partially or fully refunded
+);
+
+-- Subscription type enumeration
+-- Defines different service subscription plans
+CREATE TYPE subscription_type AS ENUM (
+  'free',                -- No subscription
+  'basic',               -- Basic plan
+  'professional',        -- Professional plan
+  'enterprise',          -- Enterprise plan
+  'custom',              -- Custom arrangement
+  'trial'                -- Trial period
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Video Session Enums
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Video session status enumeration
+-- Tracks telemedicine session states
+CREATE TYPE video_session_status AS ENUM (
+  'scheduled',           -- Upcoming video call
+  'active',              -- Currently in progress
+  'completed',           -- Session finished
+  'cancelled',           -- Session was cancelled
+  'no_show'              -- Participant didn't show up
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Notification Enums
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Notification type enumeration
+-- Categorizes different types of notifications
+CREATE TYPE notification_type AS ENUM (
+  'appointment',         -- Appointment-related notification
+  'prescription',        -- Prescription-related notification
+  'payment',             -- Payment/invoice notification
+  'message',             -- Direct message from clinic staff
+  'system',              -- System notifications
+  'alert'                -- Critical alerts
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Medical and Health Enums
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Blood pressure status enumeration
+-- Classification based on systolic/diastolic readings
+CREATE TYPE blood_pressure_status AS ENUM (
+  'normal',              -- < 120/80 mmHg
+  'elevated',            -- 120-129 / < 80 mmHg
+  'high_stage_1',        -- 130-139 / 80-89 mmHg
+  'high_stage_2',        -- >= 140 / >= 90 mmHg
+  'hypertensive_crisis', -- > 180 / > 120 mmHg
+  'low'                  -- Hypotension
+);
+
+-- Temperature status enumeration
+-- Classification of body temperature readings
+CREATE TYPE temperature_status AS ENUM (
+  'normal',              -- 36.1 - 37.5Â°C
+  'low',                 -- < 36.1Â°C (hypothermia)
+  'fever',               -- 38.0 - 38.9Â°C
+  'high_fever',          -- >= 39.0Â°C
+  'critical'             -- >= 40.5Â°C
+);
+
+-- Lab result type enumeration
+-- Categorizes different medical tests
+CREATE TYPE lab_result_type AS ENUM (
+  'blood_test',          -- Blood work/hematology
+  'urine_test',          -- Urinalysis
+  'culture',             -- Bacterial/fungal culture
+  'pathology',           -- Tissue analysis
+  'allergy_test',        -- Allergy testing
+  'genetic_test',        -- Genetic screening
+  'covid_test',          -- COVID-19 test
+  'other'                -- Miscellaneous tests
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Report and Assessment Enums
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Assessment type enumeration
+-- Categorizes different types of clinical assessments
+CREATE TYPE assessment_type AS ENUM (
+  'autism_ados1',        -- Autism Diagnostic Observation Schedule Module 1
+  'autism_ados2',        -- Autism Diagnostic Observation Schedule Module 2
+  'autism_cars',         -- Childhood Autism Rating Scale
+  'autism_m_chat',       -- Modified Checklist for Autism in Toddlers
+  'autism_aapep',        -- Adolescent and Adult Psychoeducational Profile
+  'psychiatric',         -- Psychiatric evaluation
+  'psychological',       -- Psychological assessment
+  'neurological',        -- Neurological examination
+  'developmental',       -- Developmental screening
+  'other'                -- Other assessment types
+);
+
+-- Bug report status enumeration
+-- Tracks bug report lifecycle
+CREATE TYPE bug_report_status AS ENUM (
+  'new',                 -- Newly reported
+  'in_progress',         -- Developer is working on it
+  'resolved',            -- Fix implemented
+  'closed',              -- Report closed (with/without fix)
+  'reopened'             -- Previously closed issue reopened
+);
+
+-- Employee type enumeration
+-- Categorizes clinic staff positions
+CREATE TYPE employee_type AS ENUM (
+  'doctor',              -- Medical doctor
+  'nurse',               -- Nursing staff
+  'technician',          -- Medical technician
+  'administrative',      -- Administrative staff
+  'manager',             -- Management staff
+  'reception',           -- Reception/front desk
+  'pharmacist',          -- Pharmacy staff
+  'intern',              -- Intern/trainee
+  'contractor'           -- External contractor
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Inventory and Supply Enums
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Inventory category enumeration
+-- Categorizes medical supplies and equipment
+CREATE TYPE inventory_category AS ENUM (
+  'medication',          -- Pharmaceutical products
+  'medical_supplies',    -- Consumables (bandages, syringes, etc.)
+  'equipment',           -- Reusable medical equipment
+  'diagnostic_tools',    -- Diagnostic devices
+  'surgical_instruments',-- Surgery instruments
+  'office_supplies',     -- Office materials
+  'cleaning_supplies',   -- Disinfectants and cleaning materials
+  'other'                -- Miscellaneous items
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- System and Audit Enums
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Audit action type enumeration
+-- Records types of system actions for audit logging
+CREATE TYPE audit_action_type AS ENUM (
+  'create',              -- Record created
+  'read',                -- Record accessed/read
+  'update',              -- Record modified
+  'delete',              -- Record deleted
+  'restore',             -- Deleted record restored
+  'archive',             -- Record archived
+  'login',               -- User login
+  'logout',              -- User logout
+  'export',              -- Data exported
+  'import',              -- Data imported
+  'permission_change',   -- Permission/role changed
+  'config_change'        -- Configuration changed
+);
+
+-- Session status enumeration
+-- Tracks user session states
+CREATE TYPE session_status AS ENUM (
+  'active',              -- User currently logged in
+  'idle',                -- User inactive for period
+  'suspended',           -- Session temporarily suspended
+  'expired',             -- Session time expired
+  'revoked'              -- Session forcibly ended
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TYPE user_role IS 'User roles and permissions in the MCS system';
+COMMENT ON TYPE appointment_status IS 'Appointment lifecycle status values';
+COMMENT ON TYPE invoice_status IS 'Invoice and payment status values';
+COMMENT ON TYPE subscription_type IS 'Service subscription plan types';
+COMMENT ON TYPE video_session_status IS 'Telemedicine session status values';
+COMMENT ON TYPE notification_type IS 'Notification category types';
+COMMENT ON TYPE blood_pressure_status IS 'Blood pressure classification levels';
+COMMENT ON TYPE temperature_status IS 'Body temperature classification levels';
+COMMENT ON TYPE lab_result_type IS 'Medical test result types';
+COMMENT ON TYPE assessment_type IS 'Clinical assessment types';
+COMMENT ON TYPE bug_report_status IS 'Bug report lifecycle status';
+COMMENT ON TYPE employee_type IS 'Clinic employee position types';
+COMMENT ON TYPE inventory_category IS 'Medical supply and equipment categories';
+COMMENT ON TYPE audit_action_type IS 'System audit log action types';
+COMMENT ON TYPE session_status IS 'User session status values';
+
+=== 20260304120001_create_users_table.sql ===
+-- Migration: Create Users Table and Related Structures
+-- Purpose: Define the users table with RLS policies and relationships to auth.users
+-- Version: v2_P01_004
+-- Created: 2026-03-04
+-- Dependencies: None
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Users Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create users table to store extended user profile information
+-- This table extends Supabase's auth.users with application-specific fields
+CREATE TABLE IF NOT EXISTS users (
+  -- Primary and Foreign Keys
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+
+  -- User Information
+  email VARCHAR(255) NOT NULL UNIQUE,
+  phone VARCHAR(20),
+  first_name VARCHAR(100),
+  last_name VARCHAR(100),
+  full_name VARCHAR(255) GENERATED ALWAYS AS (
+    COALESCE(first_name, '') || ' ' || COALESCE(last_name, '')
+  ) STORED,
+
+  -- Avatar and Profile Media
+  avatar_url TEXT,  -- URL to user's profile picture
+  bio TEXT,         -- User biography/description
+  date_of_birth DATE,
+
+  -- Business Information
+  clinic_id UUID,   -- Reference to clinic (nullable - system admins don't have clinic)
+  role user_role NOT NULL DEFAULT 'patient',
+
+  -- Account Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_verified BOOLEAN NOT NULL DEFAULT false,  -- Email verified
+  phone_verified BOOLEAN NOT NULL DEFAULT false,
+
+  -- Contact and Location
+  country_id UUID REFERENCES countries(id) ON DELETE SET NULL,
+  region_id UUID REFERENCES regions(id) ON DELETE SET NULL,
+  address TEXT,
+  postal_code VARCHAR(20),
+  city VARCHAR(100),
+
+  -- Metadata and Preferences
+  locale VARCHAR(5) DEFAULT 'en',  -- Language preference (en, ar)
+  timezone VARCHAR(50) DEFAULT 'UTC',
+  theme_preference VARCHAR(20) DEFAULT 'system',  -- light, dark, system
+  two_factor_enabled BOOLEAN DEFAULT false,
+
+  -- Subscription Information
+  subscription_type subscription_type DEFAULT 'free',
+  subscription_start_date TIMESTAMP WITH TIME ZONE,
+  subscription_end_date TIMESTAMP WITH TIME ZONE,
+
+  -- Activity Tracking
+  last_login_at TIMESTAMP WITH TIME ZONE,
+  last_activity_at TIMESTAMP WITH TIME ZONE,
+  login_count INTEGER DEFAULT 0,
+
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  deleted_at TIMESTAMP WITH TIME ZONE,  -- Soft delete timestamp
+
+  -- Constraints
+  CONSTRAINT valid_email CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$'),
+  CONSTRAINT valid_phone CHECK (phone IS NULL OR phone ~* '^\+?[0-9\s\-\(\)]{10,}$'),
+  CONSTRAINT valid_locale CHECK (locale IN ('en', 'ar')),
+  CONSTRAINT valid_theme CHECK (theme_preference IN ('light', 'dark', 'system')),
+  CONSTRAINT valid_subscription_dates CHECK (
+    subscription_end_date IS NULL OR subscription_start_date IS NULL OR
+    subscription_end_date >= subscription_start_date
+  )
+);
+
+-- Create indexes for common queries
+CREATE INDEX idx_users_email ON users(email) WHERE deleted_at IS NULL;
+CREATE INDEX idx_users_clinic_id ON users(clinic_id) WHERE deleted_at IS NULL;
+CREATE INDEX idx_users_role ON users(role) WHERE deleted_at IS NULL;
+CREATE INDEX idx_users_is_active ON users(is_active) WHERE deleted_at IS NULL;
+CREATE INDEX idx_users_created_at ON users(created_at) WHERE deleted_at IS NULL;
+CREATE INDEX idx_users_subscription_type ON users(subscription_type) WHERE deleted_at IS NULL;
+CREATE INDEX idx_users_country_id ON users(country_id) WHERE deleted_at IS NULL;
+CREATE INDEX idx_users_region_id ON users(region_id) WHERE deleted_at IS NULL;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Updated At Trigger
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER users_update_updated_at
+  BEFORE UPDATE ON users
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Last Activity Trigger
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update last_activity_at on any table update
+CREATE OR REPLACE FUNCTION update_user_last_activity()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE users SET last_activity_at = NOW() WHERE id = NEW.created_by OR id = NEW.updated_by;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on users table
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can read their own profile
+CREATE POLICY users_read_own_profile ON users
+  FOR SELECT
+  USING (auth.uid() = id);
+
+-- Policy: Super admins and clinic admins can read users in their clinic
+CREATE POLICY admins_read_clinic_users ON users
+  FOR SELECT
+  USING (
+    (SELECT role FROM users WHERE id = auth.uid()) IN ('super_admin', 'clinic_admin')
+    AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())
+  );
+
+-- Policy: Super admins can read all users
+CREATE POLICY super_admin_read_all ON users
+  FOR SELECT
+  USING ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin');
+
+-- Policy: Users can update only their own profile (non-sensitive fields)
+CREATE POLICY users_update_own_profile ON users
+  FOR UPDATE
+  USING (auth.uid() = id)
+  WITH CHECK (
+    auth.uid() = id
+    AND role = (SELECT role FROM users WHERE id = auth.uid())  -- Prevent role change
+    AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())  -- Prevent clinic change
+  );
+
+-- Policy: Clinic admins can update users in their clinic (limited fields)
+CREATE POLICY admins_update_clinic_users ON users
+  FOR UPDATE
+  USING (
+    (SELECT role FROM users WHERE id = auth.uid()) IN ('super_admin', 'clinic_admin')
+    AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())
+  )
+  WITH CHECK (
+    (SELECT role FROM users WHERE id = auth.uid()) IN ('super_admin', 'clinic_admin')
+    AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())
+  );
+
+-- Policy: Users can insert their own profile after signup (new registrations)
+CREATE POLICY users_insert_own_profile ON users
+  FOR INSERT
+  WITH CHECK (auth.uid() = id);
+
+-- Policy: Only admins can delete users (soft delete via updated_at trigger)
+CREATE POLICY admins_soft_delete ON users
+  FOR UPDATE
+  USING ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin')
+  WITH CHECK ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin');
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Helper Views
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- View: Active users only (excluding soft-deleted)
+CREATE VIEW active_users AS
+SELECT * FROM users
+WHERE deleted_at IS NULL;
+
+-- View: Users by clinic (for clinic-specific queries)
+CREATE VIEW clinic_users AS
+SELECT u.*, 
+  COUNT(*) OVER (PARTITION BY u.clinic_id) as clinic_user_count
+FROM users u
+WHERE u.deleted_at IS NULL
+ORDER BY u.clinic_id, u.created_at;
+
+-- View: User statistics
+CREATE VIEW user_statistics AS
+SELECT
+  COUNT(*) as total_users,
+  COUNT(CASE WHEN is_active THEN 1 END) as active_users,
+  COUNT(CASE WHEN is_verified THEN 1 END) as verified_users,
+  COUNT(DISTINCT clinic_id) as total_clinics,
+  COUNT(CASE WHEN role = 'doctor' THEN 1 END) as doctor_count,
+  COUNT(CASE WHEN role = 'patient' THEN 1 END) as patient_count,
+  COUNT(CASE WHEN role = 'clinic_admin' THEN 1 END) as admin_count
+FROM users
+WHERE deleted_at IS NULL;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE users IS 'Extended user profiles linked to Supabase auth.users';
+COMMENT ON COLUMN users.id IS 'Foreign key reference to auth.users.id';
+COMMENT ON COLUMN users.clinic_id IS 'Reference to clinics table (NULL for system admins)';
+COMMENT ON COLUMN users.role IS 'User role determining permissions and access levels';
+COMMENT ON COLUMN users.is_verified IS 'Email verification status';
+COMMENT ON COLUMN users.two_factor_enabled IS 'Two-factor authentication status';
+COMMENT ON COLUMN users.deleted_at IS 'Soft delete timestamp (NULL = active)';
+
+COMMENT ON POLICY users_read_own_profile ON users IS 'Users can view their own profile only';
+COMMENT ON POLICY admins_read_clinic_users ON users IS 'Admins can read users in their clinic';
+COMMENT ON POLICY super_admin_read_all ON users IS 'Super admins can read all user profiles';
+COMMENT ON POLICY users_update_own_profile ON users IS 'Users can update non-sensitive fields';
+COMMENT ON POLICY admins_update_clinic_users ON users IS 'Admins can manage users in their clinic';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Migration Notes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+/*
+  IMPORTANT SETUP NOTES:
+
+  1. This migration creates a 'users' table that extends Supabase's built-in auth.users
+  2. The relationship is established via a foreign key on the 'id' column
+  3. RLS (Row Level Security) is enabled to protect user data
+  4. Four main policies control access:
+     - Users can read their own profiles
+     - Admins can manage clinic staff
+     - Super admins have full access
+     - Users can only update non-sensitive fields
+
+  5. Soft-delete pattern: Use deleted_at IS NULL in WHERE clauses
+  6. To fully delete a user: UPDATE users SET deleted_at = NOW() WHERE id = ...
+
+  7. After creating auth.users, you must create a corresponding users record:
+     - Use a trigger on auth.users.created_at, OR
+     - Call a function during user registration signup
+
+  8. Recommended post-signup function:
+     CREATE FUNCTION handle_new_user() RETURNS TRIGGER AS $$
+     BEGIN
+       INSERT INTO users (id, email, role) VALUES (NEW.id, NEW.email, 'patient');
+       RETURN NEW;
+     END;
+     $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+     CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users
+     FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+*/
+
+=== 20260304120002_create_countries_table.sql ===
+-- Migration: Create Countries Table
+-- Purpose: Store country reference data for user and clinic locations
+-- Version: v2_P01_002
+-- Created: 2026-03-04
+-- Dependencies: None
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Countries Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create countries table to store country reference data
+CREATE TABLE IF NOT EXISTS countries (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Country Information
+  name VARCHAR(255) NOT NULL,
+  name_ar VARCHAR(255),
+  iso2_code VARCHAR(2) NOT NULL UNIQUE,  -- 2-letter ISO code (e.g., US, DZ)
+  iso3_code VARCHAR(3) NOT NULL UNIQUE,  -- 3-letter ISO code (e.g., USA, DZA)
+  numeric_code INTEGER UNIQUE,            -- Numeric ISO code (e.g., 840 for US)
+  phone_code VARCHAR(10) NOT NULL,       -- Country calling code (e.g., +1, +213)
+  currency_code VARCHAR(3),               -- Currency code (e.g., USD, DZD)
+  currency_name VARCHAR(50),
+  currency_name_ar VARCHAR(50),
+  currency_symbol VARCHAR(10),
+
+  -- Geographic Information
+  continent VARCHAR(50),
+  region VARCHAR(100),
+  subregion VARCHAR(100),
+  capital VARCHAR(100),
+  capital_ar VARCHAR(100),
+
+  -- Status and Metadata
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_supported BOOLEAN NOT NULL DEFAULT true,  -- Whether app supports this country
+
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_iso2_code CHECK (iso2_code ~ '^[A-Z]{2}$'),
+  CONSTRAINT valid_iso3_code CHECK (iso3_code ~ '^[A-Z]{3}$'),
+  CONSTRAINT valid_phone_code CHECK (phone_code ~ '^\+\d{1,4}$')
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_countries_iso2_code ON countries(iso2_code) WHERE is_active = true;
+CREATE INDEX idx_countries_iso3_code ON countries(iso3_code) WHERE is_active = true;
+CREATE INDEX idx_countries_name ON countries(name) WHERE is_active = true;
+CREATE INDEX idx_countries_is_active ON countries(is_active);
+CREATE INDEX idx_countries_is_supported ON countries(is_supported) WHERE is_supported = true;
+CREATE INDEX idx_countries_continent ON countries(continent) WHERE is_active = true;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on countries table
+ALTER TABLE countries ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view active countries
+CREATE POLICY "Active countries are viewable by everyone"
+  ON countries FOR SELECT
+  USING (is_active = true);
+
+-- Policy: Everyone can view supported countries
+CREATE POLICY "Supported countries are viewable by everyone"
+  ON countries FOR SELECT
+  USING (is_supported = true);
+
+-- Policy: Super admins can manage countries
+-- Note: This policy will be updated after users table is created
+-- For now, allow service role to manage countries
+CREATE POLICY "Service role can manage countries"
+  ON countries FOR ALL
+  USING (auth.role() = 'service_role');
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_countries_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER countries_update_updated_at
+  BEFORE UPDATE ON countries
+  FOR EACH ROW
+  EXECUTE FUNCTION update_countries_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE countries IS 'Country reference data for user and clinic locations';
+COMMENT ON COLUMN countries.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN countries.name IS 'Country name in English';
+COMMENT ON COLUMN countries.name_ar IS 'Country name in Arabic';
+COMMENT ON COLUMN countries.iso2_code IS '2-letter ISO country code (e.g., US, DZ)';
+COMMENT ON COLUMN countries.iso3_code IS '3-letter ISO country code (e.g., USA, DZA)';
+COMMENT ON COLUMN countries.numeric_code IS 'Numeric ISO country code';
+COMMENT ON COLUMN countries.phone_code IS 'Country calling code (e.g., +1, +213)';
+COMMENT ON COLUMN countries.currency_code IS 'Currency code (e.g., USD, DZD)';
+COMMENT ON COLUMN countries.currency_name IS 'Currency name in English';
+COMMENT ON COLUMN countries.currency_name_ar IS 'Currency name in Arabic';
+COMMENT ON COLUMN countries.currency_symbol IS 'Currency symbol (e.g., $, Ø¯Ø¬)';
+COMMENT ON COLUMN countries.continent IS 'Continent name';
+COMMENT ON COLUMN countries.region IS 'Region name';
+COMMENT ON COLUMN countries.subregion IS 'Subregion name';
+COMMENT ON COLUMN countries.capital IS 'Capital city name';
+COMMENT ON COLUMN countries.is_active IS 'Whether the country is active';
+COMMENT ON COLUMN countries.is_supported IS 'Whether the app supports this country';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Seed Data
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Insert common countries
+INSERT INTO countries (name, name_ar, iso2_code, iso3_code, numeric_code, phone_code, currency_code, currency_name, currency_name_ar, currency_symbol, continent, region, subregion, capital, capital_ar) VALUES
+-- Algeria (Primary market)
+('Algeria', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', 'DZ', 'DZA', 12, '+213', 'DZD', 'Algerian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¬Ø²Ø§Ø¦Ø±ÙŠ', 'Ø¯Ø¬', 'Africa', 'Africa', 'Northern Africa', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±'),
+
+-- Other Arab countries
+('Morocco', 'Ø§Ù„Ù…ØºØ±Ø¨', 'MA', 'MAR', 504, '+212', 'MAD', 'Moroccan Dirham', 'Ø¯Ø±Ù‡Ù… Ù…ØºØ±Ø¨ÙŠ', 'DH', 'Africa', 'Africa', 'Northern Africa', 'Rabat', 'Ø§Ù„Ø±Ø¨Ø§Ø·'),
+('Tunisia', 'ØªÙˆÙ†Ø³', 'TN', 'TUN', 788, '+216', 'TND', 'Tunisian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ØªÙˆÙ†Ø³ÙŠ', 'DT', 'Africa', 'Africa', 'Northern Africa', 'Tunis', 'ØªÙˆÙ†Ø³'),
+('Egypt', 'Ù…ØµØ±', 'EG', 'EGY', 818, '+20', 'EGP', 'Egyptian Pound', 'Ø¬Ù†ÙŠÙ‡ Ù…ØµØ±ÙŠ', 'EÂ£', 'Africa', 'Africa', 'Northern Africa', 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©'),
+('Saudi Arabia', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©', 'SA', 'SAU', 682, '+966', 'SAR', 'Saudi Riyal', 'Ø±ÙŠØ§Ù„ Ø³Ø¹ÙˆØ¯ÙŠ', 'Ø±.Ø³', 'Asia', 'Asia', 'Western Asia', 'Riyadh', 'Ø§Ù„Ø±ÙŠØ§Ø¶'),
+('United Arab Emirates', 'Ø§Ù„Ø¥Ù…Ø§Ø±Ø§Øª Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'AE', 'ARE', 784, '+971', 'AED', 'UAE Dirham', 'Ø¯Ø±Ù‡Ù… Ø¥Ù…Ø§Ø±Ø§ØªÙŠ', 'DH', 'Asia', 'Asia', 'Western Asia', 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ'),
+('Qatar', 'Ù‚Ø·Ø±', 'QA', 'QAT', 634, '+974', 'QAR', 'Qatari Riyal', 'Ø±ÙŠØ§Ù„ Ù‚Ø·Ø±ÙŠ', 'Ø±.Ù‚', 'Asia', 'Asia', 'Western Asia', 'Doha', 'Ø§Ù„Ø¯ÙˆØ­Ø©'),
+('Kuwait', 'Ø§Ù„ÙƒÙˆÙŠØª', 'KW', 'KWT', 414, '+965', 'KWD', 'Kuwaiti Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ÙƒÙˆÙŠØªÙŠ', 'Ø¯.Ùƒ', 'Asia', 'Asia', 'Western Asia', 'Kuwait City', 'Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„ÙƒÙˆÙŠØª'),
+
+-- Major countries
+('United States', 'Ø§Ù„ÙˆÙ„Ø§ÙŠØ§Øª Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'US', 'USA', 840, '+1', 'USD', 'US Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ù…Ø±ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Washington, D.C.', 'ÙˆØ§Ø´Ù†Ø·Ù† Ø§Ù„Ø¹Ø§ØµÙ…Ø©'),
+('United Kingdom', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'GB', 'GBR', 826, '+44', 'GBP', 'British Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¥Ø³ØªØ±Ù„ÙŠÙ†ÙŠ', 'Â£', 'Europe', 'Europe', 'Northern Europe', 'London', 'Ù„Ù†Ø¯Ù†'),
+('France', 'ÙØ±Ù†Ø³Ø§', 'FR', 'FRA', 250, '+33', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Paris', 'Ø¨Ø§Ø±ÙŠØ³'),
+('Germany', 'Ø£Ù„Ù…Ø§Ù†ÙŠØ§', 'DE', 'DEU', 276, '+49', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Berlin', 'Ø¨Ø±Ù„ÙŠÙ†'),
+('Canada', 'ÙƒÙ†Ø¯Ø§', 'CA', 'CAN', 124, '+1', 'CAD', 'Canadian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± ÙƒÙ†Ø¯ÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Ottawa', 'Ø£ÙˆØªØ§ÙˆØ§'),
+('Australia', 'Ø£Ø³ØªØ±Ø§Ù„ÙŠØ§', 'AU', 'AUS', 36, '+61', 'AUD', 'Australian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ø³ØªØ±Ø§Ù„ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Canberra', 'ÙƒØ§Ù†Ø¨ÙŠØ±Ø§'),
+('Japan', 'Ø§Ù„ÙŠØ§Ø¨Ø§Ù†', 'JP', 'JPN', 392, '+81', 'JPY', 'Japanese Yen', 'ÙŠÙ† ÙŠØ§Ø¨Ø§Ù†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Tokyo', 'Ø·ÙˆÙƒÙŠÙˆ'),
+('China', 'Ø§Ù„ØµÙŠÙ†', 'CN', 'CHN', 156, '+86', 'CNY', 'Chinese Yuan', 'ÙŠÙˆØ§Ù† ØµÙŠÙ†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Beijing', 'Ø¨ÙƒÙŠÙ†'),
+('India', 'Ø§Ù„Ù‡Ù†Ø¯', 'IN', 'IND', 356, '+91', 'INR', 'Indian Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ù‡Ù†Ø¯ÙŠØ©', 'â‚¹', 'Asia', 'Asia', 'Southern Asia', 'New Delhi', 'Ù†ÙŠÙˆØ¯Ù„Ù‡ÙŠ'),
+('Brazil', 'Ø§Ù„Ø¨Ø±Ø§Ø²ÙŠÙ„', 'BR', 'BRA', 76, '+55', 'BRL', 'Brazilian Real', 'Ø±ÙŠØ§Ù„ Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠ', 'R$', 'South America', 'Americas', 'South America', 'BrasÃ­lia', 'Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠØ§'),
+('Russia', 'Ø±ÙˆØ³ÙŠØ§', 'RU', 'RUS', 643, '+7', 'RUB', 'Russian Ruble', 'Ø±ÙˆØ¨Ù„ Ø±ÙˆØ³ÙŠ', 'â‚½', 'Europe', 'Europe', 'Eastern Europe', 'Moscow', 'Ù…ÙˆØ³ÙƒÙˆ'),
+('Turkey', 'ØªØ±ÙƒÙŠØ§', 'TR', 'TUR', 792, '+90', 'TRY', 'Turkish Lira', 'Ù„ÙŠØ±Ø© ØªØ±ÙƒÙŠØ©', 'â‚º', 'Europe', 'Asia', 'Western Asia', 'Ankara', 'Ø£Ù†Ù‚Ø±Ø©'),
+('Spain', 'Ø¥Ø³Ø¨Ø§Ù†ÙŠØ§', 'ES', 'ESP', 724, '+34', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Madrid', 'Ù…Ø¯Ø±ÙŠØ¯'),
+('Italy', 'Ø¥ÙŠØ·Ø§Ù„ÙŠØ§', 'IT', 'ITA', 380, '+39', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Rome', 'Ø±ÙˆÙ…Ø§'),
+('Netherlands', 'Ù‡ÙˆÙ„Ù†Ø¯Ø§', 'NL', 'NLD', 528, '+31', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Amsterdam', 'Ø£Ù…Ø³ØªØ±Ø¯Ø§Ù…'),
+('Belgium', 'Ø¨Ù„Ø¬ÙŠÙƒØ§', 'BE', 'BEL', 56, '+32', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Brussels', 'Ø¨Ø±ÙˆÙƒØ³Ù„'),
+('Switzerland', 'Ø³ÙˆÙŠØ³Ø±Ø§', 'CH', 'CHE', 756, '+41', 'CHF', 'Swiss Franc', 'ÙØ±Ù†Ùƒ Ø³ÙˆÙŠØ³Ø±ÙŠ', 'CHF', 'Europe', 'Europe', 'Western Europe', 'Bern', 'Ø¨Ø±Ù†'),
+('Sweden', 'Ø§Ù„Ø³ÙˆÙŠØ¯', 'SE', 'SWE', 752, '+46', 'SEK', 'Swedish Krona', 'ÙƒØ±ÙˆÙ†Ø§ Ø³ÙˆÙŠØ¯ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Stockholm', 'Ø³ØªÙˆÙƒÙ‡ÙˆÙ„Ù…'),
+('Norway', 'Ø§Ù„Ù†Ø±ÙˆÙŠØ¬', 'NO', 'NOR', 578, '+47', 'NOK', 'Norwegian Krone', 'ÙƒØ±ÙˆÙ†Ø© Ù†Ø±ÙˆÙŠØ¬ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Oslo', 'Ø£ÙˆØ³Ù„Ùˆ'),
+('Denmark', 'Ø§Ù„Ø¯Ù†Ù…Ø§Ø±Ùƒ', 'DK', 'DNK', 208, '+45', 'DKK', 'Danish Krone', 'ÙƒØ±ÙˆÙ†Ø© Ø¯Ù†Ù…Ø§Ø±ÙƒÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Copenhagen', 'ÙƒÙˆØ¨Ù†Ù‡Ø§ØºÙ†'),
+('Finland', 'ÙÙ†Ù„Ù†Ø¯Ø§', 'FI', 'FIN', 246, '+358', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Helsinki', 'Ù‡Ù„Ø³Ù†ÙƒÙŠ'),
+('Poland', 'Ø¨ÙˆÙ„Ù†Ø¯Ø§', 'PL', 'POL', 616, '+48', 'PLN', 'Polish Zloty', 'Ø²Ù„ÙˆØªÙŠ Ø¨ÙˆÙ„Ù†Ø¯ÙŠ', 'zÅ‚', 'Europe', 'Europe', 'Eastern Europe', 'Warsaw', 'ÙˆØ§Ø±Ø³Ùˆ'),
+('South Korea', 'ÙƒÙˆØ±ÙŠØ§ Ø§Ù„Ø¬Ù†ÙˆØ¨ÙŠØ©', 'KR', 'KOR', 410, '+82', 'KRW', 'South Korean Won', 'ÙˆÙˆÙ† ÙƒÙˆØ±ÙŠ Ø¬Ù†ÙˆØ¨ÙŠ', 'â‚©', 'Asia', 'Asia', 'Eastern Asia', 'Seoul', 'Ø³ÙˆÙ„'),
+('Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©', 'SG', 'SGP', 702, '+65', 'SGD', 'Singapore Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø³Ù†ØºØ§ÙÙˆØ±ÙŠ', '$', 'Asia', 'Asia', 'South-Eastern Asia', 'Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©'),
+('Malaysia', 'Ù…Ø§Ù„ÙŠØ²ÙŠØ§', 'MY', 'MYS', 458, '+60', 'MYR', 'Malaysian Ringgit', 'Ø±ÙŠÙ†ØºÙŠØª Ù…Ø§Ù„ÙŠØ²ÙŠ', 'RM', 'Asia', 'Asia', 'South-Eastern Asia', 'Kuala Lumpur', 'ÙƒÙˆØ§Ù„Ø§Ù„Ù…Ø¨ÙˆØ±'),
+('Indonesia', 'Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ§', 'ID', 'IDN', 360, '+62', 'IDR', 'Indonesian Rupiah', 'Ø±ÙˆØ¨ÙŠØ© Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ©', 'Rp', 'Asia', 'Asia', 'South-Eastern Asia', 'Jakarta', 'Ø¬Ø§ÙƒØ±ØªØ§'),
+('Thailand', 'ØªØ§ÙŠÙ„Ø§Ù†Ø¯', 'TH', 'THA', 764, '+66', 'THB', 'Thai Baht', 'Ø¨Ø§Øª ØªØ§ÙŠÙ„Ù†Ø¯ÙŠ', 'à¸¿', 'Asia', 'Asia', 'South-Eastern Asia', 'Bangkok', 'Ø¨Ø§Ù†ÙƒÙˆÙƒ'),
+('Vietnam', 'ÙÙŠØªÙ†Ø§Ù…', 'VN', 'VNM', 704, '+84', 'VND', 'Vietnamese Dong', 'Ø¯ÙˆÙ†Øº ÙÙŠØªÙ†Ø§Ù…ÙŠ', 'â‚«', 'Asia', 'Asia', 'South-Eastern Asia', 'Hanoi', 'Ù‡Ø§Ù†ÙˆÙŠ'),
+('Philippines', 'Ø§Ù„ÙÙ„Ø¨ÙŠÙ†', 'PH', 'PHL', 608, '+63', 'PHP', 'Philippine Peso', 'Ø¨ÙŠØ²Ùˆ ÙÙ„Ø¨ÙŠÙ†ÙŠ', 'â‚±', 'Asia', 'Asia', 'South-Eastern Asia', 'Manila', 'Ù…Ø§Ù†ÙŠÙ„Ø§'),
+('Pakistan', 'Ø¨Ø§ÙƒØ³ØªØ§Ù†', 'PK', 'PAK', 586, '+92', 'PKR', 'Pakistani Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ø¨Ø§ÙƒØ³ØªØ§Ù†ÙŠØ©', 'â‚¨', 'Asia', 'Asia', 'Southern Asia', 'Islamabad', 'Ø¥Ø³Ù„Ø§Ù… Ø¢Ø¨Ø§Ø¯'),
+('Bangladesh', 'Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´', 'BD', 'BGD', 50, '+880', 'BDT', 'Bangladeshi Taka', 'ØªØ§ÙƒØ§ Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´ÙŠ', 'à§³', 'Asia', 'Asia', 'Southern Asia', 'Dhaka', 'Ø¯ÙƒØ§'),
+('Nigeria', 'Ù†ÙŠØ¬ÙŠØ±ÙŠØ§', 'NG', 'NGA', 566, '+234', 'NGN', 'Nigerian Naira', 'Ù†Ø§ÙŠØ±Ø§ Ù†ÙŠØ¬ÙŠØ±ÙŠ', 'â‚¦', 'Africa', 'Africa', 'Western Africa', 'Abuja', 'Ø£Ø¨ÙˆØ¬Ø§'),
+('South Africa', 'Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠØ§', 'ZA', 'ZAF', 710, '+27', 'ZAR', 'South African Rand', 'Ø±Ø§Ù†Ø¯ Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠ', 'R', 'Africa', 'Africa', 'Southern Africa', 'Pretoria', 'Ø¨Ø±ÙŠØªÙˆØ±ÙŠØ§'),
+('Mexico', 'Ø§Ù„Ù…ÙƒØ³ÙŠÙƒ', 'MX', 'MEX', 484, '+52', 'MXN', 'Mexican Peso', 'Ø¨ÙŠØ²Ùˆ Ù…ÙƒØ³ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Mexico City', 'Ù…Ø¯ÙŠÙ†Ø© Ù…ÙƒØ³ÙŠÙƒÙˆ'),
+('Argentina', 'Ø§Ù„Ø£Ø±Ø¬Ù†ØªÙŠÙ†', 'AR', 'ARG', 32, '+54', 'ARS', 'Argentine Peso', 'Ø¨ÙŠØ²Ùˆ Ø£Ø±Ø¬Ù†ØªÙŠÙ†ÙŠ', '$', 'South America', 'Americas', 'South America', 'Buenos Aires', 'Ø¨ÙˆÙŠÙ†Ø³ Ø¢ÙŠØ±Ø³'),
+('Colombia', 'ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠØ§', 'CO', 'COL', 170, '+57', 'COP', 'Colombian Peso', 'Ø¨ÙŠØ²Ùˆ ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠ', '$', 'South America', 'Americas', 'South America', 'BogotÃ¡', 'Ø¨ÙˆØºÙˆØªØ§'),
+('Chile', 'ØªØ´ÙŠÙ„ÙŠ', 'CL', 'CHL', 152, '+56', 'CLP', 'Chilean Peso', 'Ø¨ÙŠØ²Ùˆ ØªØ´ÙŠÙ„ÙŠ', '$', 'South America', 'Americas', 'South America', 'Santiago', 'Ø³Ø§Ù†ØªÙŠØ§ØºÙˆ'),
+('Peru', 'Ø¨ÙŠØ±Ùˆ', 'PE', 'PER', 604, '+51', 'PEN', 'Peruvian Sol', 'Ø³ÙˆÙ„ Ø¨ÙŠØ±ÙˆÙÙŠ', 'S/.', 'South America', 'Americas', 'South America', 'Lima', 'Ù„ÙŠÙ…Ø§'),
+('Venezuela', 'ÙÙ†Ø²ÙˆÙŠÙ„Ø§', 'VE', 'VEN', 862, '+58', 'VES', 'Venezuelan BolÃ­var', 'Ø¨ÙˆÙ„ÙŠÙØ§Ø± ÙÙ†Ø²ÙˆÙŠÙ„ÙŠ', 'Bs.', 'South America', 'Americas', 'South America', 'Caracas', 'ÙƒØ§Ø±Ø§ÙƒØ§Ø³'),
+('Greece', 'Ø§Ù„ÙŠÙˆÙ†Ø§Ù†', 'GR', 'GRC', 300, '+30', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Athens', 'Ø£Ø«ÙŠÙ†Ø§'),
+('Portugal', 'Ø§Ù„Ø¨Ø±ØªØºØ§Ù„', 'PT', 'PRT', 620, '+351', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Lisbon', 'Ù„ÙŠØ³Ø¨ÙˆÙ†'),
+('Ireland', 'Ø£ÙŠØ±Ù„Ù†Ø¯Ø§', 'IE', 'IRL', 372, '+353', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Dublin', 'Ø¯Ø¨Ù„Ù†'),
+('New Zealand', 'Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯Ø§', 'NZ', 'NZL', 554, '+64', 'NZD', 'New Zealand Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Wellington', 'ÙˆÙŠÙ„ÙŠÙ†ØºØªÙˆÙ†'),
+('South Sudan', 'Ø¬Ù†ÙˆØ¨ Ø§Ù„Ø³ÙˆØ¯Ø§Ù†', 'SS', 'SSD', 728, '+211', 'SSP', 'South Sudanese Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¬Ù†ÙˆØ¨ Ø³ÙˆØ¯Ø§Ù†ÙŠ', 'Â£', 'Africa', 'Africa', 'Northern Africa', 'Juba', 'Ø¬ÙˆØ¨Ø§'),
+('Libya', 'Ù„ÙŠØ¨ÙŠØ§', 'LY', 'LBY', 434, '+218', 'LYD', 'Libyan Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ù„ÙŠØ¨ÙŠ', 'Ù„.Ø¯', 'Africa', 'Africa', 'Northern Africa', 'Tripoli', 'Ø·Ø±Ø§Ø¨Ù„Ø³'),
+('Jordan', 'Ø§Ù„Ø£Ø±Ø¯Ù†', 'JO', 'JOR', 400, '+962', 'JOD', 'Jordanian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø£Ø±Ø¯Ù†ÙŠ', 'Ø¯.Ø£', 'Asia', 'Asia', 'Western Asia', 'Amman', 'Ø¹Ù…Ø§Ù†'),
+('Lebanon', 'Ù„Ø¨Ù†Ø§Ù†', 'LB', 'LBN', 422, '+961', 'LBP', 'Lebanese Pound', 'Ù„ÙŠØ±Ø© Ù„Ø¨Ù†Ø§Ù†ÙŠØ©', 'Ù„.Ù„', 'Asia', 'Asia', 'Western Asia', 'Beirut', 'Ø¨ÙŠØ±ÙˆØª'),
+('Syria', 'Ø³ÙˆØ±ÙŠØ§', 'SY', 'SYR', 760, '+963', 'SYP', 'Syrian Pound', 'Ù„ÙŠØ±Ø© Ø³ÙˆØ±ÙŠØ©', 'Ù„.Ø³', 'Asia', 'Asia', 'Western Asia', 'Damascus', 'Ø¯Ù…Ø´Ù‚'),
+('Iraq', 'Ø§Ù„Ø¹Ø±Ø§Ù‚', 'IQ', 'IRQ', 368, '+964', 'IQD', 'Iraqi Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¹Ø±Ø§Ù‚ÙŠ', 'Ø¹.Ø¯', 'Asia', 'Asia', 'Western Asia', 'Baghdad', 'Ø¨ØºØ¯Ø§Ø¯'),
+('Yemen', 'Ø§Ù„ÙŠÙ…Ù†', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'Ø±ÙŠØ§Ù„ ÙŠÙ…Ù†ÙŠ', 'Ø±.ÙŠ', 'Asia', 'Asia', 'Western Asia', "Sana'a", 'ØµÙ†Ø¹Ø§Ø¡'),
+('Oman', 'Ø¹Ù…Ø§Ù†', 'OM', 'OMN', 512, '+968', 'OMR', 'Omani Rial', 'Ø±ÙŠØ§Ù„ Ø¹Ù…Ø§Ù†ÙŠ', 'Ø±.Ø¹', 'Asia', 'Asia', 'Western Asia', 'Muscat', 'Ù…Ø³Ù‚Ø·'),
+('Bahrain', 'Ø§Ù„Ø¨Ø­Ø±ÙŠÙ†', 'BH', 'BHR', 48, '+973', 'BHD', 'Bahraini Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¨Ø­Ø±ÙŠÙ†ÙŠ', 'Ø¯.Ø¨', 'Asia', 'Asia', 'Western Asia', 'Manama', 'Ø§Ù„Ù…Ù†Ø§Ù…Ø©'),
+('Palestin', 'Ù‚Ù„Ø³Ø·ÙŠÙ†', 'IL', 'ISR', 376, '+972', 'ILS', 'Palestiny New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'Ø§Ù„Ù‚Ø¯Ø³'),
+('Palestine', 'ÙÙ„Ø³Ø·ÙŠÙ†', 'PS', 'PSE', 275, '+970', 'ILS', 'Palestini New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Ramallah', 'Ø±Ø§Ù… Ø§Ù„Ù„Ù‡')
+ON CONFLICT (iso2_code) DO NOTHING;
+
+=== 20260304120003_create_regions_table.sql ===
+-- Migration: Create Regions Table
+-- Purpose: Store region/state/province reference data within countries
+-- Version: v2_P01_003
+-- Created: 2026-03-04
+-- Dependencies: v2_P01_002_create_countries_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Regions Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create regions table to store region/state/province reference data
+CREATE TABLE IF NOT EXISTS regions (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  country_id UUID NOT NULL REFERENCES countries(id) ON DELETE CASCADE,
+
+  -- Region Information
+  name VARCHAR(255) NOT NULL,
+  name_ar VARCHAR(255),
+  code VARCHAR(10) NOT NULL,  -- Region code (e.g., ALG for Algiers)
+  iso_code VARCHAR(10),       -- ISO subdivision code if available
+  region_type VARCHAR(50),    -- State, Province, Region, Governorate, etc.
+  capital VARCHAR(100),       -- Capital city of the region
+  capital_ar VARCHAR(100),
+
+  -- Geographic Information
+  latitude DECIMAL(10, 8),
+  longitude DECIMAL(11, 8),
+
+  -- Status and Metadata
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_supported BOOLEAN NOT NULL DEFAULT true,  -- Whether app supports this region
+
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_region_code CHECK (code ~ '^[A-Z0-9]{2,10}$'),
+  CONSTRAINT unique_country_region UNIQUE (country_id, code)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_regions_country_id ON regions(country_id) WHERE is_active = true;
+CREATE INDEX idx_regions_code ON regions(code) WHERE is_active = true;
+CREATE INDEX idx_regions_name ON regions(name) WHERE is_active = true;
+CREATE INDEX idx_regions_is_active ON regions(is_active);
+CREATE INDEX idx_regions_is_supported ON regions(is_supported) WHERE is_supported = true;
+CREATE INDEX idx_regions_country_code ON regions(country_id, code) WHERE is_active = true;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on regions table
+ALTER TABLE regions ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view active regions
+CREATE POLICY "Active regions are viewable by everyone"
+  ON regions FOR SELECT
+  USING (is_active = true);
+
+-- Policy: Everyone can view supported regions
+CREATE POLICY "Supported regions are viewable by everyone"
+  ON regions FOR SELECT
+  USING (is_supported = true);
+
+-- Policy: Super admins can manage regions
+-- Note: This policy will be updated after users table is created
+-- For now, allow service role to manage regions
+CREATE POLICY "Service role can manage regions"
+  ON regions FOR ALL
+  USING (auth.role() = 'service_role');
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_regions_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER regions_update_updated_at
+  BEFORE UPDATE ON regions
+  FOR EACH ROW
+  EXECUTE FUNCTION update_regions_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE regions IS 'Region/state/province reference data within countries';
+COMMENT ON COLUMN regions.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN regions.country_id IS 'Foreign key reference to countries table';
+COMMENT ON COLUMN regions.name IS 'Region name in English';
+COMMENT ON COLUMN regions.name_ar IS 'Region name in Arabic';
+COMMENT ON COLUMN regions.code IS 'Region code (e.g., ALG for Algiers)';
+COMMENT ON COLUMN regions.iso_code IS 'ISO subdivision code if available';
+COMMENT ON COLUMN regions.region_type IS 'Type of region (State, Province, Region, Governorate, etc.)';
+COMMENT ON COLUMN regions.capital IS 'Capital city of the region';
+COMMENT ON COLUMN regions.capital_ar IS 'Capital city name in Arabic';
+COMMENT ON COLUMN regions.latitude IS 'Geographic latitude';
+COMMENT ON COLUMN regions.longitude IS 'Geographic longitude';
+COMMENT ON COLUMN regions.is_active IS 'Whether the region is active';
+COMMENT ON COLUMN regions.is_supported IS 'Whether the app supports this region';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Seed Data
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Insert Algerian regions (wilayas) - Primary market
+INSERT INTO regions (country_id, name, name_ar, code, iso_code, region_type, capital, capital_ar, is_active, is_supported) VALUES
+-- Get Algeria country ID
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Adrar', 'Ø£Ø¯Ø±Ø§Ø±', '01', 'DZ-01', 'Wilaya', 'Adrar', 'Ø£Ø¯Ø±Ø§Ø±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Chlef', 'Ø§Ù„Ø´Ù„Ù', '02', 'DZ-02', 'Wilaya', 'Chlef', 'Ø§Ù„Ø´Ù„Ù', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Laghouat', 'Ø§Ù„Ø£ØºÙˆØ§Ø·', '03', 'DZ-03', 'Wilaya', 'Laghouat', 'Ø§Ù„Ø£ØºÙˆØ§Ø·', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Oum El Bouaghi', 'Ø£Ù… Ø§Ù„Ø¨ÙˆØ§Ù‚ÙŠ', '04', 'DZ-04', 'Wilaya', 'Oum El Bouaghi', 'Ø£Ù… Ø§Ù„Ø¨ÙˆØ§Ù‚ÙŠ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Batna', 'Ø¨Ø§ØªÙ†Ø©', '05', 'DZ-05', 'Wilaya', 'Batna', 'Ø¨Ø§ØªÙ†Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'BÃ©jaÃ¯a', 'Ø¨Ø¬Ø§ÙŠØ©', '06', 'DZ-06', 'Wilaya', 'BÃ©jaÃ¯a', 'Ø¨Ø¬Ø§ÙŠØ©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Biskra', 'Ø¨Ø³ÙƒØ±Ø©', '07', 'DZ-07', 'Wilaya', 'Biskra', 'Ø¨Ø³ÙƒØ±Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'BÃ©char', 'Ø¨Ø´Ø§Ø±', '08', 'DZ-08', 'Wilaya', 'BÃ©char', 'Ø¨Ø´Ø§Ø±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Blida', 'Ø§Ù„Ø¨Ù„ÙŠØ¯Ø©', '09', 'DZ-09', 'Wilaya', 'Blida', 'Ø§Ù„Ø¨Ù„ÙŠØ¯Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Bouira', 'Ø§Ù„Ø¨ÙˆÙŠØ±Ø©', '10', 'DZ-10', 'Wilaya', 'Bouira', 'Ø§Ù„Ø¨ÙˆÙŠØ±Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tamanrasset', 'ØªÙ…Ù†Ø±Ø§Ø³Øª', '11', 'DZ-11', 'Wilaya', 'Tamanrasset', 'ØªÙ…Ù†Ø±Ø§Ø³Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'TÃ©bessa', 'ØªØ¨Ø³Ø©', '12', 'DZ-12', 'Wilaya', 'TÃ©bessa', 'ØªØ¨Ø³Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tlemcen', 'ØªÙ„Ù…Ø³Ø§Ù†', '13', 'DZ-13', 'Wilaya', 'Tlemcen', 'ØªÙ„Ù…Ø³Ø§Ù†', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tiaret', 'ØªÙŠØ§Ø±Øª', '14', 'DZ-14', 'Wilaya', 'Tiaret', 'ØªÙŠØ§Ø±Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tizi Ouzou', 'ØªÙŠØ²ÙŠ ÙˆØ²Ùˆ', '15', 'DZ-15', 'Wilaya', 'Tizi Ouzou', 'ØªÙŠØ²ÙŠ ÙˆØ²Ùˆ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', '16', 'DZ-16', 'Wilaya', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Djelfa', 'Ø§Ù„Ø¬Ù„ÙØ©', '17', 'DZ-17', 'Wilaya', 'Djelfa', 'Ø§Ù„Ø¬Ù„ÙØ©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Jijel', 'Ø¬ÙŠØ¬Ù„', '18', 'DZ-18', 'Wilaya', 'Jijel', 'Ø¬ÙŠØ¬Ù„', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'SÃ©tif', 'Ø³Ø·ÙŠÙ', '19', 'DZ-19', 'Wilaya', 'SÃ©tif', 'Ø³Ø·ÙŠÙ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'SaÃ¯da', 'Ø³Ø¹ÙŠØ¯Ø©', '20', 'DZ-20', 'Wilaya', 'SaÃ¯da', 'Ø³Ø¹ÙŠØ¯Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Skikda', 'Ø³ÙƒÙŠÙƒØ¯Ø©', '21', 'DZ-21', 'Wilaya', 'Skikda', 'Ø³ÙƒÙŠÙƒØ¯Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Sidi Bel AbbÃ¨s', 'Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³', '22', 'DZ-22', 'Wilaya', 'Sidi Bel AbbÃ¨s', 'Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Annaba', 'Ø¹Ù†Ø§Ø¨Ø©', '23', 'DZ-23', 'Wilaya', 'Annaba', 'Ø¹Ù†Ø§Ø¨Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Guelma', 'Ù‚Ø§Ù„Ù…Ø©', '24', 'DZ-24', 'Wilaya', 'Guelma', 'Ù‚Ø§Ù„Ù…Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Constantine', 'Ù‚Ø³Ù†Ø·ÙŠÙ†Ø©', '25', 'DZ-25', 'Wilaya', 'Constantine', 'Ù‚Ø³Ù†Ø·ÙŠÙ†Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'MÃ©dÃ©a', 'Ø§Ù„Ù…Ø¯ÙŠØ©', '26', 'DZ-26', 'Wilaya', 'MÃ©dÃ©a', 'Ø§Ù„Ù…Ø¯ÙŠØ©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Mostaganem', 'Ù…Ø³ØªØºØ§Ù†Ù…', '27', 'DZ-27', 'Wilaya', 'Mostaganem', 'Ù…Ø³ØªØºØ§Ù†Ù…', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  "M'Sila", 'Ø§Ù„Ù…Ø³ÙŠÙ„Ø©', '28', 'DZ-28', 'Wilaya', "M'Sila", 'Ø§Ù„Ù…Ø³ÙŠÙ„Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Mascara', 'Ù…Ø¹Ø³ÙƒØ±', '29', 'DZ-29', 'Wilaya', 'Mascara', 'Ù…Ø¹Ø³ÙƒØ±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Ouargla', 'ÙˆØ±Ù‚Ù„Ø©', '30', 'DZ-30', 'Wilaya', 'Ouargla', 'ÙˆØ±Ù‚Ù„Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Oran', 'ÙˆÙ‡Ø±Ø§Ù†', '31', 'DZ-31', 'Wilaya', 'Oran', 'ÙˆÙ‡Ø±Ø§Ù†', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El Bayadh', 'Ø§Ù„Ø¨ÙŠØ¶', '32', 'DZ-32', 'Wilaya', 'El Bayadh', 'Ø§Ù„Ø¨ÙŠØ¶', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Illizi', 'Ø¥Ù„ÙŠØ²ÙŠ', '33', 'DZ-33', 'Wilaya', 'Illizi', 'Ø¥Ù„ÙŠØ²ÙŠ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Bordj Bou Arreridj', 'Ø¨Ø±Ø¬ Ø¨ÙˆØ¹Ø±ÙŠØ±ÙŠØ¬', '34', 'DZ-34', 'Wilaya', 'Bordj Bou Arreridj', 'Ø¨Ø±Ø¬ Ø¨ÙˆØ¹Ø±ÙŠØ±ÙŠØ¬', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'BoumerdÃ¨s', 'Ø¨ÙˆÙ…Ø±Ø¯Ø§Ø³', '35', 'DZ-35', 'Wilaya', 'BoumerdÃ¨s', 'Ø¨ÙˆÙ…Ø±Ø¯Ø§Ø³', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El Tarf', 'Ø§Ù„Ø·Ø§Ø±Ù', '36', 'DZ-36', 'Wilaya', 'El Tarf', 'Ø§Ù„Ø·Ø§Ø±Ù', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tindouf', 'ØªÙ†Ø¯ÙˆÙ', '37', 'DZ-37', 'Wilaya', 'Tindouf', 'ØªÙ†Ø¯ÙˆÙ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tissemsilt', 'ØªÙŠØ³Ù…Ø³ÙŠÙ„Øª', '38', 'DZ-38', 'Wilaya', 'Tissemsilt', 'ØªÙŠØ³Ù…Ø³ÙŠÙ„Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El Oued', 'Ø§Ù„ÙˆØ§Ø¯ÙŠ', '39', 'DZ-39', 'Wilaya', 'El Oued', 'Ø§Ù„ÙˆØ§Ø¯ÙŠ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Khenchela', 'Ø®Ù†Ø´Ù„Ø©', '40', 'DZ-40', 'Wilaya', 'Khenchela', 'Ø®Ù†Ø´Ù„Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Souk Ahras', 'Ø³ÙˆÙ‚ Ø£Ù‡Ø±Ø§Ø³', '41', 'DZ-41', 'Wilaya', 'Souk Ahras', 'Ø³ÙˆÙ‚ Ø£Ù‡Ø±Ø§Ø³', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tipaza', 'ØªÙŠØ¨Ø§Ø²Ø©', '42', 'DZ-42', 'Wilaya', 'Tipaza', 'ØªÙŠØ¨Ø§Ø²Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Mila', 'Ù…ÙŠÙ„Ø©', '43', 'DZ-43', 'Wilaya', 'Mila', 'Ù…ÙŠÙ„Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'AÃ¯n Defla', 'Ø¹ÙŠÙ† Ø§Ù„Ø¯ÙÙ„Ù‰', '44', 'DZ-44', 'Wilaya', 'AÃ¯n Defla', 'Ø¹ÙŠÙ† Ø§Ù„Ø¯ÙÙ„Ù‰', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'NaÃ¢ma', 'Ø§Ù„Ù†Ø¹Ø§Ù…Ø©', '45', 'DZ-45', 'Wilaya', 'NaÃ¢ma', 'Ø§Ù„Ù†Ø¹Ø§Ù…Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'AÃ¯n TÃ©mouchent', 'Ø¹ÙŠÙ† ØªÙ…ÙˆØ´Ù†Øª', '46', 'DZ-46', 'Wilaya', 'AÃ¯n TÃ©mouchent', 'Ø¹ÙŠÙ† ØªÙ…ÙˆØ´Ù†Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'GhardaÃ¯a', 'ØºØ±Ø¯Ø§ÙŠØ©', '47', 'DZ-47', 'Wilaya', 'GhardaÃ¯a', 'ØºØ±Ø¯Ø§ÙŠØ©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Relizane', 'ØºÙ„ÙŠØ²Ø§Ù†', '48', 'DZ-48', 'Wilaya', 'Relizane', 'ØºÙ„ÙŠØ²Ø§Ù†', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Timimoun', 'ØªÙŠÙ…ÙŠÙ…ÙˆÙ†', '49', 'DZ-49', 'Wilaya', 'Timimoun', 'ØªÙŠÙ…ÙŠÙ…ÙˆÙ†', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Bordj Badji Mokhtar', 'Ø¨Ø±Ø¬ Ø¨Ø§Ø¬ÙŠ Ù…Ø®ØªØ§Ø±', '50', 'DZ-50', 'Wilaya', 'Bordj Badji Mokhtar', 'Ø¨Ø±Ø¬ Ø¨Ø§Ø¬ÙŠ Ù…Ø®ØªØ§Ø±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Ouled Djellal', 'Ø£ÙˆÙ„Ø§Ø¯ Ø¬Ù„Ø§Ù„', '51', 'DZ-51', 'Wilaya', 'Ouled Djellal', 'Ø£ÙˆÙ„Ø§Ø¯ Ø¬Ù„Ø§Ù„', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'BÃ©ni AbbÃ¨s', 'Ø¨Ù†ÙŠ Ø¹Ø¨Ø§Ø³', '52', 'DZ-52', 'Wilaya', 'BÃ©ni AbbÃ¨s', 'Ø¨Ù†ÙŠ Ø¹Ø¨Ø§Ø³', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'In Salah', 'Ø¹ÙŠÙ† ØµØ§Ù„Ø­', '53', 'DZ-53', 'Wilaya', 'In Salah', 'Ø¹ÙŠÙ† ØµØ§Ù„Ø­', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'In Guezzam', 'Ø¹ÙŠÙ† Ù‚Ø²Ø§Ù…', '54', 'DZ-54', 'Wilaya', 'In Guezzam', 'Ø¹ÙŠÙ† Ù‚Ø²Ø§Ù…', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Touggourt', 'ØªÙ‚Ø±Øª', '55', 'DZ-55', 'Wilaya', 'Touggourt', 'ØªÙ‚Ø±Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Djanet', 'Ø¬Ø§Ù†Øª', '56', 'DZ-56', 'Wilaya', 'Djanet', 'Ø¬Ø§Ù†Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El M\'Ghair', 'Ø§Ù„Ù…ØºÙŠØ±', '57', 'DZ-57', 'Wilaya', 'El M\'Ghair', 'Ø§Ù„Ù…ØºÙŠØ±', true, true),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El Meniaa', 'Ø§Ù„Ù…Ù†ÙŠØ¹Ø©', '58', 'DZ-58', 'Wilaya', 'El Meniaa', 'Ø§Ù„Ù…Ù†ÙŠØ¹Ø©', true, true
+);
+
+-- Insert a few regions from other countries for testing
+INSERT INTO regions (country_id, name, name_ar, code, region_type, capital, capital_ar, is_active, is_supported) VALUES
+-- United States (California, New York, Texas)
+((SELECT id FROM countries WHERE iso2_code = 'US'), 'California', 'ÙƒØ§Ù„ÙŠÙÙˆØ±Ù†ÙŠØ§', 'CA', 'State', 'Sacramento', 'Ø³Ø§ÙƒØ±Ø§Ù…Ù†ØªÙˆ', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'US'), 'New York', 'Ù†ÙŠÙˆÙŠÙˆØ±Ùƒ', 'NY', 'State', 'Albany', 'Ø£Ù„Ø¨Ø§Ù†ÙŠ', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'US'), 'Texas', 'ØªÙƒØ³Ø§Ø³', 'TX', 'State', 'Austin', 'Ø£ÙˆØ³ØªÙ†', true, true),
+
+-- France (ÃŽle-de-France, Provence-Alpes-CÃ´te d'Azur)
+((SELECT id FROM countries WHERE iso2_code = 'FR'), 'ÃŽle-de-France', 'Ø¥ÙŠÙ„ Ø¯Ùˆ ÙØ±Ø§Ù†Ø³', 'IDF', 'Region', 'Paris', 'Ø¨Ø§Ø±ÙŠØ³', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'FR'), 'Provence-Alpes-CÃ´te d\'Azur', 'Ø¨Ø±ÙˆÙØ§Ù†Ø³ Ø£Ù„Ø¨ ÙƒÙˆØª Ø¯Ø§Ø²ÙˆØ±', 'PACA', 'Region', 'Marseille', 'Ù…Ø§Ø±Ø³ÙŠÙ„ÙŠØ§', true, true),
+
+-- Saudi Arabia (Riyadh, Mecca, Medina)
+((SELECT id FROM countries WHERE iso2_code = 'SA'), 'Riyadh Province', 'Ù…Ù†Ø·Ù‚Ø© Ø§Ù„Ø±ÙŠØ§Ø¶', 'RI', 'Province', 'Riyadh', 'Ø§Ù„Ø±ÙŠØ§Ø¶', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'SA'), 'Mecca Province', 'Ù…Ù†Ø·Ù‚Ø© Ù…ÙƒØ© Ø§Ù„Ù…ÙƒØ±Ù…Ø©', 'MK', 'Province', 'Mecca', 'Ù…ÙƒØ© Ø§Ù„Ù…ÙƒØ±Ù…Ø©', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'SA'), 'Medina Province', 'Ù…Ù†Ø·Ù‚Ø© Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„Ù…Ù†ÙˆØ±Ø©', 'MD', 'Province', 'Medina', 'Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„Ù…Ù†ÙˆØ±Ø©', true, true),
+
+-- United Arab Emirates (Abu Dhabi, Dubai, Sharjah)
+((SELECT id FROM countries WHERE iso2_code = 'AE'), 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ', 'AZ', 'Emirate', 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'AE'), 'Dubai', 'Ø¯Ø¨ÙŠ', 'DU', 'Emirate', 'Dubai', 'Ø¯Ø¨ÙŠ', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'AE'), 'Sharjah', 'Ø§Ù„Ø´Ø§Ø±Ù‚Ø©', 'SH', 'Emirate', 'Sharjah', 'Ø§Ù„Ø´Ø§Ø±Ù‚Ø©', true, true),
+
+-- Egypt (Cairo, Alexandria, Giza)
+((SELECT id FROM countries WHERE iso2_code = 'EG'), 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©', 'C', 'Governorate', 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'EG'), 'Alexandria', 'Ø§Ù„Ø¥Ø³ÙƒÙ†Ø¯Ø±ÙŠØ©', 'ALX', 'Governorate', 'Alexandria', 'Ø§Ù„Ø¥Ø³ÙƒÙ†Ø¯Ø±ÙŠØ©', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'EG'), 'Giza', 'Ø§Ù„Ø¬ÙŠØ²Ø©', 'GZ', 'Governorate', 'Giza', 'Ø§Ù„Ø¬ÙŠØ²Ø©', true, true),
+
+-- Morocco (Casablanca, Rabat, Marrakech)
+((SELECT id FROM countries WHERE iso2_code = 'MA'), 'Casablanca-Settat', 'Ø§Ù„Ø¯Ø§Ø± Ø§Ù„Ø¨ÙŠØ¶Ø§Ø¡-Ø³Ø·Ø§Øª', 'CAS', 'Region', 'Casablanca', 'Ø§Ù„Ø¯Ø§Ø± Ø§Ù„Ø¨ÙŠØ¶Ø§Ø¡', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'MA'), 'Rabat-SalÃ©-KÃ©nitra', 'Ø§Ù„Ø±Ø¨Ø§Ø·-Ø³Ù„Ø§-Ø§Ù„Ù‚Ù†ÙŠØ·Ø±Ø©', 'RAB', 'Region', 'Rabat', 'Ø§Ù„Ø±Ø¨Ø§Ø·', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'MA'), 'Marrakech-Safi', 'Ù…Ø±Ø§ÙƒØ´-Ø¢Ø³ÙÙŠ', 'MAR', 'Region', 'Marrakech', 'Ù…Ø±Ø§ÙƒØ´', true, true),
+
+-- Tunisia (Tunis, Sfax, Sousse)
+((SELECT id FROM countries WHERE iso2_code = 'TN'), 'Tunis', 'ØªÙˆÙ†Ø³', 'TN', 'Governorate', 'Tunis', 'ØªÙˆÙ†Ø³', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'TN'), 'Sfax', 'ØµÙØ§Ù‚Ø³', 'SF', 'Governorate', 'Sfax', 'ØµÙØ§Ù‚Ø³', true, true),
+((SELECT id FROM countries WHERE iso2_code = 'TN'), 'Sousse', 'Ø³ÙˆØ³Ø©', 'SU', 'Governorate', 'Sousse', 'Ø³ÙˆØ³Ø©', true, true)
+
+ON CONFLICT (country_id, code) DO NOTHING;
+
+=== 20260304120004_create_specialties_table.sql ===
+-- Migration: Create Specialties Table
+-- Purpose: Store medical specialty reference data for doctors
+-- Version: v2_P02_001
+-- Created: 2026-03-04
+-- Dependencies: None
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Specialties Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create specialties table to store medical specialty reference data
+CREATE TABLE IF NOT EXISTS specialties (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Specialty Information
+  name_en VARCHAR(255) NOT NULL,
+  name_ar VARCHAR(255) NOT NULL,
+  description_en TEXT,
+  description_ar TEXT,
+  
+  -- Icon and Display
+  icon_name VARCHAR(100),  -- Icon identifier for UI
+  
+  -- Ordering and Organization
+  display_order INTEGER DEFAULT 0,
+  category VARCHAR(100),  -- Medical, Surgical, Diagnostic, etc.
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_popular BOOLEAN NOT NULL DEFAULT false,  -- Popular specialties shown first
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_display_order CHECK (display_order >= 0)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_specialties_name_en ON specialties(name_en) WHERE is_active = true;
+CREATE INDEX idx_specialties_name_ar ON specialties(name_ar) WHERE is_active = true;
+CREATE INDEX idx_specialties_icon_name ON specialties(icon_name) WHERE is_active = true;
+CREATE INDEX idx_specialties_category ON specialties(category) WHERE is_active = true;
+CREATE INDEX idx_specialties_display_order ON specialties(display_order) WHERE is_active = true;
+CREATE INDEX idx_specialties_is_popular ON specialties(is_popular) WHERE is_popular = true;
+CREATE INDEX idx_specialties_is_active ON specialties(is_active);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on specialties table
+ALTER TABLE specialties ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view active specialties
+CREATE POLICY "Active specialties are viewable by everyone"
+  ON specialties FOR SELECT
+  USING (is_active = true);
+
+-- Policy: Super admins can manage specialties
+CREATE POLICY "Super admins can manage specialties"
+  ON specialties FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_specialties_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER specialties_update_updated_at
+  BEFORE UPDATE ON specialties
+  FOR EACH ROW
+  EXECUTE FUNCTION update_specialties_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE specialties IS 'Medical specialty reference data for doctors';
+COMMENT ON COLUMN specialties.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN specialties.name_en IS 'Specialty name in English';
+COMMENT ON COLUMN specialties.name_ar IS 'Specialty name in Arabic';
+COMMENT ON COLUMN specialties.description_en IS 'Description in English';
+COMMENT ON COLUMN specialties.description_ar IS 'Description in Arabic';
+COMMENT ON COLUMN specialties.icon_name IS 'Icon identifier for UI display';
+COMMENT ON COLUMN specialties.display_order IS 'Display order for sorting';
+COMMENT ON COLUMN specialties.category IS 'Specialty category (Medical, Surgical, Diagnostic, etc.)';
+COMMENT ON COLUMN specialties.is_active IS 'Whether the specialty is active';
+COMMENT ON COLUMN specialties.is_popular IS 'Whether this is a popular specialty';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Seed Data
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Insert medical specialties
+INSERT INTO specialties (name_en, name_ar, description_en, description_ar, icon_name, display_order, category, is_active, is_popular) VALUES
+-- Popular specialties (shown first)
+('General Practice', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø¹Ø§Ù…', 'Comprehensive healthcare for individuals and families', 'Ø±Ø¹Ø§ÙŠØ© ØµØ­ÙŠØ© Ø´Ø§Ù…Ù„Ø© Ù„Ù„Ø£ÙØ±Ø§Ø¯ ÙˆØ§Ù„Ø¹Ø§Ø¦Ù„Ø§Øª', 'medical_services', 1, 'Medical', true, true),
+('Pediatrics', 'Ø·Ø¨ Ø§Ù„Ø£Ø·ÙØ§Ù„', 'Medical care for infants, children, and adolescents', 'Ø±Ø¹Ø§ÙŠØ© Ø·Ø¨ÙŠØ© Ù„Ù„Ø±Ø¶Ø¹ ÙˆØ§Ù„Ø£Ø·ÙØ§Ù„ ÙˆØ§Ù„Ù…Ø±Ø§Ù‡Ù‚ÙŠÙ†', 'child_care', 2, 'Medical', true, true),
+('Internal Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø¨Ø§Ø·Ù†ÙŠ', 'Diagnosis and treatment of adult diseases', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¨Ø§Ù„ØºÙŠÙ†', 'medical_services', 3, 'Medical', true, true),
+('Cardiology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù‚Ù„Ø¨', 'Diagnosis and treatment of heart diseases', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù‚Ù„Ø¨', 'cardiology', 4, 'Medical', true, true),
+('Dermatology', 'Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¬Ù„Ø¯ÙŠØ©', 'Treatment of skin, hair, and nail conditions', 'Ø¹Ù„Ø§Ø¬ Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¬Ù„Ø¯ ÙˆØ§Ù„Ø´Ø¹Ø± ÙˆØ§Ù„Ø£Ø¸Ø§ÙØ±', 'dermatology', 5, 'Medical', true, true),
+('Neurology', 'Ø§Ù„Ø£Ø¹ØµØ§Ø¨', 'Diagnosis and treatment of nervous system disorders', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ø¹ØµØ¨ÙŠ', 'neurology', 6, 'Medical', true, true),
+('Orthopedics', 'Ø§Ù„Ø¹Ø¸Ø§Ù…', 'Treatment of musculoskeletal system disorders', 'Ø¹Ù„Ø§Ø¬ Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ø¹Ø¶Ù„ÙŠ Ø§Ù„Ù‡ÙŠÙƒÙ„ÙŠ', 'orthopedics', 7, 'Medical', true, true),
+('Ophthalmology', 'Ø·Ø¨ Ø§Ù„Ø¹ÙŠÙˆÙ†', 'Eye care and surgery', 'Ø±Ø¹Ø§ÙŠØ© Ø§Ù„Ø¹ÙŠÙˆÙ† ÙˆØ§Ù„Ø¬Ø±Ø§Ø­Ø©', 'ophthalmology', 8, 'Medical', true, true),
+('Obstetrics and Gynecology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù†Ø³Ø§Ø¡ ÙˆØ§Ù„ØªÙˆÙ„ÙŠØ¯', 'Women''s reproductive health and childbirth', 'Ø§Ù„ØµØ­Ø© Ø§Ù„Ø¥Ù†Ø¬Ø§Ø¨ÙŠØ© Ù„Ù„Ù†Ø³Ø§Ø¡ ÙˆØ§Ù„ÙˆÙ„Ø§Ø¯Ø©', 'pregnant_woman', 9, 'Medical', true, true),
+('Psychiatry', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ù†ÙØ³ÙŠ', 'Mental health and behavioral disorders', 'Ø§Ù„ØµØ­Ø© Ø§Ù„Ù†ÙØ³ÙŠØ© ÙˆØ§Ù„Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø³Ù„ÙˆÙƒÙŠØ©', 'psychology', 10, 'Medical', true, true),
+
+-- Medical specialties
+('Endocrinology', 'Ø§Ù„ØºØ¯Ø¯ Ø§Ù„ØµÙ…Ø§Ø¡', 'Hormonal disorders and diabetes', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ù‡Ø±Ù…ÙˆÙ†ÙŠØ© ÙˆØ§Ù„Ø³ÙƒØ±ÙŠ', 'medical_services', 11, 'Medical', true, false),
+('Gastroenterology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ù‡Ø¶Ù…ÙŠ', 'Digestive system disorders', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ù‡Ø¶Ù…ÙŠ', 'medical_services', 12, 'Medical', true, false),
+('Nephrology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„ÙƒÙ„Ù‰', 'Kidney diseases and dialysis', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„ÙƒÙ„Ù‰ ÙˆØºØ³ÙŠÙ„ Ø§Ù„ÙƒÙ„Ù‰', 'medical_services', 13, 'Medical', true, false),
+('Pulmonology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø±Ø¦Ø©', 'Respiratory system diseases', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„ØªÙ†ÙØ³ÙŠ', 'medical_services', 14, 'Medical', true, false),
+('Rheumatology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø±ÙˆÙ…Ø§ØªÙŠØ²Ù…', 'Autoimmune and rheumatic diseases', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù…Ù†Ø§Ø¹Ø© Ø§Ù„Ø°Ø§ØªÙŠØ© ÙˆØ§Ù„Ø±ÙˆÙ…Ø§ØªÙŠØ²Ù…', 'medical_services', 15, 'Medical', true, false),
+('Hematology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¯Ù…', 'Blood disorders and cancers', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¯Ù… ÙˆØ§Ù„Ø³Ø±Ø·Ø§Ù†Ø§Øª', 'medical_services', 16, 'Medical', true, false),
+('Oncology', 'Ø§Ù„Ø£ÙˆØ±Ø§Ù…', 'Cancer diagnosis and treatment', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø§Ù„Ø³Ø±Ø·Ø§Ù†', 'medical_services', 17, 'Medical', true, false),
+('Infectious Diseases', 'Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù…Ø¹Ø¯ÙŠØ©', 'Infections and tropical diseases', 'Ø§Ù„Ø¹Ø¯ÙˆÙ‰ ÙˆØ§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø§Ø³ØªÙˆØ§Ø¦ÙŠØ©', 'medical_services', 18, 'Medical', true, false),
+('Geriatrics', 'Ø·Ø¨ Ø§Ù„Ù…Ø³Ù†ÙŠÙ†', 'Healthcare for elderly patients', 'Ø±Ø¹Ø§ÙŠØ© ØµØ­ÙŠØ© Ù„Ù„Ù…Ø³Ù†ÙŠÙ†', 'medical_services', 19, 'Medical', true, false),
+('Allergy and Immunology', 'Ø§Ù„Ø­Ø³Ø§Ø³ÙŠØ© ÙˆØ§Ù„Ù…Ù†Ø§Ø¹Ø©', 'Allergies and immune system disorders', 'Ø§Ù„Ø­Ø³Ø§Ø³ÙŠØ© ÙˆØ§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ù…Ù†Ø§Ø¹ÙŠ', 'medical_services', 20, 'Medical', true, false),
+
+-- Surgical specialties
+('General Surgery', 'Ø§Ù„Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø¹Ø§Ù…Ø©', 'Common surgical procedures', 'Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø§Ù„Ø¬Ø±Ø§Ø­ÙŠØ© Ø§Ù„Ø´Ø§Ø¦Ø¹Ø©', 'surgery', 21, 'Surgical', true, false),
+('Neurosurgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ù…Ø® ÙˆØ§Ù„Ø£Ø¹ØµØ§Ø¨', 'Brain and nervous system surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø¯Ù…Ø§Øº ÙˆØ§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ø¹ØµØ¨ÙŠ', 'neurosurgery', 22, 'Surgical', true, false),
+('Cardiothoracic Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ù‚Ù„Ø¨ ÙˆØ§Ù„ØµØ¯Ø±', 'Heart and chest surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ù‚Ù„Ø¨ ÙˆØ§Ù„ØµØ¯Ø±', 'cardiology', 23, 'Surgical', true, false),
+('Vascular Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø£ÙˆØ¹ÙŠØ© Ø§Ù„Ø¯Ù…ÙˆÙŠØ©', 'Blood vessel surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø£ÙˆØ¹ÙŠØ© Ø§Ù„Ø¯Ù…ÙˆÙŠØ©', 'vascular_surgery', 24, 'Surgical', true, false),
+('Plastic Surgery', 'Ø§Ù„Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ØªØ¬Ù…ÙŠÙ„ÙŠØ©', 'Reconstructive and cosmetic surgery', 'Ø§Ù„Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ØªØ±Ù…ÙŠÙ…ÙŠØ© ÙˆØ§Ù„ØªØ¬Ù…ÙŠÙ„ÙŠØ©', 'plastic_surgery', 25, 'Surgical', true, false),
+('Pediatric Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø£Ø·ÙØ§Ù„', 'Surgery for infants and children', 'Ø¬Ø±Ø§Ø­Ø© Ù„Ù„Ø±Ø¶Ø¹ ÙˆØ§Ù„Ø£Ø·ÙØ§Ù„', 'surgery', 26, 'Surgical', true, false),
+('Urology', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ù…Ø³Ø§Ù„Ùƒ Ø§Ù„Ø¨ÙˆÙ„ÙŠØ©', 'Urinary tract and male reproductive system', 'Ø§Ù„Ù…Ø³Ø§Ù„Ùƒ Ø§Ù„Ø¨ÙˆÙ„ÙŠØ© ÙˆØ§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„ØªÙ†Ø§Ø³Ù„ÙŠ Ø§Ù„Ø°ÙƒØ±ÙŠ', 'medical_services', 27, 'Surgical', true, false),
+('Oral and Maxillofacial Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ÙÙ… ÙˆØ§Ù„ÙˆØ¬Ù‡ ÙˆØ§Ù„ÙÙƒÙŠÙ†', 'Mouth, face, and jaw surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ÙÙ… ÙˆØ§Ù„ÙˆØ¬Ù‡ ÙˆØ§Ù„ÙÙƒÙŠÙ†', 'surgery', 28, 'Surgical', true, false),
+
+-- Diagnostic specialties
+('Radiology', 'Ø§Ù„Ø£Ø´Ø¹Ø©', 'Medical imaging and diagnosis', 'Ø§Ù„ØªØµÙˆÙŠØ± Ø§Ù„Ø·Ø¨ÙŠ ÙˆØ§Ù„ØªØ´Ø®ÙŠØµ', 'radiology', 29, 'Diagnostic', true, false),
+('Pathology', 'Ø¹Ù„Ù… Ø§Ù„Ø£Ù…Ø±Ø§Ø¶', 'Disease diagnosis through laboratory analysis', 'ØªØ´Ø®ÙŠØµ Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ù…Ù† Ø®Ù„Ø§Ù„ Ø§Ù„ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ù…Ø®Ø¨Ø±ÙŠ', 'medical_services', 30, 'Diagnostic', true, false),
+('Clinical Pathology', 'Ø¹Ù„Ù… Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø³Ø±ÙŠØ±ÙŠ', 'Laboratory medicine and diagnostics', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ù…Ø®Ø¨Ø±ÙŠ ÙˆØ§Ù„ØªØ´Ø®ÙŠØµ', 'medical_services', 31, 'Diagnostic', true, false),
+('Anatomic Pathology', 'Ø¹Ù„Ù… Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„ØªØ´Ø±ÙŠØ­ÙŠ', 'Tissue and cell analysis', 'ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ø£Ù†Ø³Ø¬Ø© ÙˆØ§Ù„Ø®Ù„Ø§ÙŠØ§', 'medical_services', 32, 'Diagnostic', true, false),
+('Nuclear Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ù†ÙˆÙˆÙŠ', 'Radioactive substances for diagnosis and treatment', 'Ø§Ù„Ù…ÙˆØ§Ø¯ Ø§Ù„Ù…Ø´Ø¹Ø© Ù„Ù„ØªØ´Ø®ÙŠØµ ÙˆØ§Ù„Ø¹Ù„Ø§Ø¬', 'medical_services', 33, 'Diagnostic', true, false),
+
+-- Other specialties
+('Anesthesiology', 'Ø§Ù„ØªØ®Ø¯ÙŠØ±', 'Anesthesia and pain management', 'Ø§Ù„ØªØ®Ø¯ÙŠØ± ÙˆØ¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø£Ù„Ù…', 'anesthesiology', 34, 'Medical', true, false),
+('Emergency Medicine', 'Ø·Ø¨ Ø§Ù„Ø·ÙˆØ§Ø±Ø¦', 'Immediate medical care for acute conditions', 'Ø±Ø¹Ø§ÙŠØ© Ø·Ø¨ÙŠØ© ÙÙˆØ±ÙŠØ© Ù„Ù„Ø­Ø§Ù„Ø§Øª Ø§Ù„Ø­Ø§Ø¯Ø©', 'emergency_medical_services', 35, 'Medical', true, false),
+('Family Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø¹Ø§Ø¦Ù„ÙŠ', 'Comprehensive healthcare for families', 'Ø±Ø¹Ø§ÙŠØ© ØµØ­ÙŠØ© Ø´Ø§Ù…Ù„Ø© Ù„Ù„Ø¹Ø§Ø¦Ù„Ø§Øª', 'family_restroom', 36, 'Medical', true, false),
+('Preventive Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„ÙˆÙ‚Ø§Ø¦ÙŠ', 'Disease prevention and health promotion', 'Ø§Ù„ÙˆÙ‚Ø§ÙŠØ© Ù…Ù† Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ ÙˆØªØ¹Ø²ÙŠØ² Ø§Ù„ØµØ­Ø©', 'medical_services', 37, 'Medical', true, false),
+('Sports Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø±ÙŠØ§Ø¶ÙŠ', 'Sports injuries and performance', 'Ø¥ØµØ§Ø¨Ø§Øª Ø§Ù„Ø±ÙŠØ§Ø¶Ø§Øª ÙˆØ§Ù„Ø£Ø¯Ø§Ø¡', 'sports', 38, 'Medical', true, false),
+('Occupational Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ù…Ù‡Ù†ÙŠ', 'Workplace health and safety', 'Ø§Ù„ØµØ­Ø© ÙˆØ§Ù„Ø³Ù„Ø§Ù…Ø© ÙÙŠ Ù…ÙƒØ§Ù† Ø§Ù„Ø¹Ù…Ù„', 'medical_services', 39, 'Medical', true, false),
+('Physical Medicine and Rehabilitation', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠ ÙˆØ§Ù„ØªØ£Ù‡ÙŠÙ„', 'Physical therapy and rehabilitation', 'Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠ ÙˆØ§Ù„ØªØ£Ù‡ÙŠÙ„', 'medical_services', 40, 'Medical', true, false),
+('Medical Genetics', 'Ø§Ù„Ø·Ø¨ Ø§Ù„ÙˆØ±Ø§Ø«ÙŠ', 'Genetic disorders and counseling', 'Ø§Ù„Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„ÙˆØ±Ø§Ø«ÙŠØ© ÙˆØ§Ù„Ø§Ø³ØªØ´Ø§Ø±Ø©', 'medical_services', 41, 'Medical', true, false),
+('Palliative Care', 'Ø§Ù„Ø±Ø¹Ø§ÙŠØ© Ø§Ù„ØªÙ„Ø·ÙŠÙÙŠØ©', 'Symptom relief for serious illnesses', 'ØªØ®ÙÙŠÙ Ø§Ù„Ø£Ø¹Ø±Ø§Ø¶ Ù„Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø®Ø·ÙŠØ±Ø©', 'medical_services', 42, 'Medical', true, false),
+('Sleep Medicine', 'Ø·Ø¨ Ø§Ù„Ù†ÙˆÙ…', 'Sleep disorders and breathing problems', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ù†ÙˆÙ… ÙˆÙ…Ø´Ø§ÙƒÙ„ Ø§Ù„ØªÙ†ÙØ³', 'medical_services', 43, 'Medical', true, false),
+
+-- Dental specialties (if applicable)
+('Dentistry', 'Ø·Ø¨ Ø§Ù„Ø£Ø³Ù†Ø§Ù†', 'Oral health and dental care', 'Ø§Ù„ØµØ­Ø© Ø§Ù„ÙÙ…ÙˆÙŠØ© ÙˆØ±Ø¹Ø§ÙŠØ© Ø§Ù„Ø£Ø³Ù†Ø§Ù†', 'medical_services', 44, 'Medical', true, false),
+('Oral Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ÙÙ…', 'Surgical procedures in the mouth', 'Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø§Ù„Ø¬Ø±Ø§Ø­ÙŠØ© ÙÙŠ Ø§Ù„ÙÙ…', 'surgery', 45, 'Surgical', true, false),
+('Orthodontics', 'ØªÙ‚ÙˆÙŠÙ… Ø§Ù„Ø£Ø³Ù†Ø§Ù†', 'Teeth and jaw alignment', 'Ù…Ø­Ø§Ø°Ø§Ø© Ø§Ù„Ø£Ø³Ù†Ø§Ù† ÙˆØ§Ù„ÙÙƒ', 'medical_services', 46, 'Medical', true, false),
+('Periodontics', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù„Ø«Ø©', 'Gum disease treatment', 'Ø¹Ù„Ø§Ø¬ Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù„Ø«Ø©', 'medical_services', 47, 'Medical', true, false),
+('Endodontics', 'Ø¹Ù„Ø§Ø¬ Ù‚Ù†Ø§Ø© Ø§Ù„Ø¬Ø°Ø±', 'Root canal therapy', 'Ø¹Ù„Ø§Ø¬ Ù‚Ù†Ø§Ø© Ø§Ù„Ø¬Ø°Ø±', 'medical_services', 48, 'Medical', true, false),
+
+-- Mental Health specialties
+('Clinical Psychology', 'Ø¹Ù„Ù… Ø§Ù„Ù†ÙØ³ Ø§Ù„Ø³Ø±ÙŠØ±ÙŠ', 'Diagnosis and treatment of mental disorders', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø§Ù„Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ù†ÙØ³ÙŠØ©', 'psychology', 49, 'Medical', true, false),
+('Counseling Psychology', 'Ø¹Ù„Ù… Ø§Ù„Ù†ÙØ³ Ø§Ù„Ø¥Ø±Ø´Ø§Ø¯ÙŠ', 'Mental health counseling', 'Ø§Ù„Ø¥Ø±Ø´Ø§Ø¯ Ø§Ù„Ù†ÙØ³ÙŠ', 'psychology', 50, 'Medical', true, false),
+('Child and Adolescent Psychiatry', 'Ø·Ø¨ Ù†ÙØ³ Ø§Ù„Ø£Ø·ÙØ§Ù„ ÙˆØ§Ù„Ù…Ø±Ø§Ù‡Ù‚ÙŠÙ†', 'Mental health for children and teens', 'Ø§Ù„ØµØ­Ø© Ø§Ù„Ù†ÙØ³ÙŠØ© Ù„Ù„Ø£Ø·ÙØ§Ù„ ÙˆØ§Ù„Ù…Ø±Ø§Ù‡Ù‚ÙŠÙ†', 'psychology', 51, 'Medical', true, false),
+('Addiction Psychiatry', 'Ø·Ø¨ Ø§Ù„Ø¥Ø¯Ù…Ø§Ù†', 'Substance abuse treatment', 'Ø¹Ù„Ø§Ø¬ Ø¥Ø³Ø§Ø¡Ø© Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù…ÙˆØ§Ø¯', 'psychology', 52, 'Medical', true, false),
+
+-- Specialized care
+('Autism Spectrum Disorder', 'Ø§Ø¶Ø·Ø±Ø§Ø¨ Ø·ÙŠÙ Ø§Ù„ØªÙˆØ­Ø¯', 'Autism diagnosis and treatment', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø§Ù„ØªÙˆØ­Ø¯', 'medical_services', 53, 'Medical', true, false),
+('Developmental Pediatrics', 'Ø·Ø¨ Ø§Ù„Ù†Ù…Ùˆ ÙˆØ§Ù„ØªØ·ÙˆØ±', 'Child development and delays', 'Ù†Ù…Ùˆ Ø§Ù„Ø·ÙÙ„ ÙˆØ§Ù„ØªØ£Ø®ÙŠØ±Ø§Øª', 'child_care', 54, 'Medical', true, false),
+('Neurodevelopmental Disorders', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ù†Ù…Ùˆ Ø§Ù„Ø¹ØµØ¨ÙŠ', 'ADHD, learning disabilities, etc.', 'Ø§Ø¶Ø·Ø±Ø§Ø¨ Ù†Ù‚Øµ Ø§Ù„Ø§Ù†ØªØ¨Ø§Ù‡ØŒ ØµØ¹ÙˆØ¨Ø§Øª Ø§Ù„ØªØ¹Ù„Ù…ØŒ Ø¥Ù„Ø®', 'medical_services', 55, 'Medical', true, false),
+('Epilepsy', 'Ø§Ù„ØµØ±Ø¹', 'Seizure disorders', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ù†ÙˆØ¨Ø§Øª', 'neurology', 56, 'Medical', true, false),
+('Stroke Medicine', 'Ø·Ø¨ Ø§Ù„Ø³ÙƒØªØ© Ø§Ù„Ø¯Ù…Ø§ØºÙŠØ©', 'Stroke prevention and treatment', 'Ø§Ù„ÙˆÙ‚Ø§ÙŠØ© Ù…Ù† Ø§Ù„Ø³ÙƒØªØ© Ø§Ù„Ø¯Ù…Ø§ØºÙŠØ© ÙˆØ¹Ù„Ø§Ø¬Ù‡Ø§', 'neurology', 57, 'Medical', true, false),
+('Pain Management', 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø£Ù„Ù…', 'Chronic pain treatment', 'Ø¹Ù„Ø§Ø¬ Ø§Ù„Ø£Ù„Ù… Ø§Ù„Ù…Ø²Ù…Ù†', 'medical_services', 58, 'Medical', true, false);
+
+-- Create unique index on English names
+CREATE UNIQUE INDEX idx_specialties_name_en_unique ON specialties(name_en) WHERE is_active = true;
+
+=== 20260304120005_create_clinics_table.sql ===
+-- Migration: Create Clinics Table
+-- Purpose: Store medical clinic information
+-- Version: v2_P02_002
+-- Created: 2026-03-04
+-- Dependencies: v2_P01_002_create_countries_table.sql, v2_P01_003_create_regions_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Clinics Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create clinics table to store medical clinic information
+CREATE TABLE IF NOT EXISTS clinics (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Clinic Information
+  name VARCHAR(255) NOT NULL,
+  name_ar VARCHAR(255),
+  description TEXT,
+  description_ar TEXT,
+  
+  -- Contact Information
+  address TEXT NOT NULL,
+  city VARCHAR(100) NOT NULL,
+  region_id UUID REFERENCES regions(id) ON DELETE SET NULL,
+  country_id UUID REFERENCES countries(id) ON DELETE SET NULL,
+  phone VARCHAR(20) NOT NULL,
+  email VARCHAR(255),
+  website VARCHAR(255),
+  
+  -- Branding and Media
+  logo_url TEXT,
+  banner_url TEXT,
+  
+  -- Operating Hours
+  opening_hours JSONB,  -- JSON object with daily hours
+  
+  -- Geographic Location
+  latitude DECIMAL(10, 8),
+  longitude DECIMAL(11, 8),
+  
+  -- Subscription Information
+  subscription_id UUID,  -- Reference to subscription_codes table
+  subscription_type subscription_type DEFAULT 'trial',
+  subscription_start_date TIMESTAMP WITH TIME ZONE,
+  subscription_end_date TIMESTAMP WITH TIME ZONE,
+  is_trial BOOLEAN DEFAULT true,
+  
+  -- Agora Integration (for video calls)
+  agora_app_id VARCHAR(255),
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_verified BOOLEAN DEFAULT false,
+  is_featured BOOLEAN DEFAULT false,  -- Featured clinics shown prominently
+  
+  -- Statistics
+  total_patients INTEGER DEFAULT 0,
+  total_doctors INTEGER DEFAULT 0,
+  total_appointments INTEGER DEFAULT 0,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_latitude CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90),
+  CONSTRAINT valid_longitude CHECK (longitude IS NULL OR longitude BETWEEN -180 AND 180),
+  CONSTRAINT valid_phone CHECK (phone ~* '^\+?[0-9\s\-\(\)]{10,}$'),
+  CONSTRAINT valid_email CHECK (email IS NULL OR email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$')
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_clinics_region_id ON clinics(region_id) WHERE is_active = true;
+CREATE INDEX idx_clinics_country_id ON clinics(country_id) WHERE is_active = true;
+CREATE INDEX idx_clinics_subscription_id ON clinics(subscription_id);
+CREATE INDEX idx_clinics_is_active ON clinics(is_active);
+CREATE INDEX idx_clinics_is_verified ON clinics(is_verified);
+CREATE INDEX idx_clinics_is_featured ON clinics(is_featured) WHERE is_featured = true;
+CREATE INDEX idx_clinics_created_at ON clinics(created_at DESC);
+CREATE INDEX idx_clinics_name ON clinics(name) WHERE is_active = true;
+CREATE INDEX idx_clinics_city ON clinics(city) WHERE is_active = true;
+CREATE INDEX idx_clinics_subscription_type ON clinics(subscription_type) WHERE is_active = true;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on clinics table
+ALTER TABLE clinics ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view active and verified clinics
+CREATE POLICY "Active verified clinics are viewable by everyone"
+  ON clinics FOR SELECT
+  USING (is_active = true AND is_verified = true);
+
+-- Policy: Clinic owners can view their own clinic
+CREATE POLICY "Clinic owners can view their clinic"
+  ON clinics FOR SELECT
+  USING (
+    created_by = auth.uid()
+    OR EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = clinics.id
+      AND user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic owners can update their clinic
+CREATE POLICY "Clinic owners can update their clinic"
+  ON clinics FOR UPDATE
+  USING (
+    created_by = auth.uid()
+    OR EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = clinics.id
+      AND user_id = auth.uid()
+      AND role IN ('admin', 'manager')
+    )
+  );
+
+-- Policy: Clinic owners can delete their clinic
+CREATE POLICY "Clinic owners can delete their clinic"
+  ON clinics FOR DELETE
+  USING (created_by = auth.uid());
+
+-- Policy: Super admins can manage all clinics
+CREATE POLICY "Super admins can manage all clinics"
+  ON clinics FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_clinics_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER clinics_update_updated_at
+  BEFORE UPDATE ON clinics
+  FOR EACH ROW
+  EXECUTE FUNCTION update_clinics_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE clinics IS 'Medical clinic information';
+COMMENT ON COLUMN clinics.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN clinics.name IS 'Clinic name in English';
+COMMENT ON COLUMN clinics.name_ar IS 'Clinic name in Arabic';
+COMMENT ON COLUMN clinics.address IS 'Physical address';
+COMMENT ON COLUMN clinics.city IS 'City name';
+COMMENT ON COLUMN clinics.region_id IS 'Foreign key reference to regions table';
+COMMENT ON COLUMN clinics.country_id IS 'Foreign key reference to countries table';
+COMMENT ON COLUMN clinics.opening_hours IS 'JSON object containing opening hours for each day of the week';
+COMMENT ON COLUMN clinics.latitude IS 'Geographic latitude for map display';
+COMMENT ON COLUMN clinics.longitude IS 'Geographic longitude for map display';
+COMMENT ON COLUMN clinics.subscription_id IS 'Foreign key reference to subscription_codes table';
+COMMENT ON COLUMN clinics.subscription_type IS 'Type of subscription plan';
+COMMENT ON COLUMN clinics.is_trial IS 'Whether this is a trial subscription';
+COMMENT ON COLUMN clinics.agora_app_id IS 'Agora App ID for video calls';
+COMMENT ON COLUMN clinics.is_active IS 'Whether the clinic is active';
+COMMENT ON COLUMN clinics.is_verified IS 'Whether the clinic has been verified';
+COMMENT ON COLUMN clinics.is_featured IS 'Whether this clinic is featured';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Helper Functions
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Function to check if clinic subscription is expired
+CREATE OR REPLACE FUNCTION is_subscription_expired(clinic_id UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  end_date TIMESTAMP WITH TIME ZONE;
+BEGIN
+  SELECT subscription_end_date INTO end_date
+  FROM clinics
+  WHERE id = clinic_id;
+  
+  RETURN end_date IS NULL OR end_date < NOW();
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to get days remaining in subscription
+CREATE OR REPLACE FUNCTION get_subscription_days_remaining(clinic_id UUID)
+RETURNS INTEGER AS $$
+DECLARE
+  end_date TIMESTAMP WITH TIME ZONE;
+BEGIN
+  SELECT subscription_end_date INTO end_date
+  FROM clinics
+  WHERE id = clinic_id;
+  
+  IF end_date IS NULL THEN
+    RETURN 0;
+  END IF;
+  
+  RETURN GREATEST(0, EXTRACT(DAY FROM (end_date - NOW()))::INTEGER);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to check if subscription is expiring soon (within 7 days)
+CREATE OR REPLACE FUNCTION is_subscription_expiring_soon(clinic_id UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  days_remaining INTEGER;
+BEGIN
+  days_remaining := get_subscription_days_remaining(clinic_id);
+  RETURN days_remaining <= 7 AND days_remaining >= 0;
+END;
+$$ LANGUAGE plpgsql;
+
+=== 20260304120006_create_subscriptions_table.sql ===
+-- Migration: Create Subscriptions Table
+-- Purpose: Store clinic subscription information
+-- Version: v2_P02_003
+-- Created: 2026-03-04
+-- Dependencies: None
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Subscriptions Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create subscriptions table to store clinic subscription information
+CREATE TABLE IF NOT EXISTS subscriptions (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Subscription Information
+  code VARCHAR(50) NOT NULL UNIQUE,  -- Unique subscription code
+  type subscription_type NOT NULL,
+  
+  -- Pricing (Multi-currency)
+  price_usd DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  price_eur DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  price_dzd DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  
+  -- Duration
+  duration_days INTEGER NOT NULL,
+  
+  -- Usage Tracking
+  is_used BOOLEAN NOT NULL DEFAULT false,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  used_at TIMESTAMP WITH TIME ZONE,
+  used_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  
+  -- Activation Details
+  activated_at TIMESTAMP WITH TIME ZONE,
+  activation_notes TEXT,
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_expired BOOLEAN NOT NULL DEFAULT false,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_duration CHECK (duration_days > 0),
+  CONSTRAINT valid_price_usd CHECK (price_usd >= 0),
+  CONSTRAINT valid_price_eur CHECK (price_eur >= 0),
+  CONSTRAINT valid_price_dzd CHECK (price_dzd >= 0)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_subscriptions_code ON subscriptions(code);
+CREATE INDEX idx_subscriptions_type ON subscriptions(type);
+CREATE INDEX idx_subscriptions_clinic_id ON subscriptions(clinic_id);
+CREATE INDEX idx_subscriptions_is_used ON subscriptions(is_used);
+CREATE INDEX idx_subscriptions_is_active ON subscriptions(is_active);
+CREATE INDEX idx_subscriptions_is_expired ON subscriptions(is_expired);
+CREATE INDEX idx_subscriptions_created_at ON subscriptions(created_at DESC);
+CREATE INDEX idx_subscriptions_used_at ON subscriptions(used_at);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on subscriptions table
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Super admins can manage all subscriptions
+CREATE POLICY "Super admins can manage all subscriptions"
+  ON subscriptions FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- Policy: Clinic admins can view their clinic subscriptions
+CREATE POLICY "Clinic admins can view their clinic subscriptions"
+  ON subscriptions FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM users WHERE id = auth.uid()
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_subscriptions_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER subscriptions_update_updated_at
+  BEFORE UPDATE ON subscriptions
+  FOR EACH ROW
+  EXECUTE FUNCTION update_subscriptions_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE subscriptions IS 'Clinic subscription information';
+COMMENT ON COLUMN subscriptions.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN subscriptions.code IS 'Unique subscription code';
+COMMENT ON COLUMN subscriptions.type IS 'Type of subscription plan';
+COMMENT ON COLUMN subscriptions.price_usd IS 'Price in US Dollars';
+COMMENT ON COLUMN subscriptions.price_eur IS 'Price in Euros';
+COMMENT ON COLUMN subscriptions.price_dzd IS 'Price in Algerian Dinars';
+COMMENT ON COLUMN subscriptions.duration_days IS 'Duration in days';
+COMMENT ON COLUMN subscriptions.is_used IS 'Whether the subscription code has been used';
+COMMENT ON COLUMN subscriptions.clinic_id IS 'Foreign key reference to clinics table';
+COMMENT ON COLUMN subscriptions.used_at IS 'Timestamp when the subscription was used';
+COMMENT ON COLUMN subscriptions.is_active IS 'Whether the subscription is active';
+COMMENT ON COLUMN subscriptions.is_expired IS 'Whether the subscription has expired';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Helper Functions
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Function to calculate subscription end date
+CREATE OR REPLACE FUNCTION get_subscription_end_date(subscription_id UUID)
+RETURNS TIMESTAMP WITH TIME ZONE AS $$
+DECLARE
+  activation_date TIMESTAMP WITH TIME ZONE;
+  duration_days INTEGER;
+BEGIN
+  SELECT activated_at, duration_days INTO activation_date, duration_days
+  FROM subscriptions
+  WHERE id = subscription_id;
+  
+  IF activation_date IS NULL OR duration_days IS NULL THEN
+    RETURN NULL;
+  END IF;
+  
+  RETURN activation_date + (duration_days || ' days')::INTERVAL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to check if subscription is expired
+CREATE OR REPLACE FUNCTION is_subscription_expired(subscription_id UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  end_date TIMESTAMP WITH TIME ZONE;
+BEGIN
+  end_date := get_subscription_end_date(subscription_id);
+  
+  IF end_date IS NULL THEN
+    RETURN false;
+  END IF;
+  
+  RETURN end_date < NOW();
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to get days remaining in subscription
+CREATE OR REPLACE FUNCTION get_subscription_days_remaining(subscription_id UUID)
+RETURNS INTEGER AS $$
+DECLARE
+  end_date TIMESTAMP WITH TIME ZONE;
+BEGIN
+  end_date := get_subscription_end_date(subscription_id);
+  
+  IF end_date IS NULL THEN
+    RETURN 0;
+  END IF;
+  
+  RETURN GREATEST(0, EXTRACT(DAY FROM (end_date - NOW()))::INTEGER);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to mark expired subscriptions
+CREATE OR REPLACE FUNCTION mark_expired_subscriptions()
+RETURNS INTEGER AS $$
+DECLARE
+  expired_count INTEGER := 0;
+BEGIN
+  UPDATE subscriptions
+  SET is_expired = true,
+      updated_at = NOW()
+  WHERE is_active = true
+    AND is_used = true
+    AND activated_at IS NOT NULL
+    AND activated_at + (duration_days || ' days')::INTERVAL < NOW();
+  
+  GET DIAGNOSTICS expired_count = ROW_COUNT;
+  
+  RETURN expired_count;
+END;
+$$ LANGUAGE plpgsql;
+
+=== 20260304120007_create_doctors_table.sql ===
+-- Migration: Create Doctors Table
+-- Purpose: Store doctor information and profiles
+-- Version: v2_P03_001
+-- Created: 2026-03-04
+-- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_001_create_specialties_table.sql, v2_P02_002_create_clinics_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Doctors Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create doctors table to store doctor information and profiles
+CREATE TABLE IF NOT EXISTS doctors (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE UNIQUE NOT NULL,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  specialty_id UUID REFERENCES specialties(id) ON DELETE SET NULL NOT NULL,
+
+  -- Professional Information
+  license_number VARCHAR(100) NOT NULL UNIQUE,
+  license_expiry_date DATE,
+  qualification VARCHAR(255),
+  university VARCHAR(255),
+  graduation_year INTEGER,
+  experience_years INTEGER DEFAULT 0,
+  
+  -- Profile Information
+  bio TEXT,
+  bio_ar TEXT,
+  consultation_fee DECIMAL(10, 2) DEFAULT 0.00,
+  consultation_fee_currency VARCHAR(3) DEFAULT 'USD',
+  
+  -- Languages
+  languages TEXT[] DEFAULT ARRAY[]::TEXT[],
+  
+  -- Availability
+  is_available BOOLEAN DEFAULT true,
+  is_verified BOOLEAN DEFAULT false,
+  is_accepting_new_patients BOOLEAN DEFAULT true,
+  
+  -- Working Hours
+  working_hours JSONB,
+  
+  -- Ratings
+  rating DECIMAL(3, 2) DEFAULT 0.00 CHECK (rating >= 0 AND rating <= 5),
+  total_reviews INTEGER DEFAULT 0,
+  
+  -- Profile Media
+  profile_image_url TEXT,
+  
+  -- Practice Information
+  max_patients_per_day INTEGER DEFAULT 20,
+  consultation_duration_minutes INTEGER DEFAULT 30,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_graduation_year CHECK (graduation_year IS NULL OR (graduation_year >= 1900 AND graduation_year <= EXTRACT(YEAR FROM CURRENT_DATE) + 10)),
+  CONSTRAINT valid_experience_years CHECK (experience_years >= 0),
+  CONSTRAINT valid_consultation_fee CHECK (consultation_fee >= 0),
+  CONSTRAINT valid_max_patients CHECK (max_patients_per_day > 0),
+  CONSTRAINT valid_consultation_duration CHECK (consultation_duration_minutes > 0)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_doctors_user_id ON doctors(user_id);
+CREATE INDEX idx_doctors_clinic_id ON doctors(clinic_id) WHERE is_active = true;
+CREATE INDEX idx_doctors_specialty_id ON doctors(specialty_id) WHERE is_active = true;
+CREATE INDEX idx_doctors_is_available ON doctors(is_available) WHERE is_active = true;
+CREATE INDEX idx_doctors_is_verified ON doctors(is_verified);
+CREATE INDEX idx_doctors_rating ON doctors(rating DESC) WHERE is_active = true;
+CREATE INDEX idx_doctors_created_at ON doctors(created_at DESC);
+CREATE INDEX idx_doctors_license_number ON doctors(license_number);
+CREATE INDEX idx_doctors_is_accepting_new_patients ON doctors(is_accepting_new_patients) WHERE is_active = true;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on doctors table
+ALTER TABLE doctors ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Verified doctors are viewable by everyone
+CREATE POLICY "Verified doctors are viewable by everyone"
+  ON doctors FOR SELECT
+  USING (is_verified = true);
+
+-- Policy: Doctors can view their own profile
+CREATE POLICY "Doctors can view their own profile"
+  ON doctors FOR SELECT
+  USING (user_id = auth.uid());
+
+-- Policy: Clinic staff can view doctors in their clinic
+CREATE POLICY "Clinic staff can view clinic doctors"
+  ON doctors FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can update their own profile
+CREATE POLICY "Doctors can update their own profile"
+  ON doctors FOR UPDATE
+  USING (user_id = auth.uid());
+
+-- Policy: Clinic admins can update doctors in their clinic
+CREATE POLICY "Clinic admins can update clinic doctors"
+  ON doctors FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = doctors.clinic_id
+      AND user_id = auth.uid()
+      AND role IN ('admin', 'manager')
+    )
+  );
+
+-- Policy: Super admins can manage all doctors
+CREATE POLICY "Super admins can manage all doctors"
+  ON doctors FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_doctors_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER doctors_update_updated_at
+  BEFORE UPDATE ON doctors
+  FOR EACH ROW
+  EXECUTE FUNCTION update_doctors_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE doctors IS 'Doctors information and profiles';
+COMMENT ON COLUMN doctors.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN doctors.user_id IS 'Foreign key reference to users table';
+COMMENT ON COLUMN doctors.clinic_id IS 'Foreign key reference to clinics table';
+COMMENT ON COLUMN doctors.specialty_id IS 'Foreign key reference to specialties table (UUID)';
+COMMENT ON COLUMN doctors.license_number IS 'Medical license number';
+COMMENT ON COLUMN doctors.consultation_fee IS 'Fee for consultation';
+COMMENT ON COLUMN doctors.languages IS 'Array of languages spoken by the doctor';
+COMMENT ON COLUMN doctors.working_hours IS 'JSON object containing working hours for each day';
+COMMENT ON COLUMN doctors.max_patients_per_day IS 'Maximum number of patients the doctor can see per day';
+COMMENT ON COLUMN doctors.consultation_duration_minutes IS 'Duration of consultation in minutes';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Helper Functions
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Function to get doctor's full name
+CREATE OR REPLACE FUNCTION get_doctor_full_name(doctor_id UUID)
+RETURNS VARCHAR(255) AS $$
+DECLARE
+  full_name VARCHAR(255);
+BEGIN
+  SELECT COALESCE(u.first_name, '') || ' ' || COALESCE(u.last_name, '')
+  INTO full_name
+  FROM users u
+  JOIN doctors d ON u.id = d.user_id
+  WHERE d.id = doctor_id;
+  
+  RETURN TRIM(full_name);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to check if doctor is available at a specific time
+CREATE OR REPLACE FUNCTION is_doctor_available(doctor_id UUID, appointment_time TIMESTAMP WITH TIME ZONE)
+RETURNS BOOLEAN AS $$
+DECLARE
+  working_hours JSONB;
+  day_of_week TEXT;
+  start_time TIME;
+  end_time TIME;
+  appointment_time_time TIME;
+BEGIN
+  -- Get working hours
+  SELECT working_hours INTO working_hours
+  FROM doctors
+  WHERE id = doctor_id AND is_available = true;
+  
+  IF working_hours IS NULL THEN
+    RETURN false;
+  END IF;
+  
+  -- Get day of week (lowercase)
+  day_of_week := LOWER(TO_CHAR(appointment_time, 'Day'));
+  
+  -- Get start and end times for that day
+  start_time := (working_hours->day_of_week->>'start')::TIME;
+  end_time := (working_hours->day_of_week->>'end')::TIME;
+  
+  IF start_time IS NULL OR end_time IS NULL THEN
+    RETURN false;
+  END IF;
+  
+  -- Get appointment time
+  appointment_time_time := appointment_time::TIME;
+  
+  -- Check if within working hours
+  RETURN appointment_time_time >= start_time AND appointment_time_time <= end_time;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to update doctor rating
+CREATE OR REPLACE FUNCTION update_doctor_rating(doctor_id UUID, new_rating DECIMAL)
+RETURNS VOID AS $$
+DECLARE
+  current_total_reviews INTEGER;
+  current_avg_rating DECIMAL;
+  new_total_reviews INTEGER;
+  new_avg_rating DECIMAL;
+BEGIN
+  -- Get current stats
+  SELECT total_reviews, rating INTO current_total_reviews, current_avg_rating
+  FROM doctors
+  WHERE id = doctor_id;
+  
+  -- Calculate new average
+  new_total_reviews := current_total_reviews + 1;
+  new_avg_rating := ((current_avg_rating * current_total_reviews) + new_rating) / new_total_reviews;
+  
+  -- Update doctor
+  UPDATE doctors
+  SET rating = ROUND(new_avg_rating::NUMERIC, 2),
+      total_reviews = new_total_reviews
+  WHERE id = doctor_id;
+END;
+$$ LANGUAGE plpgsql;
+
+=== 20260304120008_create_patients_table.sql ===
+-- Migration: Create Patients Table
+-- Purpose: Store patient-specific medical information
+-- Version: v2_P03_002
+-- Created: 2026-03-04
+-- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_002_create_clinics_table.sql, v2_P03_001_create_doctors_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Patients Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create patients table to store patient-specific medical information
+CREATE TABLE IF NOT EXISTS patients (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE UNIQUE NOT NULL,
+  preferred_clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  preferred_doctor_id UUID REFERENCES doctors(id) ON DELETE SET NULL,
+
+  -- Personal Information
+  date_of_birth DATE,
+  gender VARCHAR(20) CHECK (gender IN ('male', 'female', 'other')),
+  blood_type VARCHAR(5) CHECK (blood_type IN ('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-')),
+  marital_status VARCHAR(50),
+  occupation VARCHAR(100),
+  
+  -- Emergency Contact
+  emergency_contact_name VARCHAR(255),
+  emergency_contact_phone VARCHAR(20),
+  emergency_contact_relation VARCHAR(50),
+  
+  -- Insurance Information
+  insurance_provider VARCHAR(255),
+  insurance_number VARCHAR(100),
+  insurance_expiry_date DATE,
+  
+  -- Medical History
+  medical_history TEXT[],
+  allergies TEXT[],
+  chronic_conditions TEXT[],
+  current_medications TEXT[],
+  
+  -- Physical Measurements
+  height DECIMAL(5, 2),  -- in cm
+  weight DECIMAL(5, 2),  -- in kg
+  bmi DECIMAL(4, 1),
+  
+  -- Lifestyle Information
+  smoking_status VARCHAR(20) CHECK (smoking_status IN ('never', 'former', 'current', 'unknown')),
+  alcohol_consumption VARCHAR(50),
+  physical_activity VARCHAR(50),
+  dietary_restrictions TEXT[],
+  
+  -- Profile Media
+  profile_image_url TEXT,
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_height CHECK (height IS NULL OR (height > 0 AND height < 300)),
+  CONSTRAINT valid_weight CHECK (weight IS NULL OR (weight > 0 AND weight < 500)),
+  CONSTRAINT valid_bmi CHECK (bmi IS NULL OR (bmi > 0 AND bmi < 100))
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_patients_user_id ON patients(user_id);
+CREATE INDEX idx_patients_preferred_clinic_id ON patients(preferred_clinic_id);
+CREATE INDEX idx_patients_preferred_doctor_id ON patients(preferred_doctor_id);
+CREATE INDEX idx_patients_is_active ON patients(is_active);
+CREATE INDEX idx_patients_date_of_birth ON patients(date_of_birth);
+CREATE INDEX idx_patients_blood_type ON patients(blood_type);
+CREATE INDEX idx_patients_gender ON patients(gender);
+CREATE INDEX idx_patients_created_at ON patients(created_at DESC);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on patients table
+ALTER TABLE patients ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own profile
+CREATE POLICY "Patients can view their own profile"
+  ON patients FOR SELECT
+  USING (user_id = auth.uid());
+
+-- Policy: Doctors can view patients they have appointments with
+CREATE POLICY "Doctors can view their patients"
+  ON patients FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM appointments
+      WHERE appointments.patient_id = patients.id
+      AND appointments.doctor_id IN (
+        SELECT id FROM doctors WHERE user_id = auth.uid()
+      )
+    )
+  );
+
+-- Policy: Clinic staff can view patients in their clinic
+CREATE POLICY "Clinic staff can view clinic patients"
+  ON patients FOR SELECT
+  USING (
+    preferred_clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Patients can update their own profile
+CREATE POLICY "Patients can update their own profile"
+  ON patients FOR UPDATE
+  USING (user_id = auth.uid());
+
+-- Policy: Doctors can update patient medical information
+CREATE POLICY "Doctors can update patient medical info"
+  ON patients FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM appointments
+      WHERE appointments.patient_id = patients.id
+      AND appointments.doctor_id IN (
+        SELECT id FROM doctors WHERE user_id = auth.uid()
+      )
+      AND appointments.status = 'completed'
+    )
+  );
+
+-- Policy: Super admins can manage all patients
+CREATE POLICY "Super admins can manage all patients"
+  ON patients FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_patients_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER patients_update_updated_at
+  BEFORE UPDATE ON patients
+  FOR EACH ROW
+  EXECUTE FUNCTION update_patients_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- BMI Calculation Trigger
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to calculate BMI
+CREATE OR REPLACE FUNCTION calculate_patient_bmi()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.height IS NOT NULL AND NEW.weight IS NOT NULL AND NEW.height > 0 THEN
+    NEW.bmi := ROUND((NEW.weight / POWER(NEW.height / 100, 2))::NUMERIC, 1);
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for BMI calculation
+CREATE TRIGGER calculate_patient_bmi
+  BEFORE INSERT OR UPDATE OF height, weight ON patients
+  FOR EACH ROW
+  EXECUTE FUNCTION calculate_patient_bmi();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE patients IS 'Patient-specific medical information';
+COMMENT ON COLUMN patients.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN patients.user_id IS 'Foreign key reference to users table';
+COMMENT ON COLUMN patients.preferred_clinic_id IS 'Preferred clinic ID';
+COMMENT ON COLUMN patients.preferred_doctor_id IS 'Preferred doctor ID';
+COMMENT ON COLUMN patients.blood_type IS 'Patient blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)';
+COMMENT ON COLUMN patients.medical_history IS 'Array of past medical conditions';
+COMMENT ON COLUMN patients.allergies IS 'Array of known allergies';
+COMMENT ON COLUMN patients.bmi IS 'Body Mass Index calculated from height and weight';
+COMMENT ON COLUMN patients.smoking_status IS 'Patient smoking habits (never, former, current)';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Helper Functions
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Function to get patient's age
+CREATE OR REPLACE FUNCTION get_patient_age(patient_id UUID)
+RETURNS INTEGER AS $$
+DECLARE
+  date_of_birth DATE;
+BEGIN
+  SELECT date_of_birth INTO date_of_birth
+  FROM patients
+  WHERE id = patient_id;
+  
+  IF date_of_birth IS NULL THEN
+    RETURN NULL;
+  END IF;
+  
+  RETURN EXTRACT(YEAR FROM AGE(date_of_birth))::INTEGER;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to get patient's full name
+CREATE OR REPLACE FUNCTION get_patient_full_name(patient_id UUID)
+RETURNS VARCHAR(255) AS $$
+DECLARE
+  full_name VARCHAR(255);
+BEGIN
+  SELECT COALESCE(u.first_name, '') || ' ' || COALESCE(u.last_name, '')
+  INTO full_name
+  FROM users u
+  JOIN patients p ON u.id = p.user_id
+  WHERE p.id = patient_id;
+  
+  RETURN TRIM(full_name);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to check if patient has allergies
+CREATE OR REPLACE FUNCTION patient_has_allergies(patient_id UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  allergy_count INTEGER;
+BEGIN
+  SELECT cardinality(allergies) INTO allergy_count
+  FROM patients
+  WHERE id = patient_id;
+  
+  RETURN allergy_count > 0;
+END;
+$$ LANGUAGE plpgsql;
+
+=== 20260304120009_create_employees_table.sql ===
+-- Migration: Create Employees Table
+-- Purpose: Store employee information and employment details
+-- Version: v2_P03_003
+-- Created: 2026-03-04
+-- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_002_create_clinics_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Employees Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create employees table to store employee information and employment details
+CREATE TABLE IF NOT EXISTS employees (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE UNIQUE NOT NULL,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  manager_id UUID REFERENCES employees(id) ON DELETE SET NULL,
+
+  -- Employee Information
+  employee_number VARCHAR(50) NOT NULL UNIQUE,
+  department VARCHAR(100),
+  position VARCHAR(100),
+  
+  -- Employment Details
+  hire_date DATE NOT NULL,
+  employment_type VARCHAR(50) DEFAULT 'full_time' CHECK (employment_type IN ('full_time', 'part_time', 'contract', 'intern')),
+  
+  -- Compensation
+  salary DECIMAL(10, 2),
+  salary_currency VARCHAR(3) DEFAULT 'USD',
+  
+  -- Work Schedule
+  work_schedule JSONB,
+  
+  -- Performance
+  performance_rating DECIMAL(3, 2) CHECK (performance_rating >= 0 AND performance_rating <= 5),
+  last_performance_review DATE,
+  
+  -- Skills and Certifications
+  skills TEXT[],
+  certifications JSONB,
+  education JSONB,
+  
+  -- Emergency Contact
+  emergency_contact_name VARCHAR(255),
+  emergency_contact_phone VARCHAR(20),
+  emergency_contact_relation VARCHAR(50),
+  
+  -- Profile Media
+  profile_image_url TEXT,
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  termination_date DATE,
+  termination_reason TEXT,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_hire_date CHECK (hire_date <= CURRENT_DATE),
+  CONSTRAINT valid_salary CHECK (salary IS NULL OR salary >= 0)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_employees_user_id ON employees(user_id);
+CREATE INDEX idx_employees_clinic_id ON employees(clinic_id) WHERE is_active = true;
+CREATE INDEX idx_employees_employee_number ON employees(employee_number);
+CREATE INDEX idx_employees_department ON employees(department) WHERE is_active = true;
+CREATE INDEX idx_employees_manager_id ON employees(manager_id);
+CREATE INDEX idx_employees_is_active ON employees(is_active);
+CREATE INDEX idx_employees_hire_date ON employees(hire_date);
+CREATE INDEX idx_employees_created_at ON employees(created_at DESC);
+CREATE INDEX idx_employees_employment_type ON employees(employment_type);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on employees table
+ALTER TABLE employees ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Employees can view their own profile
+CREATE POLICY "Employees can view their own profile"
+  ON employees FOR SELECT
+  USING (user_id = auth.uid());
+
+-- Policy: Clinic staff can view employees in their clinic
+CREATE POLICY "Clinic staff can view clinic employees"
+  ON employees FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Managers can view their direct reports
+CREATE POLICY "Managers can view their direct reports"
+  ON employees FOR SELECT
+  USING (
+    manager_id IN (
+      SELECT id FROM employees WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Employees can update their own profile
+CREATE POLICY "Employees can update their own profile"
+  ON employees FOR UPDATE
+  USING (user_id = auth.uid());
+
+-- Policy: Clinic admins can update employees in their clinic
+CREATE POLICY "Clinic admins can update clinic employees"
+  ON employees FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = employees.clinic_id
+      AND user_id = auth.uid()
+      AND role IN ('admin', 'manager', 'hr')
+    )
+  );
+
+-- Policy: Super admins can manage all employees
+CREATE POLICY "Super admins can manage all employees"
+  ON employees FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_employees_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER employees_update_updated_at
+  BEFORE UPDATE ON employees
+  FOR EACH ROW
+  EXECUTE FUNCTION update_employees_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE employees IS 'Employee information and employment details';
+COMMENT ON COLUMN employees.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN employees.user_id IS 'Foreign key reference to users table';
+COMMENT ON COLUMN employees.clinic_id IS 'Foreign key reference to clinics table';
+COMMENT ON COLUMN employees.employee_number IS 'Unique employee identification number';
+COMMENT ON COLUMN employees.employment_type IS 'Type of employment: full_time, part_time, contract, intern';
+COMMENT ON COLUMN employees.work_schedule IS 'JSON object containing work schedule details';
+COMMENT ON COLUMN employees.performance_rating IS 'Performance rating out of 5.0';
+COMMENT ON COLUMN employees.certifications IS 'JSON array of professional certifications';
+COMMENT ON COLUMN employees.education IS 'JSON array of educational qualifications';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Helper Functions
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Function to calculate years of service
+CREATE OR REPLACE FUNCTION get_years_of_service(employee_id UUID)
+RETURNS INTEGER AS $$
+DECLARE
+  hire_date DATE;
+BEGIN
+  SELECT hire_date INTO hire_date
+  FROM employees
+  WHERE id = employee_id;
+  
+  IF hire_date IS NULL THEN
+    RETURN 0;
+  END IF;
+  
+  RETURN EXTRACT(YEAR FROM AGE(hire_date))::INTEGER;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to get employee's full name
+CREATE OR REPLACE FUNCTION get_employee_full_name(employee_id UUID)
+RETURNS VARCHAR(255) AS $$
+DECLARE
+  full_name VARCHAR(255);
+BEGIN
+  SELECT COALESCE(u.first_name, '') || ' ' || COALESCE(u.last_name, '')
+  INTO full_name
+  FROM users u
+  JOIN employees e ON u.id = e.user_id
+  WHERE e.id = employee_id;
+  
+  RETURN TRIM(full_name);
+END;
+$$ LANGUAGE plpgsql;
+
+=== 20260304120010_create_clinic_staff_table.sql ===
+-- Migration: Create Clinic Staff Table
+-- Purpose: Junction table linking clinics to staff members
+-- Version: v2_P03_004
+-- Created: 2026-03-04
+-- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_002_create_clinics_table.sql, v2_P03_003_create_employees_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Clinic Staff Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create clinic_staff junction table for many-to-many relationship
+CREATE TABLE IF NOT EXISTS clinic_staff (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  clinic_id UUID NOT NULL REFERENCES clinics(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  employee_id UUID REFERENCES employees(id) ON DELETE SET NULL,
+
+  -- Role Information
+  role VARCHAR(50) NOT NULL DEFAULT 'staff' CHECK (role IN ('admin', 'manager', 'doctor', 'nurse', 'receptionist', 'staff', 'hr', 'accountant', 'lab_technician', 'radiographer', 'pharmacist')),
+  
+  -- Permissions
+  permissions JSONB,  -- JSON object with specific permissions
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  
+  -- Dates
+  joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  left_at TIMESTAMP WITH TIME ZONE,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT unique_clinic_user UNIQUE (clinic_id, user_id)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_clinic_staff_clinic_id ON clinic_staff(clinic_id) WHERE is_active = true;
+CREATE INDEX idx_clinic_staff_user_id ON clinic_staff(user_id);
+CREATE INDEX idx_clinic_staff_employee_id ON clinic_staff(employee_id);
+CREATE INDEX idx_clinic_staff_role ON clinic_staff(role) WHERE is_active = true;
+CREATE INDEX idx_clinic_staff_is_active ON clinic_staff(is_active);
+CREATE INDEX idx_clinic_staff_joined_at ON clinic_staff(joined_at);
+CREATE INDEX idx_clinic_staff_left_at ON clinic_staff(left_at);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on clinic_staff table
+ALTER TABLE clinic_staff ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can view their own clinic staff assignments
+CREATE POLICY "Users can view their own staff assignments"
+  ON clinic_staff FOR SELECT
+  USING (user_id = auth.uid());
+
+-- Policy: Clinic admins can view all staff in their clinic
+CREATE POLICY "Clinic admins can view all clinic staff"
+  ON clinic_staff FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff cs
+      WHERE cs.clinic_id = clinic_staff.clinic_id
+      AND cs.user_id = auth.uid()
+      AND cs.role IN ('admin', 'manager')
+    )
+  );
+
+-- Policy: Super admins can manage all clinic staff
+CREATE POLICY "Super admins can manage all clinic staff"
+  ON clinic_staff FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_clinic_staff_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER clinic_staff_update_updated_at
+  BEFORE UPDATE ON clinic_staff
+  FOR EACH ROW
+  EXECUTE FUNCTION update_clinic_staff_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE clinic_staff IS 'Junction table linking clinics to staff members';
+COMMENT ON COLUMN clinic_staff.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN clinic_staff.clinic_id IS 'Foreign key reference to clinics table';
+COMMENT ON COLUMN clinic_staff.user_id IS 'Foreign key reference to users table';
+COMMENT ON COLUMN clinic_staff.employee_id IS 'Foreign key reference to employees table';
+COMMENT ON COLUMN clinic_staff.role IS 'Staff role in the clinic';
+COMMENT ON COLUMN clinic_staff.permissions IS 'JSON object with specific permissions';
+COMMENT ON COLUMN clinic_staff.joined_at IS 'Date when staff member joined the clinic';
+COMMENT ON COLUMN clinic_staff.left_at IS 'Date when staff member left the clinic';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Helper Functions
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Function to get clinic staff count by role
+CREATE OR REPLACE FUNCTION get_clinic_staff_count_by_role(clinic_id_param UUID)
+RETURNS TABLE(
+  role VARCHAR(50),
+  count INTEGER
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    role,
+    COUNT(*) as count
+  FROM clinic_staff
+  WHERE clinic_id = clinic_id_param
+    AND is_active = true
+  GROUP BY role
+  ORDER BY role;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to check if user is clinic admin
+CREATE OR REPLACE FUNCTION is_clinic_admin(user_id_param UUID)
+RETURNS BOOLEAN AS $$
+DECLARE
+  is_admin BOOLEAN;
+BEGIN
+  SELECT EXISTS (
+    SELECT 1 FROM clinic_staff
+    WHERE user_id = user_id_param
+    AND role IN ('admin', 'manager')
+    AND is_active = true
+  ) INTO is_admin;
+  
+  RETURN is_admin;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to get user's clinic roles
+CREATE OR REPLACE FUNCTION get_user_clinic_roles(user_id_param UUID)
+RETURNS TABLE(
+  clinic_id UUID,
+  clinic_name VARCHAR(255),
+  role VARCHAR(50),
+  is_active BOOLEAN
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    cs.clinic_id,
+    c.name as clinic_name,
+    cs.role,
+    cs.is_active
+  FROM clinic_staff cs
+  JOIN clinics c ON cs.clinic_id = c.id
+  WHERE cs.user_id = user_id_param
+  ORDER BY cs.joined_at DESC;
+END;
+$$ LANGUAGE plpgsql;
+
+=== 20260304120011_create_appointments_table.sql ===
+-- Migration: Create Appointments Table
+-- Purpose: Store appointment information
+-- Version: v2_P04_001
+-- Created: 2026-03-04
+-- Dependencies: v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P02_002_create_clinics_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Appointments Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create appointments table to store appointment information
+CREATE TABLE IF NOT EXISTS appointments (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+  doctor_id UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  prescription_id UUID REFERENCES prescriptions(id) ON DELETE SET NULL,
+
+  -- Appointment Details
+  appointment_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  appointment_end_time TIMESTAMP WITH TIME ZONE,
+  status appointment_status DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'in_progress', 'completed', 'no_show', 'cancelled', 'rescheduled')),
+  appointment_type VARCHAR(50) DEFAULT 'consultation',
+  
+  -- Medical Information
+  reason_for_visit TEXT,
+  symptoms TEXT[],
+  notes TEXT,
+  diagnosis TEXT,
+  
+  -- Follow-up
+  follow_up_required BOOLEAN DEFAULT false,
+  follow_up_date TIMESTAMP WITH TIME ZONE,
+  
+  -- Video Call
+  video_call_enabled BOOLEAN DEFAULT false,
+  video_call_room_id VARCHAR(255),
+  video_call_started_at TIMESTAMP WITH TIME ZONE,
+  video_call_ended_at TIMESTAMP WITH TIME ZONE,
+  video_call_duration_seconds INTEGER,
+  
+  -- Reminders
+  reminder_sent BOOLEAN DEFAULT false,
+  reminder_sent_at TIMESTAMP WITH TIME ZONE,
+  
+  -- Cancellation
+  cancellation_reason TEXT,
+  cancelled_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  cancelled_at TIMESTAMP WITH TIME ZONE,
+  
+  -- No Show
+  no_show_reason TEXT,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_appointment_dates CHECK (
+    appointment_end_date IS NULL OR 
+    appointment_end_date > appointment_date
+  ),
+  CONSTRAINT valid_video_call_duration CHECK (
+    video_call_duration_seconds IS NULL OR 
+    video_call_duration_seconds >= 0
+  )
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_appointments_patient_id ON appointments(patient_id);
+CREATE INDEX idx_appointments_doctor_id ON appointments(doctor_id);
+CREATE INDEX idx_appointments_clinic_id ON appointments(clinic_id);
+CREATE INDEX idx_appointments_appointment_date ON appointments(appointment_date);
+CREATE INDEX idx_appointments_status ON appointments(status);
+CREATE INDEX idx_appointments_appointment_type ON appointments(appointment_type);
+CREATE INDEX idx_appointments_prescription_id ON appointments(prescription_id);
+CREATE INDEX idx_appointments_created_at ON appointments(created_at DESC);
+
+-- Create composite index for doctor's schedule
+CREATE INDEX idx_appointments_doctor_date ON appointments(doctor_id, appointment_date);
+CREATE INDEX idx_appointments_patient_date ON appointments(patient_id, appointment_date);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on appointments table
+ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own appointments
+CREATE POLICY "Patients can view their own appointments"
+  ON appointments FOR SELECT
+  USING (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can view their appointments
+CREATE POLICY "Doctors can view their appointments"
+  ON appointments FOR SELECT
+  USING (
+    doctor_id IN (
+      SELECT id FROM doctors WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can view clinic appointments
+CREATE POLICY "Clinic staff can view clinic appointments"
+  ON appointments FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Patients can create appointments
+CREATE POLICY "Patients can create appointments"
+  ON appointments FOR INSERT
+  WITH CHECK (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can update their appointments
+CREATE POLICY "Doctors can update their appointments"
+  ON appointments FOR UPDATE
+  USING (
+    doctor_id IN (
+      SELECT id FROM doctors WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Patients can cancel their own appointments
+CREATE POLICY "Patients can cancel their appointments"
+  ON appointments FOR UPDATE
+  USING (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+    AND status IN ('pending', 'confirmed')
+    AND NEW.status = 'cancelled'
+  );
+
+-- Policy: Super admins can manage all appointments
+CREATE POLICY "Super admins can manage all appointments"
+  ON appointments FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_appointments_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER appointments_update_updated_at
+  BEFORE UPDATE ON appointments
+  FOR EACH ROW
+  EXECUTE FUNCTION update_appointments_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Overlapping Appointments Prevention Trigger
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to prevent overlapping appointments
+CREATE OR REPLACE FUNCTION prevent_overlapping_appointments()
+RETURNS TRIGGER AS $$
+DECLARE
+  overlapping_count INTEGER;
+BEGIN
+  -- Check for overlapping appointments for the same doctor
+  SELECT COUNT(*) INTO overlapping_count
+  FROM appointments
+  WHERE doctor_id = NEW.doctor_id
+  AND id != COALESCE(NEW.id, gen_random_uuid())
+  AND status NOT IN ('cancelled', 'no_show')
+  AND (
+    (NEW.appointment_date < COALESCE(appointment_end_time, NEW.appointment_date + INTERVAL '1 hour'))
+    AND (COALESCE(NEW.appointment_end_time, NEW.appointment_date + INTERVAL '1 hour') > appointment_date)
+  );
+
+  IF overlapping_count > 0 THEN
+    RAISE EXCEPTION 'Doctor has an overlapping appointment';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for preventing overlapping appointments
+CREATE TRIGGER prevent_appointment_overlap
+  BEFORE INSERT OR UPDATE OF appointment_date, appointment_end_time, doctor_id ON appointments
+  FOR EACH ROW
+  EXECUTE FUNCTION prevent_overlapping_appointments();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE appointments IS 'Medical appointments information';
+COMMENT ON COLUMN appointments.status IS 'Appointment status: pending, confirmed, in_progress, completed, cancelled, no_show, rescheduled';
+COMMENT ON COLUMN appointments.appointment_type IS 'Type of appointment: consultation, follow-up, emergency, video_call, etc.';
+COMMENT ON COLUMN appointments.video_call_enabled IS 'Whether video call is enabled for this appointment';
+COMMENT ON COLUMN appointments.video_call_room_id IS 'Room ID for video call';
+COMMENT ON COLUMN appointments.follow_up_required IS 'Whether a follow-up appointment is needed';
+
+=== 20260304120012_create_prescriptions_table.sql ===
+-- Migration: Create Prescriptions Table
+-- Purpose: Store prescription information
+-- Version: v2_P04_002
+-- Created: 2026-03-04
+-- Dependencies: v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P04_001_create_appointments_table.sql, v2_P02_002_create_clinics_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Prescriptions Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create prescriptions table to store prescription information
+CREATE TABLE IF NOT EXISTS prescriptions (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+  doctor_id UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+  appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+
+  -- Prescription Information
+  prescription_number VARCHAR(50) NOT NULL UNIQUE,
+  
+  -- Medical Information
+  diagnosis TEXT,
+  symptoms TEXT[],
+  notes TEXT,
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_prescriptions_patient_id ON prescriptions(patient_id);
+CREATE INDEX idx_prescriptions_doctor_id ON prescriptions(doctor_id);
+CREATE INDEX idx_prescriptions_appointment_id ON prescriptions(appointment_id);
+CREATE INDEX idx_prescriptions_clinic_id ON prescriptions(clinic_id);
+CREATE INDEX idx_prescriptions_prescription_number ON prescriptions(prescription_number);
+CREATE INDEX idx_prescriptions_is_active ON prescriptions(is_active);
+CREATE INDEX idx_prescriptions_created_at ON prescriptions(created_at DESC);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on prescriptions table
+ALTER TABLE prescriptions ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own prescriptions
+CREATE POLICY "Patients can view their own prescriptions"
+  ON prescriptions FOR SELECT
+  USING (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can view prescriptions they created
+CREATE POLICY "Doctors can view their prescriptions"
+  ON prescriptions FOR SELECT
+  USING (doctor_id IN (SELECT id FROM doctors WHERE user_id = auth.uid()));
+
+-- Policy: Clinic staff can view clinic prescriptions
+CREATE POLICY "Clinic staff can view clinic prescriptions"
+  ON prescriptions FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can create prescriptions
+CREATE POLICY "Doctors can create prescriptions"
+  ON prescriptions FOR INSERT
+  WITH CHECK (doctor_id IN (SELECT id FROM doctors WHERE user_id = auth.uid()));
+
+-- Policy: Doctors can update their prescriptions
+CREATE POLICY "Doctors can update their prescriptions"
+  ON prescriptions FOR UPDATE
+  USING (doctor_id IN (SELECT id FROM doctors WHERE user_id = auth.uid()));
+
+-- Policy: Super admins can manage all prescriptions
+CREATE POLICY "Super admins can manage all prescriptions"
+  ON prescriptions FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_prescriptions_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER prescriptions_update_updated_at
+  BEFORE UPDATE ON prescriptions
+  FOR EACH ROW
+  EXECUTE FUNCTION update_prescriptions_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE prescriptions IS 'Medical prescriptions information';
+COMMENT ON COLUMN prescriptions.prescription_number IS 'Unique prescription identification number';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Prescription Items Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create prescription_items table for individual medications
+CREATE TABLE IF NOT EXISTS prescription_items (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  prescription_id UUID NOT NULL REFERENCES prescriptions(id) ON DELETE CASCADE,
+
+  -- Medication Information
+  medication_name VARCHAR(255) NOT NULL,
+  medication_name_ar VARCHAR(255),
+  
+  -- Dosage Information
+  dosage VARCHAR(100) NOT NULL,
+  frequency VARCHAR(100) NOT NULL,
+  duration VARCHAR(100) NOT NULL,
+  route VARCHAR(50) DEFAULT 'oral' CHECK (route IN ('oral', 'injection', 'topical', 'inhalation', 'other')),
+  
+  -- Instructions
+  instructions TEXT,
+  instructions_ar TEXT,
+  
+  -- Quantity and Refills
+  quantity INTEGER,
+  refills_allowed INTEGER DEFAULT 0,
+  refills_remaining INTEGER DEFAULT 0,
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_quantity CHECK (quantity IS NULL OR quantity > 0),
+  CONSTRAINT valid_refills CHECK (refills_remaining >= 0 AND refills_remaining <= refills_allowed)
+);
+
+-- Create indexes for prescription_items
+CREATE INDEX idx_prescription_items_prescription_id ON prescription_items(prescription_id);
+CREATE INDEX idx_prescription_items_medication_name ON prescription_items(medication_name);
+CREATE INDEX idx_prescription_items_is_active ON prescription_items(is_active);
+
+-- Add RLS policies for prescription_items
+ALTER TABLE prescription_items ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can view prescription items through prescriptions
+CREATE POLICY "Users can view prescription items via prescriptions"
+  ON prescription_items FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM prescriptions p
+      JOIN patients pat ON p.patient_id = pat.id
+      WHERE p.id = prescription_items.prescription_id
+      AND pat.user_id = auth.uid()
+    )
+    OR EXISTS (
+      SELECT 1 FROM prescriptions p
+      JOIN doctors d ON p.doctor_id = d.id
+      WHERE p.id = prescription_items.prescription_id
+      AND d.user_id = auth.uid()
+    )
+  );
+
+-- Create trigger for updated_at
+CREATE TRIGGER update_prescription_items_updated_at
+  BEFORE UPDATE ON prescription_items
+  FOR EACH ROW
+  EXECUTE FUNCTION update_prescription_items_updated_at();
+
+-- Add comments
+COMMENT ON TABLE prescription_items IS 'Individual medications in a prescription';
+COMMENT ON COLUMN prescription_items.dosage IS 'Medication dosage (e.g., 10mg, 5ml)';
+COMMENT ON COLUMN prescription_items.frequency IS 'How often to take the medication (e.g., twice daily, every 8 hours)';
+COMMENT ON COLUMN prescription_items.duration IS 'How long to take the medication (e.g., 7 days, 2 weeks)';
+COMMENT ON COLUMN prescription_items.route IS 'Administration route: oral, injection, topical, inhalation, other';
+COMMENT ON COLUMN prescription_items.refills_allowed IS 'Number of refills allowed for this medication';
+COMMENT ON COLUMN prescription_items.refills_remaining IS 'Number of refills remaining';
+
+=== 20260304120013_create_lab_results_table.sql ===
+-- Migration: Create Lab Results Table
+-- Purpose: Store laboratory test results
+-- Version: v2_P04_003
+-- Created: 2026-03-04
+-- Dependencies: v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P04_001_create_appointments_table.sql, v2_P02_002_create_clinics_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Lab Results Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create lab_results table to store laboratory test results
+CREATE TABLE IF NOT EXISTS lab_results (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+  doctor_id UUID REFERENCES doctors(id) ON DELETE SET NULL,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
+
+  -- Test Information
+  test_name VARCHAR(255) NOT NULL,
+  test_name_ar VARCHAR(255),
+  test_category VARCHAR(100),
+  test_date DATE NOT NULL,
+  result_date DATE,
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'in_progress', 'completed', 'cancelled')),
+  
+  -- Results
+  results JSONB,
+  normal_range TEXT,
+  interpretation TEXT,
+  interpretation_ar TEXT,
+  notes TEXT,
+  
+  -- Performed By
+  performed_by VARCHAR(255),
+  lab_technician_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  
+  -- Flags
+  is_abnormal BOOLEAN DEFAULT false,
+  requires_follow_up BOOLEAN DEFAULT false,
+  
+  -- Report
+  report_url TEXT,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_lab_results_patient_id ON lab_results(patient_id);
+CREATE INDEX idx_lab_results_doctor_id ON lab_results(doctor_id);
+CREATE INDEX idx_lab_results_clinic_id ON lab_results(clinic_id);
+CREATE INDEX idx_lab_results_appointment_id ON lab_results(appointment_id);
+CREATE INDEX idx_lab_results_test_name ON lab_results(test_name);
+CREATE INDEX idx_lab_results_test_category ON lab_results(test_category);
+CREATE INDEX idx_lab_results_test_date ON lab_results(test_date);
+CREATE INDEX idx_lab_results_status ON lab_results(status);
+CREATE INDEX idx_lab_results_is_abnormal ON lab_results(is_abnormal);
+CREATE INDEX idx_lab_results_created_at ON lab_results(created_at DESC);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on lab_results table
+ALTER TABLE lab_results ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own lab results
+CREATE POLICY "Patients can view their own lab results"
+  ON lab_results FOR SELECT
+  USING (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can view lab results for their patients
+CREATE POLICY "Doctors can view their patients lab results"
+  ON lab_results FOR SELECT
+  USING (
+    doctor_id IN (
+      SELECT id FROM doctors WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can view clinic lab results
+CREATE POLICY "Clinic staff can view clinic lab results"
+  ON lab_results FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Lab technicians can create and update lab results
+CREATE POLICY "Lab technicians can manage lab results"
+  ON lab_results FOR ALL
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+      AND role IN ('lab_technician', 'doctor', 'admin', 'manager')
+    )
+  );
+
+-- Policy: Super admins can manage all lab results
+CREATE POLICY "Super admins can manage all lab results"
+  ON lab_results FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_lab_results_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER update_lab_results_updated_at
+  BEFORE UPDATE ON lab_results
+  FOR EACH ROW
+  EXECUTE FUNCTION update_lab_results_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE lab_results IS 'Laboratory test results';
+COMMENT ON COLUMN lab_results.status IS 'Test status: pending, in_progress, completed, cancelled';
+COMMENT ON COLUMN lab_results.results IS 'JSON object containing test results and values';
+COMMENT ON COLUMN lab_results.normal_range IS 'Normal reference range for the test';
+COMMENT ON COLUMN lab_results.interpretation IS 'Clinical interpretation of the results';
+COMMENT ON COLUMN lab_results.is_abnormal IS 'Whether results are outside normal range';
+COMMENT ON COLUMN lab_results.requires_follow_up IS 'Whether follow-up testing is required';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Vital Signs Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create vital_signs table for patient vital signs
+CREATE TABLE IF NOT EXISTS vital_signs (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+  doctor_id UUID REFERENCES doctors(id) ON DELETE SET NULL,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
+
+  -- Recording Information
+  recorded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  recorded_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Vital Signs Measurements
+  temperature DECIMAL(4, 1),  -- in Celsius
+  temperature_unit VARCHAR(10) DEFAULT 'C',
+  heart_rate INTEGER,  -- beats per minute
+  blood_pressure_systolic INTEGER,  -- mmHg
+  blood_pressure_diastolic INTEGER,  -- mmHg
+  respiratory_rate INTEGER,  -- breaths per minute
+  oxygen_saturation DECIMAL(3, 1),  -- percentage
+  weight DECIMAL(5, 2),  -- in kg
+  weight_unit VARCHAR(10) DEFAULT 'kg',
+  height DECIMAL(5, 2),  -- in cm
+  height_unit VARCHAR(10) DEFAULT 'cm',
+  bmi DECIMAL(4, 1),
+  blood_glucose DECIMAL(5, 1),  -- mg/dL
+  blood_glucose_unit VARCHAR(10) DEFAULT 'mg/dL',
+  
+  -- Notes
+  notes TEXT,
+  is_abnormal BOOLEAN DEFAULT false,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_temperature CHECK (temperature IS NULL OR (temperature >= 30 AND temperature <= 45)),
+  CONSTRAINT valid_heart_rate CHECK (heart_rate IS NULL OR (heart_rate >= 30 AND heart_rate <= 220)),
+  CONSTRAINT valid_respiratory_rate CHECK (respiratory_rate IS NULL OR (respiratory_rate >= 5 AND respiratory_rate <= 60)),
+  CONSTRAINT valid_oxygen_saturation CHECK (oxygen_saturation IS NULL OR (oxygen_saturation >= 70 AND oxygen_saturation <= 100)),
+  CONSTRAINT valid_bmi CHECK (bmi IS NULL OR (bmi >= 10 AND bmi <= 60))
+);
+
+-- Create indexes for vital_signs
+CREATE INDEX idx_vital_signs_patient_id ON vital_signs(patient_id);
+CREATE INDEX idx_vital_signs_doctor_id ON vital_signs(doctor_id);
+CREATE INDEX idx_vital_signs_clinic_id ON vital_signs(clinic_id);
+CREATE INDEX idx_vital_signs_appointment_id ON vital_signs(appointment_id);
+CREATE INDEX idx_vital_signs_recorded_at ON vital_signs(recorded_at);
+CREATE INDEX idx_vital_signs_is_abnormal ON vital_signs(is_abnormal);
+
+-- Add RLS policies for vital_signs
+ALTER TABLE vital_signs ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own vital signs
+CREATE POLICY "Patients can view their own vital signs"
+  ON vital_signs FOR SELECT
+  USING (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can view vital signs for their patients
+CREATE POLICY "Doctors can view their patients vital signs"
+  ON vital_signs FOR SELECT
+  USING (
+    doctor_id IN (
+      SELECT id FROM doctors WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can view clinic vital signs
+CREATE POLICY "Clinic staff can view clinic vital signs"
+  ON vital_signs FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Medical staff can create vital signs
+CREATE POLICY "Medical staff can create vital signs"
+  ON vital_signs FOR INSERT
+  WITH CHECK (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+      AND role IN ('doctor', 'nurse', 'admin', 'manager')
+    )
+  );
+
+-- Create trigger for updated_at
+CREATE TRIGGER update_vital_signs_updated_at
+  BEFORE UPDATE ON vital_signs
+  FOR EACH ROW
+  EXECUTE FUNCTION update_vital_signs_updated_at();
+
+-- Add comments
+COMMENT ON TABLE vital_signs IS 'Patient vital signs measurements';
+COMMENT ON COLUMN vital_signs.temperature IS 'Body temperature in Celsius';
+COMMENT ON COLUMN vital_signs.heart_rate IS 'Heart rate in beats per minute';
+COMMENT ON COLUMN vital_signs.blood_pressure_systolic IS 'Systolic blood pressure in mmHg';
+COMMENT ON COLUMN vital_signs.blood_pressure_diastolic IS 'Diastolic blood pressure in mmHg';
+COMMENT ON COLUMN vital_signs.respiratory_rate IS 'Respiratory rate in breaths per minute';
+COMMENT ON COLUMN vital_signs.oxygen_saturation IS 'Oxygen saturation percentage';
+COMMENT ON COLUMN vital_signs.blood_glucose IS 'Blood glucose level in mg/dL';
+
+=== 20260304120014_create_video_sessions_table.sql ===
+-- Migration: Create Video Sessions Table
+-- Purpose: Store video call session information
+-- Version: v2_P04_004
+-- Created: 2026-03-04
+-- Dependencies: v2_P04_001_create_appointments_table.sql, v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P02_002_create_clinics_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Video Sessions Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create video_sessions table to store video call session information
+CREATE TABLE IF NOT EXISTS video_sessions (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
+  patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+  doctor_id UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+
+  -- Agora Information
+  channel_name VARCHAR(255) NOT NULL,
+  room_id VARCHAR(255) UNIQUE NOT NULL,
+  token TEXT,
+
+  -- Session Status
+  status video_session_status DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'in_progress', 'completed', 'cancelled', 'failed', 'no_show')),
+  
+  -- Scheduled Times
+  scheduled_start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  scheduled_end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+  
+  -- Actual Times
+  actual_start_time TIMESTAMP WITH TIME ZONE,
+  actual_end_time TIMESTAMP WITH TIME ZONE,
+  duration_seconds INTEGER,
+  
+  -- Session Information
+  initiator_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  termination_reason TEXT,
+  
+  -- Quality Assessment
+  quality_rating INTEGER CHECK (quality_rating BETWEEN 1 AND 5),
+  quality_feedback TEXT,
+  
+  -- Recording
+  recording_enabled BOOLEAN DEFAULT false,
+  recording_url TEXT,
+  screenshot_count INTEGER DEFAULT 0,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_scheduled_times CHECK (
+    scheduled_end_time > scheduled_start_time
+  ),
+  CONSTRAINT valid_duration CHECK (
+    duration_seconds IS NULL OR duration_seconds >= 0
+  )
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_video_sessions_appointment_id ON video_sessions(appointment_id);
+CREATE INDEX idx_video_sessions_patient_id ON video_sessions(patient_id);
+CREATE INDEX idx_video_sessions_doctor_id ON video_sessions(doctor_id);
+CREATE INDEX idx_video_sessions_clinic_id ON video_sessions(clinic_id);
+CREATE INDEX idx_video_sessions_channel_name ON video_sessions(channel_name);
+CREATE INDEX idx_video_sessions_room_id ON video_sessions(room_id);
+CREATE INDEX idx_video_sessions_status ON video_sessions(status);
+CREATE INDEX idx_video_sessions_scheduled_start_time ON video_sessions(scheduled_start_time);
+CREATE INDEX idx_video_sessions_created_at ON video_sessions(created_at DESC);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on video_sessions table
+ALTER TABLE video_sessions ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own video sessions
+CREATE POLICY "Patients can view their own video sessions"
+  ON video_sessions FOR SELECT
+  USING (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can view their video sessions
+CREATE POLICY "Doctors can view their video sessions"
+  ON video_sessions FOR SELECT
+  USING (
+    doctor_id IN (
+      SELECT id FROM doctors WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can view clinic video sessions
+CREATE POLICY "Clinic staff can view clinic video sessions"
+  ON video_sessions FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Authorized users can create video sessions
+CREATE POLICY "Authorized users can create video sessions"
+  ON video_sessions FOR INSERT
+  WITH CHECK (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+    OR doctor_id IN (
+      SELECT id FROM doctors WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Participants can update video sessions
+CREATE POLICY "Participants can update video sessions"
+  ON video_sessions FOR UPDATE
+  USING (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+    OR doctor_id IN (
+      SELECT id FROM doctors WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Super admins can manage all video sessions
+CREATE POLICY "Super admins can manage all video sessions"
+  ON video_sessions FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_video_sessions_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER update_video_sessions_updated_at
+  BEFORE UPDATE ON video_sessions
+  FOR EACH ROW
+  EXECUTE FUNCTION update_video_sessions_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Video Session Duration Calculation Trigger
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to calculate duration when session ends
+CREATE OR REPLACE FUNCTION calculate_video_session_duration()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Calculate duration when session status changes to completed
+  IF NEW.status = 'completed' AND OLD.status != 'completed' THEN
+    IF NEW.actual_start_time IS NOT NULL AND NEW.actual_end_time IS NOT NULL THEN
+      NEW.duration_seconds := EXTRACT(EPOCH FROM (NEW.actual_end_time - NEW.actual_start_time))::INTEGER;
+    END IF;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for calculating duration
+CREATE TRIGGER calculate_video_duration_on_completion
+  BEFORE UPDATE OF status, actual_start_time, actual_end_time ON video_sessions
+  FOR EACH ROW
+  EXECUTE FUNCTION calculate_video_session_duration();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE video_sessions IS 'Video call session information';
+COMMENT ON COLUMN video_sessions.channel_name IS 'Agora channel name for the video call';
+COMMENT ON COLUMN video_sessions.room_id IS 'Unique room identifier for the video call';
+COMMENT ON COLUMN video_sessions.status IS 'Session status: scheduled, in_progress, completed, cancelled, failed, no_show';
+COMMENT ON COLUMN video_sessions.duration_seconds IS 'Actual duration of the video call in seconds';
+COMMENT ON COLUMN video_sessions.quality_rating IS 'User rating of video call quality (1-5)';
+
+=== 20260304120015_create_invoices_table.sql ===
+-- Migration: Create Invoices Table
+-- Purpose: Store invoice information for services rendered
+-- Version: v2_P05_001
+-- Created: 2026-03-04
+-- Dependencies: v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P04_001_create_appointments_table.sql, v2_P02_002_create_clinics_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Invoices Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create invoices table to store invoice information
+CREATE TABLE IF NOT EXISTS invoices (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Invoice Information
+  invoice_number VARCHAR(50) NOT NULL UNIQUE,
+  
+  -- Foreign Keys
+  patient_id UUID REFERENCES patients(id) ON DELETE SET NULL,
+  doctor_id UUID REFERENCES doctors(id) ON DELETE SET NULL,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
+  
+  -- Invoice Dates
+  invoice_date DATE NOT NULL,
+  due_date DATE,
+  
+  -- Status
+  status invoice_status DEFAULT 'pending' CHECK (status IN ('draft', 'issued', 'pending', 'paid', 'overdue', 'cancelled', 'refunded')),
+  
+  -- Amounts
+  subtotal DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  tax_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  discount_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  total_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  currency VARCHAR(3) DEFAULT 'USD',
+  
+  -- Payment Information
+  payment_method VARCHAR(50),
+  payment_date TIMESTAMP WITH TIME ZONE,
+  payment_reference VARCHAR(255),
+  
+  -- Notes
+  notes TEXT,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_amounts CHECK (
+    subtotal >= 0 AND
+    tax_amount >= 0 AND
+    discount_amount >= 0 AND
+    total_amount >= 0
+  ),
+  CONSTRAINT valid_due_date CHECK (
+    due_date IS NULL OR due_date >= invoice_date
+  )
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_invoices_patient_id ON invoices(patient_id);
+CREATE INDEX idx_invoices_doctor_id ON invoices(doctor_id);
+CREATE INDEX idx_invoices_clinic_id ON invoices(clinic_id);
+CREATE INDEX idx_invoices_appointment_id ON invoices(appointment_id);
+CREATE INDEX idx_invoices_invoice_number ON invoices(invoice_number);
+CREATE INDEX idx_invoices_invoice_date ON invoices(invoice_date);
+CREATE INDEX idx_invoices_status ON invoices(status);
+CREATE INDEX idx_invoices_due_date ON invoices(due_date);
+CREATE INDEX idx_invoices_created_at ON invoices(created_at DESC);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on invoices table
+ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own invoices
+CREATE POLICY "Patients can view their own invoices"
+  ON invoices FOR SELECT
+  USING (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can view invoices for their appointments
+CREATE POLICY "Doctors can view their appointment invoices"
+  ON invoices FOR SELECT
+  USING (
+    doctor_id IN (
+      SELECT id FROM doctors WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can view clinic invoices
+CREATE POLICY "Clinic staff can view clinic invoices"
+  ON invoices FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can create invoices
+CREATE POLICY "Clinic staff can create invoices"
+  ON invoices FOR INSERT
+  WITH CHECK (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can update invoices
+CREATE POLICY "Clinic staff can update invoices"
+  ON invoices FOR UPDATE
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Super admins can manage all invoices
+CREATE POLICY "Super admins can manage all invoices"
+  ON invoices FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_invoices_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER update_invoices_updated_at
+  BEFORE UPDATE ON invoices
+  FOR EACH ROW
+  EXECUTE FUNCTION update_invoices_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE invoices IS 'Invoice information for services rendered';
+COMMENT ON COLUMN invoices.status IS 'Invoice status: draft, issued, pending, paid, overdue, cancelled, refunded';
+COMMENT ON COLUMN invoices.payment_method IS 'Method of payment: cash, card, insurance, etc.';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Invoice Items Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create invoice_items table for individual line items
+CREATE TABLE IF NOT EXISTS invoice_items (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  invoice_id UUID NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+
+  -- Item Information
+  item_type VARCHAR(50) CHECK (item_type IN ('service', 'medication', 'lab_test', 'procedure', 'other')),
+  item_name VARCHAR(255) NOT NULL,
+  item_name_ar VARCHAR(255),
+  description TEXT,
+  
+  -- Quantity and Price
+  quantity INTEGER NOT NULL DEFAULT 1,
+  unit_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  discount_amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  total_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_quantity CHECK (quantity > 0),
+  CONSTRAINT valid_prices CHECK (
+    unit_price >= 0 AND
+    discount_amount >= 0 AND
+    total_price >= 0
+  )
+);
+
+-- Create indexes for invoice_items
+CREATE INDEX idx_invoice_items_invoice_id ON invoice_items(invoice_id);
+CREATE INDEX idx_invoice_items_item_type ON invoice_items(item_type);
+
+-- Add RLS policies for invoice_items
+ALTER TABLE invoice_items ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can view invoice items through invoices
+CREATE POLICY "Users can view invoice items via invoices"
+  ON invoice_items FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM invoices i
+      JOIN patients pat ON i.patient_id = pat.id
+      WHERE i.id = invoice_items.invoice_id
+      AND pat.user_id = auth.uid()
+    )
+    OR EXISTS (
+      SELECT 1 FROM invoices i
+      JOIN clinic_staff cs ON i.clinic_id = cs.clinic_id
+      WHERE i.id = invoice_items.invoice_id
+      AND cs.user_id = auth.uid()
+    )
+  );
+
+-- Add comments
+COMMENT ON TABLE invoice_items IS 'Individual line items in an invoice';
+COMMENT ON COLUMN invoice_items.item_type IS 'Type of item: service, medication, lab_test, procedure, other';
+COMMENT ON COLUMN invoice_items.quantity IS 'Quantity of items';
+COMMENT ON COLUMN invoice_items.unit_price IS 'Price per unit';
+COMMENT ON COLUMN invoice_items.discount_amount IS 'Discount amount';
+COMMENT ON COLUMN invoice_items.total_price IS 'Total price (quantity Ã— unit_price - discount)';
+
+=== 20260304120016_create_inventory_table.sql ===
+-- Migration: Create Inventory Table
+-- Purpose: Store clinic inventory and stock management
+-- Version: v2_P05_002
+-- Created: 2026-03-04
+-- Dependencies: v2_P02_002_create_clinics_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Inventory Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create inventory table to store clinic inventory and stock management
+CREATE TABLE IF NOT EXISTS inventory (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  clinic_id UUID NOT NULL REFERENCES clinics(id) ON DELETE CASCADE,
+
+  -- Item Information
+  item_code VARCHAR(50) NOT NULL UNIQUE,
+  item_name VARCHAR(255) NOT NULL,
+  item_name_ar VARCHAR(255),
+  category VARCHAR(100),
+  description TEXT,
+  
+  -- Unit Information
+  unit VARCHAR(50) DEFAULT 'piece',
+  
+  -- Stock Information
+  current_stock INTEGER NOT NULL DEFAULT 0,
+  minimum_stock INTEGER NOT NULL DEFAULT 10,
+  maximum_stock INTEGER NOT NULL DEFAULT 1000,
+  reorder_quantity INTEGER NOT NULL DEFAULT 50,
+  
+  -- Pricing
+  unit_cost DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  selling_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  currency VARCHAR(3) DEFAULT 'USD',
+  
+  -- Supplier Information
+  supplier VARCHAR(255),
+  supplier_contact VARCHAR(255),
+  
+  -- Expiry Information (for perishable items)
+  expiry_date DATE,
+  batch_number VARCHAR(100),
+  
+  -- Storage
+  storage_location VARCHAR(100),
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_stock CHECK (
+    current_stock >= 0 AND
+    minimum_stock >= 0 AND
+    maximum_stock >= minimum_stock AND
+    reorder_quantity > 0
+  ),
+  CONSTRAINT valid_prices CHECK (
+    unit_cost >= 0 AND
+    selling_price >= 0
+  )
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_inventory_clinic_id ON inventory(clinic_id);
+CREATE INDEX idx_inventory_item_code ON inventory(item_code);
+CREATE INDEX idx_inventory_category ON inventory(category);
+CREATE INDEX idx_inventory_is_active ON inventory(is_active);
+CREATE INDEX idx_inventory_expiry_date ON inventory(expiry_date);
+CREATE INDEX idx_inventory_created_at ON inventory(created_at DESC);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on inventory table
+ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Clinic staff can view inventory in their clinic
+CREATE POLICY "Clinic staff can view clinic inventory"
+  ON inventory FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can create inventory items
+CREATE POLICY "Clinic staff can create inventory items"
+  ON inventory FOR INSERT
+  WITH CHECK (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can update inventory items
+CREATE POLICY "Clinic staff can update inventory items"
+  ON inventory FOR UPDATE
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Super admins can manage all inventory
+CREATE POLICY "Super admins can manage all inventory"
+  ON inventory FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_inventory_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER update_inventory_updated_at
+  BEFORE UPDATE ON inventory
+  FOR EACH ROW
+  EXECUTE FUNCTION update_inventory_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE inventory IS 'Clinic inventory and stock management';
+COMMENT ON COLUMN inventory.item_code IS 'Unique item identification code';
+COMMENT ON COLUMN inventory.current_stock IS 'Current quantity in stock';
+COMMENT ON COLUMN inventory.minimum_stock IS 'Minimum stock level before reordering';
+COMMENT ON COLUMN inventory.maximum_stock IS 'Maximum stock capacity';
+COMMENT ON COLUMN inventory.reorder_quantity IS 'Quantity to reorder when stock reaches minimum';
+COMMENT ON COLUMN inventory.expiry_date IS 'Expiry date for perishable items';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Inventory Transactions Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create inventory_transactions table for tracking stock movements
+CREATE TABLE IF NOT EXISTS inventory_transactions (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  inventory_id UUID NOT NULL REFERENCES inventory(id) ON DELETE CASCADE,
+
+  -- Transaction Information
+  transaction_type VARCHAR(50) NOT NULL CHECK (transaction_type IN ('purchase', 'sale', 'return', 'adjustment', 'transfer', 'expiry', 'damage', 'restock')),
+  
+  -- Quantity
+  quantity INTEGER NOT NULL,
+  unit_cost DECIMAL(10, 2),
+  total_cost DECIMAL(10, 2),
+  
+  -- Reference Information
+  reference_number VARCHAR(100),
+  notes TEXT,
+  
+  -- Performed By
+  performed_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  
+  -- Transaction Date
+  transaction_date TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for inventory_transactions
+CREATE INDEX idx_inventory_transactions_inventory_id ON inventory_transactions(inventory_id);
+CREATE INDEX idx_inventory_transactions_transaction_type ON inventory_transactions(transaction_type);
+CREATE INDEX idx_inventory_transactions_transaction_date ON inventory_transactions(transaction_date);
+CREATE INDEX idx_inventory_transactions_performed_by ON inventory_transactions(performed_by);
+
+-- Add RLS policies for inventory_transactions
+ALTER TABLE inventory_transactions ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Clinic staff can view transactions for their clinic inventory
+CREATE POLICY "Clinic staff can view inventory transactions"
+  ON inventory_transactions FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM inventory i
+      JOIN clinic_staff cs ON i.clinic_id = cs.clinic_id
+      WHERE i.id = inventory_transactions.inventory_id
+      AND cs.user_id = auth.uid()
+    )
+  );
+
+-- Add comments
+COMMENT ON TABLE inventory_transactions IS 'Inventory transaction history';
+COMMENT ON COLUMN inventory_transactions.transaction_type IS 'Type of transaction: purchase, sale, return, adjustment, transfer, expiry, damage';
+COMMENT ON COLUMN inventory_transactions.quantity IS 'Quantity (positive for additions, negative for deductions)';
+COMMENT ON COLUMN inventory_transactions.total_cost IS 'Total cost of transaction';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Stock Update Trigger
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update inventory stock on transaction
+CREATE OR REPLACE FUNCTION update_inventory_stock()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Update current stock based on transaction type
+  IF NEW.transaction_type IN ('purchase', 'adjustment', 'restock') THEN
+    UPDATE inventory
+    SET current_stock = current_stock + NEW.quantity
+    WHERE id = NEW.inventory_id;
+  ELSIF NEW.transaction_type IN ('sale', 'return', 'expiry', 'damage') THEN
+    UPDATE inventory
+    SET current_stock = current_stock - NEW.quantity
+    WHERE id = NEW.inventory_id;
+  END IF;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for updating inventory stock
+CREATE TRIGGER update_inventory_stock_on_transaction
+  AFTER INSERT ON inventory_transactions
+  FOR EACH ROW
+  EXECUTE FUNCTION update_inventory_stock();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Reports Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create reports table for generated reports
+CREATE TABLE IF NOT EXISTS reports (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Report Information
+  report_name VARCHAR(255) NOT NULL,
+  report_name_ar VARCHAR(255),
+  report_type VARCHAR(50) NOT NULL CHECK (report_type IN ('appointment', 'patient', 'financial', 'inventory', 'lab_result', 'staff', 'custom')),
+  
+  -- Foreign Keys
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  generated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  
+  -- Report Parameters
+  start_date DATE,
+  end_date,
+  parameters JSONB,
+  
+  -- Report Output
+  file_url TEXT,
+  file_format VARCHAR(10) DEFAULT 'pdf' CHECK (file_format IN ('pdf', 'xlsx', 'csv', 'json')),
+  file_size_bytes BIGINT,
+  
+  -- Status
+  status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'generating', 'completed', 'failed')),
+  error_message TEXT,
+  
+  -- Statistics
+  record_count INTEGER,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  completed_at TIMESTAMP WITH TIME ZONE
+);
+
+-- Create indexes for reports
+CREATE INDEX idx_reports_clinic_id ON reports(clinic_id);
+CREATE INDEX idx_reports_generated_by ON reports(generated_by);
+CREATE INDEX idx_reports_report_type ON reports(report_type);
+CREATE INDEX idx_reports_start_date ON reports(start_date);
+CREATE INDEX idx_reports_end_date ON reports(end_date);
+CREATE INDEX idx_reports_status ON reports(status);
+CREATE INDEX idx_reports_created_at ON reports(created_at DESC);
+
+-- Add RLS policies for reports
+ALTER TABLE reports ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can view their own reports
+CREATE POLICY "Users can view their own reports"
+  ON reports FOR SELECT
+  USING (generated_by = auth.uid());
+
+-- Policy: Clinic staff can view clinic reports
+CREATE POLICY "Clinic staff can view clinic reports"
+  ON reports FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Authorized users can create reports
+CREATE POLICY "Authorized users can create reports"
+  ON reports FOR INSERT
+  WITH CHECK (auth.uid() IS NOT NULL);
+
+-- Policy: Super admins can manage all reports
+CREATE POLICY "Super admins can manage all reports"
+  ON reports FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- Add comments
+COMMENT ON TABLE reports IS 'Generated reports';
+COMMENT ON COLUMN reports.report_type IS 'Type of report: appointment, patient, financial, inventory, lab_result, staff, custom';
+COMMENT ON COLUMN reports.parameters IS 'JSON object containing report parameters';
+COMMENT ON COLUMN reports.file_format IS 'Output file format: pdf, xlsx, csv, json';
+COMMENT ON COLUMN reports.status IS 'Report generation status: pending, generating, completed, failed';
+COMMENT ON COLUMN reports.record_count IS 'Number of records in the report';
+
+=== 20260304120017_create_subscription_codes_table.sql ===
+-- Migration: Create Subscription Codes Table
+-- Purpose: Store subscription codes for clinic activation
+-- Version: v2_P06_001
+-- Created: 2026-03-04
+-- Dependencies: v2_P02_002_create_clinics_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Subscription Codes Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create subscription_codes table to store subscription codes
+CREATE TABLE IF NOT EXISTS subscription_codes (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Subscription Information
+  code VARCHAR(50) NOT NULL UNIQUE NOT NULL,
+  type subscription_type NOT NULL CHECK (type IN ('trial', 'monthly', 'quarterly', 'half_yearly', 'yearly')),
+  
+  -- Pricing (Multi-currency)
+  price_usd DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  price_eur DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  price_dzd DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  
+  -- Duration
+  duration_days INTEGER NOT NULL,
+  
+  -- Usage Tracking
+  is_used BOOLEAN NOT NULL DEFAULT FALSE,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  used_at TIMESTAMP WITH TIME ZONE,
+  used_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  
+  -- Activation Details
+  activated_at TIMESTAMP WITH TIME ZONE,
+  activation_notes TEXT,
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_expired BOOLEAN NOT NULL DEFAULT false,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_duration CHECK (duration_days > 0),
+  CONSTRAINT valid_prices CHECK (
+    price_usd >= 0 AND
+    price_eur >= 0 AND
+    price_dzd >= 0
+  )
+);
+
+-- Create index on code for faster lookups
+CREATE INDEX IF NOT EXISTS idx_subscription_codes_code ON subscription_codes(code);
+
+-- Create index on clinic_id
+CREATE INDEX IF NOT EXISTS idx_subscription_codes_clinic_id ON subscription_codes(clinic_id);
+
+-- Create index on is_used
+CREATE INDEX IF NOT EXISTS idx_subscription_codes_is_used ON subscription_codes(is_used);
+
+-- Create index on created_at
+CREATE INDEX IF NOT EXISTS idx_subscription_codes_created_at ON subscription_codes(created_at DESC);
+
+-- Trigger to update updated_at
+CREATE OR REPLACE FUNCTION update_subscription_codes_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER subscription_codes_updated_at
+  BEFORE UPDATE ON subscription_codes
+  FOR EACH ROW
+  EXECUTE FUNCTION update_subscription_codes_updated_at();
+
+-- Add comments
+COMMENT ON TABLE subscription_codes IS 'Subscription codes for clinic activation';
+COMMENT ON COLUMN subscription_codes.code IS 'Unique subscription code';
+COMMENT ON COLUMN subscription_codes.type IS 'Subscription plan type';
+COMMENT ON COLUMN subscription_codes.price_usd IS 'Price in US Dollars';
+COMMENT ON COLUMN subscription_codes.price_eur IS 'Price in Euros';
+COMMENT ON COLUMN subscription_codes.price_dzd IS 'Price in Algerian Dinars';
+COMMENT ON COLUMN subscription_codes.duration_days IS 'Duration in days';
+
+=== 20260304120018_create_exchange_rates_table.sql ===
+-- Migration: Create Exchange Rates Table
+-- Purpose: Store currency exchange rates
+-- Version: v2_P06_002
+-- Created: 2026-03-04
+-- Dependencies: None
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Exchange Rates Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create exchange_rates table to store currency exchange rates
+CREATE TABLE IF NOT EXISTS exchange_rates (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Currency Information
+  from_currency VARCHAR(3) NOT NULL,
+  to_currency VARCHAR(3) NOT NULL,
+  rate DECIMAL(10, 6) NOT NULL DEFAULT 1.0,
+  
+  -- Date Information
+  effective_date DATE NOT NULL,
+  
+  -- Metadata
+  source VARCHAR(100),
+  is_active BOOLEAN DEFAULT true,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  UNIQUE (from_currency, to_currency, effective_date)
+);
+
+-- Create indexes for exchange_rates
+CREATE INDEX idx_exchange_rates_from_currency ON exchange_rates(from_currency);
+CREATE INDEX idx_exchange_rates_to_currency ON exchange_rates(to_currency);
+CREATE INDEX idx_exchange_rates_effective_date ON exchange_rates(effective_date DESC);
+CREATE INDEX idx_exchange_rates_is_active ON exchange_rates(is_active);
+
+-- Add unique constraint on from_currency, to_currency, effective_date
+CREATE UNIQUE INDEX idx_exchange_rates_unique ON exchange_rates(from_currency, to_currency, effective_date);
+
+-- Insert default exchange rates (USD as base)
+INSERT INTO exchange_rates (id, from_currency, to_currency, rate, effective_date) VALUES
+  ('550e8400-e29b-41d4-a716-446655440001', 'USD', 'USD', 1.0, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-446655440002', 'USD', 'EUR', 0.92, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-446655440003', 'USD', 'DZD', 134.5, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-446655440004', 'EUR', 'USD', 1.09, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-446655440005', 'EUR', 'EUR', 1.0, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-446655440006', 'EUR', 'DZD', 146.2, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-4466554407', 'DZD', 'USD', 0.0074, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-4466554408', 'DZD', 'EUR', 0.0068, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-4466554409', 'DZD', 'DZD', 1.0, '2026-03-04')
+ON CONFLICT (from_currency, to_currency, effective_date) DO NOTHING;
+
+-- Trigger to update updated_at
+CREATE OR REPLACE FUNCTION update_exchange_rates_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER exchange_rates_updated_at
+  BEFORE UPDATE ON exchange_rates
+  FOR EACH ROW
+  EXECUTE FUNCTION update_exchange_rates_updated_at();
+
+-- Add comments
+COMMENT ON TABLE exchange_rates IS 'Currency exchange rates';
+COMMENT ON COLUMN exchange_rates.rate IS 'Exchange rate from base to target currency';
+COMMENT ON COLUMN exchange_rates.effective_date IS 'Date when the rate becomes effective';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Helper Functions
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Function to calculate exchange rate between two currencies
+CREATE OR REPLACE FUNCTION calculate_exchange_rate(from_curr VARCHAR(3), to_curr VARCHAR(3))
+RETURNS DECIMAL AS $$
+DECLARE
+  rate DECIMAL;
+BEGIN
+  SELECT rate INTO rate
+  FROM exchange_rates
+  WHERE from_currency = from_curr
+    AND to_currency = to_currency
+    AND is_active = true
+    AND effective_date <= CURRENT_DATE
+  ORDER BY effective_date DESC
+  LIMIT 1;
+  
+  RETURN COALESCE(rate, 1.0);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to convert amount between currencies
+CREATE OR REPLACE FUNCTION convert_currency(amount DECIMAL, from_curr VARCHAR(3), to_curr VARCHAR(3))
+RETURNS DECIMAL AS $$
+DECLARE
+  rate DECIMAL;
+BEGIN
+  rate := calculate_exchange_rate(from_curr, to_curr);
+  RETURN amount * rate;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to get all exchange rates for a base currency
+CREATE OR REPLACE FUNCTION get_all_exchange_rates(base_curr VARCHAR(3))
+RETURNS TABLE(
+  to_currency VARCHAR(3),
+  rate DECIMAL,
+  effective_date DATE
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT to_currency, rate, effective_date
+  FROM exchange_rates
+  WHERE from_currency = base_curr
+    AND is_active = true
+    AND effective_date <= CURRENT_DATE
+  ORDER BY to_currency;
+END;
+$$ LANGUAGE plpgsql;
+
+=== 20260304120019_create_notifications_table.sql ===
+-- Migration: Create Notifications Table
+-- Purpose: Store user notifications
+-- Version: v2_P07_001
+-- Created: 2026-03-04
+-- Dependencies: v2_P01_004_create_users_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Notifications Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create notifications table to store user notifications
+CREATE TABLE IF NOT EXISTS notifications (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+  -- Notification Information
+  title VARCHAR(255) NOT NULL,
+  title_ar VARCHAR(255),
+  body TEXT NOT NULL,
+  body_ar TEXT,
+  type VARCHAR(50) DEFAULT 'info' CHECK (type IN ('info', 'success', 'warning', 'error', 'appointment', 'prescription', 'lab_result', 'invoice', 'system', 'alert')),
+  
+  -- Related Entity
+  data JSONB,
+  related_entity_type VARCHAR(50),
+  related_entity_id UUID,
+  
+  -- Status
+  is_read BOOLEAN DEFAULT false,
+  read_at TIMESTAMP WITH TIME ZONE,
+  action_url TEXT,
+  action_label VARCHAR(100),
+  
+  -- Priority
+  priority VARCHAR(20) DEFAULT 'normal' CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
+  
+  -- Expiration
+  expires_at TIMESTAMP WITH TIME ZONE,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX idx_notifications_type ON notifications(type);
+CREATE INDEX idx_notifications_is_read ON notifications(is_read);
+CREATE INDEX idx_notifications_priority ON notifications(priority);
+CREATE INDEX idx_notifications_related_entity ON notifications(related_entity_type, related_entity_id);
+CREATE INDEX idx_notifications_created_at ON notifications(created_at DESC);
+CREATE INDEX idx_notifications_expires_at ON notifications(expires_at);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on notifications table
+ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can view their own notifications
+CREATE POLICY "Users can view their own notifications"
+  ON notifications FOR SELECT
+  USING (user_id = auth.uid());
+
+-- Policy: Users can update their own notifications
+CREATE POLICY "Users can update their own notifications"
+  ON notifications FOR UPDATE
+  USING (user_id = auth.uid());
+
+-- Policy: System can create notifications for any user
+CREATE POLICY "System can create notifications"
+  ON notifications FOR INSERT
+  WITH CHECK (true);
+
+-- Policy: Super admins can manage all notifications
+CREATE POLICY "Super admins can manage all notifications"
+  ON notifications FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE notifications IS 'User notifications';
+COMMENT ON COLUMN notifications.type IS 'Notification type: info, success, warning, error, appointment, prescription, lab_result, invoice, system, alert';
+COMMENT ON COLUMN notifications.data IS 'Additional data in JSON format';
+COMMENT ON COLUMN notifications.related_entity_type IS 'Type of related entity (e.g., appointment, prescription)';
+COMMENT ON COLUMN notifications.related_entity_id IS 'ID of related entity';
+COMMENT ON COLUMN notifications.priority IS 'Notification priority: low, normal, high, urgent';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Notification Settings Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create notification_settings table for user notification preferences
+CREATE TABLE IF NOT EXISTS notification_settings (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE UNIQUE NOT NULL,
+
+  -- Notification Preferences
+  email_notifications BOOLEAN DEFAULT true,
+  push_notifications BOOLEAN DEFAULT true,
+  sms_notifications BOOLEAN DEFAULT false,
+  appointment_reminders BOOLEAN DEFAULT true,
+  prescription_alerts BOOLEAN DEFAULT true,
+  lab_result_alerts BOOLEAN DEFAULT true,
+  invoice_alerts BOOLEAN DEFAULT true,
+  
+  -- Quiet Hours
+  quiet_hours_start TIME,
+  quiet_hours_end TIME,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for notification_settings
+CREATE INDEX idx_notification_settings_user_id ON notification_settings(user_id);
+
+-- Add RLS policies for notification_settings
+ALTER TABLE notification_settings ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can view their own notification settings
+CREATE POLICY "Users can view their own notification settings"
+  ON notification_settings FOR SELECT
+  USING (user_id = auth.uid());
+
+-- Policy: Users can update their own notification settings
+CREATE POLICY "Users can update their own notification settings"
+  ON notification_settings FOR UPDATE
+  USING (user_id = auth.uid());
+
+-- Create trigger for updated_at
+CREATE TRIGGER update_notification_settings_updated_at
+  BEFORE UPDATE ON notification_settings
+  FOR EACH ROW
+  EXECUTE FUNCTION update_notification_settings_updated_at();
+
+-- Add comments
+COMMENT ON TABLE notification_settings IS 'User notification preferences';
+COMMENT ON COLUMN notification_settings.quiet_hours_start IS 'Start time for quiet hours (no notifications)';
+COMMENT ON COLUMN notification_settings.quiet_hours_end IS 'End time for quiet hours (no notifications)';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Autism Assessments Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create autism_assessments table
+CREATE TABLE IF NOT EXISTS autism_assessments (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+  doctor_id UUID REFERENCES doctors(id) ON DELETE SET NULL,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+
+  -- Assessment Information
+  assessment_date DATE NOT NULL,
+  assessment_type VARCHAR(50),
+  age_at_assessment_months INTEGER,
+  
+  -- Developmental Milestones
+  developmental_milestones JSONB,
+  behavioral_observations JSONB,
+  communication_skills JSONB,
+  social_interaction JSONB,
+  repetitive_behaviors JSONB,
+  sensory_issues JSONB,
+  
+  -- Clinical Information
+  screening_tools JSONB,
+  screening_score INTEGER,
+  screening_result VARCHAR(50),
+  diagnosis VARCHAR(100),
+  severity_level VARCHAR(50),
+  
+  -- Recommendations
+  recommendations TEXT[],
+  follow_up_required BOOLEAN DEFAULT false,
+  follow_up_date DATE,
+  
+  -- Parent Information
+  parent_concerns TEXT,
+  family_history TEXT,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Create indexes for autism_assessments
+CREATE INDEX idx_autism_assessments_patient_id ON autism_assessments(patient_id);
+CREATE INDEX idx_autism_assessments_doctor_id ON autism_assessments_doctor_id);
+CREATE INDEX idx_autism_assessments_clinic_id ON autism_assessments_clinic_id);
+CREATE INDEX idx_autism_assessments_assessment_date ON autism_assessments_assessment_date);
+CREATE INDEX idx_autism_assessments_diagnosis ON autism_assessments_diagnosis);
+CREATE INDEX idx_autism_assessments_created_at ON autism_assessments(created_at DESC);
+
+-- Add RLS policies for autism_assessments
+ALTER TABLE autism_assessments ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own assessments
+CREATE POLICY "Patients can view their own assessments"
+  ON autism_assessments FOR SELECT
+  USING (
+    patient_id IN (
+      SELECT id FROM patients WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can view assessments they created
+CREATE POLICY "Doctors can view their assessments"
+  ON autism_assessments FOR SELECT
+  USING (doctor_id IN (SELECT id FROM doctors WHERE user_id = auth.uid()));
+
+-- Policy: Clinic staff can view clinic assessments
+CREATE POLICY "Clinic staff can view clinic assessments"
+  ON autism_assessments FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can create assessments
+CREATE POLICY "Doctors can create assessments"
+  ON autism_assessments FOR INSERT
+  WITH CHECK (doctor_id IN (SELECT id FROM doctors WHERE user_id = auth.uid()));
+
+-- Policy: Doctors can update assessments
+CREATE POLICY "Doctors can update assessments"
+  ON autism_assessments FOR UPDATE
+  USING (doctor_id IN (SELECT id FROM doctors WHERE user_id = auth.uid()));
+
+-- Policy: Super admins can manage all assessments
+CREATE POLICY "Super admins can manage all assessments"
+  ON autism_assessments FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- Create trigger for updated_at
+CREATE TRIGGER update_autism_assessments_updated_at
+  BEFORE UPDATE ON autism_assessments
+  FOR EACH ROW
+  EXECUTE FUNCTION update_autism_assessments_updated_at();
+
+-- Add comments
+COMMENT ON TABLE autism_assessments IS 'Autism spectrum disorder assessments';
+COMMENT ON COLUMN autism_assessments.developmental_milestones IS 'JSON object containing developmental milestones assessment';
+COMMENT ON COLUMN autism_assessments.behavioral_observations IS 'JSON object containing behavioral observations';
+COMMENT ON COLUMN autism_assessments.screening_score IS 'Score from screening tools';
+COMMENT ON COLUMN autism_assessments.diagnosis IS 'Final diagnosis if any';
+COMMENT ON COLUMN autism_assessments.severity_level IS 'Severity level of diagnosis';
+COMMENT ON COLUMN autism_assessments.parent_concerns IS 'Parent concerns about child development';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Bug Reports Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create bug_reports table
+CREATE TABLE IF NOT EXISTS bug_reports (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Bug Report Information
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  category VARCHAR(50) CHECK (category IN ('ui', 'functionality', 'performance', 'security', 'other')),
+  severity VARCHAR(20) DEFAULT 'low' CHECK (severity IN ('low', 'medium', 'high', 'critical')),
+  status VARCHAR(20) DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'resolved', 'closed', 'reopened')),
+  
+  -- Device Information
+  platform VARCHAR(50),
+  app_version VARCHAR(50),
+  device_info JSONB,
+  screenshot_url TEXT,
+  
+  -- Reproduction Steps
+  reproduction_steps TEXT[],
+  expected_behavior TEXT,
+  actual_behavior TEXT,
+  
+  -- Assignment Information
+  assigned_to UUID REFERENCES users(id) ON DELETE SET NULL,
+  resolution_notes TEXT,
+  resolved_at TIMESTAMP WITH TIME ZONE,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for bug_reports
+CREATE INDEX idx_bug_reports_user_id ON bug_reports(user_id);
+CREATE INDEX idx_bug_reports_category ON bug_reports(category);
+CREATE INDEX idx_bug_reports_severity ON bug_reports(severity);
+CREATE INDEX idx_bug_reports_status ON bug_reports(status);
+CREATE INDEX idx_bug_reports_assigned_to ON bug_reports(assigned_to);
+CREATE INDEX idx_bug_reports_created_at ON bug_reports(created_at DESC);
+
+-- Add RLS policies for bug_reports
+ALTER TABLE bug_reports ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can view their own bug reports
+CREATE POLICY "Users can view their own bug reports"
+  ON bug_reports FOR SELECT
+  USING (user_id = auth.uid());
+
+-- Policy: Admin users can view all bug reports
+CREATE POLICY "Admin users can view all bug reports"
+  ON bug_reports FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role IN ('admin', 'super_admin')
+    )
+  );
+
+-- Policy: Users can create bug reports
+CREATE POLICY "Users can create bug reports"
+  ON bug_reports FOR INSERT
+  WITH CHECK (auth.uid() IS NOT NULL);
+
+-- Policy: Admin users can update bug reports
+CREATE POLICY "Admin users can update bug reports"
+  ON bug_reports FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role IN ('admin', 'super_admin')
+    )
+  );
+
+-- Create trigger for updated_at
+CREATE TRIGGER update_bug_reports_updated_at
+  BEFORE UPDATE ON bug_reports
+  FOR EACH ROW
+  EXECUTE FUNCTION update_bug_reports_updated_at();
+
+-- Add comments
+COMMENT ON TABLE bug_reports IS 'Bug reports and issues';
+COMMENT ON COLUMN bug_reports.category IS 'Bug category: ui, functionality, performance, security, other';
+COMMENT ON COLUMN bug_reports.severity IS 'Bug severity: low, medium, high, critical';
+COMMENT ON COLUMN bug_reports.status IS 'Bug status: open, in_progress, resolved, closed, reopened';
+COMMENT ON COLUMN bug_reports.device_info IS 'JSON object containing device and browser information';
+
+=== 20260304120021_update_all_rls_policies.sql ===
+-- Migration: Update All RLS Policies to Use Users Table
+-- Purpose: Update all table policies to properly check user roles from users table
+-- Version: v2_rls_update
+-- Created: 2026-03-04
+-- Dependencies: users table must exist
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Countries Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage countries" ON countries;
+
+CREATE POLICY "Super admins can manage countries"
+  ON countries FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Clinic admins can view countries"
+  ON countries FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'clinic_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Regions Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage regions" ON regions;
+
+CREATE POLICY "Super admins can manage regions"
+  ON regions FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Clinic admins can view regions"
+  ON regions FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'clinic_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Specialties Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage specialties" ON specialties;
+
+CREATE POLICY "Super admins can manage specialties"
+  ON specialties FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Clinics Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage clinics" ON clinics;
+
+CREATE POLICY "Super admins can manage clinics"
+  ON clinics FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Clinic admins can manage their clinics"
+  ON clinics FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = clinics.id
+      AND user_id = auth.uid()
+      AND role IN ('clinic_admin', 'receptionist', 'nurse', 'pharmacist', 'lab_technician', 'radiographer')
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Subscriptions Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage subscriptions" ON subscriptions;
+
+CREATE POLICY "Super admins can manage subscriptions"
+  ON subscriptions FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Doctors Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage doctors" ON doctors;
+
+CREATE POLICY "Super admins can manage doctors"
+  ON doctors FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Doctors can view their own profile"
+  ON doctors FOR SELECT
+  USING (user_id = auth.uid());
+
+CREATE POLICY "Clinic admins can view their clinic's doctors"
+  ON doctors FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = doctors.clinic_id
+      AND user_id = auth.uid()
+      AND role = 'clinic_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Patients Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage patients" ON patients;
+
+CREATE POLICY "Super admins can manage patients"
+  ON patients FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Patients can view their own profile"
+  ON patients FOR SELECT
+  USING (user_id = auth.uid());
+
+CREATE POLICY "Doctors can view their patients"
+  ON patients FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM doctors
+      WHERE clinic_id = patients.clinic_id
+      AND user_id = auth.uid()
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Employees Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage employees" ON employees;
+
+CREATE POLICY "Super admins can manage employees"
+  ON employees FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Employees can view their own profile"
+  ON employees FOR SELECT
+  USING (user_id = auth.uid());
+
+CREATE POLICY "Clinic admins can view their clinic's employees"
+  ON employees FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = employees.clinic_id
+      AND user_id = auth.uid()
+      AND role = 'clinic_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Clinic Staff Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage clinic staff" ON clinic_staff;
+
+CREATE POLICY "Super admins can manage clinic staff"
+  ON clinic_staff FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Clinic admins can manage their clinic's staff"
+  ON clinic_staff FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff cs
+      WHERE cs.clinic_id = clinic_staff.clinic_id
+      AND cs.user_id = auth.uid()
+      AND cs.role = 'clinic_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Appointments Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage appointments" ON appointments;
+
+CREATE POLICY "Super admins can manage appointments"
+  ON appointments FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Patients can view their own appointments"
+  ON appointments FOR SELECT
+  USING (patient_id = auth.uid());
+
+CREATE POLICY "Doctors can view their appointments"
+  ON appointments FOR SELECT
+  USING (doctor_id = auth.uid());
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Prescriptions Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage prescriptions" ON prescriptions;
+
+CREATE POLICY "Super admins can manage prescriptions"
+  ON prescriptions FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Patients can view their own prescriptions"
+  ON prescriptions FOR SELECT
+  USING (patient_id = auth.uid());
+
+CREATE POLICY "Doctors can view prescriptions they created"
+  ON prescriptions FOR SELECT
+  USING (doctor_id = auth.uid());
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Lab Results Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage lab results" ON lab_results;
+
+CREATE POLICY "Super admins can manage lab results"
+  ON lab_results FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Patients can view their own lab results"
+  ON lab_results FOR SELECT
+  USING (patient_id = auth.uid());
+
+CREATE POLICY "Doctors can view their patients' lab results"
+  ON lab_results FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM appointments
+      WHERE appointments.patient_id = lab_results.patient_id
+      AND appointments.doctor_id = auth.uid()
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Video Sessions Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage video sessions" ON video_sessions;
+
+CREATE POLICY "Super admins can manage video sessions"
+  ON video_sessions FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Patients can view their own video sessions"
+  ON video_sessions FOR SELECT
+  USING (patient_id = auth.uid());
+
+CREATE POLICY "Doctors can view their video sessions"
+  ON video_sessions FOR SELECT
+  USING (doctor_id = auth.uid());
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Invoices Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage invoices" ON invoices;
+
+CREATE POLICY "Super admins can manage invoices"
+  ON invoices FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Patients can view their own invoices"
+  ON invoices FOR SELECT
+  USING (patient_id = auth.uid());
+
+CREATE POLICY "Clinic admins can view their clinic's invoices"
+  ON invoices FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = invoices.clinic_id
+      AND user_id = auth.uid()
+      AND role = 'clinic_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Inventory Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage inventory" ON inventory;
+
+CREATE POLICY "Super admins can manage inventory"
+  ON inventory FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Clinic admins can manage their clinic's inventory"
+  ON inventory FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = inventory.clinic_id
+      AND user_id = auth.uid()
+      AND role IN ('clinic_admin', 'pharmacist')
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Notifications Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage notifications" ON notifications;
+
+CREATE POLICY "Super admins can manage notifications"
+  ON notifications FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Users can view their own notifications"
+  ON notifications FOR SELECT
+  USING (user_id = auth.uid());
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Subscription Codes Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage subscription codes" ON subscription_codes;
+
+CREATE POLICY "Super admins can manage subscription codes"
+  ON subscription_codes FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Update Exchange Rates Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+DROP POLICY IF EXISTS "Service role can manage exchange rates" ON exchange_rates;
+
+CREATE POLICY "Super admins can manage exchange rates"
+  ON exchange_rates FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+CREATE POLICY "Everyone can view active exchange rates"
+  ON exchange_rates FOR SELECT
+  USING (is_active = true);
+
+=== v2_P01_002_create_countries_table.sql ===
+-- Migration: Create Countries Table
+-- Purpose: Store country reference data for user and clinic locations
+-- Version: v2_P01_002
+-- Created: 2026-03-04
+-- Dependencies: None
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Countries Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create countries table to store country reference data
+CREATE TABLE IF NOT EXISTS countries (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Country Information
+  name VARCHAR(255) NOT NULL,
+  name_ar VARCHAR(255),
+  iso2_code VARCHAR(2) NOT NULL UNIQUE,  -- 2-letter ISO code (e.g., US, DZ)
+  iso3_code VARCHAR(3) NOT NULL UNIQUE,  -- 3-letter ISO code (e.g., USA, DZA)
+  numeric_code INTEGER UNIQUE,            -- Numeric ISO code (e.g., 840 for US)
+  phone_code VARCHAR(10) NOT NULL,       -- Country calling code (e.g., +1, +213)
+  currency_code VARCHAR(3),               -- Currency code (e.g., USD, DZD)
+  currency_name VARCHAR(50),
+  currency_name_ar VARCHAR(50),
+  currency_symbol VARCHAR(10),
+
+  -- Geographic Information
+  continent VARCHAR(50),
+  region VARCHAR(100),
+  subregion VARCHAR(100),
+  capital VARCHAR(100),
+  capital_ar VARCHAR(100),
+
+  -- Status and Metadata
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_supported BOOLEAN NOT NULL DEFAULT true,  -- Whether app supports this country
+
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_iso2_code CHECK (iso2_code ~ '^[A-Z]{2}$'),
+  CONSTRAINT valid_iso3_code CHECK (iso3_code ~ '^[A-Z]{3}$'),
+  CONSTRAINT valid_phone_code CHECK (phone_code ~ '^\+\d{1,4}$')
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_countries_iso2_code ON countries(iso2_code) WHERE is_active = true;
+CREATE INDEX idx_countries_iso3_code ON countries(iso3_code) WHERE is_active = true;
+CREATE INDEX idx_countries_name ON countries(name) WHERE is_active = true;
+CREATE INDEX idx_countries_is_active ON countries(is_active);
+CREATE INDEX idx_countries_is_supported ON countries(is_supported) WHERE is_supported = true;
+CREATE INDEX idx_countries_continent ON countries(continent) WHERE is_active = true;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on countries table
+ALTER TABLE countries ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view active countries
+CREATE POLICY "Active countries are viewable by everyone"
+  ON countries FOR SELECT
+  USING (is_active = true);
+
+-- Policy: Everyone can view supported countries
+CREATE POLICY "Supported countries are viewable by everyone"
+  ON countries FOR SELECT
+  USING (is_supported = true);
+
+-- Policy: Super admins can manage countries
+CREATE POLICY "Super admins can manage countries"
+  ON countries FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_countries_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER countries_update_updated_at
+  BEFORE UPDATE ON countries
+  FOR EACH ROW
+  EXECUTE FUNCTION update_countries_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE countries IS 'Country reference data for user and clinic locations';
+COMMENT ON COLUMN countries.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN countries.name IS 'Country name in English';
+COMMENT ON COLUMN countries.name_ar IS 'Country name in Arabic';
+COMMENT ON COLUMN countries.iso2_code IS '2-letter ISO country code (e.g., US, DZ)';
+COMMENT ON COLUMN countries.iso3_code IS '3-letter ISO country code (e.g., USA, DZA)';
+COMMENT ON COLUMN countries.numeric_code IS 'Numeric ISO country code';
+COMMENT ON COLUMN countries.phone_code IS 'Country calling code (e.g., +1, +213)';
+COMMENT ON COLUMN countries.currency_code IS 'Currency code (e.g., USD, DZD)';
+COMMENT ON COLUMN countries.currency_name IS 'Currency name in English';
+COMMENT ON COLUMN countries.currency_name_ar IS 'Currency name in Arabic';
+COMMENT ON COLUMN countries.currency_symbol IS 'Currency symbol (e.g., $, Ø¯Ø¬)';
+COMMENT ON COLUMN countries.continent IS 'Continent name';
+COMMENT ON COLUMN countries.region IS 'Region name';
+COMMENT ON COLUMN countries.subregion IS 'Subregion name';
+COMMENT ON COLUMN countries.capital IS 'Capital city name';
+COMMENT ON COLUMN countries.is_active IS 'Whether the country is active';
+COMMENT ON COLUMN countries.is_supported IS 'Whether the app supports this country';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Seed Data
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Insert common countries
+INSERT INTO countries (name, name_ar, iso2_code, iso3_code, numeric_code, phone_code, currency_code, currency_name, currency_name_ar, currency_symbol, continent, region, subregion, capital, capital_ar) VALUES
+-- Algeria (Primary market)
+('Algeria', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', 'DZ', 'DZA', 12, '+213', 'DZD', 'Algerian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¬Ø²Ø§Ø¦Ø±ÙŠ', 'Ø¯Ø¬', 'Africa', 'Africa', 'Northern Africa', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±'),
+
+-- Other Arab countries
+('Morocco', 'Ø§Ù„Ù…ØºØ±Ø¨', 'MA', 'MAR', 504, '+212', 'MAD', 'Moroccan Dirham', 'Ø¯Ø±Ù‡Ù… Ù…ØºØ±Ø¨ÙŠ', 'DH', 'Africa', 'Africa', 'Northern Africa', 'Rabat', 'Ø§Ù„Ø±Ø¨Ø§Ø·'),
+('Tunisia', 'ØªÙˆÙ†Ø³', 'TN', 'TUN', 788, '+216', 'TND', 'Tunisian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ØªÙˆÙ†Ø³ÙŠ', 'DT', 'Africa', 'Africa', 'Northern Africa', 'Tunis', 'ØªÙˆÙ†Ø³'),
+('Egypt', 'Ù…ØµØ±', 'EG', 'EGY', 818, '+20', 'EGP', 'Egyptian Pound', 'Ø¬Ù†ÙŠÙ‡ Ù…ØµØ±ÙŠ', 'EÂ£', 'Africa', 'Africa', 'Northern Africa', 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©'),
+('Saudi Arabia', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©', 'SA', 'SAU', 682, '+966', 'SAR', 'Saudi Riyal', 'Ø±ÙŠØ§Ù„ Ø³Ø¹ÙˆØ¯ÙŠ', 'Ø±.Ø³', 'Asia', 'Asia', 'Western Asia', 'Riyadh', 'Ø§Ù„Ø±ÙŠØ§Ø¶'),
+('United Arab Emirates', 'Ø§Ù„Ø¥Ù…Ø§Ø±Ø§Øª Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'AE', 'ARE', 784, '+971', 'AED', 'UAE Dirham', 'Ø¯Ø±Ù‡Ù… Ø¥Ù…Ø§Ø±Ø§ØªÙŠ', 'DH', 'Asia', 'Asia', 'Western Asia', 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ'),
+('Qatar', 'Ù‚Ø·Ø±', 'QA', 'QAT', 634, '+974', 'QAR', 'Qatari Riyal', 'Ø±ÙŠØ§Ù„ Ù‚Ø·Ø±ÙŠ', 'Ø±.Ù‚', 'Asia', 'Asia', 'Western Asia', 'Doha', 'Ø§Ù„Ø¯ÙˆØ­Ø©'),
+('Kuwait', 'Ø§Ù„ÙƒÙˆÙŠØª', 'KW', 'KWT', 414, '+965', 'KWD', 'Kuwaiti Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ÙƒÙˆÙŠØªÙŠ', 'Ø¯.Ùƒ', 'Asia', 'Asia', 'Western Asia', 'Kuwait City', 'Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„ÙƒÙˆÙŠØª'),
+
+-- Major countries
+('United States', 'Ø§Ù„ÙˆÙ„Ø§ÙŠØ§Øª Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'US', 'USA', 840, '+1', 'USD', 'US Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ù…Ø±ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Washington, D.C.', 'ÙˆØ§Ø´Ù†Ø·Ù† Ø§Ù„Ø¹Ø§ØµÙ…Ø©'),
+('United Kingdom', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'GB', 'GBR', 826, '+44', 'GBP', 'British Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¥Ø³ØªØ±Ù„ÙŠÙ†ÙŠ', 'Â£', 'Europe', 'Europe', 'Northern Europe', 'London', 'Ù„Ù†Ø¯Ù†'),
+('France', 'ÙØ±Ù†Ø³Ø§', 'FR', 'FRA', 250, '+33', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Paris', 'Ø¨Ø§Ø±ÙŠØ³'),
+('Germany', 'Ø£Ù„Ù…Ø§Ù†ÙŠØ§', 'DE', 'DEU', 276, '+49', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Berlin', 'Ø¨Ø±Ù„ÙŠÙ†'),
+('Canada', 'ÙƒÙ†Ø¯Ø§', 'CA', 'CAN', 124, '+1', 'CAD', 'Canadian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± ÙƒÙ†Ø¯ÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Ottawa', 'Ø£ÙˆØªØ§ÙˆØ§'),
+('Australia', 'Ø£Ø³ØªØ±Ø§Ù„ÙŠØ§', 'AU', 'AUS', 36, '+61', 'AUD', 'Australian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ø³ØªØ±Ø§Ù„ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Canberra', 'ÙƒØ§Ù†Ø¨ÙŠØ±Ø§'),
+('Japan', 'Ø§Ù„ÙŠØ§Ø¨Ø§Ù†', 'JP', 'JPN', 392, '+81', 'JPY', 'Japanese Yen', 'ÙŠÙ† ÙŠØ§Ø¨Ø§Ù†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Tokyo', 'Ø·ÙˆÙƒÙŠÙˆ'),
+('China', 'Ø§Ù„ØµÙŠÙ†', 'CN', 'CHN', 156, '+86', 'CNY', 'Chinese Yuan', 'ÙŠÙˆØ§Ù† ØµÙŠÙ†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Beijing', 'Ø¨ÙƒÙŠÙ†'),
+('India', 'Ø§Ù„Ù‡Ù†Ø¯', 'IN', 'IND', 356, '+91', 'INR', 'Indian Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ù‡Ù†Ø¯ÙŠØ©', 'â‚¹', 'Asia', 'Asia', 'Southern Asia', 'New Delhi', 'Ù†ÙŠÙˆØ¯Ù„Ù‡ÙŠ'),
+('Brazil', 'Ø§Ù„Ø¨Ø±Ø§Ø²ÙŠÙ„', 'BR', 'BRA', 76, '+55', 'BRL', 'Brazilian Real', 'Ø±ÙŠØ§Ù„ Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠ', 'R$', 'South America', 'Americas', 'South America', 'BrasÃ­lia', 'Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠØ§'),
+('Russia', 'Ø±ÙˆØ³ÙŠØ§', 'RU', 'RUS', 643, '+7', 'RUB', 'Russian Ruble', 'Ø±ÙˆØ¨Ù„ Ø±ÙˆØ³ÙŠ', 'â‚½', 'Europe', 'Europe', 'Eastern Europe', 'Moscow', 'Ù…ÙˆØ³ÙƒÙˆ'),
+('Turkey', 'ØªØ±ÙƒÙŠØ§', 'TR', 'TUR', 792, '+90', 'TRY', 'Turkish Lira', 'Ù„ÙŠØ±Ø© ØªØ±ÙƒÙŠØ©', 'â‚º', 'Europe', 'Asia', 'Western Asia', 'Ankara', 'Ø£Ù†Ù‚Ø±Ø©'),
+('Spain', 'Ø¥Ø³Ø¨Ø§Ù†ÙŠØ§', 'ES', 'ESP', 724, '+34', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Madrid', 'Ù…Ø¯Ø±ÙŠØ¯'),
+('Italy', 'Ø¥ÙŠØ·Ø§Ù„ÙŠØ§', 'IT', 'ITA', 380, '+39', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Rome', 'Ø±ÙˆÙ…Ø§'),
+('Netherlands', 'Ù‡ÙˆÙ„Ù†Ø¯Ø§', 'NL', 'NLD', 528, '+31', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Amsterdam', 'Ø£Ù…Ø³ØªØ±Ø¯Ø§Ù…'),
+('Belgium', 'Ø¨Ù„Ø¬ÙŠÙƒØ§', 'BE', 'BEL', 56, '+32', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Brussels', 'Ø¨Ø±ÙˆÙƒØ³Ù„'),
+('Switzerland', 'Ø³ÙˆÙŠØ³Ø±Ø§', 'CH', 'CHE', 756, '+41', 'CHF', 'Swiss Franc', 'ÙØ±Ù†Ùƒ Ø³ÙˆÙŠØ³Ø±ÙŠ', 'CHF', 'Europe', 'Europe', 'Western Europe', 'Bern', 'Ø¨Ø±Ù†'),
+('Sweden', 'Ø§Ù„Ø³ÙˆÙŠØ¯', 'SE', 'SWE', 752, '+46', 'SEK', 'Swedish Krona', 'ÙƒØ±ÙˆÙ†Ø§ Ø³ÙˆÙŠØ¯ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Stockholm', 'Ø³ØªÙˆÙƒÙ‡ÙˆÙ„Ù…'),
+('Norway', 'Ø§Ù„Ù†Ø±ÙˆÙŠØ¬', 'NO', 'NOR', 578, '+47', 'NOK', 'Norwegian Krone', 'ÙƒØ±ÙˆÙ†Ø© Ù†Ø±ÙˆÙŠØ¬ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Oslo', 'Ø£ÙˆØ³Ù„Ùˆ'),
+('Denmark', 'Ø§Ù„Ø¯Ù†Ù…Ø§Ø±Ùƒ', 'DK', 'DNK', 208, '+45', 'DKK', 'Danish Krone', 'ÙƒØ±ÙˆÙ†Ø© Ø¯Ù†Ù…Ø§Ø±ÙƒÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Copenhagen', 'ÙƒÙˆØ¨Ù†Ù‡Ø§ØºÙ†'),
+('Finland', 'ÙÙ†Ù„Ù†Ø¯Ø§', 'FI', 'FIN', 246, '+358', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Helsinki', 'Ù‡Ù„Ø³Ù†ÙƒÙŠ'),
+('Poland', 'Ø¨ÙˆÙ„Ù†Ø¯Ø§', 'PL', 'POL', 616, '+48', 'PLN', 'Polish Zloty', 'Ø²Ù„ÙˆØªÙŠ Ø¨ÙˆÙ„Ù†Ø¯ÙŠ', 'zÅ‚', 'Europe', 'Europe', 'Eastern Europe', 'Warsaw', 'ÙˆØ§Ø±Ø³Ùˆ'),
+('South Korea', 'ÙƒÙˆØ±ÙŠØ§ Ø§Ù„Ø¬Ù†ÙˆØ¨ÙŠØ©', 'KR', 'KOR', 410, '+82', 'KRW', 'South Korean Won', 'ÙˆÙˆÙ† ÙƒÙˆØ±ÙŠ Ø¬Ù†ÙˆØ¨ÙŠ', 'â‚©', 'Asia', 'Asia', 'Eastern Asia', 'Seoul', 'Ø³ÙˆÙ„'),
+('Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©', 'SG', 'SGP', 702, '+65', 'SGD', 'Singapore Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø³Ù†ØºØ§ÙÙˆØ±ÙŠ', '$', 'Asia', 'Asia', 'South-Eastern Asia', 'Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©'),
+('Malaysia', 'Ù…Ø§Ù„ÙŠØ²ÙŠØ§', 'MY', 'MYS', 458, '+60', 'MYR', 'Malaysian Ringgit', 'Ø±ÙŠÙ†ØºÙŠØª Ù…Ø§Ù„ÙŠØ²ÙŠ', 'RM', 'Asia', 'Asia', 'South-Eastern Asia', 'Kuala Lumpur', 'ÙƒÙˆØ§Ù„Ø§Ù„Ù…Ø¨ÙˆØ±'),
+('Indonesia', 'Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ§', 'ID', 'IDN', 360, '+62', 'IDR', 'Indonesian Rupiah', 'Ø±ÙˆØ¨ÙŠØ© Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ©', 'Rp', 'Asia', 'Asia', 'South-Eastern Asia', 'Jakarta', 'Ø¬Ø§ÙƒØ±ØªØ§'),
+('Thailand', 'ØªØ§ÙŠÙ„Ø§Ù†Ø¯', 'TH', 'THA', 764, '+66', 'THB', 'Thai Baht', 'Ø¨Ø§Øª ØªØ§ÙŠÙ„Ù†Ø¯ÙŠ', 'à¸¿', 'Asia', 'Asia', 'South-Eastern Asia', 'Bangkok', 'Ø¨Ø§Ù†ÙƒÙˆÙƒ'),
+('Vietnam', 'ÙÙŠØªÙ†Ø§Ù…', 'VN', 'VNM', 704, '+84', 'VND', 'Vietnamese Dong', 'Ø¯ÙˆÙ†Øº ÙÙŠØªÙ†Ø§Ù…ÙŠ', 'â‚«', 'Asia', 'Asia', 'South-Eastern Asia', 'Hanoi', 'Ù‡Ø§Ù†ÙˆÙŠ'),
+('Philippines', 'Ø§Ù„ÙÙ„Ø¨ÙŠÙ†', 'PH', 'PHL', 608, '+63', 'PHP', 'Philippine Peso', 'Ø¨ÙŠØ²Ùˆ ÙÙ„Ø¨ÙŠÙ†ÙŠ', 'â‚±', 'Asia', 'Asia', 'South-Eastern Asia', 'Manila', 'Ù…Ø§Ù†ÙŠÙ„Ø§'),
+('Pakistan', 'Ø¨Ø§ÙƒØ³ØªØ§Ù†', 'PK', 'PAK', 586, '+92', 'PKR', 'Pakistani Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ø¨Ø§ÙƒØ³ØªØ§Ù†ÙŠØ©', 'â‚¨', 'Asia', 'Asia', 'Southern Asia', 'Islamabad', 'Ø¥Ø³Ù„Ø§Ù… Ø¢Ø¨Ø§Ø¯'),
+('Bangladesh', 'Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´', 'BD', 'BGD', 50, '+880', 'BDT', 'Bangladeshi Taka', 'ØªØ§ÙƒØ§ Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´ÙŠ', 'à§³', 'Asia', 'Asia', 'Southern Asia', 'Dhaka', 'Ø¯ÙƒØ§'),
+('Nigeria', 'Ù†ÙŠØ¬ÙŠØ±ÙŠØ§', 'NG', 'NGA', 566, '+234', 'NGN', 'Nigerian Naira', 'Ù†Ø§ÙŠØ±Ø§ Ù†ÙŠØ¬ÙŠØ±ÙŠ', 'â‚¦', 'Africa', 'Africa', 'Western Africa', 'Abuja', 'Ø£Ø¨ÙˆØ¬Ø§'),
+('South Africa', 'Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠØ§', 'ZA', 'ZAF', 710, '+27', 'ZAR', 'South African Rand', 'Ø±Ø§Ù†Ø¯ Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠ', 'R', 'Africa', 'Africa', 'Southern Africa', 'Pretoria', 'Ø¨Ø±ÙŠØªÙˆØ±ÙŠØ§'),
+('Mexico', 'Ø§Ù„Ù…ÙƒØ³ÙŠÙƒ', 'MX', 'MEX', 484, '+52', 'MXN', 'Mexican Peso', 'Ø¨ÙŠØ²Ùˆ Ù…ÙƒØ³ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Mexico City', 'Ù…Ø¯ÙŠÙ†Ø© Ù…ÙƒØ³ÙŠÙƒÙˆ'),
+('Argentina', 'Ø§Ù„Ø£Ø±Ø¬Ù†ØªÙŠÙ†', 'AR', 'ARG', 32, '+54', 'ARS', 'Argentine Peso', 'Ø¨ÙŠØ²Ùˆ Ø£Ø±Ø¬Ù†ØªÙŠÙ†ÙŠ', '$', 'South America', 'Americas', 'South America', 'Buenos Aires', 'Ø¨ÙˆÙŠÙ†Ø³ Ø¢ÙŠØ±Ø³'),
+('Colombia', 'ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠØ§', 'CO', 'COL', 170, '+57', 'COP', 'Colombian Peso', 'Ø¨ÙŠØ²Ùˆ ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠ', '$', 'South America', 'Americas', 'South America', 'BogotÃ¡', 'Ø¨ÙˆØºÙˆØªØ§'),
+('Chile', 'ØªØ´ÙŠÙ„ÙŠ', 'CL', 'CHL', 152, '+56', 'CLP', 'Chilean Peso', 'Ø¨ÙŠØ²Ùˆ ØªØ´ÙŠÙ„ÙŠ', '$', 'South America', 'Americas', 'South America', 'Santiago', 'Ø³Ø§Ù†ØªÙŠØ§ØºÙˆ'),
+('Peru', 'Ø¨ÙŠØ±Ùˆ', 'PE', 'PER', 604, '+51', 'PEN', 'Peruvian Sol', 'Ø³ÙˆÙ„ Ø¨ÙŠØ±ÙˆÙÙŠ', 'S/.', 'South America', 'Americas', 'South America', 'Lima', 'Ù„ÙŠÙ…Ø§'),
+('Venezuela', 'ÙÙ†Ø²ÙˆÙŠÙ„Ø§', 'VE', 'VEN', 862, '+58', 'VES', 'Venezuelan BolÃ­var', 'Ø¨ÙˆÙ„ÙŠÙØ§Ø± ÙÙ†Ø²ÙˆÙŠÙ„ÙŠ', 'Bs.', 'South America', 'Americas', 'South America', 'Caracas', 'ÙƒØ§Ø±Ø§ÙƒØ§Ø³'),
+('Greece', 'Ø§Ù„ÙŠÙˆÙ†Ø§Ù†', 'GR', 'GRC', 300, '+30', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Athens', 'Ø£Ø«ÙŠÙ†Ø§'),
+('Portugal', 'Ø§Ù„Ø¨Ø±ØªØºØ§Ù„', 'PT', 'PRT', 620, '+351', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Lisbon', 'Ù„ÙŠØ³Ø¨ÙˆÙ†'),
+('Ireland', 'Ø£ÙŠØ±Ù„Ù†Ø¯Ø§', 'IE', 'IRL', 372, '+353', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Dublin', 'Ø¯Ø¨Ù„Ù†'),
+('New Zealand', 'Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯Ø§', 'NZ', 'NZL', 554, '+64', 'NZD', 'New Zealand Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Wellington', 'ÙˆÙŠÙ„ÙŠÙ†ØºØªÙˆÙ†'),
+('South Sudan', 'Ø¬Ù†ÙˆØ¨ Ø§Ù„Ø³ÙˆØ¯Ø§Ù†', 'SS', 'SSD', 728, '+211', 'SSP', 'South Sudanese Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¬Ù†ÙˆØ¨ Ø³ÙˆØ¯Ø§Ù†ÙŠ', 'Â£', 'Africa', 'Africa', 'Northern Africa', 'Juba', 'Ø¬ÙˆØ¨Ø§'),
+('Libya', 'Ù„ÙŠØ¨ÙŠØ§', 'LY', 'LBY', 434, '+218', 'LYD', 'Libyan Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ù„ÙŠØ¨ÙŠ', 'Ù„.Ø¯', 'Africa', 'Africa', 'Northern Africa', 'Tripoli', 'Ø·Ø±Ø§Ø¨Ù„Ø³'),
+('Jordan', 'Ø§Ù„Ø£Ø±Ø¯Ù†', 'JO', 'JOR', 400, '+962', 'JOD', 'Jordanian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø£Ø±Ø¯Ù†ÙŠ', 'Ø¯.Ø£', 'Asia', 'Asia', 'Western Asia', 'Amman', 'Ø¹Ù…Ø§Ù†'),
+('Lebanon', 'Ù„Ø¨Ù†Ø§Ù†', 'LB', 'LBN', 422, '+961', 'LBP', 'Lebanese Pound', 'Ù„ÙŠØ±Ø© Ù„Ø¨Ù†Ø§Ù†ÙŠØ©', 'Ù„.Ù„', 'Asia', 'Asia', 'Western Asia', 'Beirut', 'Ø¨ÙŠØ±ÙˆØª'),
+('Syria', 'Ø³ÙˆØ±ÙŠØ§', 'SY', 'SYR', 760, '+963', 'SYP', 'Syrian Pound', 'Ù„ÙŠØ±Ø© Ø³ÙˆØ±ÙŠØ©', 'Ù„.Ø³', 'Asia', 'Asia', 'Western Asia', 'Damascus', 'Ø¯Ù…Ø´Ù‚'),
+('Iraq', 'Ø§Ù„Ø¹Ø±Ø§Ù‚', 'IQ', 'IRQ', 368, '+964', 'IQD', 'Iraqi Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¹Ø±Ø§Ù‚ÙŠ', 'Ø¹.Ø¯', 'Asia', 'Asia', 'Western Asia', 'Baghdad', 'Ø¨ØºØ¯Ø§Ø¯'),
+('Yemen', 'Ø§Ù„ÙŠÙ…Ù†', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'Ø±ÙŠØ§Ù„ ÙŠÙ…Ù†ÙŠ', 'Ø±.ÙŠ', 'Asia', 'Asia', 'Western Asia', "Sana'a", 'ØµÙ†Ø¹Ø§Ø¡'),
+('Oman', 'Ø¹Ù…Ø§Ù†', 'OM', 'OMN', 512, '+968', 'OMR', 'Omani Rial', 'Ø±ÙŠØ§Ù„ Ø¹Ù…Ø§Ù†ÙŠ', 'Ø±.Ø¹', 'Asia', 'Asia', 'Western Asia', 'Muscat', 'Ù…Ø³Ù‚Ø·'),
+('Bahrain', 'Ø§Ù„Ø¨Ø­Ø±ÙŠÙ†', 'BH', 'BHR', 48, '+973', 'BHD', 'Bahraini Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¨Ø­Ø±ÙŠÙ†ÙŠ', 'Ø¯.Ø¨', 'Asia', 'Asia', 'Western Asia', 'Manama', 'Ø§Ù„Ù…Ù†Ø§Ù…Ø©'),
+('Palestin', 'Ù‚Ù„Ø³Ø·ÙŠÙ†', 'PSIL', 'ISR', 376, '+972', 'ILS', 'Palestiny New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'Ø§Ù„Ù‚Ø¯Ø³'),
+('Palestine', 'ÙÙ„Ø³Ø·ÙŠÙ†', 'PS', 'PSE', 275, '+970', 'ILS', 'Palestini New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Ramallah', 'Ø±Ø§Ù… Ø§Ù„Ù„Ù‡')
+ON CONFLICT (iso2_code) DO NOTHING;
+

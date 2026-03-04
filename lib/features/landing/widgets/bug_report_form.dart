@@ -314,7 +314,7 @@ Device Info:
             icon: const Icon(Icons.add_photo_alternate),
             label: const Text('إضافة صورة أو ملف'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: primaryColor.withOpacity(0.1),
+              backgroundColor: primaryColor.withValues(alpha: 0.1),
               foregroundColor: primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),

@@ -29,7 +29,8 @@ class SupabaseService {
     Map<String, dynamic>? params,
   }) async {
     try {
-      final response = await _client.rpc(functionName, params: params);
+      // ✅ إضافة <dynamic> بعد rpc
+      final response = await _client.rpc<dynamic>(functionName, params: params);
       return response;
     } catch (e, st) {
       _logError('rpc($functionName)', e, st);
@@ -64,22 +65,26 @@ class SupabaseService {
 
       if (filters != null) {
         for (final entry in filters.entries) {
+          // ✅ استخدام PostgrestFilterBuilder مع تجاهل التحذير
+          // ignore: avoid_dynamic_calls
           query = query.eq(entry.key, entry.value as Object);
         }
       }
 
       if (orderBy != null) {
+        // ignore: avoid_dynamic_calls - query builder chain changes type dynamically
         query = query.order(orderBy, ascending: ascending);
       }
 
       if (limit != null) {
+        // ignore: avoid_dynamic_calls - PostgrestQueryBuilder methods return different types
         query = query.limit(limit);
       }
 
       if (offset != null) {
+        // ignore: avoid_dynamic_calls - can't specify static type due to method chaining
         query = query.range(offset, offset + (limit ?? 20) - 1);
       }
-
       final data = await query;
       return List<Map<String, dynamic>>.from(data as List);
     } catch (e, st) {

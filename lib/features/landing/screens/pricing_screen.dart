@@ -150,7 +150,7 @@ class _PricingScreenState extends State<PricingScreen> {
                     ],
                   ),
                   backgroundColor: Colors.transparent,
-                  selectedColor: AppColors.primary.withOpacity(0.2),
+                  selectedColor: AppColors.primary.withValues(alpha: 0.2),
                   side: BorderSide(
                     color: isSelected ? AppColors.primary : Colors.grey,
                   ),

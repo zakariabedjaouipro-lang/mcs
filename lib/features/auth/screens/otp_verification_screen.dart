@@ -142,7 +142,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                       width: 120,
                       height: 120,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -173,7 +173,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.05),
+                        color: AppColors.primary.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -195,10 +195,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
+                          color: Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
-                          border:
-                              Border.all(color: Colors.red.withOpacity(0.3)),
+                          border: Border.all(
+                              color: Colors.red.withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           children: [
@@ -229,7 +229,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           disabledBackgroundColor:
-                              AppColors.primary.withOpacity(0.5),
+                              AppColors.primary.withValues(alpha: 0.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -339,7 +339,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
         borderRadius: BorderRadius.circular(8),
         color: _otpControllers[index].text.isEmpty
             ? Colors.white
-            : AppColors.primary.withOpacity(0.05),
+            : AppColors.primary.withValues(alpha: 0.05),
       ),
       child: Center(
         child: TextField(

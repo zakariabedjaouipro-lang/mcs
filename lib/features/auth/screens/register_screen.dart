@@ -243,7 +243,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           FutureBuilder<List<Map<String, dynamic>>>(
                             future: _loadCountries(),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
                                 return const CircularProgressIndicator();
                               }
                               final countries = snapshot.data ?? [];
@@ -260,19 +261,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     child: Text(country['name_ar'] as String),
                                   );
                                 }).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedCountryId = value;
-                                    _selectedRegionId = null;
-                                  });
-                                },
+                                onChanged: isLoading
+                                    ? null
+                                    : (value) {
+                                        setState(() {
+                                          _selectedCountryId = value;
+                                          _selectedRegionId = null;
+                                        });
+                                      },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'الرجاء اختيار الدولة';
                                   }
                                   return null;
                                 },
-                                enabled: !isLoading,
                               );
                             },
                           ),
@@ -283,7 +285,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             FutureBuilder<List<Map<String, dynamic>>>(
                               future: _loadRegions(_selectedCountryId!),
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
                                   return const CircularProgressIndicator();
                                 }
                                 final regions = snapshot.data ?? [];
@@ -300,20 +303,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       child: Text(region['name_ar'] as String),
                                     );
                                   }).toList(),
-                                  onChanged: (value) {
-                                    setState(() => _selectedRegionId = value);
-                                  },
+                                  onChanged: isLoading
+                                      ? null
+                                      : (value) {
+                                          setState(
+                                              () => _selectedRegionId = value);
+                                        },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'الرجاء اختيار المنطقة';
                                     }
                                     return null;
                                   },
-                                  enabled: !isLoading,
                                 );
                               },
                             ),
-                          if (_selectedCountryId != null) const SizedBox(height: 16),
+                          if (_selectedCountryId != null)
+                            const SizedBox(height: 16),
 
                           // Password Field
                           TextFormField(
@@ -406,8 +412,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   : () => _handleRegister(context),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
-                                disabledBackgroundColor:
-                                    AppColors.primary.withOpacity(0.5),
+                                disabledBackgroundColor: AppColors.primary
+                                    .withValues(alpha: 0.5), // ✅ تم الإصلاح
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -487,7 +493,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ? null
           : () {
               setState(() => _selectedRole = role.value);
-              context.read<auth.AuthBloc>().add(auth.RegisterRoleChanged(role.value));
+              context
+                  .read<auth.AuthBloc>()
+                  .add(auth.RegisterRoleChanged(role.value));
             },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -498,8 +506,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(8),
-          color:
-              isSelected ? AppColors.primary.withOpacity(0.05) : Colors.white,
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.05) // ✅ تم الإصلاح
+              : Colors.white,
         ),
         child: Row(
           children: [
@@ -509,7 +518,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppColors.primary
-                    : AppColors.primary.withOpacity(0.1),
+                    : AppColors.primary.withValues(alpha: 0.1), // ✅ تم الإصلاح
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(

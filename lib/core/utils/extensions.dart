@@ -222,7 +222,6 @@ extension DateTimeExtensions on DateTime {
 
   /// Get week number of year.
   int get weekNumber {
-    const weeks = 52;
     final jan4 = DateTime(year, 1, 4);
     final sunday = jan4.subtract(Duration(days: jan4.weekday - 1));
     final dayDiff = difference(sunday).inDays;

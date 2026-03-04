@@ -184,7 +184,8 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
   }
 
   Future<void> _showEditRateDialog(
-      BuildContext context, Map<String, dynamic> rate,
+    BuildContext context,
+    Map<String, dynamic> rate,
   ) async {
     final rateController = TextEditingController(text: rate['rate'].toString());
 
@@ -227,12 +228,13 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
     );
 
     if ((result ?? false) && context.mounted) {
-      context.read<AdminBloc>().add(UpdateExchangeRate(
-            fromCurrency: rate['from'] as String,
-            toCurrency: rate['to'] as String,
-            rate: double.parse(rateController.text),
-          ),
-      );
+      context.read<AdminBloc>().add(
+            UpdateExchangeRate(
+              fromCurrency: rate['from'] as String,
+              toCurrency: rate['to'] as String,
+              rate: double.parse(rateController.text),
+            ),
+          );
     }
   }
 }
@@ -303,7 +305,7 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
                           .map((currency) => DropdownMenuItem(
                                 value: currency,
                                 child: Text(currency),
-                              ))
+                              ),)
                           .toList(),
                       onChanged: (value) {
                         setState(() {
@@ -321,7 +323,7 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
                           .map((currency) => DropdownMenuItem(
                                 value: currency,
                                 child: Text(currency),
-                              ))
+                              ),)
                           .toList(),
                       onChanged: (value) {
                         setState(() {
@@ -384,12 +386,12 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
     // ✅ تحسين: استخدام مفتاح موحد مع تحويل الأحرف
     final fromKey = _fromCurrency.toLowerCase();
     final toKey = _toCurrency.toLowerCase();
-    final rateKey = '${fromKey}_to_${toKey}';
+    final rateKey = '${fromKey}_to_$toKey';
 
     // ✅ تحسين: البحث بعدة صيغ مختلفة
     final rate = rates[rateKey] ??
-        rates['${fromKey}_${toKey}'] ??
-        rates['${_fromCurrency}_${_toCurrency}'] ??
+        rates['${fromKey}_$toKey'] ??
+        rates['${_fromCurrency}_$_toCurrency'] ??
         1.0;
 
     final result = amount * rate;

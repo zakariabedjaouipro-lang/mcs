@@ -164,7 +164,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             width: 80,
                             height: 80,
                             decoration: BoxDecoration(
-                              color: Colors.amber.withOpacity(0.1),
+                              color: Colors.amber.withValues(alpha: 0.1),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -314,7 +314,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
                                 disabledBackgroundColor:
-                                    AppColors.primary.withOpacity(0.5),
+                                    AppColors.primary.withValues(alpha: 0.5),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -379,7 +379,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: isValid ? Colors.green : AppColors.grey.withOpacity(0.3),
+              color: isValid
+                  ? Colors.green
+                  : AppColors.grey.withValues(alpha: 0.3),
               shape: BoxShape.circle,
             ),
             child: isValid

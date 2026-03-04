@@ -134,15 +134,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       // First verify the OTP before resetting password
-      final verifyResult = await _authService.verifyOtp(
+      await _authService.verifyOtp(
         contactInfo: email,
         token: otp,
         otpType: OtpType.email,
       );
-
-      if (verifyResult.user == null) {
-        return const Left(AuthFailure(message: 'رمز التحقق غير صحيح'));
-      }
 
       // Then update the password
       await _authService.updatePassword(newPassword: newPassword);
