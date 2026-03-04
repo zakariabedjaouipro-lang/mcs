@@ -184,7 +184,8 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
   }
 
   Future<void> _showEditRateDialog(
-      BuildContext context, Map<String, dynamic> rate) async {
+      BuildContext context, Map<String, dynamic> rate,
+  ) async {
     final rateController = TextEditingController(text: rate['rate'].toString());
 
     final result = await showDialog<bool>(
@@ -230,16 +231,17 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
             fromCurrency: rate['from'] as String,
             toCurrency: rate['to'] as String,
             rate: double.parse(rateController.text),
-          ));
+          ),
+      );
     }
   }
 }
 
 class _ConversionCalculator extends StatefulWidget {
+  const _ConversionCalculator(this.currencies, this.exchangeRates);
+
   final List<Map<String, String>> currencies;
   final List<Map<String, dynamic>> exchangeRates;
-
-  const _ConversionCalculator(this.currencies, this.exchangeRates);
 
   @override
   State<_ConversionCalculator> createState() => _ConversionCalculatorState();
@@ -382,12 +384,12 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
     // ✅ تحسين: استخدام مفتاح موحد مع تحويل الأحرف
     final fromKey = _fromCurrency.toLowerCase();
     final toKey = _toCurrency.toLowerCase();
-    final rateKey = '$fromKey\_to_$toKey';
+    final rateKey = '${fromKey}_to_${toKey}';
 
     // ✅ تحسين: البحث بعدة صيغ مختلفة
     final rate = rates[rateKey] ??
-        rates['$fromKey\_$toKey'] ??
-        rates['$_fromCurrency\_$_toCurrency'] ??
+        rates['${fromKey}_${toKey}'] ??
+        rates['${_fromCurrency}_${_toCurrency}'] ??
         1.0;
 
     final result = amount * rate;
