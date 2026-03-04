@@ -76,7 +76,7 @@ extension IntExtensions on int {
   Duration get days => Duration(days: this);
 
   /// Check if number is even.
-  bool get isEven => this % 2 == 0;
+  bool get isEven => (this & 1) == 0;
 
   /// Check if number is odd.
   bool get isOdd => !isEven;
@@ -376,7 +376,7 @@ extension BuildContextExtensions on BuildContext {
   EdgeInsets get viewInsets => MediaQuery.of(this).viewInsets;
 
   /// Get text scale factor.
-  double get textScaleFactor => MediaQuery.of(this).textScaler.scale(1.0);
+  double get textScaleFactor => MediaQuery.of(this).textScaler.scale(1);
 
   /// Get brightness (dark/light).
   Brightness get brightness => MediaQuery.of(this).platformBrightness;

@@ -268,9 +268,7 @@ void showConfirmationSnackBar({
   VoidCallback? onActionPressed,
   Duration duration = const Duration(seconds: 4),
 }) {
-  final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-  scaffoldMessenger.showSnackBar(
+  ScaffoldMessenger.of(context)..showSnackBar(
     SnackBar(
       content: Text(message),
       duration: duration,

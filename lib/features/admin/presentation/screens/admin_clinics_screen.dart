@@ -530,20 +530,20 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
     if ((result ?? false) &&
         selectedCountryId != null &&
         selectedRegionId != null) {
-      final selectedCountry = countries.firstWhere(
-        (CountryModel c) => c.id == selectedCountryId,
-      );
-
       final selectedRegion = regions.firstWhere(
         (RegionModel r) => r.id == selectedRegionId,
       );
+
+      final countryName = countries
+          .firstWhere((CountryModel c) => c.id == selectedCountryId)
+          .getName('ar');
 
       context.read<AdminBloc>().add(
             CreateClinic(
               name: nameController.text.trim(),
               email: emailController.text.trim(),
               phone: phoneController.text.trim(),
-              country: selectedCountry.getName('ar'),
+              country: countryName,
               region: selectedRegion.getName('ar'),
               address: addressController.text.trim(),
               description: descriptionController.text.trim(),
@@ -917,14 +917,6 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
     if ((result ?? false) &&
         selectedCountryId != null &&
         selectedRegionId != null) {
-      final selectedCountry = countries.firstWhere(
-        (CountryModel c) => c.id == selectedCountryId,
-      );
-
-      final selectedRegion = regions.firstWhere(
-        (RegionModel r) => r.id == selectedRegionId,
-      );
-
       context.read<AdminBloc>().add(
             UpdateClinic(
               clinicId: clinic.id,

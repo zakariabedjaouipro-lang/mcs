@@ -244,8 +244,8 @@ class CurrencySelectorDropdown extends StatelessWidget {
 /// Currency display widget with auto-conversion.
 class CurrencyDisplay extends StatelessWidget {
   const CurrencyDisplay({
-    super.key,
     required this.amount,
+    super.key,
     this.fromCurrency,
     this.toCurrency,
     this.style,
@@ -281,9 +281,9 @@ class CurrencyDisplay extends StatelessWidget {
 /// Price display with original and converted prices.
 class PriceDisplay extends StatelessWidget {
   const PriceDisplay({
-    super.key,
     required this.originalPrice,
     required this.originalCurrency,
+    super.key,
     this.showOriginal = true,
     this.targetCurrency,
     this.originalStyle,
