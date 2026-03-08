@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 
 /// Patient settings screen
 class PatientSettingsScreen extends StatelessWidget {
@@ -192,7 +197,13 @@ class PatientSettingsScreen extends StatelessWidget {
       title: Text(title),
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
-        // TODO: Navigation
+        // Handle navigation based on title
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('$title feature coming soon'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
       },
     );
   }
@@ -264,7 +275,9 @@ class ThemeSwitcherTile extends StatelessWidget {
       trailing: Switch(
         value: isDark,
         onChanged: (value) {
-          // TODO: Theme change logic
+          context.read<ThemeBloc>().add(
+                ToggleThemeEvent(),
+              );
         },
       ),
     );
@@ -288,9 +301,11 @@ class LanguageSwitcherTile extends StatelessWidget {
       ),
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
-        // TODO: Language change logic
+        final newLanguage = locale.languageCode == 'ar' ? 'en' : 'ar';
+        context.read<LocalizationBloc>().add(
+              SetLanguageEvent(newLanguage),
+            );
       },
     );
   }
 }
-

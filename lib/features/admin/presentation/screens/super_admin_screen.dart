@@ -9,7 +9,7 @@ class SuperAdminScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.translateSafe('super_admin') ?? 'Super Admin'),
+        title: Text(context.translateSafe('super_admin')),
         centerTitle: true,
       ),
       body: const Center(

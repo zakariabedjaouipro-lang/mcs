@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:mcs/core/config/injection_container.dart';
+import 'package:mcs/core/config/router.dart';
+import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/app_theme.dart';
@@ -234,7 +237,11 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              // TODO: Implement logout logic
+              final authService = AuthService();
+              authService.signOut();
+              if (context.mounted) {
+                context.go(AppRoutes.login);
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,

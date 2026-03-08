@@ -50,7 +50,6 @@ class _MedicalHeroSectionState extends State<MedicalHeroSection>
   Widget build(BuildContext context) {
     final isSmall = context.isSmall;
     final isMedium = context.isMedium;
-    final isDark = context.isDarkMode;
 
     return Container(
       width: double.infinity,

@@ -64,7 +64,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updateAvailability({required bool isAvailable}) async {
+  Future<Either<Failure, void>> updateAvailability(
+      {required bool isAvailable}) async {
     try {
       final userId = _supabaseService.currentUserId;
       if (userId == null) {
@@ -499,13 +500,16 @@ class DoctorRepositoryImpl implements DoctorRepository {
     String appointmentId,
   ) async {
     try {
-      // TODO: Implement token generation with Agora
-      return const Right('mock_token');
+      // Generate a WebRTC session token/ID for remote call
+      // In WebRTC with Socket.IO, the token is the appointment ID itself
+      // which is used to establish peer-to-peer connection through signaling server
+      final token = appointmentId;
+      return Right(token);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'Failed to update doctor profile: $e'),
+        ServerFailure(message: 'Failed to generate remote session token: $e'),
       );
     }
   }
@@ -627,13 +631,25 @@ class DoctorRepositoryImpl implements DoctorRepository {
     String body,
   ) async {
     try {
-      // TODO: Implement notification sending
+      // Save notification to Supabase database
+      // The notification service will handle delivery (FCM, local, etc.)
+      await _supabaseService.from('notifications').insert(
+        <String, dynamic>{
+          'user_id': patientId,
+          'title': title,
+          'body': body,
+          'type': 'alert',
+          'data': <String, dynamic>{},
+          'is_read': false,
+          'created_at': DateTime.now().toIso8601String(),
+        },
+      );
       return const Right(null);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'Failed to update doctor profile: $e'),
+        ServerFailure(message: 'Failed to send notification to patient: $e'),
       );
     }
   }

@@ -44,7 +44,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
 
     try {
       // Simulate API call
-      await Future.delayed(const Duration(milliseconds: 1500));
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
       setState(() {
         _isLoading = false;
       });
@@ -99,7 +99,6 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
       body: _hasError
           ? Center(
               child: ErrorStateWidget(
-                title: 'Failed to Load Appointments',
                 message: 'Unable to fetch appointment data',
                 onRetry: _loadAppointmentData,
               ),
@@ -292,7 +291,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
             title: appointment['patient']! as String,
             subtitle:
                 '${appointment['doctor']} • ${appointment['type']}\n${appointment['date']}',
-            iconBackgroundColor: MedicalColors.secondary,
+            iconColor: MedicalColors.secondary,
             trailing: Text(
               appointment['status']! as String,
               style: TextStyle(
@@ -386,7 +385,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen>
             title: appointment['patient']! as String,
             subtitle:
                 '${appointment['doctor']} • ${appointment['type']}\n${appointment['date']}',
-            iconBackgroundColor: MedicalColors.accent,
+            iconColor: MedicalColors.accent,
             trailing: Text(
               appointment['status']! as String,
               style: const TextStyle(

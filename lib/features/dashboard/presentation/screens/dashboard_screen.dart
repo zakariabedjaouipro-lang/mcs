@@ -3,7 +3,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mcs/core/components/dashboard_stat_card.dart';
 import 'package:mcs/core/components/empty_error_state.dart';
@@ -20,7 +19,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  late Future<DashboardData> _dashboardDataFuture;
   bool _isLoading = true;
   bool _hasError = false;
 
@@ -38,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     try {
       // Simulate API call - Replace with actual BLoC or repository call
-      await Future.delayed(const Duration(milliseconds: 1500));
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
 
       setState(() {
         _isLoading = false;
@@ -63,8 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SliverAppBar(
               pinned: true,
               elevation: 0,
-              backgroundColor:
-                  isDark ? Colors.grey[900] : MedicalColors.lightBackground,
+              backgroundColor: isDark ? Colors.grey[900] : Colors.white,
               flexibleSpace: const FlexibleSpaceBar(
                 title: Text(
                   'Dashboard',
@@ -83,7 +80,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 padding: const EdgeInsets.all(16),
                 child: _hasError
                     ? ErrorStateWidget(
-                        title: 'Failed to Load Dashboard',
                         message: 'Unable to fetch dashboard data',
                         onRetry: _loadDashboardData,
                       )
@@ -151,42 +147,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 icon: Icons.calendar_today,
                 label: "Today's Appointments",
                 value: '12',
-                backgroundColor: MedicalColors.primary,
+                color: MedicalColors.primary,
                 onTap: () {},
               ),
               DashboardStatCard(
                 icon: Icons.people,
                 label: 'Total Patients',
                 value: '248',
-                backgroundColor: MedicalColors.secondary,
+                color: MedicalColors.secondary,
                 onTap: () {},
               ),
               DashboardStatCard(
                 icon: Icons.description,
                 label: 'Lab Results',
                 value: '34',
-                backgroundColor: MedicalColors.accent,
+                color: MedicalColors.accent,
                 onTap: () {},
               ),
               DashboardStatCard(
-                icon: Icons.prescription,
+                icon: Icons.description,
                 label: 'Prescriptions',
                 value: '56',
-                backgroundColor: MedicalColors.medical,
+                color: MedicalColors.success,
                 onTap: () {},
               ),
               DashboardStatCard(
                 icon: Icons.receipt,
                 label: 'Pending Bills',
                 value: '8',
-                backgroundColor: const Color(0xFFFF9800),
+                color: const Color(0xFFFF9800),
                 onTap: () {},
               ),
               DashboardStatCard(
                 icon: Icons.security,
                 label: 'Security',
                 value: '✓',
-                backgroundColor: const Color(0xFF4CAF50),
+                color: const Color(0xFF4CAF50),
                 onTap: () {},
               ),
             ],
@@ -211,7 +207,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             itemBuilder: (context, index) {
               final activities = [
                 {
-                  'icon': Icons.appointment,
+                  'icon': Icons.calendar_month,
                   'title': 'New Appointment',
                   'subtitle': 'Dr. Ahmed scheduled with Patient John',
                   'time': '2 hours ago',
@@ -248,7 +244,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 icon: activity['icon']! as IconData,
                 title: activity['title']! as String,
                 subtitle: activity['subtitle']! as String,
-                iconBackgroundColor: MedicalColors.primary,
+                iconColor: MedicalColors.primary,
                 trailing: Text(
                   activity['time']! as String,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(

@@ -44,7 +44,7 @@ class _PatientsScreenState extends State<PatientsScreen>
 
     try {
       // Simulate API call
-      await Future.delayed(const Duration(milliseconds: 1500));
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
       setState(() {
         _isLoading = false;
       });
@@ -99,7 +99,6 @@ class _PatientsScreenState extends State<PatientsScreen>
       body: _hasError
           ? Center(
               child: ErrorStateWidget(
-                title: 'Failed to Load Patients',
                 message: 'Unable to fetch patient data',
                 onRetry: _loadPatientData,
               ),
@@ -174,7 +173,7 @@ class _PatientsScreenState extends State<PatientsScreen>
           icon: patient['icon']! as IconData,
           title: patient['name']! as String,
           subtitle: patient['condition']! as String,
-          iconBackgroundColor: MedicalColors.primary,
+          iconColor: MedicalColors.primary,
           trailing: Text(
             '${patient['age']} yrs',
             style: Theme.of(context).textTheme.bodySmall,
@@ -222,7 +221,7 @@ class _PatientsScreenState extends State<PatientsScreen>
         'title': 'Ultrasound Report',
         'subtitle': 'Abdominal ultrasound - No abnormalities',
         'date': '2023-12-28',
-        'icon': Icons.stethoscope,
+        'icon': Icons.medical_services,
       },
       {
         'title': 'Vaccination Record',
@@ -251,7 +250,7 @@ class _PatientsScreenState extends State<PatientsScreen>
                 icon: record['icon']! as IconData,
                 title: record['title']! as String,
                 subtitle: record['subtitle']! as String,
-                iconBackgroundColor: MedicalColors.secondary,
+                iconColor: MedicalColors.secondary,
                 trailing: Text(
                   record['date']! as String,
                   style: Theme.of(context).textTheme.bodySmall,
@@ -306,14 +305,14 @@ class _PatientsScreenState extends State<PatientsScreen>
         'title': 'Vitamin D3 1000IU',
         'subtitle': 'Once daily - Supplement',
         'date': '2023-12-28',
-        'icon': Icons.vitamin,
+        'icon': Icons.health_and_safety,
       },
     ];
 
     return prescriptions.isEmpty
         ? Center(
             child: EmptyStateWidget(
-              icon: Icons.prescription,
+              icon: Icons.description,
               title: 'No Prescriptions',
               message: 'Prescriptions will appear here',
               onRefresh: _loadPatientData,
@@ -329,7 +328,7 @@ class _PatientsScreenState extends State<PatientsScreen>
                 icon: prescription['icon'] as IconData,
                 title: prescription['title'] as String,
                 subtitle: prescription['subtitle'] as String,
-                iconBackgroundColor: MedicalColors.accent,
+                iconColor: MedicalColors.accent,
                 trailing: Text(
                   prescription['date'] as String,
                   style: Theme.of(context).textTheme.bodySmall,

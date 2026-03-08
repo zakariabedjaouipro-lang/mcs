@@ -49,8 +49,6 @@ class _MedicalCTAButtonState extends State<MedicalCTAButton>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
-
     return MouseRegion(
       onEnter: (_) => _animationController.forward(),
       onExit: (_) => _animationController.reverse(),

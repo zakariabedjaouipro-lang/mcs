@@ -3,9 +3,12 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/appointment_model.dart';
+import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/widgets/loading_widget.dart';
 import 'package:mcs/features/doctor/presentation/bloc/index.dart';
 
@@ -55,17 +58,32 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              // TODO: Navigate to notifications
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Notifications screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'profile') {
-                // TODO: Navigate to profile
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Profile screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               } else if (value == 'settings') {
-                // TODO: Navigate to settings
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Settings screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               } else if (value == 'logout') {
-                // TODO: Implement logout
+                _showLogoutConfirmation(context);
               }
             },
             itemBuilder: (context) => [
@@ -287,7 +305,12 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
             ),
             TextButton(
               onPressed: () {
-                // TODO: Navigate to all appointments
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('All appointments screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
               child: const Text(
                 'View All',
@@ -455,42 +478,67 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
             leading: const Icon(Icons.calendar_month),
             title: Text(localizations?.appointments ?? 'Appointments'),
             onTap: () {
-              // TODO: Navigate to appointments
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Appointments screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.people),
             title: Text(localizations?.patients ?? 'Patients'),
             onTap: () {
-              // TODO: Navigate to patients
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Patients screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.video_call),
             title: Text(
               localizations?.videoCalls ?? 'Remote Sessions',
-            ), // استخدام videoCalls
+            ),
             onTap: () {
-              // TODO: Navigate to remote sessions
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Remote sessions screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.medication),
             title: Text(localizations?.prescriptions ?? 'Prescriptions'),
             onTap: () {
-              // TODO: Navigate to prescriptions
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Prescriptions screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.science),
             title: Text(localizations?.labResults ?? 'Lab Results'),
             onTap: () {
-              // TODO: Navigate to lab results
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Lab results screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
           const Divider(),
@@ -498,9 +546,44 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
             leading: const Icon(Icons.settings),
             title: Text(localizations?.settings ?? 'Settings'),
             onTap: () {
-              // TODO: Navigate to settings
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Settings screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutConfirmation(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              final authService = AuthService();
+              authService.signOut();
+              if (mounted) {
+                context.go(AppRoutes.login);
+              }
+            },
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),

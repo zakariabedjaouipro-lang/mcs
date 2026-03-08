@@ -2,9 +2,12 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mcs/core/constants/app_constants.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
 
 /// Language switcher button widget.
 class LanguageSwitcher extends StatelessWidget {
@@ -84,54 +87,17 @@ class LanguageSwitcher extends StatelessWidget {
   }
 
   void _changeLanguage(BuildContext context, String languageCode) {
-    // This would typically be handled by a BLoC or state management
-    // For now, we'll show a dialog indicating the change
-    final localizations = AppLocalizations.of(context)!;
+    // Trigger language change via BLoC
+    context.read<LocalizationBloc>().add(SetLanguageEvent(languageCode));
 
-    showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(localizations.language),
-        content: Text(
-          languageCode == AppConstants.arabicCode
-              ? 'سيتم تغيير اللغة إلى العربية'
-              : 'Language will be changed to English',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(localizations.cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // In a real implementation, this would trigger a locale change
-              // through a BLoC or other state management solution
-              _showLanguageChangedSnackbar(
-                  context,
-                  languageCode,
-                  localizations,
-                );
-            },
-            child: Text(localizations.confirm),
-          ),
-        ],
-      ),
-    );
-  }
+    // Show confirmation message
+    final message = languageCode == AppConstants.arabicCode
+        ? 'تم تغيير اللغة بنجاح'
+        : 'Language changed successfully';
 
-  void _showLanguageChangedSnackbar(
-    BuildContext context,
-    String languageCode,
-    AppLocalizations localizations,
-  ) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          languageCode == AppConstants.arabicCode
-              ? 'تم تغيير اللغة بنجاح'
-              : 'Language changed successfully',
-        ),
+        content: Text(message),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -172,37 +138,18 @@ class LanguageSwitcherSimple extends StatelessWidget {
     String languageCode,
     AppLocalizations localizations,
   ) {
-    showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(localizations.language),
-        content: Text(
-          languageCode == AppConstants.arabicCode
-              ? 'سيتم تغيير اللغة إلى العربية'
-              : 'Language will be changed to English',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(localizations.cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    languageCode == AppConstants.arabicCode
-                        ? 'تم تغيير اللغة بنجاح'
-                        : 'Language changed successfully',
-                  ),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            },
-            child: Text(localizations.confirm),
-          ),
-        ],
+    // Trigger language change via BLoC
+    context.read<LocalizationBloc>().add(SetLanguageEvent(languageCode));
+
+    // Show confirmation message
+    final message = languageCode == AppConstants.arabicCode
+        ? 'تم تغيير اللغة بنجاح'
+        : 'Language changed successfully';
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -266,4 +213,3 @@ class LanguageSelector extends StatelessWidget {
     );
   }
 }
-

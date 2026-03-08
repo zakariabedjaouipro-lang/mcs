@@ -23,7 +23,6 @@ import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
 import 'package:mcs/features/auth/screens/change_password_screen.dart';
 
 // Role-based dashboards
-import 'package:mcs/features/patient/presentation/screens/patient_home_screen.dart';
 import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';

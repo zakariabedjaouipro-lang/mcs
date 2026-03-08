@@ -3,9 +3,12 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/appointment_model.dart';
+import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/widgets/loading_widget.dart';
 import 'package:mcs/features/employee/presentation/bloc/index.dart';
 
@@ -54,17 +57,32 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              // TODO: Navigate to notifications
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Notifications screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'profile') {
-                // TODO: Navigate to profile
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Profile screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               } else if (value == 'settings') {
-                // TODO: Navigate to settings
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Settings screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               } else if (value == 'logout') {
-                // TODO: Implement logout
+                _showLogoutConfirmation(context);
               }
             },
             itemBuilder: (context) => [
@@ -298,7 +316,12 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
             ),
             TextButton(
               onPressed: () {
-                // TODO: Navigate to all appointments
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('All appointments screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
               child: Text(l10n?.translate('view_all') ?? 'View All'),
             ),
@@ -393,7 +416,12 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               Icons.person_add,
               Colors.blue,
               () {
-                // TODO: Navigate to patient registration
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Patient registration screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
             ),
             _buildQuickActionCard(
@@ -402,7 +430,12 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               Icons.calendar_month,
               Colors.green,
               () {
-                // TODO: Navigate to appointment booking
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Appointment booking screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
             ),
             _buildQuickActionCard(
@@ -411,7 +444,12 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               Icons.inventory_2,
               Colors.orange,
               () {
-                // TODO: Navigate to inventory
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Inventory screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
             ),
             _buildQuickActionCard(
@@ -420,7 +458,12 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               Icons.receipt,
               Colors.red,
               () {
-                // TODO: Navigate to invoices
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Invoices screen coming soon'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               },
             ),
           ],
@@ -497,16 +540,26 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
             leading: const Icon(Icons.people),
             title: Text(l10n?.translate('patients') ?? 'Patients'),
             onTap: () {
-              // TODO: Navigate to patients
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Patients screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
           ListTile(
             leading: const Icon(Icons.calendar_month),
             title: Text(l10n?.translate('appointments') ?? 'Appointments'),
             onTap: () {
-              // TODO: Navigate to appointments
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Appointments screen coming soon'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
             },
           ),
           ListTile(
