@@ -1,19 +1,20 @@
 /// Web-specific entry point with responsive and PWA configurations.
 library;
 
-import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:mcs/app.dart';
 import 'package:mcs/core/config/app_config.dart';
 import 'package:mcs/core/config/env.dart';
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/config/supabase_config.dart';
+import 'package:web/web.dart' as web;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Remove URL hash for web (#/) - modern approach using dart:html
-  html.window.history.replaceState(null, '', '#${html.window.location.hash}');
+  // Remove URL hash for web (#/) - modern approach using package:web
+  final hash = web.window.location.hash;
+  web.window.history.replaceState(null, '', '#$hash');
 
   // Initialize Supabase
   await SupabaseConfig.initialize();
@@ -33,4 +34,3 @@ void main() async {
 
   runApp(const McsApp());
 }
-

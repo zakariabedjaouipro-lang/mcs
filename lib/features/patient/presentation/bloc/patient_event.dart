@@ -270,7 +270,7 @@ class NavigateToSettings extends PatientEvent {}
 
 /// Set loading state
 class SetLoading extends PatientEvent {
-  const SetLoading(this.isLoading);
+  const SetLoading({required this.isLoading});
   final bool isLoading;
 
   @override
@@ -279,4 +279,3 @@ class SetLoading extends PatientEvent {
 
 /// Clear patient state
 class ClearPatientState extends PatientEvent {}
-

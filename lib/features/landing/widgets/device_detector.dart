@@ -37,6 +37,14 @@ class _DeviceDetectorState extends State<DeviceDetector> {
   @override
   void initState() {
     super.initState();
+    // Don't access inherited widgets in initState
+    _detectedDevice = DeviceTypeDetection.unknown;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Now it's safe to access Theme and other inherited widgets
     _detectedDevice = _detectDevice();
   }
 
@@ -266,4 +274,3 @@ class _DeviceDetectorState extends State<DeviceDetector> {
     );
   }
 }
-

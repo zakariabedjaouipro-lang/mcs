@@ -67,11 +67,12 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     ToggleAvailability event,
     Emitter<DoctorState> emit,
   ) async {
-    final result =
-        await _doctorRepository.updateAvailability(event.isAvailable);
+    final result = await _doctorRepository.updateAvailability(
+      isAvailable: event.isAvailable,
+    );
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
-      (_) => emit(AvailabilityToggled(event.isAvailable)),
+      (_) => emit(AvailabilityToggled(isAvailable: event.isAvailable)),
     );
   }
 
@@ -385,4 +386,3 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     }
   }
 }
-

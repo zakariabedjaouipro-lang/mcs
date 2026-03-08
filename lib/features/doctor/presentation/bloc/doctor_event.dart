@@ -27,7 +27,7 @@ class UpdateDoctorProfile extends DoctorEvent {
 }
 
 class ToggleAvailability extends DoctorEvent {
-  const ToggleAvailability(this.isAvailable);
+  const ToggleAvailability({required this.isAvailable});
   final bool isAvailable;
 
   @override
@@ -224,4 +224,3 @@ class RejectRemoteSessionRequest extends DoctorEvent {
   @override
   List<Object?> get props => [appointmentId, reason];
 }
-

@@ -13,7 +13,7 @@ abstract class DoctorRepository {
   // Profile Management
   Future<Either<Failure, DoctorModel>> getDoctorProfile();
   Future<Either<Failure, DoctorModel>> updateDoctorProfile(DoctorModel profile);
-  Future<Either<Failure, void>> updateAvailability(bool isAvailable);
+  Future<Either<Failure, void>> updateAvailability({required bool isAvailable});
 
   // Patient Management
   Future<Either<Failure, List<PatientModel>>> getPatients();
@@ -96,4 +96,3 @@ abstract class DoctorRepository {
     String reason,
   );
 }
-

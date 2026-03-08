@@ -43,7 +43,7 @@ class DoctorProfileUpdated extends DoctorState {
 }
 
 class AvailabilityToggled extends DoctorState {
-  const AvailabilityToggled(this.isAvailable);
+  const AvailabilityToggled({required this.isAvailable});
   final bool isAvailable;
 
   @override
@@ -249,4 +249,3 @@ class DoctorError extends DoctorState {
   @override
   List<Object?> get props => [message];
 }
-

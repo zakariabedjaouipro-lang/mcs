@@ -90,7 +90,7 @@ abstract class WebUtils {
   static String getCurrentUrl() => web.window.location.href;
 
   /// Navigate to URL.
-  static set navigateToUrl(String url) {
+  static void navigateToUrl(String url) {
     web.window.location.href = url;
   }
 
@@ -394,4 +394,3 @@ class Size {
   @override
   String toString() => 'Size($width, $height)';
 }
-

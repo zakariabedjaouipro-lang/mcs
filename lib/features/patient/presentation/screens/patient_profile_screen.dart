@@ -97,12 +97,10 @@ class PatientProfileScreen extends StatelessWidget {
   }
 
   UserModel? _extractUser(PatientState state) {
-    try {
-      final dynamic s = state;
-      return s.user as UserModel?;
-    } catch (_) {
-      return null;
+    if (state is ProfileLoaded) {
+      return state.user;
     }
+    return null;
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mcs/core/errors/failures.dart';
@@ -81,14 +83,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final result = await loginUseCase(
-      LoginParams(email: event.email, password: event.password),
-    );
+    try {
+      final result = await loginUseCase(
+        LoginParams(email: event.email, password: event.password),
+      ).timeout(const Duration(seconds: 30));
 
-    result.fold(
-      (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
-      (user) => emit(LoginSuccess(user: user)),
-    );
+      result.fold(
+        (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
+        (user) => emit(LoginSuccess(user: user)),
+      );
+    } on TimeoutException {
+      emit(
+        const LoginFailure(
+          'تم انتهاء انتظار الطلب. تحقق من اتصالك بالإنترنت.',
+        ),
+      );
+    } catch (e) {
+      emit(
+        LoginFailure(
+          'حدث خطأ: ${e.toString()}',
+        ),
+      );
+    }
 
     _clearLoginForm();
   }
@@ -99,15 +115,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final result = await authRepository.loginWithSocial(
-      provider: event.provider,
-      token: event.token,
-    );
+    try {
+      final result = await authRepository
+          .loginWithSocial(
+            provider: event.provider,
+            token: event.token,
+          )
+          .timeout(const Duration(seconds: 30));
 
-    result.fold(
-      (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
-      (user) => emit(LoginSuccess(user: user)),
-    );
+      result.fold(
+        (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
+        (user) => emit(LoginSuccess(user: user)),
+      );
+    } on TimeoutException {
+      emit(
+        const LoginFailure(
+          'تم انتهاء انتظار الطلب. تحقق من اتصالك بالإنترنت.',
+        ),
+      );
+    } catch (e) {
+      emit(
+        LoginFailure(
+          'حدث خطأ: ${e.toString()}',
+        ),
+      );
+    }
   }
 
   /// ==============================
@@ -168,20 +200,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     emit(const AuthLoading());
 
-    final result = await registerUseCase(
-      RegisterParams(
-        name: event.name,
-        email: event.email,
-        phone: event.phone,
-        password: event.password,
-        role: event.role,
-      ),
-    );
+    try {
+      final result = await registerUseCase(
+        RegisterParams(
+          name: event.name,
+          email: event.email,
+          phone: event.phone,
+          password: event.password,
+          role: event.role,
+        ),
+      ).timeout(const Duration(seconds: 30));
 
-    result.fold(
-      (failure) => emit(RegisterFailure(_mapFailureToMessage(failure))),
-      (user) => emit(RegisterSuccess(user: user)),
-    );
+      result.fold(
+        (failure) => emit(RegisterFailure(_mapFailureToMessage(failure))),
+        (user) => emit(RegisterSuccess(user: user)),
+      );
+    } on TimeoutException {
+      emit(
+        const RegisterFailure(
+          'تم انتهاء انتظار الطلب. تحقق من اتصالك بالإنترنت.',
+        ),
+      );
+    } catch (e) {
+      emit(
+        RegisterFailure(
+          'حدث خطأ: ${e.toString()}',
+        ),
+      );
+    }
 
     _clearRegisterForm();
   }
@@ -196,21 +242,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final result = await authRepository.forgotPassword(
-      contactInfo: event.contactInfo,
-      method: event.method,
-    );
+    try {
+      final result = await authRepository
+          .forgotPassword(
+            contactInfo: event.contactInfo,
+            method: event.method,
+          )
+          .timeout(const Duration(seconds: 30));
 
-    result.fold(
-      (failure) => emit(ForgotPasswordFailure(_mapFailureToMessage(failure))),
-      (_) => emit(
-        ForgotPasswordSent(
-          message:
-              'تم إرسال رمز التحقق. برجاء فحص ${event.method == 'email' ? 'بريدك الإلكتروني' : 'رسائلك'}',
-          method: event.method,
+      result.fold(
+        (failure) => emit(ForgotPasswordFailure(_mapFailureToMessage(failure))),
+        (_) => emit(
+          ForgotPasswordSent(
+            message:
+                'تم إرسال رمز التحقق. برجاء فحص ${event.method == 'email' ? 'بريدك الإلكتروني' : 'رسائلك'}',
+            method: event.method,
+          ),
         ),
-      ),
-    );
+      );
+    } on TimeoutException {
+      emit(
+        const ForgotPasswordFailure(
+          'تم انتهاء انتظار الطلب. تحقق من اتصالك بالإنترنت.',
+        ),
+      );
+    } catch (e) {
+      emit(
+        ForgotPasswordFailure(
+          'حدث خطأ: ${e.toString()}',
+        ),
+      );
+    }
   }
 
   /// ==============================
@@ -223,20 +285,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final result = await verifyOTPUseCase(
-      VerifyOTPParams(email: event.email, otp: event.otp),
-    );
+    try {
+      final result = await verifyOTPUseCase(
+        VerifyOTPParams(email: event.email, otp: event.otp),
+      ).timeout(const Duration(seconds: 30));
 
-    result.fold(
-      (failure) {
-        if (failure is ValidationFailure) {
-          emit(OtpFailure(failure.message));
-        } else {
-          emit(OtpFailure(_mapFailureToMessage(failure)));
-        }
-      },
-      (_) => emit(const OtpVerified()),
-    );
+      result.fold(
+        (failure) {
+          if (failure is ValidationFailure) {
+            emit(OtpFailure(failure.message));
+          } else {
+            emit(OtpFailure(_mapFailureToMessage(failure)));
+          }
+        },
+        (_) => emit(const OtpVerified()),
+      );
+    } on TimeoutException {
+      emit(
+        const OtpFailure(
+          'تم انتهاء انتظار الطلب. تحقق من اتصالك بالإنترنت.',
+        ),
+      );
+    } catch (e) {
+      emit(
+        OtpFailure(
+          'حدث خطأ: ${e.toString()}',
+        ),
+      );
+    }
   }
 
   Future<void> _onOtpDigitChanged(
@@ -426,4 +502,3 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   String get registerRole => _registerRole;
   bool get isPasswordVisible => _isPasswordVisible;
 }
-

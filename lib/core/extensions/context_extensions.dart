@@ -24,4 +24,12 @@ extension ContextExtensions on BuildContext {
   double get keyboardHeight => MediaQuery.of(this).viewInsets.bottom;
   TextTheme get textThemeSafe => Theme.of(this).textTheme;
   ColorScheme get colorSchemeSafe => Theme.of(this).colorScheme;
+
+  /// Dark mode detection
+  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
+
+  /// Responsive breakpoints
+  bool get isSmall => screenWidth < 600;
+  bool get isMedium => screenWidth >= 600 && screenWidth < 1024;
+  bool get isLarge => screenWidth >= 1024;
 }

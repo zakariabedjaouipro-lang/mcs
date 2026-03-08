@@ -64,7 +64,7 @@ class DoctorRepositoryImpl implements DoctorRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updateAvailability(bool isAvailable) async {
+  Future<Either<Failure, void>> updateAvailability({required bool isAvailable}) async {
     try {
       final userId = _supabaseService.currentUserId;
       if (userId == null) {

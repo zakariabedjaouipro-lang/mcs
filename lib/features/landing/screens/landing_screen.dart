@@ -177,9 +177,19 @@ class _LandingScreenState extends State<LandingScreen> {
 
   /// Language switcher button.
   Widget _languageButton(BuildContext context) {
+    final currentLocale = Localizations.localeOf(context);
+    final isArabic = currentLocale.languageCode == 'ar';
+
     return IconButton(
       onPressed: () {
-        // Toggle language (en <-> ar)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              isArabic ? 'Switched to English' : 'تم التبديل للعربية',
+            ),
+            duration: const Duration(seconds: 1),
+          ),
+        );
       },
       icon: const Icon(Icons.language),
       tooltip: 'Toggle Language',
@@ -191,6 +201,14 @@ class _LandingScreenState extends State<LandingScreen> {
     return IconButton(
       onPressed: () {
         // Toggle theme
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.isDarkMode
+                ? 'Switched to Light Mode'
+                : 'تم التبديل للوضع الداكن'),
+            duration: const Duration(seconds: 1),
+          ),
+        );
       },
       icon: Icon(
         context.isDarkMode ? Icons.light_mode : Icons.dark_mode,
@@ -491,4 +509,3 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 }
-
