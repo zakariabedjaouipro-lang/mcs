@@ -19,10 +19,22 @@ class EmployeeDashboardScreen extends StatefulWidget {
 }
 
 class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
-    _loadData();
+    // ✅ لا نستخدم context هنا
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // ✅ آمن تماماً هنا
+    if (!_isInitialized) {
+      _loadData();
+      _isInitialized = true;
+    }
   }
 
   void _loadData() {

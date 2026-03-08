@@ -34,6 +34,7 @@ class AdminDashboardView extends StatefulWidget {
 
 class _AdminDashboardViewState extends State<AdminDashboardView> {
   int _selectedIndex = 0;
+  bool _isInitialized = false;
 
   late final List<_DashboardTab> _tabs = [
     _DashboardTab(
@@ -61,7 +62,17 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
   @override
   void initState() {
     super.initState();
-    context.read<AdminBloc>().add(const LoadDashboardStats());
+    // ✅ لا نستخدم context هنا - نستخدمه في didChangeDependencies
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // ✅ آمن تماماً هنا - الـ widget مُدرج بالكامل في الـ widget tree
+    if (!_isInitialized) {
+      context.read<AdminBloc>().add(const LoadDashboardStats());
+      _isInitialized = true;
+    }
   }
 
   // ── Screen Builders ──────────────────────────────────────
@@ -246,4 +257,3 @@ class _DashboardTab {
   final IconData icon;
   final Widget Function(BuildContext) builder;
 }
-

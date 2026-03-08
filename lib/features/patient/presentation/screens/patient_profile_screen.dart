@@ -40,10 +40,9 @@ class PatientProfileScreen extends StatelessWidget {
                       value: user.name ?? '',
                     ),
                     _InfoTile(
-                      icon: Icons.email,
-                      label: context.translateSafe('email'),
-                      value: user.email ?? '',
-                    ),
+                        icon: Icons.email,
+                        label: context.translateSafe('email'),
+                        value: user.email),
                     _InfoTile(
                       icon: Icons.phone,
                       label: context.translateSafe('phone'),
@@ -136,9 +135,9 @@ class _ProfileHeader extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          user.email ?? '',
+          user.email,
           style: Theme.of(context).textTheme.bodyMedium,
-        ),
+        )
       ],
     );
   }

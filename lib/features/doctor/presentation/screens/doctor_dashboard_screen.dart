@@ -18,10 +18,22 @@ class DoctorDashboardScreen extends StatefulWidget {
 }
 
 class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
-    _loadData();
+    // ✅ لا نستخدم context هنا
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // ✅ آمن تماماً هنا - الـ widget مُدرج بالكامل
+    if (!_isInitialized) {
+      _loadData();
+      _isInitialized = true;
+    }
   }
 
   void _loadData() {
@@ -301,7 +313,8 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
         else
           ...appointments.take(3).map((appointment) {
             final appointmentDate = appointment.appointmentDate;
-            final timeString = '${appointmentDate.hour}:${appointmentDate.minute.toString().padLeft(2, '0')}';
+            final timeString =
+                '${appointmentDate.hour}:${appointmentDate.minute.toString().padLeft(2, '0')}';
 
             return Card(
               margin: const EdgeInsets.only(bottom: 8),
@@ -349,7 +362,8 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
         const SizedBox(height: 16),
         ...requests.map((request) {
           final requestDate = request.appointmentDate;
-          final dateString = '${requestDate.day}/${requestDate.month}/${requestDate.year}';
+          final dateString =
+              '${requestDate.day}/${requestDate.month}/${requestDate.year}';
 
           return Card(
             margin: const EdgeInsets.only(bottom: 8),

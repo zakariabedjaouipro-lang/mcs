@@ -20,10 +20,22 @@ class PatientAppointmentsScreen extends StatefulWidget {
 }
 
 class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
-    context.read<PatientBloc>().add(LoadAppointments());
+    // ✅ لا نستخدم context هنا
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // ✅ آمن تماماً هنا
+    if (!_isInitialized) {
+      context.read<PatientBloc>().add(LoadAppointments());
+      _isInitialized = true;
+    }
   }
 
   @override
@@ -37,7 +49,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
+                MaterialPageRoute<void>(
                   builder: (context) => const PatientBookAppointmentScreen(),
                 ),
               );
@@ -122,7 +134,6 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
 
   Widget _buildAppointmentCard(AppointmentModel appointment) {
     final isUpcoming = appointment.appointmentDate.isAfter(DateTime.now());
-    final isPast = appointment.appointmentDate.isBefore(DateTime.now());
 
     Color statusColor;
     String statusText;
@@ -308,7 +319,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
   }
 
   void _showCancelDialog(AppointmentModel appointment) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.translateSafe('cancel_appointment')),
@@ -337,4 +348,3 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
     );
   }
 }
-
