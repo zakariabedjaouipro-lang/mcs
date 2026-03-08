@@ -218,5 +218,5 @@ extension SafeBool on bool? {
   bool get isFalse => this == false;
 
   /// إرجاع القيمة أو false
-  bool orDefault(bool defaultValue) => this ?? defaultValue;
+  bool orDefault({required bool defaultValue}) => this ?? defaultValue;
 }

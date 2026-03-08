@@ -156,7 +156,7 @@ class _PatientPrescriptionsScreenState
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.green.withValues(alpha: ),
+                        color: Colors.green.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
