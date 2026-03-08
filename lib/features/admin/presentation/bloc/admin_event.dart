@@ -140,3 +140,4 @@ class UpdateExchangeRate extends AdminEvent {
 class LoadDashboardStats extends AdminEvent {
   const LoadDashboardStats();
 }
+

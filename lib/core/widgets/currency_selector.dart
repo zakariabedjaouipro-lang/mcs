@@ -337,3 +337,4 @@ class PriceDisplay extends StatelessWidget {
     );
   }
 }
+

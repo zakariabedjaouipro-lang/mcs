@@ -204,3 +204,4 @@ class InvoiceModel extends Equatable {
         paidAt,
       ];
 }
+

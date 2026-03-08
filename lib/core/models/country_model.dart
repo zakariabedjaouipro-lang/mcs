@@ -168,3 +168,4 @@ class CountryModel extends Equatable {
         isSupported,
       ];
 }
+

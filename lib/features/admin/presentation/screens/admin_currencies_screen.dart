@@ -398,3 +398,4 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
     setState(() => _result = result.toStringAsFixed(2));
   }
 }
+

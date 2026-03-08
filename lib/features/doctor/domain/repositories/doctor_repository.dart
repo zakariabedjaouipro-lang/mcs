@@ -96,3 +96,4 @@ abstract class DoctorRepository {
     String reason,
   );
 }
+

@@ -177,3 +177,4 @@ class ClinicModel extends Equatable {
         updatedAt,
       ];
 }
+

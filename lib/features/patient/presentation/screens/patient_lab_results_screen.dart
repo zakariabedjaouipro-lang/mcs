@@ -1,4 +1,5 @@
 /// Patient Lab Results Screen
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,17 +100,14 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
       case 'normal':
         statusColor = Colors.green;
         statusText = context.translateSafe('normal');
-        break;
 
       case 'abnormal':
         statusColor = Colors.orange;
         statusText = context.translateSafe('abnormal');
-        break;
 
       case 'critical':
         statusColor = Colors.red;
         statusText = context.translateSafe('critical');
-        break;
 
       default:
         statusColor = Colors.grey;

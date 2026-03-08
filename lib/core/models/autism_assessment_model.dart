@@ -150,3 +150,4 @@ class AutismAssessmentModel extends Equatable {
         assessedAt,
       ];
 }
+

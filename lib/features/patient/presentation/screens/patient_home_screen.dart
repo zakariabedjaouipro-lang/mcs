@@ -133,7 +133,7 @@ class PatientHomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -213,7 +213,7 @@ class PatientHomeScreen extends StatelessWidget {
                 label,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium,
-              )
+              ),
             ],
           ),
         ),
@@ -254,9 +254,9 @@ class PatientHomeScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
             ),
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 CircleAvatar(
                   radius: 30,
                   child: Icon(Icons.person),

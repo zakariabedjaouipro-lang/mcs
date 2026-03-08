@@ -2,6 +2,7 @@
 ///
 /// Displays the patient's medical history including visits,
 /// diagnoses and treatments.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -167,3 +168,4 @@ class _PatientMedicalHistoryScreenState
     );
   }
 }
+

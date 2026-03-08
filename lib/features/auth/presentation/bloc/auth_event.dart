@@ -262,3 +262,4 @@ class ClearAuthState extends AuthEvent {
 class SetLoading extends AuthEvent {
   const SetLoading();
 }
+

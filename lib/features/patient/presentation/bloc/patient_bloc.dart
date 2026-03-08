@@ -9,7 +9,7 @@ import 'package:mcs/features/patient/presentation/bloc/patient_state.dart';
 
 /// Patient BLoC
 class PatientBloc extends Bloc<PatientEvent, PatientState> {
-  PatientBloc(this._patientRepository) : super(PatientInitial()) {
+  PatientBloc(this._patientRepository) : super(const PatientInitial()) {
     // ═════════════════════════════════════════════════════════════════════════════
     // Appointments Handlers
     // ═════════════════════════════════════════════════════════════════════════════
@@ -400,7 +400,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     ClearPatientState event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientInitial());
+    emit(const PatientInitial());
   }
 
   // ═════════════════════════════════════════════════════════════════════════════

@@ -2,7 +2,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 
 extension ContextExtensions on BuildContext {

@@ -194,3 +194,4 @@ class SupabaseService {
     return app.ServerException(message: error.toString());
   }
 }
+

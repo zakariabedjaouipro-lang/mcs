@@ -58,3 +58,4 @@ void _setupWindowsOptimizations() {
   // - Context menus
   // - Keyboard shortcuts
 }
+

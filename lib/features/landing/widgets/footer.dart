@@ -405,3 +405,4 @@ class FooterWidget extends StatelessWidget {
     );
   }
 }
+

@@ -92,3 +92,4 @@ class AdminSuccess extends AdminState {
   @override
   List<Object?> get props => [message];
 }
+

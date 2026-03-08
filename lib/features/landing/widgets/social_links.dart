@@ -173,3 +173,4 @@ class SocialLink {
   final String url;
   final Color color;
 }
+

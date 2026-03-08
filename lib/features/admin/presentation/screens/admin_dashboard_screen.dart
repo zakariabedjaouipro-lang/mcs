@@ -246,3 +246,4 @@ class _DashboardTab {
   final IconData icon;
   final Widget Function(BuildContext) builder;
 }
+

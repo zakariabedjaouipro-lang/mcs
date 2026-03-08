@@ -308,3 +308,4 @@ class CurrencyService {
     _exchangeRates.clear();
   }
 }
+

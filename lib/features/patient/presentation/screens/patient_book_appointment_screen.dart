@@ -2,12 +2,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/models/clinic_model.dart';
-import 'package:mcs/core/models/doctor_model.dart';
-import 'package:mcs/core/models/specialty_model.dart';
-import 'package:mcs/core/widgets/custom_button.dart';
+import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:mcs/core/widgets/custom_text_field.dart';
 import 'package:mcs/features/patient/presentation/bloc/index.dart';
 

@@ -104,7 +104,7 @@ extension SafeDateTime on DateTime? {
   /// تنسيق التاريخ كـ DD/MM/YYYY HH:MM
   String get formatFull {
     if (this == null) return 'N/A';
-    return '${formatDMY} ${formatHM}';
+    return '$formatDMY $formatHM';
   }
 
   /// حساب الفرق بالأيام من الآن
@@ -212,7 +212,7 @@ extension SafeNum on num? {
 
 extension SafeBool on bool? {
   /// التحقق من أن القيمة true
-  bool get isTrue => this == true;
+  bool get isTrue => this ?? false;
 
   /// التحقق من أن القيمة false
   bool get isFalse => this == false;

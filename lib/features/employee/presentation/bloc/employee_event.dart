@@ -271,3 +271,4 @@ class ProcessPayment extends EmployeeEvent {
 class LoadDashboardStats extends EmployeeEvent {
   const LoadDashboardStats();
 }
+

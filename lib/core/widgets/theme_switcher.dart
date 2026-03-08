@@ -393,3 +393,4 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
     );
   }
 }
+

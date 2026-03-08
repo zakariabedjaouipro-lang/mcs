@@ -352,3 +352,4 @@ class _FaqSectionWidgetState extends State<FaqSectionWidget> {
     );
   }
 }
+

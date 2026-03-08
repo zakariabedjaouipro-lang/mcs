@@ -266,3 +266,4 @@ class _DeviceDetectorState extends State<DeviceDetector> {
     );
   }
 }
+

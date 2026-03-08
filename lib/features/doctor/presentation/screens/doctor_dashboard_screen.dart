@@ -300,10 +300,8 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
           )
         else
           ...appointments.take(3).map((appointment) {
-            final appointmentDate = appointment?.appointmentDate;
-            final timeString = appointmentDate != null
-                ? '${appointmentDate.hour}:${appointmentDate.minute.toString().padLeft(2, '0')}'
-                : '';
+            final appointmentDate = appointment.appointmentDate;
+            final timeString = '${appointmentDate.hour}:${appointmentDate.minute.toString().padLeft(2, '0')}';
 
             return Card(
               margin: const EdgeInsets.only(bottom: 8),
@@ -312,14 +310,14 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                   child: Icon(Icons.person),
                 ),
                 title: Text(
-                  appointment?.patientName ?? 'Patient',
+                  appointment.patientName ?? 'Patient',
                 ),
                 subtitle: Text(timeString),
                 trailing: Icon(
-                  appointment?.type == AppointmentType.remote
+                  appointment.type == AppointmentType.remote
                       ? Icons.video_call
                       : Icons.calendar_month,
-                  color: appointment?.type == AppointmentType.remote
+                  color: appointment.type == AppointmentType.remote
                       ? Colors.blue
                       : Colors.green,
                 ),
@@ -351,9 +349,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
         const SizedBox(height: 16),
         ...requests.map((request) {
           final requestDate = request.appointmentDate;
-          final dateString = requestDate != null
-              ? '${requestDate.day}/${requestDate.month}/${requestDate.year}'
-              : '';
+          final dateString = '${requestDate.day}/${requestDate.month}/${requestDate.year}';
 
           return Card(
             margin: const EdgeInsets.only(bottom: 8),

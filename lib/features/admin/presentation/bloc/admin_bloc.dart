@@ -343,3 +343,4 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     return 'MCS-${random.substring(random.length - 12)}'.toUpperCase();
   }
 }
+

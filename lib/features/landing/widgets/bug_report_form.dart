@@ -424,3 +424,4 @@ class _BugReportFormWidgetState extends State<BugReportFormWidget> {
     );
   }
 }
+

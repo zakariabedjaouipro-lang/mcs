@@ -69,3 +69,4 @@ enum UserRole {
   /// Whether this role is technical staff.
   bool get isTechnical => this == labTechnician || this == radiographer;
 }
+

@@ -58,3 +58,4 @@ class AppConfig {
     AppConfig.environment = environment;
   }
 }
+

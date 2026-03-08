@@ -144,3 +144,4 @@ abstract class Validators {
   /// Returns true if phone number is valid.
   static bool isValidPhoneNumber(String? value) => phone(value) == null;
 }
+

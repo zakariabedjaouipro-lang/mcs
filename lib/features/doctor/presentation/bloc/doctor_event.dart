@@ -224,3 +224,4 @@ class RejectRemoteSessionRequest extends DoctorEvent {
   @override
   List<Object?> get props => [appointmentId, reason];
 }
+

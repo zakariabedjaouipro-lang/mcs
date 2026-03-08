@@ -124,3 +124,4 @@ class RegionModel extends Equatable {
         capitalAr,
       ];
 }
+

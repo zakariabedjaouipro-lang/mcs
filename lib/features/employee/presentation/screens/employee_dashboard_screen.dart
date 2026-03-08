@@ -3,9 +3,9 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/appointment_model.dart';
-import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/widgets/loading_widget.dart';
 import 'package:mcs/features/employee/presentation/bloc/index.dart';
 
@@ -266,7 +266,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   }
 
   Widget _buildTodayAppointments(BuildContext context, EmployeeState state) {
-    final List<AppointmentModel> appointments = state is AppointmentsLoaded
+    final appointments = state is AppointmentsLoaded
         ? state.appointments
         : const <AppointmentModel>[];
 

@@ -277,3 +277,4 @@ class PatientSuccess extends PatientState {
   @override
   List<Object?> get props => [message];
 }
+

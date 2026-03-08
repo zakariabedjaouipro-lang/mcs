@@ -59,3 +59,4 @@ void _setupIOSOptimizations() {
   // - App extensions
   // - HealthKit integration
 }
+

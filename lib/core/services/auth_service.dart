@@ -234,3 +234,4 @@ class AuthService {
     return app.ServerException(message: error.toString());
   }
 }
+

@@ -60,3 +60,4 @@ void _setupMacOSOptimizations() {
   // - Keyboard shortcuts
   // - Trackpad gestures
 }
+

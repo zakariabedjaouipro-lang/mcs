@@ -200,8 +200,8 @@ Widget _card(BuildContext context, VideoSessionModel session) {
                   _joinDialog(context, session);
                 },
               ),
-            )
-          ]
+            ),
+          ],
         ],
       ),
     ),
@@ -228,7 +228,7 @@ void _joinDialog(BuildContext context, VideoSessionModel session) {
                   );
             },
             child: Text(context.translateSafe('join')),
-          )
+          ),
         ],
       );
     },

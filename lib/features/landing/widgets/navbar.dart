@@ -315,3 +315,4 @@ class NavItem {
   final String label;
   final String route;
 }
+

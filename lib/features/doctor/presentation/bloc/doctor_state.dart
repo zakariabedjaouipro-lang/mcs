@@ -249,3 +249,4 @@ class DoctorError extends DoctorState {
   @override
   List<Object?> get props => [message];
 }
+

@@ -128,3 +128,4 @@ abstract class PatientRepository {
   /// Get linked social accounts
   Future<Either<Failure, List<Map<String, dynamic>>>> getLinkedSocialAccounts();
 }
+

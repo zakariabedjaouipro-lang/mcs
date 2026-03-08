@@ -279,3 +279,4 @@ class SetLoading extends PatientEvent {
 
 /// Clear patient state
 class ClearPatientState extends PatientEvent {}
+

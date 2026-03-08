@@ -103,3 +103,4 @@ enum SubscriptionStatus {
 
   bool get isUsable => this == active;
 }
+

@@ -33,3 +33,4 @@ class Env {
   static bool get isValid =>
       supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
 }
+

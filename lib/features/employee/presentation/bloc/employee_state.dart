@@ -290,3 +290,4 @@ class EmployeeError extends EmployeeState {
   @override
   List<Object?> get props => [message];
 }
+

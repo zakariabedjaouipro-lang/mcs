@@ -61,3 +61,4 @@ abstract class AppTextStyles {
   static TextStyle get subtitle1 => TextStyles.subtitle1;
   static TextStyle get subtitle2 => TextStyles.subtitle2;
 }
+

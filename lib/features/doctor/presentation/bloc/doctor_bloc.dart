@@ -385,3 +385,4 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     }
   }
 }
+

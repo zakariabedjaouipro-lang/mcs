@@ -52,3 +52,4 @@ class SupabaseConfig {
   /// Stream of auth state changes (login, logout, token refresh, etc.).
   static Stream<AuthState> get onAuthStateChange => auth.onAuthStateChange;
 }
+

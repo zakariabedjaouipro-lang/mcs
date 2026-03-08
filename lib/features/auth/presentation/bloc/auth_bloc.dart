@@ -426,3 +426,4 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   String get registerRole => _registerRole;
   bool get isPasswordVisible => _isPasswordVisible;
 }
+

@@ -658,3 +658,4 @@ class RoleOption {
   final String description;
   final IconData icon;
 }
+

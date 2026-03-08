@@ -2,8 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:mcs/core/extensions/context_extensions.dart';
-import '../localization/app_localizations.dart';
+import 'package:mcs/core/localization/app_localizations.dart';
 
 extension LocalizationExtension on BuildContext {
   /// Short alias for translating keys.
@@ -28,3 +27,4 @@ extension LocalizationExtension on BuildContext {
   /// This is an alias for trSafe() for consistency with AppLocalizations naming.
   String translateSafe(String key) => trSafe(key);
 }
+
