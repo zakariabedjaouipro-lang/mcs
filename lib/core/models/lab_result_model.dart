@@ -2,6 +2,7 @@
 library;
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 enum LabResultType { bloodTest, xray, mri, ctScan, ultrasound, other }
 

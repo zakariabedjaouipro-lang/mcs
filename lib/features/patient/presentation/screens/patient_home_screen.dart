@@ -1,159 +1,203 @@
-/// Patient Home Screen
-library;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/localization/app_localizations.dart';
-import 'package:mcs/core/widgets/custom_button.dart';
+
+import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:mcs/features/patient/presentation/bloc/index.dart';
 
-/// Patient home screen with quick actions
 class PatientHomeScreen extends StatelessWidget {
   const PatientHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('patient_home')),
+        title: Text(context.translateSafe('home')),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              // TODO: Navigate to notifications
-            },
+            onPressed: () {},
           ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             onPressed: () {
-              context.read<PatientBloc>().add(const NavigateToSettings());
+              context.read<PatientBloc>().add(NavigateToSettings());
             },
           ),
         ],
       ),
+      drawer: _buildDrawer(context),
       body: BlocBuilder<PatientBloc, PatientState>(
         builder: (context, state) {
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Welcome Section
-                _buildWelcomeSection(context),
-                const SizedBox(height: 24),
+                /// Welcome Card
+                _welcomeCard(context),
 
-                // Quick Actions
-                _buildQuickActions(context),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
 
-                // Upcoming Appointments
-                _buildUpcomingAppointments(context),
-                const SizedBox(height: 24),
+                /// Quick Actions
+                Text(
+                  context.translateSafe('quick_actions'),
+                  style: theme.textTheme.titleLarge,
+                ),
 
-                // Active Prescriptions
-                _buildActivePrescriptions(context),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
-                // Recent Lab Results
-                _buildRecentLabResults(context),
+                _quickActions(context),
+
+                const SizedBox(height: 28),
+
+                /// Upcoming Appointment
+                _sectionCard(
+                  context,
+                  icon: Icons.calendar_month_outlined,
+                  title: context.translateSafe('appointments'),
+                  subtitle: context.translateSafe('no_upcoming_appointments'),
+                  onTap: () {
+                    context.read<PatientBloc>().add(NavigateToAppointments());
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                /// Prescriptions
+                _sectionCard(
+                  context,
+                  icon: Icons.medication_outlined,
+                  title: context.translateSafe('prescriptions'),
+                  subtitle: context.translateSafe('no_active_prescriptions'),
+                  onTap: () {
+                    context.read<PatientBloc>().add(NavigateToPrescriptions());
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                /// Lab Results
+                _sectionCard(
+                  context,
+                  icon: Icons.science_outlined,
+                  title: context.translateSafe('lab_results'),
+                  subtitle: context.translateSafe('no_lab_results'),
+                  onTap: () {
+                    context.read<PatientBloc>().add(NavigateToLabResults());
+                  },
+                ),
               ],
             ),
           );
         },
       ),
-      drawer: _buildDrawer(context),
     );
   }
 
-  Widget _buildWelcomeSection(BuildContext context) {
+  /// Welcome Card
+  Widget _welcomeCard(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
+      elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(20),
+        child: Row(
           children: [
-            Text(
-              AppLocalizations.of(context).translate('welcome'),
-              style: Theme.of(context).textTheme.headlineSmall,
+            CircleAvatar(
+              radius: 32,
+              backgroundColor: theme.colorScheme.primary,
+              child: const Icon(
+                Icons.person,
+                color: Colors.white,
+                size: 32,
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context).translate('patient_home_subtitle'),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.translateSafe('welcome'),
+                    style: theme.textTheme.titleMedium,
                   ),
-            ),
+                  const SizedBox(height: 4),
+                  Text(
+                    context.translateSafe('patient_dashboard'),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  /// Quick Actions Grid
+  Widget _quickActions(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisSpacing: 16,
+      mainAxisSpacing: 16,
+      childAspectRatio: 1.2,
       children: [
-        Text(
-          AppLocalizations.of(context).translate('quick_actions'),
-          style: Theme.of(context).textTheme.titleLarge,
+        _actionCard(
+          context,
+          icon: Icons.calendar_today_outlined,
+          label: context.translateSafe('book_appointment'),
+          onTap: () {
+            context.read<PatientBloc>().add(NavigateToBooking());
+          },
         ),
-        const SizedBox(height: 16),
-        GridView.count(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 1.2,
-          children: [
-            _buildActionCard(
-              context,
-              icon: Icons.calendar_month_outlined,
-              label: AppLocalizations.of(context).translate('book_appointment'),
-              onTap: () {
-                context.read<PatientBloc>().add(const NavigateToBooking());
-              },
-            ),
-            _buildActionCard(
-              context,
-              icon: Icons.video_call_outlined,
-              label: AppLocalizations.of(context).translate('remote_sessions'),
-              onTap: () {
-                context.read<PatientBloc>().add(const NavigateToRemoteSessions());
-              },
-            ),
-            _buildActionCard(
-              context,
-              icon: Icons.medication_outlined,
-              label: AppLocalizations.of(context).translate('prescriptions'),
-              onTap: () {
-                context.read<PatientBloc>().add(const NavigateToPrescriptions());
-              },
-            ),
-            _buildActionCard(
-              context,
-              icon: Icons.science_outlined,
-              label: AppLocalizations.of(context).translate('lab_results'),
-              onTap: () {
-                context.read<PatientBloc>().add(const NavigateToLabResults());
-              },
-            ),
-          ],
+        _actionCard(
+          context,
+          icon: Icons.video_call_outlined,
+          label: context.translateSafe('remote_sessions'),
+          onTap: () {
+            context.read<PatientBloc>().add(NavigateToRemoteSessions());
+          },
+        ),
+        _actionCard(
+          context,
+          icon: Icons.medication_outlined,
+          label: context.translateSafe('prescriptions'),
+          onTap: () {
+            context.read<PatientBloc>().add(NavigateToPrescriptions());
+          },
+        ),
+        _actionCard(
+          context,
+          icon: Icons.science_outlined,
+          label: context.translateSafe('lab_results'),
+          onTap: () {
+            context.read<PatientBloc>().add(NavigateToLabResults());
+          },
         ),
       ],
     );
   }
 
-  Widget _buildActionCard(
+  Widget _actionCard(
     BuildContext context, {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
+
     return Card(
       child: InkWell(
-        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -161,15 +205,15 @@ class PatientHomeScreen extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                size: 48,
-                color: Theme.of(context).colorScheme.primary,
+                size: 40,
+                color: theme.colorScheme.primary,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
               Text(
                 label,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
+                style: theme.textTheme.bodyMedium,
+              )
             ],
           ),
         ),
@@ -177,148 +221,30 @@ class PatientHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildUpcomingAppointments(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              AppLocalizations.of(context).translate('upcoming_appointments'),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            TextButton(
-              onPressed: () {
-                context.read<PatientBloc>().add(const NavigateToAppointments());
-              },
-              child: Text(AppLocalizations.of(context).translate('view_all')),
-            ),
-          ],
+  Widget _sectionCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: theme.colorScheme.primary,
         ),
-        const SizedBox(height: 16),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.calendar_today_outlined,
-                  size: 48,
-                  color: Colors.grey[400],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  AppLocalizations.of(context).translate('no_upcoming_appointments'),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                ),
-                const SizedBox(height: 16),
-                CustomButton(
-                  text: AppLocalizations.of(context).translate('book_appointment'),
-                  onPressed: () {
-                    context.read<PatientBloc>().add(const NavigateToBooking());
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+        title: Text(title),
+        subtitle: Text(subtitle),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        onTap: onTap,
+      ),
     );
   }
 
-  Widget _buildActivePrescriptions(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              AppLocalizations.of(context).translate('active_prescriptions'),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            TextButton(
-              onPressed: () {
-                context.read<PatientBloc>().add(const NavigateToPrescriptions());
-              },
-              child: Text(AppLocalizations.of(context).translate('view_all')),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.medication_outlined,
-                  size: 48,
-                  color: Colors.grey[400],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  AppLocalizations.of(context).translate('no_active_prescriptions'),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRecentLabResults(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              AppLocalizations.of(context).translate('recent_lab_results'),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            TextButton(
-              onPressed: () {
-                context.read<PatientBloc>().add(const NavigateToLabResults());
-              },
-              child: Text(AppLocalizations.of(context).translate('view_all')),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.science_outlined,
-                  size: 48,
-                  color: Colors.grey[400],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  AppLocalizations.of(context).translate('no_lab_results'),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
+  /// Drawer
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -330,91 +256,41 @@ class PatientHomeScreen extends StatelessWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CircleAvatar(
-                  radius: 32,
-                  child: Icon(Icons.person, size: 32),
+              children: const [
+                CircleAvatar(
+                  radius: 30,
+                  child: Icon(Icons.person),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 12),
                 Text(
-                  'اسم المريض',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                      ),
+                  'Patient Name',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
                 Text(
-                  'patient@example.com',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white70,
-                      ),
+                  'patient@email.com',
+                  style: TextStyle(color: Colors.white70),
                 ),
               ],
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.home_outlined),
-            title: Text(AppLocalizations.of(context).translate('home')),
+            leading: const Icon(Icons.person_outline),
+            title: Text(context.translateSafe('profile')),
             onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.calendar_month_outlined),
-            title: Text(AppLocalizations.of(context).translate('appointments')),
-            onTap: () {
-              Navigator.pop(context);
-              context.read<PatientBloc>().add(const NavigateToAppointments());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.video_call_outlined),
-            title: Text(AppLocalizations.of(context).translate('remote_sessions')),
-            onTap: () {
-              Navigator.pop(context);
-              context.read<PatientBloc>().add(const NavigateToRemoteSessions());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.medication_outlined),
-            title: Text(AppLocalizations.of(context).translate('prescriptions')),
-            onTap: () {
-              Navigator.pop(context);
-              context.read<PatientBloc>().add(const NavigateToPrescriptions());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.science_outlined),
-            title: Text(AppLocalizations.of(context).translate('lab_results')),
-            onTap: () {
-              Navigator.pop(context);
-              context.read<PatientBloc>().add(const NavigateToLabResults());
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.person_outlined),
-            title: Text(AppLocalizations.of(context).translate('profile')),
-            onTap: () {
-              Navigator.pop(context);
-              context.read<PatientBloc>().add(const NavigateToProfile());
+              context.read<PatientBloc>().add(NavigateToProfile());
             },
           ),
           ListTile(
             leading: const Icon(Icons.settings_outlined),
-            title: Text(AppLocalizations.of(context).translate('settings')),
+            title: Text(context.translateSafe('settings')),
             onTap: () {
-              Navigator.pop(context);
-              context.read<PatientBloc>().add(const NavigateToSettings());
+              context.read<PatientBloc>().add(NavigateToSettings());
             },
           ),
-          const Divider(),
           ListTile(
-            leading: const Icon(Icons.logout_outlined),
-            title: Text(AppLocalizations.of(context).translate('logout')),
-            onTap: () {
-              Navigator.pop(context);
-              // TODO: Implement logout
-            },
+            leading: const Icon(Icons.logout),
+            title: Text(context.translateSafe('logout')),
+            onTap: () {},
           ),
         ],
       ),

@@ -2,6 +2,7 @@
 library;
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:mcs/core/enums/appointment_status.dart';
 
 class VideoSessionModel extends Equatable {

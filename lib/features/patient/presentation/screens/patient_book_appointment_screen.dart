@@ -2,8 +2,8 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/clinic_model.dart';
 import 'package:mcs/core/models/doctor_model.dart';
 import 'package:mcs/core/models/specialty_model.dart';
@@ -47,7 +47,7 @@ class _PatientBookAppointmentScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('book_appointment')),
+        title: Text(context.translateSafe('')),
       ),
       body: BlocListener<PatientBloc, PatientState>(
         listener: (context, state) {
@@ -55,8 +55,7 @@ class _PatientBookAppointmentScreenState
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  AppLocalizations.of(context)
-                      .translate('appointment_booked_success'),
+                  context.translateSafe('appointment_booked_success'),
                 ),
                 backgroundColor: Colors.green,
               ),
@@ -93,7 +92,7 @@ class _PatientBookAppointmentScreenState
 
   Step _buildStep1() {
     return Step(
-      title: Text(AppLocalizations.of(context).translate('select_country')),
+      title: Text(context.translateSafe('')),
       content: Column(
         children: [
           // TODO: Load countries from database
@@ -106,7 +105,7 @@ class _PatientBookAppointmentScreenState
 
   Step _buildStep2() {
     return Step(
-      title: Text(AppLocalizations.of(context).translate('select_region')),
+      title: Text(context.translateSafe('')),
       content: Column(
         children: [
           // TODO: Load regions based on selected country
@@ -119,7 +118,7 @@ class _PatientBookAppointmentScreenState
 
   Step _buildStep3() {
     return Step(
-      title: Text(AppLocalizations.of(context).translate('select_specialty')),
+      title: Text(context.translateSafe('')),
       content: Column(
         children: [
           // TODO: Load specialties from database
@@ -132,7 +131,7 @@ class _PatientBookAppointmentScreenState
 
   Step _buildStep4() {
     return Step(
-      title: Text(AppLocalizations.of(context).translate('select_doctor')),
+      title: Text(context.translateSafe('')),
       content: Column(
         children: [
           // TODO: Load doctors based on selected specialty
@@ -145,7 +144,7 @@ class _PatientBookAppointmentScreenState
 
   Step _buildStep5() {
     return Step(
-      title: Text(AppLocalizations.of(context).translate('select_date_time')),
+      title: Text(context.translateSafe('')),
       content: Column(
         children: [
           _buildDatePicker(),
@@ -154,11 +153,10 @@ class _PatientBookAppointmentScreenState
           const SizedBox(height: 16),
           CheckboxListTile(
             title: Text(
-              AppLocalizations.of(context).translate('request_remote_session'),
+              context.translateSafe(''),
             ),
             subtitle: Text(
-              AppLocalizations.of(context)
-                  .translate('remote_session_description'),
+              context.translateSafe('remote_session_description'),
             ),
             value: _requestRemoteSession,
             onChanged: (value) {
@@ -175,8 +173,7 @@ class _PatientBookAppointmentScreenState
 
   Step _buildStep6() {
     return Step(
-      title:
-          Text(AppLocalizations.of(context).translate('confirm_appointment')),
+      title: Text(context.translateSafe('')),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -184,8 +181,7 @@ class _PatientBookAppointmentScreenState
           const SizedBox(height: 16),
           CustomTextField(
             controller: _notesController,
-            label: AppLocalizations.of(context).translate('notes'),
-            hintText: AppLocalizations.of(context).translate('optional_notes'),
+            label: context.translateSafe(''),
             maxLines: 3,
           ),
         ],
@@ -197,7 +193,7 @@ class _PatientBookAppointmentScreenState
   Widget _buildCountryDropdown() {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).translate('country'),
+        labelText: context.translateSafe(''),
         border: const OutlineInputBorder(),
       ),
       initialValue: _selectedCountry,
@@ -214,8 +210,7 @@ class _PatientBookAppointmentScreenState
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context)
-              .translate('please_select_country');
+          return context.translateSafe('please_select_country');
         }
         return null;
       },
@@ -225,7 +220,7 @@ class _PatientBookAppointmentScreenState
   Widget _buildRegionDropdown() {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).translate('region'),
+        labelText: context.translateSafe(''),
         border: const OutlineInputBorder(),
       ),
       initialValue: _selectedRegion,
@@ -241,7 +236,7 @@ class _PatientBookAppointmentScreenState
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context).translate('please_select_region');
+          return context.translateSafe('');
         }
         return null;
       },
@@ -251,7 +246,7 @@ class _PatientBookAppointmentScreenState
   Widget _buildSpecialtyDropdown() {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).translate('specialty'),
+        labelText: context.translateSafe(''),
         border: const OutlineInputBorder(),
       ),
       initialValue: _selectedSpecialty,
@@ -270,8 +265,7 @@ class _PatientBookAppointmentScreenState
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context)
-              .translate('please_select_specialty');
+          return context.translateSafe('please_select_specialty');
         }
         return null;
       },
@@ -281,7 +275,7 @@ class _PatientBookAppointmentScreenState
   Widget _buildDoctorDropdown() {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).translate('doctor'),
+        labelText: context.translateSafe(''),
         border: const OutlineInputBorder(),
       ),
       initialValue: _selectedDoctor,
@@ -297,7 +291,7 @@ class _PatientBookAppointmentScreenState
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context).translate('please_select_doctor');
+          return context.translateSafe('');
         }
         return null;
       },
@@ -321,14 +315,14 @@ class _PatientBookAppointmentScreenState
       },
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: AppLocalizations.of(context).translate('appointment_date'),
+          labelText: context.translateSafe(''),
           border: const OutlineInputBorder(),
           suffixIcon: const Icon(Icons.calendar_today),
         ),
         child: Text(
           _selectedDate != null
               ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-              : AppLocalizations.of(context).translate('select_date'),
+              : context.translateSafe(''),
         ),
       ),
     );
@@ -354,7 +348,7 @@ class _PatientBookAppointmentScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppLocalizations.of(context).translate('available_time_slots'),
+          context.translateSafe(''),
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
@@ -385,41 +379,41 @@ class _PatientBookAppointmentScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppLocalizations.of(context).translate('appointment_summary'),
+              context.translateSafe(''),
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Divider(),
             _buildSummaryRow(
-              AppLocalizations.of(context).translate('country'),
+              context.translateSafe(''),
               _selectedCountry ?? '-',
             ),
             _buildSummaryRow(
-              AppLocalizations.of(context).translate('region'),
+              context.translateSafe(''),
               _selectedRegion ?? '-',
             ),
             _buildSummaryRow(
-              AppLocalizations.of(context).translate('specialty'),
+              context.translateSafe(''),
               _selectedSpecialty ?? '-',
             ),
             _buildSummaryRow(
-              AppLocalizations.of(context).translate('doctor'),
+              context.translateSafe(''),
               _selectedDoctor ?? '-',
             ),
             _buildSummaryRow(
-              AppLocalizations.of(context).translate('date'),
+              context.translateSafe(''),
               _selectedDate != null
                   ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
                   : '-',
             ),
             _buildSummaryRow(
-              AppLocalizations.of(context).translate('time'),
+              context.translateSafe(''),
               _selectedTimeSlot ?? '-',
             ),
             _buildSummaryRow(
-              AppLocalizations.of(context).translate('type'),
+              context.translateSafe(''),
               _requestRemoteSession
-                  ? AppLocalizations.of(context).translate('remote_session')
-                  : AppLocalizations.of(context).translate('in_person'),
+                  ? context.translateSafe('')
+                  : context.translateSafe(''),
             ),
           ],
         ),

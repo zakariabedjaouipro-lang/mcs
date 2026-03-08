@@ -3,9 +3,12 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/core/enums/appointment_status.dart';
+import 'package:mcs/core/extensions/context_extension.dart';
+import 'package:mcs/core/extensions/safe_extensions.dart';
 import 'package:mcs/core/models/appointment_model.dart';
 import 'package:mcs/features/patient/presentation/bloc/index.dart';
+import 'package:mcs/features/patient/presentation/screens/patient_book_appointment_screen.dart';
 
 /// Patient appointments list screen
 class PatientAppointmentsScreen extends StatefulWidget {
@@ -27,7 +30,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('appointments')),
+        title: Text(context.translateSafe('appointments')),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -72,14 +75,14 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context).translate('no_appointments'),
+            context.translateSafe('no_appointments'),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.grey[600],
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            AppLocalizations.of(context).translate('book_first_appointment'),
+            context.translateSafe('book_first_appointment'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey[500],
                 ),
@@ -87,17 +90,15 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () {
-              Navigator.push(
+              Navigator.push<void>(
                 context,
-                MaterialPageRoute(
+                MaterialPageRoute<void>(
                   builder: (context) => const PatientBookAppointmentScreen(),
                 ),
               );
             },
             icon: const Icon(Icons.add),
-            label: Text(
-              AppLocalizations.of(context).translate('book_appointment'),
-            ),
+            label: Text(context.tr('book_appointment')),
           ),
         ],
       ),
@@ -127,21 +128,21 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
     String statusText;
 
     switch (appointment.status) {
-      case 'scheduled':
-        statusColor = Colors.blue;
-        statusText = AppLocalizations.of(context).translate('scheduled');
-      case 'completed':
-        statusColor = Colors.green;
-        statusText = AppLocalizations.of(context).translate('completed');
-      case 'cancelled':
-        statusColor = Colors.red;
-        statusText = AppLocalizations.of(context).translate('cancelled');
-      case 'rescheduled':
+      case AppointmentStatus.pending:
         statusColor = Colors.orange;
-        statusText = AppLocalizations.of(context).translate('rescheduled');
-      default:
+        statusText = context.translateSafe('pending');
+      case AppointmentStatus.confirmed:
+        statusColor = Colors.green;
+        statusText = context.translateSafe('confirmed');
+      case AppointmentStatus.cancelled:
+        statusColor = Colors.red;
+        statusText = context.translateSafe('cancelled');
+      case AppointmentStatus.completed:
+        statusColor = Colors.blue;
+        statusText = context.translateSafe('completed');
+      case AppointmentStatus.noShow:
         statusColor = Colors.grey;
-        statusText = appointment.status;
+        statusText = context.translateSafe('no_show');
     }
 
     return Card(
@@ -196,16 +197,16 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                   ),
                   const SizedBox(width: 16),
                   Icon(
-                    appointment.appointmentType == 'remote'
+                    appointment.type == AppointmentType.remote
                         ? Icons.video_call
                         : Icons.location_on,
                     size: 16,
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    appointment.appointmentType == 'remote'
-                        ? AppLocalizations.of(context).translate('remote')
-                        : AppLocalizations.of(context).translate('in_person'),
+                    appointment.type == AppointmentType.remote
+                        ? context.translateSafe('remote')
+                        : context.translateSafe('in_person'),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -246,7 +247,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                         },
                         icon: const Icon(Icons.schedule, size: 16),
                         label: Text(
-                          AppLocalizations.of(context).translate('reschedule'),
+                          context.translateSafe('reschedule'),
                         ),
                       ),
                     ),
@@ -258,7 +259,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                         },
                         icon: const Icon(Icons.cancel, size: 16),
                         label: Text(
-                          AppLocalizations.of(context).translate('cancel'),
+                          context.translateSafe('cancel'),
                         ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.red,
@@ -299,7 +300,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
               context.read<PatientBloc>().add(LoadAppointments());
             },
             icon: const Icon(Icons.refresh),
-            label: Text(AppLocalizations.of(context).translate('retry')),
+            label: Text(context.translateSafe('retry')),
           ),
         ],
       ),
@@ -310,16 +311,14 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title:
-            Text(AppLocalizations.of(context).translate('cancel_appointment')),
+        title: Text(context.translateSafe('cancel_appointment')),
         content: Text(
-          AppLocalizations.of(context)
-              .translate('cancel_appointment_confirmation'),
+          context.translateSafe('cancel_appointment_confirmation'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context).translate('no')),
+            child: Text(context.translateSafe('no')),
           ),
           TextButton(
             onPressed: () {
@@ -329,7 +328,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                   .add(CancelAppointment(appointment.id));
             },
             child: Text(
-              AppLocalizations.of(context).translate('yes'),
+              context.translateSafe('yes'),
               style: const TextStyle(color: Colors.red),
             ),
           ),

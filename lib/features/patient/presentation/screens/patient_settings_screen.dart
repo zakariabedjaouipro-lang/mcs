@@ -1,11 +1,6 @@
-/// Patient Settings Screen
-library;
-
 import 'package:flutter/material.dart';
+
 import 'package:mcs/core/localization/app_localizations.dart';
-import 'package:mcs/core/widgets/app_drawer.dart';
-import 'package:mcs/core/widgets/language_switcher.dart';
-import 'package:mcs/core/widgets/theme_switcher.dart';
 
 /// Patient settings screen
 class PatientSettingsScreen extends StatelessWidget {
@@ -13,115 +8,125 @@ class PatientSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('settings')),
+        title: Text(loc.translate('settings')),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Appearance Section
+          /// Appearance
           _buildSection(
             context,
-            AppLocalizations.of(context).translate('appearance'),
-            [
-              _buildThemeTile(context),
-              _buildLanguageTile(context),
+            loc.translate('appearance'),
+            const [
+              ThemeSwitcherTile(),
+              LanguageSwitcherTile(),
             ],
           ),
+
           const SizedBox(height: 24),
-          
-          // Notifications Section
+
+          /// Notifications
           _buildSection(
             context,
-            AppLocalizations.of(context).translate('notifications'),
+            loc.translate('notifications'),
             [
               _buildNotificationTile(
                 context,
-                AppLocalizations.of(context).translate('push_notifications'),
+                loc.translate('push_notifications'),
                 Icons.notifications,
                 true,
               ),
               _buildNotificationTile(
                 context,
-                AppLocalizations.of(context).translate('email_notifications'),
+                loc.translate('email_notifications'),
                 Icons.email,
                 true,
               ),
               _buildNotificationTile(
                 context,
-                AppLocalizations.of(context).translate('sms_notifications'),
+                loc.translate('sms_notifications'),
                 Icons.sms,
                 false,
               ),
             ],
           ),
+
           const SizedBox(height: 24),
-          
-          // Privacy Section
+
+          /// Privacy
           _buildSection(
             context,
-            AppLocalizations.of(context).translate('privacy'),
+            loc.translate('privacy'),
             [
-              _buildPrivacyTile(
+              _buildSimpleTile(
                 context,
-                AppLocalizations.of(context).translate('privacy_policy'),
+                loc.translate('privacy_policy'),
                 Icons.privacy_tip,
               ),
-              _buildPrivacyTile(
+              _buildSimpleTile(
                 context,
-                AppLocalizations.of(context).translate('terms_of_service'),
+                loc.translate('terms_of_service'),
                 Icons.description,
               ),
             ],
           ),
+
           const SizedBox(height: 24),
-          
-          // Support Section
+
+          /// Support
           _buildSection(
             context,
-            AppLocalizations.of(context).translate('support'),
+            loc.translate('support'),
             [
-              _buildSupportTile(
+              _buildSimpleTile(
                 context,
-                AppLocalizations.of(context).translate('help_center'),
+                loc.translate('help_center'),
                 Icons.help,
               ),
-              _buildSupportTile(
+              _buildSimpleTile(
                 context,
-                AppLocalizations.of(context).translate('contact_us'),
+                loc.translate('contact_us'),
                 Icons.contact_support,
               ),
-              _buildSupportTile(
+              _buildSimpleTile(
                 context,
-                AppLocalizations.of(context).translate('report_bug'),
+                loc.translate('report_bug'),
                 Icons.bug_report,
               ),
             ],
           ),
+
           const SizedBox(height: 24),
-          
-          // About Section
+
+          /// About
           _buildSection(
             context,
-            AppLocalizations.of(context).translate('about'),
+            loc.translate('about'),
             [
-              _buildAboutTile(context),
+              ListTile(
+                leading: const Icon(Icons.info),
+                title: Text(loc.translate('about_app')),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => _showAboutDialog(context),
+              ),
             ],
           ),
+
           const SizedBox(height: 24),
-          
-          // Logout Button
+
+          /// Logout
           Card(
             child: ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
               title: Text(
-                AppLocalizations.of(context).translate('logout'),
+                loc.translate('logout'),
                 style: const TextStyle(color: Colors.red),
               ),
-              onTap: () {
-                _showLogoutDialog(context);
-              },
+              onTap: () => _showLogoutDialog(context),
             ),
           ),
         ],
@@ -129,7 +134,12 @@ class PatientSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(BuildContext context, String title, List<Widget> children) {
+  /// Section builder
+  Widget _buildSection(
+    BuildContext context,
+    String title,
+    List<Widget> children,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -144,22 +154,13 @@ class PatientSettingsScreen extends StatelessWidget {
           ),
         ),
         Card(
-          child: Column(
-            children: children,
-          ),
+          child: Column(children: children),
         ),
       ],
     );
   }
 
-  Widget _buildThemeTile(BuildContext context) {
-    return const ThemeSwitcherTile();
-  }
-
-  Widget _buildLanguageTile(BuildContext context) {
-    return const LanguageSwitcherTile();
-  }
-
+  /// Notification tile
   Widget _buildNotificationTile(
     BuildContext context,
     String title,
@@ -167,11 +168,10 @@ class PatientSettingsScreen extends StatelessWidget {
     bool value,
   ) {
     return SwitchListTile(
-      leading: Icon(icon),
+      secondary: Icon(icon),
       title: Text(title),
       value: value,
       onChanged: (newValue) {
-        // TODO: Implement notification preference update
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('$title: ${newValue ? "enabled" : "disabled"}'),
@@ -181,7 +181,8 @@ class PatientSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPrivacyTile(
+  /// Simple list tile
+  Widget _buildSimpleTile(
     BuildContext context,
     String title,
     IconData icon,
@@ -191,58 +192,32 @@ class PatientSettingsScreen extends StatelessWidget {
       title: Text(title),
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
-        // TODO: Navigate to privacy policy/terms
+        // TODO: Navigation
       },
     );
   }
 
-  Widget _buildSupportTile(
-    BuildContext context,
-    String title,
-    IconData icon,
-  ) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        // TODO: Navigate to support
-      },
-    );
-  }
-
-  Widget _buildAboutTile(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.info),
-      title: Text(AppLocalizations.of(context).translate('about_app')),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        _showAboutDialog(context);
-      },
-    );
-  }
-
+  /// Logout dialog
   void _showLogoutDialog(BuildContext context) {
-    showDialog(
+    final loc = AppLocalizations.of(context)!;
+
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context).translate('logout')),
-        content: Text(
-          AppLocalizations.of(context).translate('logout_confirmation'),
-        ),
+        title: Text(loc.translate('logout')),
+        content: Text(loc.translate('logout_confirmation')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context).translate('cancel')),
+            child: Text(loc.translate('cancel')),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              // TODO: Implement logout
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
             child: Text(
-              AppLocalizations.of(context).translate('logout'),
+              loc.translate('logout'),
               style: const TextStyle(color: Colors.red),
             ),
           ),
@@ -251,7 +226,10 @@ class PatientSettingsScreen extends StatelessWidget {
     );
   }
 
+  /// About dialog
   void _showAboutDialog(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     showAboutDialog(
       context: context,
       applicationName: 'MCS',
@@ -260,7 +238,7 @@ class PatientSettingsScreen extends StatelessWidget {
       children: [
         const SizedBox(height: 16),
         Text(
-          AppLocalizations.of(context).translate('about_description'),
+          loc.translate('about_description'),
           textAlign: TextAlign.center,
         ),
       ],
@@ -268,51 +246,49 @@ class PatientSettingsScreen extends StatelessWidget {
   }
 }
 
-/// Theme Switcher Tile Widget
+/// Theme Switcher Tile
 class ThemeSwitcherTile extends StatelessWidget {
   const ThemeSwitcherTile({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ListTile(
-      leading: Icon(
-        Theme.of(context).brightness == Brightness.light
-            ? Icons.light_mode
-            : Icons.dark_mode,
-      ),
-      title: Text(AppLocalizations.of(context).translate('theme')),
+      leading: Icon(isDark ? Icons.dark_mode : Icons.light_mode),
+      title: Text(loc.translate('theme')),
       subtitle: Text(
-        Theme.of(context).brightness == Brightness.light
-            ? AppLocalizations.of(context).translate('light_theme')
-            : AppLocalizations.of(context).translate('dark_theme'),
+        isDark ? loc.translate('dark_theme') : loc.translate('light_theme'),
       ),
       trailing: Switch(
-        value: Theme.of(context).brightness == Brightness.dark,
+        value: isDark,
         onChanged: (value) {
-          // TODO: Implement theme switching
+          // TODO: Theme change logic
         },
       ),
     );
   }
 }
 
-/// Language Switcher Tile Widget
+/// Language Switcher Tile
 class LanguageSwitcherTile extends StatelessWidget {
   const LanguageSwitcherTile({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
+
     return ListTile(
       leading: const Icon(Icons.language),
-      title: Text(AppLocalizations.of(context).translate('language')),
+      title: Text(loc.translate('language')),
       subtitle: Text(
-        Localizations.localeOf(context).languageCode == 'ar'
-            ? 'العربية'
-            : 'English',
+        locale.languageCode == 'ar' ? 'العربية' : 'English',
       ),
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
-        // TODO: Implement language switching
+        // TODO: Language change logic
       },
     );
   }

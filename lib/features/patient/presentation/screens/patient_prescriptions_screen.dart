@@ -1,13 +1,10 @@
-/// Patient Prescriptions Screen
-library;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/localization/app_localizations.dart';
+
+import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:mcs/core/models/prescription_model.dart';
 import 'package:mcs/features/patient/presentation/bloc/index.dart';
 
-/// Patient prescriptions screen
 class PatientPrescriptionsScreen extends StatefulWidget {
   const PatientPrescriptionsScreen({super.key});
 
@@ -28,7 +25,7 @@ class _PatientPrescriptionsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('prescriptions')),
+        title: Text(context.translateSafe('prescriptions')),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
@@ -41,16 +38,11 @@ class _PatientPrescriptionsScreenState
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'all',
-                child: Text(
-                  AppLocalizations.of(context).translate('all_prescriptions'),
-                ),
+                child: Text(context.translateSafe('all_prescriptions')),
               ),
               PopupMenuItem(
                 value: 'active',
-                child: Text(
-                  AppLocalizations.of(context)
-                      .translate('active_prescriptions'),
-                ),
+                child: Text(context.translateSafe('active_prescriptions')),
               ),
             ],
           ),
@@ -60,19 +52,26 @@ class _PatientPrescriptionsScreenState
         builder: (context, state) {
           if (state is PatientLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is PrescriptionsLoaded) {
-            if (state.prescriptions.isEmpty) {
-              return _buildEmptyState(context);
-            }
-            return _buildPrescriptionsList(state.prescriptions);
-          } else if (state is ActivePrescriptionsLoaded) {
-            if (state.prescriptions.isEmpty) {
-              return _buildEmptyState(context);
-            }
-            return _buildPrescriptionsList(state.prescriptions);
-          } else if (state is PatientError) {
-            return _buildErrorState(state.message);
           }
+
+          if (state is PrescriptionsLoaded) {
+            if (state.prescriptions.isEmpty) {
+              return _buildEmptyState(context);
+            }
+            return _buildPrescriptionsList(context, state.prescriptions);
+          }
+
+          if (state is ActivePrescriptionsLoaded) {
+            if (state.prescriptions.isEmpty) {
+              return _buildEmptyState(context);
+            }
+            return _buildPrescriptionsList(context, state.prescriptions);
+          }
+
+          if (state is PatientError) {
+            return _buildErrorState(context, state.message);
+          }
+
           return const SizedBox.shrink();
         },
       ),
@@ -84,62 +83,63 @@ class _PatientPrescriptionsScreenState
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.medication_outlined,
-            size: 64,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.medication_outlined, size: 64, color: Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context).translate('no_prescriptions'),
+            context.translateSafe('no_prescriptions'),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.grey[600],
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            AppLocalizations.of(context)
-                .translate('no_prescriptions_description'),
+            context.translateSafe('no_prescriptions_description'),
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey[500],
                 ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPrescriptionsList(List<PrescriptionModel> prescriptions) {
-    // Sort by date (most recent first)
-    final sortedPrescriptions = List<PrescriptionModel>.from(prescriptions)
+  Widget _buildPrescriptionsList(
+    BuildContext context,
+    List<PrescriptionModel> prescriptions,
+  ) {
+    final sorted = List<PrescriptionModel>.from(prescriptions)
       ..sort((a, b) => b.prescriptionDate.compareTo(a.prescriptionDate));
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: sortedPrescriptions.length,
+      itemCount: sorted.length,
       itemBuilder: (context, index) {
-        final prescription = sortedPrescriptions[index];
-        return _buildPrescriptionCard(prescription);
+        return _buildPrescriptionCard(context, sorted[index]);
       },
     );
   }
 
-  Widget _buildPrescriptionCard(PrescriptionModel prescription) {
-    final isActive = prescription.isActive;
+  Widget _buildPrescriptionCard(
+    BuildContext context,
+    PrescriptionModel prescription,
+  ) {
+    final now = DateTime.now();
+    final isActive = prescription.prescriptionDate
+        .add(const Duration(days: 30))
+        .isAfter(now);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
-        onTap: () {
-          // TODO: Navigate to prescription details
-        },
         borderRadius: BorderRadius.circular(12),
+        onTap: () {},
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -156,11 +156,11 @@ class _PatientPrescriptionsScreenState
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.green.withAlphaSafe(0.1),
+                        color: Colors.green.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        AppLocalizations.of(context).translate('active'),
+                        context.translateSafe('active'),
                         style: const TextStyle(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
@@ -170,20 +170,24 @@ class _PatientPrescriptionsScreenState
                     ),
                 ],
               ),
+
               const SizedBox(height: 8),
+
+              /// Doctor
               Row(
                 children: [
                   const Icon(Icons.person, size: 16),
                   const SizedBox(width: 4),
                   Text(
-                    prescription.doctorName ?? 'Doctor Name',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
+                    prescription.doctorName ?? 'Doctor',
+                    style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
+
               const SizedBox(height: 8),
+
+              /// Diagnosis
               if (prescription.diagnosis != null) ...[
                 Row(
                   children: [
@@ -192,7 +196,6 @@ class _PatientPrescriptionsScreenState
                     Expanded(
                       child: Text(
                         prescription.diagnosis!,
-                        style: Theme.of(context).textTheme.bodyMedium,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -201,9 +204,11 @@ class _PatientPrescriptionsScreenState
                 ),
                 const SizedBox(height: 8),
               ],
+
+              /// Medications
               if (prescription.medications.isNotEmpty) ...[
                 Text(
-                  AppLocalizations.of(context).translate('medications'),
+                  context.translateSafe('medications'),
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 4),
@@ -214,38 +219,33 @@ class _PatientPrescriptionsScreenState
                       children: [
                         const Icon(Icons.circle, size: 6),
                         const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            med,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ),
+                        Expanded(child: Text(med)),
                       ],
                     ),
                   );
                 }),
-                if (prescription.medications.length > 3) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    '+${prescription.medications.length - 3} ${AppLocalizations.of(context).translate('more')}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
-                        ),
+                if (prescription.medications.length > 3)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      '+${prescription.medications.length - 3} ${context.translateSafe('more')}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.grey[600],
+                          ),
+                    ),
                   ),
-                ],
               ],
+
               const SizedBox(height: 16),
+
+              /// Button
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        // TODO: Download prescription
-                      },
+                      onPressed: () {},
                       icon: const Icon(Icons.download, size: 16),
-                      label: Text(
-                        AppLocalizations.of(context).translate('download'),
-                      ),
+                      label: Text(context.translateSafe('download')),
                     ),
                   ),
                 ],
@@ -257,23 +257,19 @@ class _PatientPrescriptionsScreenState
     );
   }
 
-  Widget _buildErrorState(String message) {
+  Widget _buildErrorState(BuildContext context, String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red[400],
-          ),
+          Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
           const SizedBox(height: 16),
           Text(
             message,
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.grey[600],
                 ),
-            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -281,7 +277,7 @@ class _PatientPrescriptionsScreenState
               context.read<PatientBloc>().add(LoadPrescriptions());
             },
             icon: const Icon(Icons.refresh),
-            label: Text(AppLocalizations.of(context).translate('retry')),
+            label: Text(context.translateSafe('retry')),
           ),
         ],
       ),

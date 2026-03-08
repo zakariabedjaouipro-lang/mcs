@@ -37,18 +37,25 @@ class EmployeeModel extends Equatable {
         role: json['role'] as String?,
         fullName: json['fullName'] as String? ?? json['full_name'] as String?,
       );
+
+  // ───────── Fields ─────────
+
   final String id;
   final String userId;
   final String clinicId;
   final EmployeeType employeeType;
   final String department;
-  final String employe
-  final String? name;
-  final String? role;
-  final String? fullName;eId; // Internal employee ID
+
+  /// Internal employee ID
+  final String employeeId;
+
   final DateTime joinedAt;
   final List<String> qualifications;
   final bool isActive;
+
+  final String? name;
+  final String? role;
+  final String? fullName;
 
   /// Create a copy with optional field overrides.
   EmployeeModel copyWith({
@@ -64,21 +71,22 @@ class EmployeeModel extends Equatable {
     String? name,
     String? role,
     String? fullName,
-  }) =>
-      EmployeeModel(
-        id: id ?? this.id,
-        userId: userId ?? this.userId,
-        clinicId: clinicId ?? this.clinicId,
-        employeeType: employeeType ?? this.employeeType,
-        department: department ?? this.department,
-        employeeId: employeeId ?? this.employeeId,
-        joinedAt: joinedAt ?? this.joinedAt,
-        qualifications: qualifications ?? this.qualifications,
-        isActive: isActive ?? this.isActive,
-        name: name ?? this.name,
-        role: role ?? this.role,
-        fullName: fullName ?? this.fullName,
-      );
+  }) {
+    return EmployeeModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      clinicId: clinicId ?? this.clinicId,
+      employeeType: employeeType ?? this.employeeType,
+      department: department ?? this.department,
+      employeeId: employeeId ?? this.employeeId,
+      joinedAt: joinedAt ?? this.joinedAt,
+      qualifications: qualifications ?? this.qualifications,
+      isActive: isActive ?? this.isActive,
+      name: name ?? this.name,
+      role: role ?? this.role,
+      fullName: fullName ?? this.fullName,
+    );
+  }
 
   /// Convert employee type to readable name.
   String getEmployeeTypeName() {
@@ -94,26 +102,21 @@ class EmployeeModel extends Equatable {
     }
   }
 
-  /// Check if employee is a receptionist.
   bool get isReceptionist => employeeType == EmployeeType.receptionist;
-
-  /// Check if employee is a nurse.
   bool get isNurse => employeeType == EmployeeType.nurse;
-
-  /// Check if employee is a technician.
   bool get isTechnician => employeeType == EmployeeType.technician;
-
-  /// Check if employee is administrative staff.
   bool get isAdministrative => employeeType == EmployeeType.administrative;
 
-  /// Years of service at the clinic.
+  /// Years of service
   int get yearsOfService {
     final now = DateTime.now();
     var years = now.year - joinedAt.year;
+
     if (now.month < joinedAt.month ||
         (now.month == joinedAt.month && now.day < joinedAt.day)) {
       years--;
     }
+
     return years;
   }
 
@@ -122,7 +125,7 @@ class EmployeeModel extends Equatable {
         'id': id,
         'userId': userId,
         'clinicId': clinicId,
-        'employeeType': employeeType.toString().split('.').last,
+        'employeeType': employeeType.name,
         'department': department,
         'employeeId': employeeId,
         'joinedAt': joinedAt.toIso8601String(),

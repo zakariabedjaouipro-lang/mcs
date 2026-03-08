@@ -1,14 +1,11 @@
-/// Patient Change Password Screen
-library;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/localization/app_localizations.dart';
+
+import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:mcs/core/widgets/custom_button.dart';
 import 'package:mcs/core/widgets/custom_text_field.dart';
 import 'package:mcs/features/patient/presentation/bloc/index.dart';
 
-/// Patient change password screen
 class PatientChangePasswordScreen extends StatefulWidget {
   const PatientChangePasswordScreen({super.key});
 
@@ -25,9 +22,9 @@ class _PatientChangePasswordScreenState
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  bool _obscureCurrentPassword = true;
-  bool _obscureNewPassword = true;
-  bool _obscureConfirmPassword = true;
+  bool _obscureCurrent = true;
+  bool _obscureNew = true;
+  bool _obscureConfirm = true;
 
   @override
   void dispose() {
@@ -39,9 +36,14 @@ class _PatientChangePasswordScreenState
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('change_password')),
+        title: Text(
+          context.translateSafe('change_password'),
+          style: theme.textTheme.titleLarge,
+        ),
       ),
       body: BlocListener<PatientBloc, PatientState>(
         listener: (context, state) {
@@ -52,8 +54,11 @@ class _PatientChangePasswordScreenState
                 backgroundColor: Colors.green,
               ),
             );
+
             Navigator.pop(context);
-          } else if (state is PatientError) {
+          }
+
+          if (state is PatientError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
@@ -63,145 +68,136 @@ class _PatientChangePasswordScreenState
           }
         },
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Info Card
-                Card(
-                  color: Colors.blue[50],
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Icon(Icons.info_outline, color: Colors.blue[700]),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            AppLocalizations.of(context)
-                                .translate('password_requirements'),
-                            style: TextStyle(color: Colors.blue[900]),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                /// Header
+                Icon(
+                  Icons.lock_reset,
+                  size: 70,
+                  color: theme.colorScheme.primary,
                 ),
-                const SizedBox(height: 24),
 
-                // Current Password
+                const SizedBox(height: 12),
+
+                Text(
+                  context.translateSafe('update_your_password'),
+                  style: theme.textTheme.titleMedium,
+                ),
+
+                const SizedBox(height: 32),
+
+                /// Current Password
                 CustomTextField(
                   controller: _currentPasswordController,
-                  label: AppLocalizations.of(context)
-                      .translate('current_password'),
-                  hintText: AppLocalizations.of(context)
-                      .translate('enter_current_password'),
+                  label: context.translateSafe('current_password'),
+                  hint: context.translateSafe('enter_current_password'),
                   prefixIcon: Icons.lock,
-                  obscureText: _obscureCurrentPassword,
+                  obscureText: _obscureCurrent,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureCurrentPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                      _obscureCurrent ? Icons.visibility : Icons.visibility_off,
                     ),
                     onPressed: () {
                       setState(() {
-                        _obscureCurrentPassword = !_obscureCurrentPassword;
+                        _obscureCurrent = !_obscureCurrent;
                       });
                     },
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context)
-                          .translate('please_enter_current_password');
+                      return context.translateSafe(
+                        'please_enter_current_password',
+                      );
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
 
-                // New Password
+                const SizedBox(height: 20),
+
+                /// New Password
                 CustomTextField(
                   controller: _newPasswordController,
-                  label: AppLocalizations.of(context).translate('new_password'),
-                  hintText: AppLocalizations.of(context)
-                      .translate('enter_new_password'),
+                  label: context.translateSafe('new_password'),
+                  hint: context.translateSafe('enter_new_password'),
                   prefixIcon: Icons.lock_outline,
-                  obscureText: _obscureNewPassword,
+                  obscureText: _obscureNew,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureNewPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                      _obscureNew ? Icons.visibility : Icons.visibility_off,
                     ),
                     onPressed: () {
                       setState(() {
-                        _obscureNewPassword = !_obscureNewPassword;
+                        _obscureNew = !_obscureNew;
                       });
                     },
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context)
-                          .translate('please_enter_new_password');
+                      return context.translateSafe(
+                        'please_enter_new_password',
+                      );
                     }
+
                     if (value.length < 8) {
-                      return AppLocalizations.of(context)
-                          .translate('password_too_short');
+                      return context.translateSafe('password_too_short');
                     }
+
                     return null;
                   },
                   onChanged: (_) {
-                    _formKey.currentState?.validate();
+                    setState(() {});
                   },
                 ),
-                const SizedBox(height: 8),
 
-                // Password Strength Indicator
-                _buildPasswordStrengthIndicator(),
-                const SizedBox(height: 16),
+                const SizedBox(height: 10),
 
-                // Confirm Password
+                _passwordStrengthIndicator(),
+
+                const SizedBox(height: 20),
+
+                /// Confirm Password
                 CustomTextField(
                   controller: _confirmPasswordController,
-                  label: AppLocalizations.of(context)
-                      .translate('confirm_password'),
-                  hintText: AppLocalizations.of(context)
-                      .translate('confirm_new_password'),
+                  label: context.translateSafe('confirm_password'),
+                  hint: context.translateSafe('confirm_new_password'),
                   prefixIcon: Icons.lock_outline,
-                  obscureText: _obscureConfirmPassword,
+                  obscureText: _obscureConfirm,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureConfirmPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                      _obscureConfirm ? Icons.visibility : Icons.visibility_off,
                     ),
                     onPressed: () {
                       setState(() {
-                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                        _obscureConfirm = !_obscureConfirm;
                       });
                     },
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context)
-                          .translate('please_confirm_password');
+                      return context.translateSafe(
+                        'please_confirm_password',
+                      );
                     }
+
                     if (value != _newPasswordController.text) {
-                      return AppLocalizations.of(context)
-                          .translate('passwords_do_not_match');
+                      return context.translateSafe(
+                        'passwords_do_not_match',
+                      );
                     }
+
                     return null;
                   },
                 ),
-                const SizedBox(height: 24),
 
-                // Change Password Button
+                const SizedBox(height: 30),
+
+                /// Button
                 CustomButton(
-                  text:
-                      AppLocalizations.of(context).translate('change_password'),
+                  label: context.translateSafe('change_password'),
                   onPressed: _changePassword,
                 ),
               ],
@@ -212,85 +208,57 @@ class _PatientChangePasswordScreenState
     );
   }
 
-  Widget _buildPasswordStrengthIndicator() {
+  Widget _passwordStrengthIndicator() {
     final password = _newPasswordController.text;
-    final strength = _calculatePasswordStrength(password);
+    final strength = _calculateStrength(password);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              AppLocalizations.of(context).translate('password_strength'),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[600],
-                  ),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 400),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            strength.label,
+            style: TextStyle(
+              color: strength.color,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(width: 8),
-            Text(
-              strength.label,
-              style: TextStyle(
-                color: strength.color,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        LinearProgressIndicator(
-          value: strength.value,
-          backgroundColor: Colors.grey[300],
-          valueColor: AlwaysStoppedAnimation<Color>(strength.color),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          AppLocalizations.of(context).translate('password_requirements'),
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
-              ),
-        ),
-      ],
+          ),
+          const SizedBox(height: 6),
+          LinearProgressIndicator(
+            value: strength.value,
+            minHeight: 6,
+            backgroundColor: Colors.grey.shade300,
+            valueColor: AlwaysStoppedAnimation(strength.color),
+          ),
+        ],
+      ),
     );
   }
 
-  PasswordStrength _calculatePasswordStrength(String password) {
+  PasswordStrength _calculateStrength(String password) {
     if (password.isEmpty) {
       return PasswordStrength(0, '', Colors.grey);
     }
 
     var score = 0;
 
-    // Length check
     if (password.length >= 8) score++;
     if (password.length >= 12) score++;
-
-    // Complexity checks
     if (password.contains(RegExp('[A-Z]'))) score++;
     if (password.contains(RegExp('[a-z]'))) score++;
     if (password.contains(RegExp('[0-9]'))) score++;
     if (password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) score++;
 
     if (score <= 2) {
-      return PasswordStrength(
-        0.33,
-        AppLocalizations.of(context).translate('weak'),
-        Colors.red,
-      );
-    } else if (score <= 4) {
-      return PasswordStrength(
-        0.66,
-        AppLocalizations.of(context).translate('medium'),
-        Colors.orange,
-      );
-    } else {
-      return PasswordStrength(
-        1,
-        AppLocalizations.of(context).translate('strong'),
-        Colors.green,
-      );
+      return PasswordStrength(0.3, 'Weak', Colors.red);
     }
+
+    if (score <= 4) {
+      return PasswordStrength(0.6, 'Medium', Colors.orange);
+    }
+
+    return PasswordStrength(1, 'Strong', Colors.green);
   }
 
   void _changePassword() {
@@ -307,6 +275,7 @@ class _PatientChangePasswordScreenState
 
 class PasswordStrength {
   PasswordStrength(this.value, this.label, this.color);
+
   final double value;
   final String label;
   final Color color;

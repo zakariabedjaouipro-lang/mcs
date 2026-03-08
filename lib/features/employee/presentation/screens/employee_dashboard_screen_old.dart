@@ -1,14 +1,5 @@
-/// Employee Dashboard Screen
-library;
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/localization/app_localizations.dart';
-import 'package:mcs/core/models/appointment_model.dart';
-import 'package:mcs/core/widgets/loading_widget.dart';
-import 'package:mcs/features/employee/presentation/bloc/index.dart';
 
-/// Employee dashboard screen
 class EmployeeDashboardScreen extends StatefulWidget {
   const EmployeeDashboardScreen({super.key});
 
@@ -17,527 +8,252 @@ class EmployeeDashboardScreen extends StatefulWidget {
       _EmployeeDashboardScreenState();
 }
 
-class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
+class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
-    _loadData();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _fadeAnimation =
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+
+    _controller.forward();
   }
 
-  void _loadData() {
-    context.read<EmployeeBloc>().add(const LoadDashboardStats());
-    context
-        .read<EmployeeBloc>()
-        .add(const LoadAppointments(status: 'scheduled'));
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('dashboard')),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // TODO: Navigate to notifications
-            },
-          ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'profile') {
-                // TODO: Navigate to profile
-              } else if (value == 'settings') {
-                // TODO: Navigate to settings
-              } else if (value == 'logout') {
-                // TODO: Implement logout
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'profile',
-                child: Text(AppLocalizations.of(context).translate('profile')),
+        title: const Text('Employee Dashboard'),
+        centerTitle: true,
+      ),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Employee Dashboard',
+                style: theme.textTheme.titleLarge,
               ),
-              PopupMenuItem(
-                value: 'settings',
-                child: Text(AppLocalizations.of(context).translate('settings')),
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem(
-                value: 'logout',
-                child: Text(
-                  AppLocalizations.of(context).translate('logout'),
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
+              const SizedBox(height: 16),
+              _buildStatsGrid(),
+              const SizedBox(height: 24),
+              _buildQuickActions(),
+              const SizedBox(height: 24),
+              _buildTodayAppointments(),
             ],
           ),
-        ],
-      ),
-      body: BlocBuilder<EmployeeBloc, EmployeeState>(
-        builder: (context, state) {
-          if (state is EmployeeLoading) {
-            return const LoadingWidget();
-          }
-
-          return RefreshIndicator(
-            onRefresh: () async {
-              _loadData();
-            },
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Welcome Card
-                  _buildWelcomeCard(context, state),
-                  const SizedBox(height: 24),
-
-                  // Stats Cards
-                  _buildStatsGrid(context, state),
-                  const SizedBox(height: 24),
-
-                  // Today's Appointments
-                  _buildTodayAppointments(context, state),
-                  const SizedBox(height: 24),
-
-                  // Quick Actions
-                  _buildQuickActions(context),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-      drawer: _buildDrawer(context),
-    );
-  }
-
-  Widget _buildWelcomeCard(BuildContext context, EmployeeState state) {
-    var employeeName = 'Employee';
-    var role = 'Staff';
-    if (state is EmployeeProfileLoaded) {
-      employeeName = state.profile.name;
-      role = state.profile.role; ?? 'Employee';
-      role = state.profile.role ?? 'Staff';
-    }
-
-    return Card(
-      color: Theme.of(context).colorScheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              child: Text(
-                employeeName.isNotEmpty ? employeeName.substring(0, 1).toUpperCase() : 'E',
-                style: const TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)?.translate('welcome') ?? 'Welcome',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onPrimaryContainer,
-                        ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    employeeName,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color:
-                              Theme.of(context).colorScheme.onPrimaryContainer,
-                        ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    role,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onPrimaryContainer
-                              .withValues(alpha: 
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );
   }
 
-  Widget _buildStatsGrid(BuildContext context, EmployeeState state) {
-    var stats = <String, dynamic>{};
-    if (state is DashboardStatsLoaded) {
-      stats = state.stats;
-    }
+  // ===============================
+  // Stats Cards
+  // ===============================
 
-    final l10n = AppLocalizations.of(context);
-
+  Widget _buildStatsGrid() {
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      childAspectRatio: 1.5,
-      children: [
-        _buildStatCard(
-          context,
-          l10n?.translate('total_patients') ?? 'Total Patients',
-          (stats['total_patients'] ?? 0).toString(),
-          Icons.people,
-          Colors.blue,
+      children: const [
+        _StatCard(
+          title: "Patients",
+          value: "128",
+          icon: Icons.people,
+          color: Colors.blue,
         ),
-        _buildStatCard(
-          context,
-          l10n?.translate('today_appointments') ?? "Today's Appointments",
-          (stats['today_appointments'] ?? 0).toString(),
-          Icons.calendar_today,
-          Colors.green,
+        _StatCard(
+          title: "Appointments",
+          value: "42",
+          icon: Icons.calendar_today,
+          color: Colors.green,
         ),
-        _buildStatCard(
-          context,
-          l10n?.translate('pending_appointments') ?? 'Pending Appointments',
-          (stats['pending_appointments'] ?? 0).toString(),
-          Icons.pending,
-          Colors.orange,
+        _StatCard(
+          title: "Pending",
+          value: "8",
+          icon: Icons.hourglass_bottom,
+          color: Colors.orange,
         ),
-        _buildStatCard(
-          context,
-          l10n?.translate('pending_invoices') ?? 'Pending Invoices',
-          (stats['pending_invoices'] ?? 0).toString(),
-          Icons.receipt_long,
-          Colors.red,
+        _StatCard(
+          title: "Completed",
+          value: "30",
+          icon: Icons.check_circle,
+          color: Colors.purple,
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(
-    BuildContext context,
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  // ===============================
+  // Quick Actions
+  // ===============================
+
+  Widget _buildQuickActions() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Quick Actions",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            _ActionButton(
+              label: "Add Patient",
+              icon: Icons.person_add,
+            ),
+            _ActionButton(
+              label: "New Appointment",
+              icon: Icons.add_circle,
+            ),
+            _ActionButton(
+              label: "Scan Lab",
+              icon: Icons.qr_code_scanner,
+            ),
+            _ActionButton(
+              label: "Reports",
+              icon: Icons.bar_chart,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // ===============================
+  // Today Appointments
+  // ===============================
+
+  Widget _buildTodayAppointments() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Today's Appointments",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        _appointmentTile("Ahmed Benali", "10:00 AM"),
+        _appointmentTile("Sara Mohamed", "11:30 AM"),
+        _appointmentTile("Yacine Haddad", "02:15 PM"),
+      ],
+    );
+  }
+
+  Widget _appointmentTile(String name, String time) {
     return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: ListTile(
+        leading: const CircleAvatar(
+          child: Icon(Icons.person),
+        ),
+        title: Text(name),
+        subtitle: Text(time),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+      ),
+    );
+  }
+}
+
+// ===============================
+// Stat Card Widget
+// ===============================
+
+class _StatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _StatCard({
+    required this.title,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 8),
+            Icon(icon, size: 32, color: color),
+            const SizedBox(height: 10),
             Text(
               value,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodySmall,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-final List<AppointmentModel> appointments = state is AppointmentsLoaded
-        ? state.appointments
-        : const <AppointmentModel>[];
-
-    final l10n = AppLocalizations.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              l10n?.translate('today_appointments') ?? "Today's Appointments",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            TextButton(
-              onPressed: () {
-                // TODO: Navigate to all appointments
-              },
-              child: Text(l10n?.translate('view_all') ?? 'View All'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        if (appointments.isEmpty)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Center(
-                child: Text(
-                  l10n?.translate('no_appointments_today') ??
-                      'No appointments today',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                ),
-              ),
-            ),
-          )
-        else
-          ...appointments.take(3).map((appointment) {
-            return Card(
-              margin: const EdgeInsets.only(bottom: 8),
-              child: ListTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.person),
-                ),
-                title: Text(appointment.patientName ?? 'Patient'),
-                subtitle: Text(appointment.timeSlot),
-                trailing: appointment.status == AppointmentStatus.pending
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                            ),
-                            onPressed: () {
-                              context
-                                  .read<EmployeeBloc>()
-                                  .add(AcceptAppointment(appointment.id));
-                            },
-                          ),
-                        ],
-                      )
-                    : appointment.status == AppointmentStatus.confirmed
-                        ? IconButton(
-                            icon: const Icon(
-                              Icons.check_circle_outline,
-                              color: Colors.blue,
-                            ),
-                            onPressed: () {
-                              context
-                                  .read<EmployeeBloc>()
-                                  .add(CompleteAppointm
-                                  .read<EmployeeBloc>()
-                                  .add(CheckOutPatient(appointment.id));
-                            },
-                          )
-                        : const Icon(Icons.check_circle, color: Colors.grey),
-              ),
-            );
-          }),
-      ],
-    );
-  }
-
-  Widget _buildQuickActions(BuildContext context) {
-    return Column(
-    final l10n = AppLocalizations.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n?.translate('quick_actions') ?? 'Quick Actions',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: const TextStyle(
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
-        ),
-        const SizedBox(height: 16),
-        GridView.count(
-          crossAxisCount: 4,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          children: [
-            _buildQuickActionCard(
-              context,
-              l10n?.translate('register_patient') ?? 'Register Patient',
-              Icons.person_add,
-              Colors.blue,
-              () {
-                // TODO: Navigate to patient registration
-              },
             ),
-            _buildQuickActionCard(
-              context,
-              l10n?.translate('book_appointment') ?? 'Book Appointment',
-              Icons.calendar_month,
-              Colors.green,
-              () {
-                // TODO: Navigate to appointment booking
-              },
-            ),
-            _buildQuickActionCard(
-              context,
-              l10n?.translate('inventory') ?? 'Inventory',
-              Icons.inventory_2,
-              Colors.orange,
-              () {
-                // TODO: Navigate to inventory
-              },
-            ),
-            _buildQuickActionCard(
-              context,
-              l10n?.translate('invoices') ?? 'Invoices',
-              Icons.receipt,
-              Colors.red,
-              () {
-                // TODO: Navigate to invoices
-              },
-            ),
+            const SizedBox(height: 4),
+            Text(title),
           ],
-        ),
-      ],
-    );
-  }
-                // TODO: Navigate to invoices
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildQuickActionCard(
-    BuildContext context,
-    String title,
-    IconData icon,
-    Color color,
-    VoidCallback onTap,
-  ) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: color, size: 32),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildDrawer(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.person, size: 40, color: Colors.grey),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Employee Name',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Role',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
+// ===============================
+// Quick Action Button
+// ===============================
+
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+
+  const _ActionButton({
+    required this.label,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Ink(
+          decoration: const ShapeDecoration(
+            color: Colors.blue,
+            shape: CircleBorder(),
           ),
-          ListTile(
-            leading: const Icon(Icons.dashboard),
-            title: Text(AppLocalizations.of(context).translate('dashboard')),
-            onTap: () {
-              Navigator.pop(context);
-            },
+          child: IconButton(
+            icon: Icon(icon, color: Colors.white),
+            onPressed: () {},
           ),
-          ListTile(
-            leading: const Icon(Icons.calendar_month),
-            title: Text(AppLocalizations.of(context).translate('appointments')),
-            onTap: () {
-              // TODO: Navigate to appointments
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.people),
-            title: Text(AppLocalizations.of(context).translate('patients')),
-            onTap: () {
-              // TODO: Navigate to patients
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.inventory_2),
-            title: Text(AppLocalizations.of(context).translate('inventory')),
-            onTap: () {
-              // TODO: Navigate to inventory
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.receipt),
-            title: Text(AppLocalizations.of(context).translate('invoices')),
-            onTap: () {
-              // TODO: Navigate to invoices
-              Navigator.pop(context);
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: Text(AppLocalizations.of(context).translate('settings')),
-            onTap: () {
-              // TODO: Navigate to settings
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 6),
+        Text(label, style: const TextStyle(fontSize: 12)),
+      ],
     );
   }
 }

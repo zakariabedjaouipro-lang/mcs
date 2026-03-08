@@ -1,422 +1,204 @@
-/// Patient Profile Screen
-library;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/extensions/safe_extensions.dart';
-import 'package:mcs/core/localization/app_localizations.dart';
+
+import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:mcs/core/models/user_model.dart';
-import 'package:mcs/core/widgets/custom_button.dart';
-import 'package:mcs/core/widgets/custom_text_field.dart';
 import 'package:mcs/features/patient/presentation/bloc/index.dart';
 
-/// Patient profile screen
-class PatientProfileScreen extends StatefulWidget {
+class PatientProfileScreen extends StatelessWidget {
   const PatientProfileScreen({super.key});
-
-  @override
-  State<PatientProfileScreen> createState() => _PatientProfileScreenState();
-}
-
-class _PatientProfileScreenState extends State<PatientProfileScreen> {
-  final _formKey = GlobalKey<FormState>();
-
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _bloodTypeController = TextEditingController();
-  final _allergiesController = TextEditingController();
-  final _emergencyContactController = TextEditingController();
-  final _emergencyPhoneController = TextEditingController();
-
-  DateTime? _dateOfBirth;
-  UserModel? _user;
-
-  @override
-  void initState() {
-    super.initState();
-    context.read<PatientBloc>().add(LoadProfile());
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _phoneController.dispose();
-    _addressController.dispose();
-    _bloodTypeController.dispose();
-    _allergiesController.dispose();
-    _emergencyContactController.dispose();
-    _emergencyPhoneController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('profile')),
+        title: Text(context.translateSafe('profile')),
+        centerTitle: true,
       ),
-      body: BlocListener<PatientBloc, PatientState>(
-        listener: (context, state) {
-          if (state is ProfileLoaded) {
-            _user = state.user;
-            _populateFields(state.user);
-          } else if (state is ProfileUpdated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  AppLocalizations.of(context).translate('profile_updated'),
-                ),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } else if (state is PatientError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
+      body: BlocBuilder<PatientBloc, PatientState>(
+        builder: (context, state) {
+          final user = _extractUser(state);
+
+          if (user == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           }
-        },
-        child: BlocBuilder<PatientBloc, PatientState>(
-          builder: (context, state) {
-            if (state is PatientLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _ProfileHeader(user: user),
+                const SizedBox(height: 24),
+                _InfoCard(
+                  title: context.translateSafe('personal_information'),
                   children: [
-                    // Profile Header
-                    _buildProfileHeader(),
-                    const SizedBox(height: 24),
-
-                    // Personal Information
-                    _buildSection(
-                      AppLocalizations.of(context)
-                          .translate('personal_information'),
-                      [
-                        _buildNameField(),
-                        const SizedBox(height: 16),
-                        _buildPhoneField(),
-                        const SizedBox(height: 16),
-                        _buildDateOfBirthField(),
-                        const SizedBox(height: 16),
-                        _buildAddressField(),
-                      ],
+                    _InfoTile(
+                      icon: Icons.person,
+                      label: context.translateSafe('full_name'),
+                      value: user.name ?? '',
                     ),
-                    const SizedBox(height: 24),
-
-                    // Medical Information
-                    _buildSection(
-                      AppLocalizations.of(context)
-                          .translate('medical_information'),
-                      [
-                        _buildBloodTypeField(),
-                        const SizedBox(height: 16),
-                        _buildAllergiesField(),
-                      ],
+                    _InfoTile(
+                      icon: Icons.email,
+                      label: context.translateSafe('email'),
+                      value: user.email ?? '',
                     ),
-                    const SizedBox(height: 24),
-
-                    // Emergency Contact
-                    _buildSection(
-                      AppLocalizations.of(context)
-                          .translate('emergency_contact'),
-                      [
-                        _buildEmergencyContactField(),
-                        const SizedBox(height: 16),
-                        _buildEmergencyPhoneField(),
-                      ],
+                    _InfoTile(
+                      icon: Icons.phone,
+                      label: context.translateSafe('phone'),
+                      value: user.phone ?? '',
                     ),
-                    const SizedBox(height: 24),
-
-                    // Update Button
-                    CustomButton(
-                      text: AppLocalizations.of(context)
-                          .translate('update_profile'),
-                      onPressed: _updateProfile,
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Change Password Button
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        // TODO: Navigate to change password screen
-                      },
-                      icon: const Icon(Icons.lock),
-                      label: Text(
-                        AppLocalizations.of(context)
-                            .translate('change_password'),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Social Accounts
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        // TODO: Navigate to social accounts screen
-                      },
-                      icon: const Icon(Icons.link),
-                      label: Text(
-                        AppLocalizations.of(context)
-                            .translate('link_social_accounts'),
-                      ),
+                    _InfoTile(
+                      icon: Icons.location_on,
+                      label: context.translateSafe('address'),
+                      value: user.address ?? '',
                     ),
                   ],
                 ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileHeader() {
-    return Center(
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Text(
-                  _user?.fullName?.firstCharSafe ?? _user?.email?.firstCharSafe ?? 'U',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 20,
+                const SizedBox(height: 16),
+                _InfoCard(
+                  title: context.translateSafe('medical_information'),
+                  children: [
+                    _InfoTile(
+                      icon: Icons.bloodtype,
+                      label: context.translateSafe('blood_type'),
+                      value: user.bloodType ?? '-',
                     ),
-                    onPressed: () {
-                      // TODO: Implement profile photo upload
-                    },
-                  ),
+                    _InfoTile(
+                      icon: Icons.warning,
+                      label: context.translateSafe('allergies'),
+                      value: user.allergies ?? '-',
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _user?.fullName?.trimSafe.orDefault('User Name') ?? 'User Name',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+                const SizedBox(height: 16),
+                _InfoCard(
+                  title: context.translateSafe('emergency_contact'),
+                  children: [
+                    _InfoTile(
+                      icon: Icons.contact_phone,
+                      label: context.translateSafe('contact_name'),
+                      value: user.emergencyContact ?? '-',
+                    ),
+                    _InfoTile(
+                      icon: Icons.phone_in_talk,
+                      label: context.translateSafe('contact_phone'),
+                      value: user.emergencyContact ?? '-',
+                    ),
+                  ],
                 ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            _user?.email.trimSafe.orDefault('user@example.com'),
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[600],
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSection(String title, List<Widget> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 16),
-        ...children,
-      ],
-    );
-  }
-
-  Widget _buildNameField() {
-    return CustomTextField(
-      controller: _nameController,
-      label: AppLocalizations.of(context).translate('full_name'),
-      hintText: AppLocalizations.of(context).translate('enter_full_name'),
-      prefixIcon: Icons.person,
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return AppLocalizations.of(context).translate('please_enter_name');
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildPhoneField() {
-    return CustomTextField(
-      controller: _phoneController,
-      label: AppLocalizations.of(context).translate('phone'),
-      hintText: AppLocalizations.of(context).translate('enter_phone'),
-      prefixIcon: Icons.phone,
-      keyboardType: TextInputType.phone,
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return AppLocalizations.of(context).translate('please_enter_phone');
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildDateOfBirthField() {
-    return InkWell(
-      onTap: () async {
-        final date = await showDatePicker(
-          context: context,
-          initialDate: _dateOfBirth ?? DateTime.now(),
-          firstDate: DateTime(1900),
-          lastDate: DateTime.now(),
-        );
-        if (date != null) {
-          setState(() {
-            _dateOfBirth = date;
-          });
-        }
-      },
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: AppLocalizations.of(context).translate('date_of_birth'),
-          hintText:
-              AppLocalizations.of(context).translate('select_date_of_birth'),
-          prefixIcon: const Icon(Icons.calendar_today),
-          border: const OutlineInputBorder(),
-        ),
-        child: Text(
-          _dateOfBirth != null
-              ? '${_dateOfBirth!.day}/${_dateOfBirth!.month}/${_dateOfBirth!.year}'
-              : '',
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAddressField() {
-    return CustomTextField(
-      controller: _addressController,
-      label: AppLocalizations.of(context).translate('address'),
-      hintText: AppLocalizations.of(context).translate('enter_address'),
-      prefixIcon: Icons.location_on,
-      maxLines: 2,
-    );
-  }
-
-  Widget _buildBloodTypeField() {
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        labelText: AppLocalizations.of(context).translate('blood_type'),
-        hintText: AppLocalizations.of(context).translate('select_blood_type'),
-        prefixIcon: const Icon(Icons.opacity),
-        border: const OutlineInputBorder(),
-      ),
-      initialValue:
-          _bloodTypeController.text.isEmpty ? null : _bloodTypeController.text,
-      items: const [
-        DropdownMenuItem(value: 'A+', child: Text('A+')),
-        DropdownMenuItem(value: 'A-', child: Text('A-')),
-        DropdownMenuItem(value: 'B+', child: Text('B+')),
-        DropdownMenuItem(value: 'B-', child: Text('B-')),
-        DropdownMenuItem(value: 'AB+', child: Text('AB+')),
-        DropdownMenuItem(value: 'AB-', child: Text('AB-')),
-        DropdownMenuItem(value: 'O+', child: Text('O+')),
-        DropdownMenuItem(value: 'O-', child: Text('O-')),
-      ],
-      onChanged: (value) {
-        _bloodTypeController.text = value ?? '';
-      },
-    );
-  }
-
-  Widget _buildAllergiesField() {
-    return CustomTextField(
-      controller: _allergiesController,
-      label: AppLocalizations.of(context).translate('allergies'),
-      hintText: AppLocalizations.of(context).translate('enter_allergies'),
-      prefixIcon: Icons.warning,
-      maxLines: 3,
-    );
-  }
-
-  Widget _buildEmergencyContactField() {
-    return CustomTextField(
-      controller: _emergencyContactController,
-      label: AppLocalizations.of(context).translate('emergency_contact_name'),
-      hintText:
-          AppLocalizations.of(context).translate('enter_emergency_contact'),
-      prefixIcon: Icons.person,
-    );
-  }
-
-  Widget _buildEmergencyPhoneField() {
-    return CustomTextField(
-      controller: _emergencyPhoneController,
-      label: AppLocalizations.of(context).translate('emergency_contact_phone'),
-      hintText: AppLocalizations.of(context).translate('enter_emergency_phone'),
-      prefixIcon: Icons.phone,
-      keyboardType: TextInputType.phone,
-    );
-  }
-
-  void _populateFields(UserModel user) {
-    _nameController.text = user.name;
-    _phoneController.text = user.phone ?? '';
-    _addressController.text = user.address ?? '';
-    _bloodTypeController.text = user.bloodType ?? '';
-    _allergiesController.text = user.allergies ?? '';
-    _emergencyContactController.text = user.emergencyContact ?? '';
-    _emergencyPhoneController.text = user.emergencyPhone ?? '';
-    _dateOfBirth = user.dateOfBirth;
-  }
-
-  void _updateProfile() {
-    if (_formKey.currentState!.validate()) {
-      context.read<PatientBloc>().add(
-            UpdateProfile(
-              name: _nameController.text.trim(),
-              phone: _phoneController.text.trim(),
-              address: _addressController.text.trim().isEmpty
-                  ? null
-                  : _addressController.text.trim(),
-              dateOfBirth: _dateOfBirth,
-              bloodType: _bloodTypeController.text.trim().isEmpty
-                  ? null
-                  : _bloodTypeController.text.trim(),
-              allergies: _allergiesController.text.trim().isEmpty
-                  ? null
-                  : _allergiesController.text.trim(),
-              emergencyContact: _emergencyContactController.text.trim().isEmpty
-                  ? null
-                  : _emergencyContactController.text.trim(),
-              emergencyPhone: _emergencyPhoneController.text.trim().isEmpty
-                  ? null
-                  : _emergencyPhoneController.text.trim(),
+              ],
             ),
           );
+        },
+      ),
+    );
+  }
+
+  UserModel? _extractUser(PatientState state) {
+    try {
+      final dynamic s = state;
+      return s.user as UserModel?;
+    } catch (_) {
+      return null;
     }
+  }
+}
+
+class _ProfileHeader extends StatelessWidget {
+  const _ProfileHeader({required this.user});
+
+  final UserModel user;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = user.name ?? '';
+    final letter = name.isNotEmpty ? name[0].toUpperCase() : '?';
+
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 50,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          child: Text(
+            letter,
+            style: const TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          name,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          user.email ?? '',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+      ],
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({
+    required this.title,
+    required this.children,
+  });
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            const Divider(height: 20),
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoTile extends StatelessWidget {
+  const _InfoTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(label),
+      subtitle: Text(value),
+      dense: true,
+      contentPadding: EdgeInsets.zero,
+    );
   }
 }

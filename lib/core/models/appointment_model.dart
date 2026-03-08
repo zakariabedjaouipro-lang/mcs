@@ -39,10 +39,10 @@ class AppointmentModel extends Equatable {
           : RemoteRequestStatus.none,
       notes: json['notes'] as String?,
       createdAt: json['created_at'] != null
-      patientName: json['patient_name'] as String?,
-      doctorName: json['doctor_name'] as String?,
           ? DateTime.parse(json['created_at'] as String)
           : null,
+      patientName: json['patient_name'] as String?,
+      doctorName: json['doctor_name'] as String?,
     );
   }
 
@@ -115,17 +115,13 @@ class AppointmentModel extends Equatable {
 
   // ── Helpers ────────────────────────────────────────────
 
-  /// End time = scheduledAt + duration.
   DateTime get endsAt => scheduledAt.add(Duration(minutes: durationMinutes));
 
-  /// Alias for scheduledAt for backward compatibility
   DateTime get appointmentDate => scheduledAt;
 
-  /// Get time slot as formatted string (HH:MM)
   String get timeSlot =>
       '${scheduledAt.hour.toString().padLeft(2, '0')}:${scheduledAt.minute.toString().padLeft(2, '0')}';
 
-  /// Get status color for UI display
   Color get statusColor {
     switch (status) {
       case AppointmentStatus.pending:
@@ -141,10 +137,8 @@ class AppointmentModel extends Equatable {
     }
   }
 
-  /// Check if appointment is in the past
   bool get isPast => scheduledAt.isBefore(DateTime.now());
 
-  /// Check if appointment is today
   bool get isToday {
     final now = DateTime.now();
     return scheduledAt.year == now.year &&
@@ -152,7 +146,6 @@ class AppointmentModel extends Equatable {
         scheduledAt.day == now.day;
   }
 
-  /// Check if appointment is in the future
   bool get isFuture => scheduledAt.isAfter(DateTime.now());
 
   bool get isPending => status == AppointmentStatus.pending;
@@ -169,7 +162,6 @@ class AppointmentModel extends Equatable {
 
   bool get isTerminal => status.isTerminal;
 
-  // ── Equatable ──────────────────────────────────────────
   @override
   List<Object?> get props => [
         id,

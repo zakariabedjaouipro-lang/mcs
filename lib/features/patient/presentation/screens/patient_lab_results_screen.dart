@@ -1,13 +1,12 @@
 /// Patient Lab Results Screen
-library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/localization/app_localizations.dart';
+
+import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:mcs/core/models/lab_result_model.dart';
 import 'package:mcs/features/patient/presentation/bloc/index.dart';
 
-/// Patient lab results screen
 class PatientLabResultsScreen extends StatefulWidget {
   const PatientLabResultsScreen({super.key});
 
@@ -27,20 +26,25 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('lab_results')),
+        title: Text(context.translateSafe('lab_results')),
       ),
       body: BlocBuilder<PatientBloc, PatientState>(
         builder: (context, state) {
           if (state is PatientLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is LabResultsLoaded) {
+          }
+
+          if (state is LabResultsLoaded) {
             if (state.results.isEmpty) {
               return _buildEmptyState(context);
             }
             return _buildLabResultsList(state.results);
-          } else if (state is PatientError) {
-            return _buildErrorState(state.message);
           }
+
+          if (state is PatientError) {
+            return _buildErrorState(context, state.message);
+          }
+
           return const SizedBox.shrink();
         },
       ),
@@ -52,22 +56,17 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.science_outlined,
-            size: 64,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.science_outlined, size: 64, color: Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
-            AppLocalizations.of(context).translate('no_lab_results'),
+            context.translateSafe('no_lab_results'),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.grey[600],
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            AppLocalizations.of(context)
-                .translate('no_lab_results_description'),
+            context.translateSafe('no_lab_results_description'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey[500],
                 ),
@@ -79,7 +78,6 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
   }
 
   Widget _buildLabResultsList(List<LabResultModel> results) {
-    // Sort by date (most recent first)
     final sortedResults = List<LabResultModel>.from(results)
       ..sort((a, b) => b.resultDate.compareTo(a.resultDate));
 
@@ -88,25 +86,31 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
       itemCount: sortedResults.length,
       itemBuilder: (context, index) {
         final result = sortedResults[index];
-        return _buildLabResultCard(result);
+        return _buildLabResultCard(context, result);
       },
     );
   }
 
-  Widget _buildLabResultCard(LabResultModel result) {
+  Widget _buildLabResultCard(BuildContext context, LabResultModel result) {
     Color statusColor;
     String statusText;
 
     switch (result.status) {
       case 'normal':
         statusColor = Colors.green;
-        statusText = AppLocalizations.of(context).translate('normal');
+        statusText = context.translateSafe('normal');
+        break;
+
       case 'abnormal':
         statusColor = Colors.orange;
-        statusText = AppLocalizations.of(context).translate('abnormal');
+        statusText = context.translateSafe('abnormal');
+        break;
+
       case 'critical':
         statusColor = Colors.red;
-        statusText = AppLocalizations.of(context).translate('critical');
+        statusText = context.translateSafe('critical');
+        break;
+
       default:
         statusColor = Colors.grey;
         statusText = result.status;
@@ -115,23 +119,24 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
-        onTap: () {
-          // TODO: Navigate to lab result details
-        },
         borderRadius: BorderRadius.circular(12),
+        onTap: () {},
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    result.testName,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                  Expanded(
+                    child: Text(
+                      result.testName,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -139,7 +144,7 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: statusColor.withAlphaSafe(0.1),
+                      color: statusColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -153,39 +158,38 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
                   ),
                 ],
               ),
+
               const SizedBox(height: 8),
+
+              /// Date + Doctor
               Row(
                 children: [
                   const Icon(Icons.calendar_today, size: 16),
                   const SizedBox(width: 4),
                   Text(
                     '${result.resultDate.day}/${result.resultDate.month}/${result.resultDate.year}',
-                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(width: 16),
                   const Icon(Icons.person, size: 16),
                   const SizedBox(width: 4),
                   Text(
-                    result.doctorName ?? 'Doctor Name',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
+                    result.doctorName ?? 'Doctor',
+                    style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
+
               if (result.labName != null) ...[
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     const Icon(Icons.location_on, size: 16),
                     const SizedBox(width: 4),
-                    Text(
-                      result.labName!,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                    Text(result.labName!),
                   ],
                 ),
               ],
+
               if (result.notes != null && result.notes!.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
@@ -197,7 +201,10 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
+
               const SizedBox(height: 16),
+
+              /// Buttons
               Row(
                 children: [
                   Expanded(
@@ -208,20 +215,15 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
                             .add(DownloadLabResult(result.id));
                       },
                       icon: const Icon(Icons.download, size: 16),
-                      label: Text(
-                        AppLocalizations.of(context).translate('download'),
-                      ),
+                      label: Text(context.translateSafe('download')),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        // TODO: Share result
-                      },
+                      onPressed: () {},
                       icon: const Icon(Icons.share, size: 16),
-                      label:
-                          Text(AppLocalizations.of(context).translate('share')),
+                      label: Text(context.translateSafe('share')),
                     ),
                   ),
                 ],
@@ -233,16 +235,12 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
     );
   }
 
-  Widget _buildErrorState(String message) {
+  Widget _buildErrorState(BuildContext context, String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red[400],
-          ),
+          Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
           const SizedBox(height: 16),
           Text(
             message,
@@ -257,7 +255,7 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
               context.read<PatientBloc>().add(LoadLabResults());
             },
             icon: const Icon(Icons.refresh),
-            label: Text(AppLocalizations.of(context).translate('retry')),
+            label: Text(context.translateSafe('retry')),
           ),
         ],
       ),

@@ -34,8 +34,7 @@ class DoctorModel extends Equatable {
       bioAr: json['bio_ar'] as String?,
       bioEn: json['bio_en'] as String?,
       experienceYears: (json['experience_years'] as int?) ?? 0,
-      consultationFee:
-          (json['consultation_fee'] as num?)?.toDouble() ?? 0,
+      consultationFee: (json['consultation_fee'] as num?)?.toDouble() ?? 0,
       currency: (json['currency'] as String?) ?? 'USD',
       acceptsRemote: (json['accepts_remote'] as bool?) ?? false,
       isAvailable: (json['is_available'] as bool?) ?? true,
@@ -61,16 +60,7 @@ class DoctorModel extends Equatable {
   final bool acceptsRemote;
   final bool isAvailable;
 
-  /// Working hours stored as JSON.
-  ///
-  /// Example structure:
-  /// ```json
-  /// {
-  ///   "sunday":    {"start": "08:00", "end": "16:00"},
-  ///   "monday":    {"start": "08:00", "end": "16:00"},
-  ///   ...
-  /// }
-  /// ```
+  /// Working hours stored as JSON
   final Map<String, dynamic> workingHours;
 
   // ── Serialization ──────────────────────────────────────
@@ -98,6 +88,8 @@ class DoctorModel extends Equatable {
   DoctorModel copyWith({
     String? id,
     String? userId,
+    String? clinicId,
+    String? specialtyId,
     String? fullName,
     String? name,
     String? licenseNumber,
@@ -116,9 +108,7 @@ class DoctorModel extends Equatable {
       clinicId: clinicId ?? this.clinicId,
       specialtyId: specialtyId ?? this.specialtyId,
       fullName: fullName ?? this.fullName,
-      name: name ?? this.name
-      clinicId: clinicId ?? this.clinicId,
-      specialtyId: specialtyId ?? this.specialtyId,
+      name: name ?? this.name,
       licenseNumber: licenseNumber ?? this.licenseNumber,
       bioAr: bioAr ?? this.bioAr,
       bioEn: bioEn ?? this.bioEn,
@@ -133,14 +123,13 @@ class DoctorModel extends Equatable {
 
   // ── Helpers ────────────────────────────────────────────
 
-  /// Returns the localised bio.
-  String bio(String locale) =>
-      locale == 'ar' ? (bioAr ?? '') : (bioEn ?? '');
+  /// Returns localized bio
+  String bio(String locale) => locale == 'ar' ? (bioAr ?? '') : (bioEn ?? '');
 
-  /// Whether a specific day has working hours set.
+  /// Check if doctor works on specific day
   bool worksOn(String day) => workingHours.containsKey(day.toLowerCase());
 
-  /// Formatted consultation fee string (e.g. "50.00 USD").
+  /// Formatted consultation fee
   String get formattedFee => '${consultationFee.toStringAsFixed(2)} $currency';
 
   // ── Equatable ──────────────────────────────────────────

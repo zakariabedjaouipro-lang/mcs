@@ -42,13 +42,13 @@ extension SafeString on String? {
   String get trimSafe => this?.trim() ?? '';
 
   /// تحويل النص إلى int بأمان
-  int? toIntSafe {
+  int? toIntSafe() {
     if (this == null || this!.isEmpty) return null;
     return int.tryParse(this!);
   }
 
   /// تحويل النص إلى double بأمان
-  double? toDoubleSafe {
+  double? toDoubleSafe() {
     if (this == null || this!.isEmpty) return null;
     return double.tryParse(this!);
   }
@@ -138,13 +138,13 @@ extension SafeList<T> on List<T>? {
   List<T> orEmpty() => this ?? [];
 
   /// الحصول على العنصر الأول بأمان
-  T? firstSafe {
+  T? get firstSafe {
     if (this == null || this!.isEmpty) return null;
     return this!.first;
   }
 
   /// الحصول على العنصر الأخير بأمان
-  T? lastSafe {
+  T? get lastSafe {
     if (this == null || this!.isEmpty) return null;
     return this!.last;
   }
