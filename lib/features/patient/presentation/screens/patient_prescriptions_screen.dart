@@ -156,7 +156,7 @@ class _PatientPrescriptionsScreenState
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withAlphaSafe(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -207,7 +207,7 @@ class _PatientPrescriptionsScreenState
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 4),
-                ...prescription.medications.take(3).map((med) {
+                ...prescription.getMedicationDisplay().take(3).map((med) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Row(

@@ -126,6 +126,9 @@ class LabResultModel extends Equatable {
   /// Alias for createdAt for backward compatibility
   DateTime get resultDate => createdAt;
 
+  /// Alias for title (used by screens)
+  String get testName => title;
+
   /// Get doctor name (to be loaded from doctor model)
   String? get doctorName => null;
 
@@ -134,6 +137,20 @@ class LabResultModel extends Equatable {
 
   /// Get status (default to 'normal')
   String get status => 'normal';
+
+  /// Get status color for UI display
+  Color get statusColor {
+    switch (status) {
+      case 'normal':
+        return Colors.green;
+      case 'abnormal':
+        return Colors.orange;
+      case 'critical':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
 
   /// Convert to JSON.
   Map<String, dynamic> toJson() => {

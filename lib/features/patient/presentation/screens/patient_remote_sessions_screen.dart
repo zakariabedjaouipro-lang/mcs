@@ -144,8 +144,8 @@ class _PatientRemoteSessionsScreenState extends State<PatientRemoteSessionsScree
                   ),
                   decoration: BoxDecoration(
                     color: session.status == VideoSessionStatus.scheduled
-                        ? Colors.blue.withOpacity(0.1)
-                        : Colors.green.withOpacity(0.1),
+                        ? Colors.blue.withAlphaSafe(0.1)
+                        : Colors.green.withAlphaSafe(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -222,7 +222,7 @@ class _PatientRemoteSessionsScreenState extends State<PatientRemoteSessionsScree
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
+                  color: Colors.orange.withAlphaSafe(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(

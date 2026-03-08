@@ -109,11 +109,45 @@ class AppointmentModel extends Equatable {
   /// Alias for scheduledAt for backward compatibility
   DateTime get appointmentDate => scheduledAt;
 
+  /// Get time slot as formatted string (HH:MM)
+  String get timeSlot =>
+    '${scheduledAt.hour.toString().padLeft(2, '0')}:${scheduledAt.minute.toString().padLeft(2, '0')}';
+
   /// Get patient name (to be loaded from patient model)
   String? get patientName => null;
 
   /// Get doctor name (to be loaded from doctor model)
   String? get doctorName => null;
+
+  /// Get status color for UI display
+  Color get statusColor {
+    switch (status) {
+      case AppointmentStatus.pending:
+        return Colors.orange;
+      case AppointmentStatus.confirmed:
+        return Colors.green;
+      case AppointmentStatus.cancelled:
+        return Colors.red;
+      case AppointmentStatus.completed:
+        return Colors.blue;
+      case AppointmentStatus.noShow:
+        return Colors.grey;
+    }
+  }
+
+  /// Check if appointment is in the past
+  bool get isPast => scheduledAt.isBefore(DateTime.now());
+
+  /// Check if appointment is today
+  bool get isToday {
+    final now = DateTime.now();
+    return scheduledAt.year == now.year &&
+        scheduledAt.month == now.month &&
+        scheduledAt.day == now.day;
+  }
+
+  /// Check if appointment is in the future
+  bool get isFuture => scheduledAt.isAfter(DateTime.now());
 
   bool get isPending => status == AppointmentStatus.pending;
   bool get isConfirmed => status == AppointmentStatus.confirmed;

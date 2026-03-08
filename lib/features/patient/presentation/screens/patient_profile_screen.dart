@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mcs/core/extensions/safe_extensions.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/user_model.dart';
 import 'package:mcs/core/widgets/custom_button.dart';
@@ -187,7 +188,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                 radius: 50,
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 child: Text(
-                  _user?.name.substring(0, 1).toUpperCase() ?? 'U',
+                  _user?.fullName?.firstCharSafe ?? _user?.email?.firstCharSafe ?? 'U',
                   style: const TextStyle(
                     fontSize: 32,
                     color: Colors.white,
@@ -219,14 +220,14 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            _user?.name ?? 'User Name',
+            _user?.fullName?.trimSafe.orDefault('User Name') ?? 'User Name',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           const SizedBox(height: 4),
           Text(
-            _user?.email ?? 'user@example.com',
+            _user?.email.trimSafe.orDefault('user@example.com'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey[600],
                 ),

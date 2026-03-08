@@ -253,7 +253,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
   Widget _buildTodayAppointments(BuildContext context, DoctorState state) {
     final localizations = AppLocalizations.of(context);
     final appointments =
-        state is AppointmentsLoaded ? state.appointments : <dynamic>[];
+        state is AppointmentsLoaded ? state.appointments : const <AppointmentModel>[];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,7 +329,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
   Widget _buildRemoteSessionRequests(BuildContext context, DoctorState state) {
     final localizations = AppLocalizations.of(context);
     final requests =
-        state is RemoteSessionRequestsLoaded ? state.requests : <dynamic>[];
+        state is RemoteSessionRequestsLoaded ? state.requests : const <AppointmentModel>[];
 
     if (requests.isEmpty) return const SizedBox.shrink();
 

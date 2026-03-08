@@ -98,6 +98,18 @@ class PrescriptionModel extends Equatable {
   List<String> getMedicationsList() =>
       medications.map((m) => '${m.name} - ${m.dosage}').toList();
 
+  /// Get medication names as List<String> for UI display
+  List<String> getMedicationNames() =>
+      medications.map((m) => '${m.name} - ${m.dosage} (${m.frequency})').toList();
+
+  /// Get medication display strings (formatted for UI)
+  List<String> getMedicationDisplay() =>
+      medications.map((m) => '${m.name} ${m.dosage} - ${m.frequency}').toList();
+
+  /// Get single medication display string
+  String getMedicationDisplayString(MedicationItem medication) =>
+      '${medication.name} ${medication.dosage} - ${medication.frequency}';
+
   /// Check if prescription has any refills available (based on duration).
   bool get hasRefills =>
       medications.any((m) => m.frequency.toLowerCase().contains('daily'));

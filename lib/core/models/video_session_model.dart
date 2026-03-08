@@ -149,6 +149,29 @@ class VideoSessionModel extends Equatable {
   /// Alias for startedAt for backward compatibility
   DateTime? get sessionDate => startedAt;
 
+  /// Get doctor name (to be loaded from doctor model)
+  String? get doctorName => null;
+
+  /// Get patient name (to be loaded from patient model)
+  String? get patientName => null;
+
+  /// Get session notes (to be loaded from appointment)
+  String? get notes => null;
+
+  /// Get session status color for UI display
+  Color get statusColor {
+    switch (status) {
+      case VideoSessionStatus.scheduled:
+        return Colors.blue;
+      case VideoSessionStatus.active:
+        return Colors.green;
+      case VideoSessionStatus.completed:
+        return Colors.purple;
+      case VideoSessionStatus.cancelled:
+        return Colors.red;
+    }
+  }
+
   /// Convert to JSON.
   Map<String, dynamic> toJson() => {
         'id': id,

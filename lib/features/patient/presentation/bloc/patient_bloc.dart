@@ -97,7 +97,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     BookAppointment event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.bookAppointment(
       clinicId: event.clinicId,
       doctorId: event.doctorId,
@@ -197,7 +197,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     LeaveVideoSession event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.leaveVideoSession(event.channelId);
     result.fold(
       (failure) => emit(PatientError(_mapFailureToMessage(failure))),
@@ -213,7 +213,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     LoadPrescriptions event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.getPrescriptions();
     result.fold(
       (failure) => emit(PatientError(_mapFailureToMessage(failure))),
@@ -225,7 +225,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     LoadPrescriptionById event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result =
         await _patientRepository.getPrescriptionById(event.prescriptionId);
     result.fold(
@@ -238,7 +238,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     LoadActivePrescriptions event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.getActivePrescriptions();
     result.fold(
       (failure) => emit(PatientError(_mapFailureToMessage(failure))),
@@ -254,7 +254,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     LoadLabResults event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.getLabResults();
     result.fold(
       (failure) => emit(PatientError(_mapFailureToMessage(failure))),
@@ -266,7 +266,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     LoadLabResultById event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.getLabResultById(event.labResultId);
     result.fold(
       (failure) => emit(PatientError(_mapFailureToMessage(failure))),
@@ -278,7 +278,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     DownloadLabResult event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result =
         await _patientRepository.downloadLabResult(event.labResultId);
     result.fold(
@@ -295,7 +295,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     LoadProfile event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.getProfile();
     result.fold(
       (failure) => emit(PatientError(_mapFailureToMessage(failure))),
@@ -307,7 +307,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     UpdateProfile event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.updateProfile(
       name: event.name,
       phone: event.phone,
@@ -328,7 +328,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     ChangePassword event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.changePassword(
       currentPassword: event.currentPassword,
       newPassword: event.newPassword,
@@ -347,7 +347,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     LinkSocialAccount event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.linkSocialAccount(
       provider: event.provider,
       providerId: event.providerId,
@@ -363,7 +363,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     UnlinkSocialAccount event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.unlinkSocialAccount(event.provider);
     result.fold(
       (failure) => emit(PatientError(_mapFailureToMessage(failure))),
@@ -375,7 +375,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     LoadLinkedSocialAccounts event,
     Emitter<PatientState> emit,
   ) async {
-    emit(PatientLoading());
+    emit(const PatientLoading());
     final result = await _patientRepository.getLinkedSocialAccounts();
     result.fold(
       (failure) => emit(PatientError(_mapFailureToMessage(failure))),
@@ -392,7 +392,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     Emitter<PatientState> emit,
   ) async {
     if (event.isLoading) {
-      emit(PatientLoading());
+      emit(const PatientLoading());
     }
   }
 

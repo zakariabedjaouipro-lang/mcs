@@ -21,10 +21,14 @@ abstract class PatientState extends Equatable {
 // ═════════════════════════════════════════════════════════════════════════════
 
 /// Initial state
-class PatientInitial extends PatientState {}
+class PatientInitial extends PatientState {
+  const PatientInitial();
+}
 
 /// Loading state
-class PatientLoading extends PatientState {}
+class PatientLoading extends PatientState {
+  const PatientLoading();
+}
 
 // ═════════════════════════════════════════════════════════════════════════════
 // Appointments States

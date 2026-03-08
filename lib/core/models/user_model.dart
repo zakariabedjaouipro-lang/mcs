@@ -112,6 +112,27 @@ class UserModel extends Equatable {
       ? fullName!
       : email;
 
+  /// Alias for fullName for backward compatibility
+  String? get name => fullName;
+
+  /// Address (to be loaded from patient-specific table)
+  String? get address => null;
+
+  /// Blood type (to be loaded from patient-specific table)
+  String? get bloodType => null;
+
+  /// Allergies (to be loaded from patient-specific table)
+  String? get allergies => null;
+
+  /// Emergency contact name (to be loaded from patient-specific table)
+  String? get emergencyContact => null;
+
+  /// Emergency contact phone (to be loaded from patient-specific table)
+  String? get emergencyPhone => null;
+
+  /// Date of birth (to be loaded from patient-specific table)
+  DateTime? get dateOfBirth => null;
+
   // ── Role Shortcuts ─────────────────────────────────────
   bool get isDoctor => role == UserRole.doctor;
   bool get isPatient => role.isPatientType;
