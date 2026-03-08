@@ -91,7 +91,7 @@ class PatientSocialAccountsScreen extends StatelessWidget {
                 _buildSocialAccountTile(
                   context,
                   provider: 'VK',
-                  icon: Icons.vk,
+                  icon: Icons.share,
                   color: Colors.blue[800]!,
                   isLinked: false, // TODO: Get from user data
                 ),

@@ -12,10 +12,12 @@ class PatientPrescriptionsScreen extends StatefulWidget {
   const PatientPrescriptionsScreen({super.key});
 
   @override
-  State<PatientPrescriptionsScreen> createState() => _PatientPrescriptionsScreenState();
+  State<PatientPrescriptionsScreen> createState() =>
+      _PatientPrescriptionsScreenState();
 }
 
-class _PatientPrescriptionsScreenState extends State<PatientPrescriptionsScreen> {
+class _PatientPrescriptionsScreenState
+    extends State<PatientPrescriptionsScreen> {
   @override
   void initState() {
     super.initState();
@@ -39,11 +41,16 @@ class _PatientPrescriptionsScreenState extends State<PatientPrescriptionsScreen>
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'all',
-                child: Text(AppLocalizations.of(context).translate('all_prescriptions')),
+                child: Text(
+                  AppLocalizations.of(context).translate('all_prescriptions'),
+                ),
               ),
               PopupMenuItem(
                 value: 'active',
-                child: Text(AppLocalizations.of(context).translate('active_prescriptions')),
+                child: Text(
+                  AppLocalizations.of(context)
+                      .translate('active_prescriptions'),
+                ),
               ),
             ],
           ),
@@ -91,7 +98,8 @@ class _PatientPrescriptionsScreenState extends State<PatientPrescriptionsScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            AppLocalizations.of(context).translate('no_prescriptions_description'),
+            AppLocalizations.of(context)
+                .translate('no_prescriptions_description'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey[500],
                 ),
@@ -119,7 +127,7 @@ class _PatientPrescriptionsScreenState extends State<PatientPrescriptionsScreen>
 
   Widget _buildPrescriptionCard(PrescriptionModel prescription) {
     final isActive = prescription.isActive;
-    
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
@@ -193,13 +201,13 @@ class _PatientPrescriptionsScreenState extends State<PatientPrescriptionsScreen>
                 ),
                 const SizedBox(height: 8),
               ],
-              if (prescription.medications != null && prescription.medications!.isNotEmpty) ...[
+              if (prescription.medications.isNotEmpty) ...[
                 Text(
                   AppLocalizations.of(context).translate('medications'),
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 4),
-                ...prescription.medications!.take(3).map((med) {
+                ...prescription.medications.take(3).map((med) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Row(
@@ -215,11 +223,11 @@ class _PatientPrescriptionsScreenState extends State<PatientPrescriptionsScreen>
                       ],
                     ),
                   );
-                }).toList(),
-                if (prescription.medications!.length > 3) ...[
+                }),
+                if (prescription.medications.length > 3) ...[
                   const SizedBox(height: 4),
                   Text(
-                    '+${prescription.medications!.length - 3} ${AppLocalizations.of(context).translate('more')}',
+                    '+${prescription.medications.length - 3} ${AppLocalizations.of(context).translate('more')}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Colors.grey[600],
                         ),
@@ -235,7 +243,9 @@ class _PatientPrescriptionsScreenState extends State<PatientPrescriptionsScreen>
                         // TODO: Download prescription
                       },
                       icon: const Icon(Icons.download, size: 16),
-                      label: Text(AppLocalizations.of(context).translate('download')),
+                      label: Text(
+                        AppLocalizations.of(context).translate('download'),
+                      ),
                     ),
                   ),
                 ],

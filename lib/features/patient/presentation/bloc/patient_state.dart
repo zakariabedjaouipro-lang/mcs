@@ -5,8 +5,8 @@ import 'package:equatable/equatable.dart';
 import 'package:mcs/core/models/appointment_model.dart';
 import 'package:mcs/core/models/lab_result_model.dart';
 import 'package:mcs/core/models/prescription_model.dart';
-import 'package:mcs/core/models/video_session_model.dart';
 import 'package:mcs/core/models/user_model.dart';
+import 'package:mcs/core/models/video_session_model.dart';
 
 /// Base class for patient states
 abstract class PatientState extends Equatable {
@@ -32,9 +32,8 @@ class PatientLoading extends PatientState {}
 
 /// Appointments loaded
 class AppointmentsLoaded extends PatientState {
-  final List<AppointmentModel> appointments;
-
   const AppointmentsLoaded(this.appointments);
+  final List<AppointmentModel> appointments;
 
   @override
   List<Object?> get props => [appointments];
@@ -42,9 +41,8 @@ class AppointmentsLoaded extends PatientState {
 
 /// Appointment loaded
 class AppointmentLoaded extends PatientState {
-  final AppointmentModel appointment;
-
   const AppointmentLoaded(this.appointment);
+  final AppointmentModel appointment;
 
   @override
   List<Object?> get props => [appointment];
@@ -52,9 +50,8 @@ class AppointmentLoaded extends PatientState {
 
 /// Appointment booked
 class AppointmentBooked extends PatientState {
-  final AppointmentModel appointment;
-
   const AppointmentBooked(this.appointment);
+  final AppointmentModel appointment;
 
   @override
   List<Object?> get props => [appointment];
@@ -62,9 +59,8 @@ class AppointmentBooked extends PatientState {
 
 /// Appointment cancelled
 class AppointmentCancelled extends PatientState {
-  final String appointmentId;
-
   const AppointmentCancelled(this.appointmentId);
+  final String appointmentId;
 
   @override
   List<Object?> get props => [appointmentId];
@@ -72,9 +68,8 @@ class AppointmentCancelled extends PatientState {
 
 /// Appointment rescheduled
 class AppointmentRescheduled extends PatientState {
-  final AppointmentModel appointment;
-
   const AppointmentRescheduled(this.appointment);
+  final AppointmentModel appointment;
 
   @override
   List<Object?> get props => [appointment];
@@ -86,9 +81,8 @@ class AppointmentRescheduled extends PatientState {
 
 /// Remote sessions loaded
 class RemoteSessionsLoaded extends PatientState {
-  final List<VideoSessionModel> sessions;
-
   const RemoteSessionsLoaded(this.sessions);
+  final List<VideoSessionModel> sessions;
 
   @override
   List<Object?> get props => [sessions];
@@ -96,9 +90,8 @@ class RemoteSessionsLoaded extends PatientState {
 
 /// Upcoming remote sessions loaded
 class UpcomingRemoteSessionsLoaded extends PatientState {
-  final List<VideoSessionModel> sessions;
-
   const UpcomingRemoteSessionsLoaded(this.sessions);
+  final List<VideoSessionModel> sessions;
 
   @override
   List<Object?> get props => [sessions];
@@ -106,9 +99,8 @@ class UpcomingRemoteSessionsLoaded extends PatientState {
 
 /// Past remote sessions loaded
 class PastRemoteSessionsLoaded extends PatientState {
-  final List<VideoSessionModel> sessions;
-
   const PastRemoteSessionsLoaded(this.sessions);
+  final List<VideoSessionModel> sessions;
 
   @override
   List<Object?> get props => [sessions];
@@ -116,9 +108,8 @@ class PastRemoteSessionsLoaded extends PatientState {
 
 /// Video session joined
 class VideoSessionJoined extends PatientState {
-  final String channelId;
-
   const VideoSessionJoined(this.channelId);
+  final String channelId;
 
   @override
   List<Object?> get props => [channelId];
@@ -126,9 +117,8 @@ class VideoSessionJoined extends PatientState {
 
 /// Video session left
 class VideoSessionLeft extends PatientState {
-  final String channelId;
-
   const VideoSessionLeft(this.channelId);
+  final String channelId;
 
   @override
   List<Object?> get props => [channelId];
@@ -140,9 +130,8 @@ class VideoSessionLeft extends PatientState {
 
 /// Prescriptions loaded
 class PrescriptionsLoaded extends PatientState {
-  final List<PrescriptionModel> prescriptions;
-
   const PrescriptionsLoaded(this.prescriptions);
+  final List<PrescriptionModel> prescriptions;
 
   @override
   List<Object?> get props => [prescriptions];
@@ -150,9 +139,8 @@ class PrescriptionsLoaded extends PatientState {
 
 /// Prescription loaded
 class PrescriptionLoaded extends PatientState {
-  final PrescriptionModel prescription;
-
   const PrescriptionLoaded(this.prescription);
+  final PrescriptionModel prescription;
 
   @override
   List<Object?> get props => [prescription];
@@ -160,9 +148,8 @@ class PrescriptionLoaded extends PatientState {
 
 /// Active prescriptions loaded
 class ActivePrescriptionsLoaded extends PatientState {
-  final List<PrescriptionModel> prescriptions;
-
   const ActivePrescriptionsLoaded(this.prescriptions);
+  final List<PrescriptionModel> prescriptions;
 
   @override
   List<Object?> get props => [prescriptions];
@@ -174,9 +161,8 @@ class ActivePrescriptionsLoaded extends PatientState {
 
 /// Lab results loaded
 class LabResultsLoaded extends PatientState {
-  final List<LabResultModel> results;
-
   const LabResultsLoaded(this.results);
+  final List<LabResultModel> results;
 
   @override
   List<Object?> get props => [results];
@@ -184,9 +170,8 @@ class LabResultsLoaded extends PatientState {
 
 /// Lab result loaded
 class LabResultLoaded extends PatientState {
-  final LabResultModel result;
-
   const LabResultLoaded(this.result);
+  final LabResultModel result;
 
   @override
   List<Object?> get props => [result];
@@ -194,9 +179,8 @@ class LabResultLoaded extends PatientState {
 
 /// Lab result downloaded
 class LabResultDownloaded extends PatientState {
-  final String downloadUrl;
-
   const LabResultDownloaded(this.downloadUrl);
+  final String downloadUrl;
 
   @override
   List<Object?> get props => [downloadUrl];
@@ -208,9 +192,8 @@ class LabResultDownloaded extends PatientState {
 
 /// Profile loaded
 class ProfileLoaded extends PatientState {
-  final UserModel user;
-
   const ProfileLoaded(this.user);
+  final UserModel user;
 
   @override
   List<Object?> get props => [user];
@@ -218,9 +201,8 @@ class ProfileLoaded extends PatientState {
 
 /// Profile updated
 class ProfileUpdated extends PatientState {
-  final UserModel user;
-
   const ProfileUpdated(this.user);
+  final UserModel user;
 
   @override
   List<Object?> get props => [user];
@@ -228,9 +210,8 @@ class ProfileUpdated extends PatientState {
 
 /// Password changed
 class PasswordChanged extends PatientState {
-  final String message;
-
   const PasswordChanged(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -242,9 +223,8 @@ class PasswordChanged extends PatientState {
 
 /// Social account linked
 class SocialAccountLinked extends PatientState {
-  final UserModel user;
-
   const SocialAccountLinked(this.user);
+  final UserModel user;
 
   @override
   List<Object?> get props => [user];
@@ -252,9 +232,8 @@ class SocialAccountLinked extends PatientState {
 
 /// Social account unlinked
 class SocialAccountUnlinked extends PatientState {
-  final UserModel user;
-
   const SocialAccountUnlinked(this.user);
+  final UserModel user;
 
   @override
   List<Object?> get props => [user];
@@ -262,9 +241,8 @@ class SocialAccountUnlinked extends PatientState {
 
 /// Linked social accounts loaded
 class LinkedSocialAccountsLoaded extends PatientState {
-  final List<Map<String, dynamic>> accounts;
-
   const LinkedSocialAccountsLoaded(this.accounts);
+  final List<Map<String, dynamic>> accounts;
 
   @override
   List<Object?> get props => [accounts];
@@ -276,9 +254,8 @@ class LinkedSocialAccountsLoaded extends PatientState {
 
 /// Error state
 class PatientError extends PatientState {
-  final String message;
-
   const PatientError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -290,9 +267,8 @@ class PatientError extends PatientState {
 
 /// Success state
 class PatientSuccess extends PatientState {
-  final String message;
-
   const PatientSuccess(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];

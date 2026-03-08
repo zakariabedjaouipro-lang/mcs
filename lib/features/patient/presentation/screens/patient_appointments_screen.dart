@@ -12,7 +12,8 @@ class PatientAppointmentsScreen extends StatefulWidget {
   const PatientAppointmentsScreen({super.key});
 
   @override
-  State<PatientAppointmentsScreen> createState() => _PatientAppointmentsScreenState();
+  State<PatientAppointmentsScreen> createState() =>
+      _PatientAppointmentsScreenState();
 }
 
 class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
@@ -94,7 +95,9 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
               );
             },
             icon: const Icon(Icons.add),
-            label: Text(AppLocalizations.of(context).translate('book_appointment')),
+            label: Text(
+              AppLocalizations.of(context).translate('book_appointment'),
+            ),
           ),
         ],
       ),
@@ -119,27 +122,23 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
   Widget _buildAppointmentCard(AppointmentModel appointment) {
     final isUpcoming = appointment.appointmentDate.isAfter(DateTime.now());
     final isPast = appointment.appointmentDate.isBefore(DateTime.now());
-    
+
     Color statusColor;
     String statusText;
-    
+
     switch (appointment.status) {
       case 'scheduled':
         statusColor = Colors.blue;
         statusText = AppLocalizations.of(context).translate('scheduled');
-        break;
       case 'completed':
         statusColor = Colors.green;
         statusText = AppLocalizations.of(context).translate('completed');
-        break;
       case 'cancelled':
         statusColor = Colors.red;
         statusText = AppLocalizations.of(context).translate('cancelled');
-        break;
       case 'rescheduled':
         statusColor = Colors.orange;
         statusText = AppLocalizations.of(context).translate('rescheduled');
-        break;
       default:
         statusColor = Colors.grey;
         statusText = appointment.status;
@@ -224,7 +223,8 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                   ),
                 ],
               ),
-              if (appointment.notes != null && appointment.notes!.isNotEmpty) ...[
+              if (appointment.notes != null &&
+                  appointment.notes!.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
                   appointment.notes!,
@@ -245,7 +245,9 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                           // TODO: Reschedule appointment
                         },
                         icon: const Icon(Icons.schedule, size: 16),
-                        label: Text(AppLocalizations.of(context).translate('reschedule')),
+                        label: Text(
+                          AppLocalizations.of(context).translate('reschedule'),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -255,7 +257,9 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                           _showCancelDialog(appointment);
                         },
                         icon: const Icon(Icons.cancel, size: 16),
-                        label: Text(AppLocalizations.of(context).translate('cancel')),
+                        label: Text(
+                          AppLocalizations.of(context).translate('cancel'),
+                        ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.red,
                         ),
@@ -306,9 +310,11 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context).translate('cancel_appointment')),
+        title:
+            Text(AppLocalizations.of(context).translate('cancel_appointment')),
         content: Text(
-          AppLocalizations.of(context).translate('cancel_appointment_confirmation'),
+          AppLocalizations.of(context)
+              .translate('cancel_appointment_confirmation'),
         ),
         actions: [
           TextButton(
@@ -318,7 +324,9 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              context.read<PatientBloc>().add(CancelAppointment(appointment.id));
+              context
+                  .read<PatientBloc>()
+                  .add(CancelAppointment(appointment.id));
             },
             child: Text(
               AppLocalizations.of(context).translate('yes'),

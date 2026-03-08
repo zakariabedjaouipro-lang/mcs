@@ -2,8 +2,7 @@
 library;
 
 import 'package:equatable/equatable.dart';
-
-enum VideoSessionStatus { scheduled, active, completed, cancelled }
+import 'package:mcs/core/enums/appointment_status.dart';
 
 class VideoSessionModel extends Equatable {
   const VideoSessionModel({
@@ -31,7 +30,7 @@ class VideoSessionModel extends Equatable {
         endedAt: json['endedAt'] != null
             ? DateTime.parse(json['endedAt'] as String)
             : null,
-        status: VideoSessionStatus.values.byName(json['status'] as String),
+        status: VideoSessionStatus.fromDbValue(json['status'] as String),
       );
   final String id;
   final String appointmentId;
@@ -146,6 +145,9 @@ class VideoSessionModel extends Equatable {
 
   /// Check if session has ended.
   bool get hasEnded => isCompleted || isCancelled || endedAt != null;
+
+  /// Alias for startedAt for backward compatibility
+  DateTime? get sessionDate => startedAt;
 
   /// Convert to JSON.
   Map<String, dynamic> toJson() => {

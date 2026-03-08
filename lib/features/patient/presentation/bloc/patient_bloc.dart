@@ -3,15 +3,12 @@ library;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mcs/core/errors/failures.dart';
-import 'package:mcs/features/patient/data/repositories/patient_repository_impl.dart';
 import 'package:mcs/features/patient/domain/repositories/patient_repository.dart';
 import 'package:mcs/features/patient/presentation/bloc/patient_event.dart';
 import 'package:mcs/features/patient/presentation/bloc/patient_state.dart';
 
 /// Patient BLoC
 class PatientBloc extends Bloc<PatientEvent, PatientState> {
-  final PatientRepository _patientRepository;
-
   PatientBloc(this._patientRepository) : super(PatientInitial()) {
     // ═════════════════════════════════════════════════════════════════════════════
     // Appointments Handlers
@@ -65,6 +62,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     on<SetLoading>(_onSetLoading);
     on<ClearPatientState>(_onClearPatientState);
   }
+  final PatientRepository _patientRepository;
 
   // ═════════════════════════════════════════════════════════════════════════════
   // Appointments Handlers

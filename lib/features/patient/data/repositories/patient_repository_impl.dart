@@ -6,16 +6,15 @@ import 'package:mcs/core/errors/failures.dart';
 import 'package:mcs/core/models/appointment_model.dart';
 import 'package:mcs/core/models/lab_result_model.dart';
 import 'package:mcs/core/models/prescription_model.dart';
-import 'package:mcs/core/models/video_session_model.dart';
 import 'package:mcs/core/models/user_model.dart';
+import 'package:mcs/core/models/video_session_model.dart';
 import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/features/patient/domain/repositories/patient_repository.dart';
 
 /// Patient repository implementation
 class PatientRepositoryImpl implements PatientRepository {
-  final SupabaseService _supabaseService;
-
   PatientRepositoryImpl(this._supabaseService);
+  final SupabaseService _supabaseService;
 
   // ═════════════════════════════════════════════════════════════════════════════
   // Appointments
@@ -31,9 +30,7 @@ class PatientRepositoryImpl implements PatientRepository {
         },
       );
 
-      final appointments = data
-          .map((json) => AppointmentModel.fromJson(json))
-          .toList();
+      final appointments = data.map(AppointmentModel.fromJson).toList();
 
       return Right(appointments);
     } catch (e) {
@@ -42,7 +39,9 @@ class PatientRepositoryImpl implements PatientRepository {
   }
 
   @override
-  Future<Either<Failure, AppointmentModel>> getAppointmentById(String id) async {
+  Future<Either<Failure, AppointmentModel>> getAppointmentById(
+    String id,
+  ) async {
     try {
       final data = await _supabaseService.fetchById('appointments', id);
       final appointment = AppointmentModel.fromJson(data);
@@ -74,7 +73,8 @@ class PatientRepositoryImpl implements PatientRepository {
         'created_at': DateTime.now().toIso8601String(),
       };
 
-      final data = await _supabaseService.insert('appointments', appointmentData);
+      final data =
+          await _supabaseService.insert('appointments', appointmentData);
       final appointment = AppointmentModel.fromJson(data);
       return Right(appointment);
     } catch (e) {
@@ -138,9 +138,7 @@ class PatientRepositoryImpl implements PatientRepository {
         },
       );
 
-      final sessions = data
-          .map((json) => VideoSessionModel.fromJson(json))
-          .toList();
+      final sessions = data.map(VideoSessionModel.fromJson).toList();
 
       return Right(sessions);
     } catch (e) {
@@ -149,14 +147,19 @@ class PatientRepositoryImpl implements PatientRepository {
   }
 
   @override
-  Future<Either<Failure, List<VideoSessionModel>>> getUpcomingRemoteSessions() async {
+  Future<Either<Failure, List<VideoSessionModel>>>
+      getUpcomingRemoteSessions() async {
     try {
       final sessions = await getRemoteSessions();
       return sessions.fold(
-        (failure) => Left(failure),
+        Left.new,
         (allSessions) {
           final upcoming = allSessions
-              .where((session) => session.sessionDate.isAfter(DateTime.now()))
+              .where(
+                (session) =>
+                    session.sessionDate != null &&
+                    session.sessionDate!.isAfter(DateTime.now()),
+              )
               .toList();
           return Right(upcoming);
         },
@@ -167,14 +170,19 @@ class PatientRepositoryImpl implements PatientRepository {
   }
 
   @override
-  Future<Either<Failure, List<VideoSessionModel>>> getPastRemoteSessions() async {
+  Future<Either<Failure, List<VideoSessionModel>>>
+      getPastRemoteSessions() async {
     try {
       final sessions = await getRemoteSessions();
       return sessions.fold(
-        (failure) => Left(failure),
+        Left.new,
         (allSessions) {
           final past = allSessions
-              .where((session) => session.sessionDate.isBefore(DateTime.now()))
+              .where(
+                (session) =>
+                    session.sessionDate != null &&
+                    session.sessionDate!.isBefore(DateTime.now()),
+              )
               .toList();
           return Right(past);
         },
@@ -219,9 +227,7 @@ class PatientRepositoryImpl implements PatientRepository {
         },
       );
 
-      final prescriptions = data
-          .map((json) => PrescriptionModel.fromJson(json))
-          .toList();
+      final prescriptions = data.map(PrescriptionModel.fromJson).toList();
 
       return Right(prescriptions);
     } catch (e) {
@@ -230,7 +236,9 @@ class PatientRepositoryImpl implements PatientRepository {
   }
 
   @override
-  Future<Either<Failure, PrescriptionModel>> getPrescriptionById(String id) async {
+  Future<Either<Failure, PrescriptionModel>> getPrescriptionById(
+    String id,
+  ) async {
     try {
       final data = await _supabaseService.fetchById('prescriptions', id);
       final prescription = PrescriptionModel.fromJson(data);
@@ -241,11 +249,12 @@ class PatientRepositoryImpl implements PatientRepository {
   }
 
   @override
-  Future<Either<Failure, List<PrescriptionModel>>> getActivePrescriptions() async {
+  Future<Either<Failure, List<PrescriptionModel>>>
+      getActivePrescriptions() async {
     try {
       final prescriptions = await getPrescriptions();
       return prescriptions.fold(
-        (failure) => Left(failure),
+        Left.new,
         (allPrescriptions) {
           final active = allPrescriptions
               .where((prescription) => prescription.isActive)
@@ -272,9 +281,7 @@ class PatientRepositoryImpl implements PatientRepository {
         },
       );
 
-      final results = data
-          .map((json) => LabResultModel.fromJson(json))
-          .toList();
+      final results = data.map(LabResultModel.fromJson).toList();
 
       return Right(results);
     } catch (e) {
@@ -344,11 +351,17 @@ class PatientRepositoryImpl implements PatientRepository {
       if (name != null) updateData['name'] = name;
       if (phone != null) updateData['phone'] = phone;
       if (address != null) updateData['address'] = address;
-      if (dateOfBirth != null) updateData['date_of_birth'] = dateOfBirth.toIso8601String();
+      if (dateOfBirth != null) {
+        updateData['date_of_birth'] = dateOfBirth.toIso8601String();
+      }
       if (bloodType != null) updateData['blood_type'] = bloodType;
       if (allergies != null) updateData['allergies'] = allergies;
-      if (emergencyContact != null) updateData['emergency_contact'] = emergencyContact;
-      if (emergencyPhone != null) updateData['emergency_phone'] = emergencyPhone;
+      if (emergencyContact != null) {
+        updateData['emergency_contact'] = emergencyContact;
+      }
+      if (emergencyPhone != null) {
+        updateData['emergency_phone'] = emergencyPhone;
+      }
       updateData['updated_at'] = DateTime.now().toIso8601String();
 
       final data = await _supabaseService.update('users', userId, updateData);
@@ -385,8 +398,8 @@ class PatientRepositoryImpl implements PatientRepository {
     try {
       // TODO: Implement social account linking via Supabase Auth
       return (await getProfile()).fold(
-        (failure) => Left(failure),
-        (user) => Right(user),
+        Left.new,
+        Right.new,
       );
     } catch (e) {
       return Left(ServerFailure(e.toString()));
@@ -394,12 +407,14 @@ class PatientRepositoryImpl implements PatientRepository {
   }
 
   @override
-  Future<Either<Failure, UserModel>> unlinkSocialAccount(String provider) async {
+  Future<Either<Failure, UserModel>> unlinkSocialAccount(
+    String provider,
+  ) async {
     try {
       // TODO: Implement social account unlinking via Supabase Auth
       return (await getProfile()).fold(
-        (failure) => Left(failure),
-        (user) => Right(user),
+        Left.new,
+        Right.new,
       );
     } catch (e) {
       return Left(ServerFailure(e.toString()));
@@ -407,7 +422,8 @@ class PatientRepositoryImpl implements PatientRepository {
   }
 
   @override
-  Future<Either<Failure, List<Map<String, dynamic>>>> getLinkedSocialAccounts() async {
+  Future<Either<Failure, List<Map<String, dynamic>>>>
+      getLinkedSocialAccounts() async {
     try {
       // TODO: Implement getting linked social accounts
       return const Right([]);

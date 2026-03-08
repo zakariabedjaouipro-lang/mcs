@@ -106,6 +106,15 @@ class AppointmentModel extends Equatable {
   /// End time = scheduledAt + duration.
   DateTime get endsAt => scheduledAt.add(Duration(minutes: durationMinutes));
 
+  /// Alias for scheduledAt for backward compatibility
+  DateTime get appointmentDate => scheduledAt;
+
+  /// Get patient name (to be loaded from patient model)
+  String? get patientName => null;
+
+  /// Get doctor name (to be loaded from doctor model)
+  String? get doctorName => null;
+
   bool get isPending => status == AppointmentStatus.pending;
   bool get isConfirmed => status == AppointmentStatus.confirmed;
   bool get isCancelled => status == AppointmentStatus.cancelled;

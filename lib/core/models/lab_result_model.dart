@@ -123,6 +123,18 @@ class LabResultModel extends Equatable {
     }
   }
 
+  /// Alias for createdAt for backward compatibility
+  DateTime get resultDate => createdAt;
+
+  /// Get doctor name (to be loaded from doctor model)
+  String? get doctorName => null;
+
+  /// Get lab name (from uploadedBy)
+  String? get labName => null;
+
+  /// Get status (default to 'normal')
+  String get status => 'normal';
+
   /// Convert to JSON.
   Map<String, dynamic> toJson() => {
         'id': id,

@@ -28,18 +28,16 @@ class EmployeeLoading extends EmployeeState {
 
 // Profile States
 class EmployeeProfileLoaded extends EmployeeState {
-  final EmployeeModel profile;
-
   const EmployeeProfileLoaded(this.profile);
+  final EmployeeModel profile;
 
   @override
   List<Object?> get props => [profile];
 }
 
 class EmployeeProfileUpdated extends EmployeeState {
-  final String message;
-
   const EmployeeProfileUpdated(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -47,45 +45,40 @@ class EmployeeProfileUpdated extends EmployeeState {
 
 // Patient States
 class PatientsLoaded extends EmployeeState {
-  final List<PatientModel> patients;
-
   const PatientsLoaded(this.patients);
+  final List<PatientModel> patients;
 
   @override
   List<Object?> get props => [patients];
 }
 
 class PatientDetailsLoaded extends EmployeeState {
-  final PatientModel patient;
-
   const PatientDetailsLoaded(this.patient);
+  final PatientModel patient;
 
   @override
   List<Object?> get props => [patient];
 }
 
 class PatientRegistered extends EmployeeState {
-  final String message;
-
   const PatientRegistered(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class PatientUpdated extends EmployeeState {
-  final String message;
-
   const PatientUpdated(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class PatientsSearched extends EmployeeState {
-  final List<PatientModel> patients;
-
   const PatientsSearched(this.patients);
+  final List<PatientModel> patients;
 
   @override
   List<Object?> get props => [patients];
@@ -93,63 +86,56 @@ class PatientsSearched extends EmployeeState {
 
 // Appointment States
 class AppointmentsLoaded extends EmployeeState {
-  final List<AppointmentModel> appointments;
-
   const AppointmentsLoaded(this.appointments);
+  final List<AppointmentModel> appointments;
 
   @override
   List<Object?> get props => [appointments];
 }
 
 class AppointmentDetailsLoaded extends EmployeeState {
-  final AppointmentModel appointment;
-
   const AppointmentDetailsLoaded(this.appointment);
+  final AppointmentModel appointment;
 
   @override
   List<Object?> get props => [appointment];
 }
 
 class AppointmentBooked extends EmployeeState {
-  final String message;
-
   const AppointmentBooked(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class AppointmentCancelled extends EmployeeState {
-  final String message;
-
   const AppointmentCancelled(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class AppointmentRescheduled extends EmployeeState {
-  final String message;
-
   const AppointmentRescheduled(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class PatientCheckedIn extends EmployeeState {
-  final String message;
-
   const PatientCheckedIn(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class PatientCheckedOut extends EmployeeState {
-  final String message;
-
   const PatientCheckedOut(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -157,18 +143,16 @@ class PatientCheckedOut extends EmployeeState {
 
 // Vital Signs States
 class VitalSignsRecorded extends EmployeeState {
-  final String message;
-
   const VitalSignsRecorded(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class PatientVitalSignsLoaded extends EmployeeState {
-  final Map<String, dynamic> vitalSigns;
-
   const PatientVitalSignsLoaded(this.vitalSigns);
+  final Map<String, dynamic> vitalSigns;
 
   @override
   List<Object?> get props => [vitalSigns];
@@ -176,27 +160,24 @@ class PatientVitalSignsLoaded extends EmployeeState {
 
 // Lab Results States
 class LabResultUploaded extends EmployeeState {
-  final String message;
-
   const LabResultUploaded(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class LabResultsLoaded extends EmployeeState {
-  final List<Map<String, dynamic>> results;
-
   const LabResultsLoaded(this.results);
+  final List<Map<String, dynamic>> results;
 
   @override
   List<Object?> get props => [results];
 }
 
 class LabResultUpdated extends EmployeeState {
-  final String message;
-
   const LabResultUpdated(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -204,54 +185,48 @@ class LabResultUpdated extends EmployeeState {
 
 // Inventory States
 class InventoryLoaded extends EmployeeState {
-  final List<InventoryModel> inventory;
-
   const InventoryLoaded(this.inventory);
+  final List<InventoryModel> inventory;
 
   @override
   List<Object?> get props => [inventory];
 }
 
 class InventoryItemLoaded extends EmployeeState {
-  final InventoryModel item;
-
   const InventoryItemLoaded(this.item);
+  final InventoryModel item;
 
   @override
   List<Object?> get props => [item];
 }
 
 class InventoryItemAdded extends EmployeeState {
-  final String message;
-
   const InventoryItemAdded(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class InventoryItemUpdated extends EmployeeState {
-  final String message;
-
   const InventoryItemUpdated(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class InventoryItemDeleted extends EmployeeState {
-  final String message;
-
   const InventoryItemDeleted(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class InventoryTransactionRecorded extends EmployeeState {
-  final String message;
-
   const InventoryTransactionRecorded(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -259,45 +234,40 @@ class InventoryTransactionRecorded extends EmployeeState {
 
 // Invoice States
 class InvoicesLoaded extends EmployeeState {
-  final List<InvoiceModel> invoices;
-
   const InvoicesLoaded(this.invoices);
+  final List<InvoiceModel> invoices;
 
   @override
   List<Object?> get props => [invoices];
 }
 
 class InvoiceDetailsLoaded extends EmployeeState {
-  final InvoiceModel invoice;
-
   const InvoiceDetailsLoaded(this.invoice);
+  final InvoiceModel invoice;
 
   @override
   List<Object?> get props => [invoice];
 }
 
 class InvoiceCreated extends EmployeeState {
-  final String message;
-
   const InvoiceCreated(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class InvoiceUpdated extends EmployeeState {
-  final String message;
-
   const InvoiceUpdated(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class PaymentProcessed extends EmployeeState {
-  final String message;
-
   const PaymentProcessed(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -305,9 +275,8 @@ class PaymentProcessed extends EmployeeState {
 
 // Statistics States
 class DashboardStatsLoaded extends EmployeeState {
-  final Map<String, dynamic> stats;
-
   const DashboardStatsLoaded(this.stats);
+  final Map<String, dynamic> stats;
 
   @override
   List<Object?> get props => [stats];
@@ -315,9 +284,8 @@ class DashboardStatsLoaded extends EmployeeState {
 
 // Error State
 class EmployeeError extends EmployeeState {
-  final String message;
-
   const EmployeeError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];

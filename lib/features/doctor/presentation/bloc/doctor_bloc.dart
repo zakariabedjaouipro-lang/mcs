@@ -9,8 +9,6 @@ import 'package:mcs/features/doctor/presentation/bloc/doctor_state.dart';
 
 /// Doctor BLoC
 class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
-  final DoctorRepository _doctorRepository;
-
   DoctorBloc(this._doctorRepository) : super(const DoctorInitial()) {
     on<LoadDoctorProfile>(_onLoadDoctorProfile);
     on<UpdateDoctorProfile>(_onUpdateDoctorProfile);
@@ -39,6 +37,7 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     on<ApproveRemoteSessionRequest>(_onApproveRemoteSessionRequest);
     on<RejectRemoteSessionRequest>(_onRejectRemoteSessionRequest);
   }
+  final DoctorRepository _doctorRepository;
 
   Future<void> _onLoadDoctorProfile(
     LoadDoctorProfile event,
@@ -68,7 +67,8 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     ToggleAvailability event,
     Emitter<DoctorState> emit,
   ) async {
-    final result = await _doctorRepository.updateAvailability(event.isAvailable);
+    final result =
+        await _doctorRepository.updateAvailability(event.isAvailable);
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
       (_) => emit(AvailabilityToggled(event.isAvailable)),
@@ -132,7 +132,8 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     Emitter<DoctorState> emit,
   ) async {
     emit(const DoctorLoading());
-    final result = await _doctorRepository.getAppointmentDetails(event.appointmentId);
+    final result =
+        await _doctorRepository.getAppointmentDetails(event.appointmentId);
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
       (appointment) => emit(AppointmentDetailsLoaded(appointment)),
@@ -143,7 +144,8 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     AcceptAppointment event,
     Emitter<DoctorState> emit,
   ) async {
-    final result = await _doctorRepository.acceptAppointment(event.appointmentId);
+    final result =
+        await _doctorRepository.acceptAppointment(event.appointmentId);
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
       (_) => emit(const AppointmentAccepted('تم قبول الموعد بنجاح')),
@@ -210,7 +212,8 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     CreatePrescription event,
     Emitter<DoctorState> emit,
   ) async {
-    final result = await _doctorRepository.createPrescription(event.prescription);
+    final result =
+        await _doctorRepository.createPrescription(event.prescription);
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
       (_) => emit(const PrescriptionCreated('تم إنشاء الوصفة بنجاح')),
@@ -247,7 +250,8 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     DeletePrescription event,
     Emitter<DoctorState> emit,
   ) async {
-    final result = await _doctorRepository.deletePrescription(event.prescriptionId);
+    final result =
+        await _doctorRepository.deletePrescription(event.prescriptionId);
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
       (_) => emit(const PrescriptionDeleted('تم حذف الوصفة بنجاح')),
@@ -258,7 +262,8 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     StartRemoteSession event,
     Emitter<DoctorState> emit,
   ) async {
-    final result = await _doctorRepository.startRemoteSession(event.appointmentId);
+    final result =
+        await _doctorRepository.startRemoteSession(event.appointmentId);
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
       (_) => emit(const RemoteSessionStarted('تم بدء الجلسة عن بعد بنجاح')),
@@ -280,7 +285,8 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     GenerateSessionToken event,
     Emitter<DoctorState> emit,
   ) async {
-    final result = await _doctorRepository.generateRemoteSessionToken(event.appointmentId);
+    final result =
+        await _doctorRepository.generateRemoteSessionToken(event.appointmentId);
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
       (token) => emit(SessionTokenGenerated(token)),
@@ -338,10 +344,15 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     ApproveRemoteSessionRequest event,
     Emitter<DoctorState> emit,
   ) async {
-    final result = await _doctorRepository.approveRemoteSessionRequest(event.appointmentId);
+    final result = await _doctorRepository
+        .approveRemoteSessionRequest(event.appointmentId);
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
-      (_) => emit(const RemoteSessionRequestApproved('تم قبول طلب الجلسة عن بعد بنجاح')),
+      (_) => emit(
+        const RemoteSessionRequestApproved(
+          'تم قبول طلب الجلسة عن بعد بنجاح',
+        ),
+      ),
     );
   }
 
@@ -355,7 +366,9 @@ class DoctorBloc extends Bloc<DoctorEvent, DoctorState> {
     );
     result.fold(
       (failure) => emit(DoctorError(_mapFailureToMessage(failure))),
-      (_) => emit(const RemoteSessionRequestRejected('تم رفض طلب الجلسة عن بعد بنجاح')),
+      (_) => emit(
+        const RemoteSessionRequestRejected('تم رفض طلب الجلسة عن بعد بنجاح'),
+      ),
     );
   }
 

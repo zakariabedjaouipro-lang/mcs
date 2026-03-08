@@ -27,27 +27,24 @@ class DoctorLoading extends DoctorState {
 
 // Profile States
 class DoctorProfileLoaded extends DoctorState {
-  final DoctorModel profile;
-
   const DoctorProfileLoaded(this.profile);
+  final DoctorModel profile;
 
   @override
   List<Object?> get props => [profile];
 }
 
 class DoctorProfileUpdated extends DoctorState {
-  final String message;
-
   const DoctorProfileUpdated(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class AvailabilityToggled extends DoctorState {
-  final bool isAvailable;
-
   const AvailabilityToggled(this.isAvailable);
+  final bool isAvailable;
 
   @override
   List<Object?> get props => [isAvailable];
@@ -55,27 +52,24 @@ class AvailabilityToggled extends DoctorState {
 
 // Patient States
 class PatientsLoaded extends DoctorState {
-  final List<PatientModel> patients;
-
   const PatientsLoaded(this.patients);
+  final List<PatientModel> patients;
 
   @override
   List<Object?> get props => [patients];
 }
 
 class PatientDetailsLoaded extends DoctorState {
-  final PatientModel patient;
-
   const PatientDetailsLoaded(this.patient);
+  final PatientModel patient;
 
   @override
   List<Object?> get props => [patient];
 }
 
 class PatientsSearched extends DoctorState {
-  final List<PatientModel> patients;
-
   const PatientsSearched(this.patients);
+  final List<PatientModel> patients;
 
   @override
   List<Object?> get props => [patients];
@@ -83,63 +77,56 @@ class PatientsSearched extends DoctorState {
 
 // Appointment States
 class AppointmentsLoaded extends DoctorState {
-  final List<AppointmentModel> appointments;
-
   const AppointmentsLoaded(this.appointments);
+  final List<AppointmentModel> appointments;
 
   @override
   List<Object?> get props => [appointments];
 }
 
 class AppointmentDetailsLoaded extends DoctorState {
-  final AppointmentModel appointment;
-
   const AppointmentDetailsLoaded(this.appointment);
+  final AppointmentModel appointment;
 
   @override
   List<Object?> get props => [appointment];
 }
 
 class AppointmentAccepted extends DoctorState {
-  final String message;
-
   const AppointmentAccepted(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class AppointmentRejected extends DoctorState {
-  final String message;
-
   const AppointmentRejected(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class AppointmentCancelled extends DoctorState {
-  final String message;
-
   const AppointmentCancelled(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class AppointmentCompleted extends DoctorState {
-  final String message;
-
   const AppointmentCompleted(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class AppointmentRescheduled extends DoctorState {
-  final String message;
-
   const AppointmentRescheduled(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -147,36 +134,32 @@ class AppointmentRescheduled extends DoctorState {
 
 // Prescription States
 class PrescriptionCreated extends DoctorState {
-  final String message;
-
   const PrescriptionCreated(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class PrescriptionsLoaded extends DoctorState {
-  final List<PrescriptionModel> prescriptions;
-
   const PrescriptionsLoaded(this.prescriptions);
+  final List<PrescriptionModel> prescriptions;
 
   @override
   List<Object?> get props => [prescriptions];
 }
 
 class PrescriptionUpdated extends DoctorState {
-  final String message;
-
   const PrescriptionUpdated(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class PrescriptionDeleted extends DoctorState {
-  final String message;
-
   const PrescriptionDeleted(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -184,27 +167,24 @@ class PrescriptionDeleted extends DoctorState {
 
 // Remote Session States
 class RemoteSessionStarted extends DoctorState {
-  final String message;
-
   const RemoteSessionStarted(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class RemoteSessionEnded extends DoctorState {
-  final String message;
-
   const RemoteSessionEnded(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class SessionTokenGenerated extends DoctorState {
-  final String token;
-
   const SessionTokenGenerated(this.token);
+  final String token;
 
   @override
   List<Object?> get props => [token];
@@ -212,18 +192,16 @@ class SessionTokenGenerated extends DoctorState {
 
 // Lab Results States
 class LabResultUploaded extends DoctorState {
-  final String message;
-
   const LabResultUploaded(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class LabResultsLoaded extends DoctorState {
-  final List<Map<String, dynamic>> results;
-
   const LabResultsLoaded(this.results);
+  final List<Map<String, dynamic>> results;
 
   @override
   List<Object?> get props => [results];
@@ -231,9 +209,8 @@ class LabResultsLoaded extends DoctorState {
 
 // Statistics States
 class DashboardStatsLoaded extends DoctorState {
-  final Map<String, dynamic> stats;
-
   const DashboardStatsLoaded(this.stats);
+  final Map<String, dynamic> stats;
 
   @override
   List<Object?> get props => [stats];
@@ -241,27 +218,24 @@ class DashboardStatsLoaded extends DoctorState {
 
 // Remote Session Request States
 class RemoteSessionRequestsLoaded extends DoctorState {
-  final List<AppointmentModel> requests;
-
   const RemoteSessionRequestsLoaded(this.requests);
+  final List<AppointmentModel> requests;
 
   @override
   List<Object?> get props => [requests];
 }
 
 class RemoteSessionRequestApproved extends DoctorState {
-  final String message;
-
   const RemoteSessionRequestApproved(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class RemoteSessionRequestRejected extends DoctorState {
-  final String message;
-
   const RemoteSessionRequestRejected(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -269,9 +243,8 @@ class RemoteSessionRequestRejected extends DoctorState {
 
 // Error State
 class DoctorError extends DoctorState {
-  final String message;
-
   const DoctorError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];

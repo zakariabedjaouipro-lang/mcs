@@ -12,7 +12,8 @@ class EmployeeDashboardScreen extends StatefulWidget {
   const EmployeeDashboardScreen({super.key});
 
   @override
-  State<EmployeeDashboardScreen> createState() => _EmployeeDashboardScreenState();
+  State<EmployeeDashboardScreen> createState() =>
+      _EmployeeDashboardScreenState();
 }
 
 class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
@@ -23,8 +24,10 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   }
 
   void _loadData() {
-    context.read<EmployeeBloc>().add(LoadDashboardStats());
-    context.read<EmployeeBloc>().add(LoadAppointments(status: 'scheduled'));
+    context.read<EmployeeBloc>().add(const LoadDashboardStats());
+    context
+        .read<EmployeeBloc>()
+        .add(const LoadAppointments(status: 'scheduled'));
   }
 
   @override
@@ -75,7 +78,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           if (state is EmployeeLoading) {
             return const LoadingWidget();
           }
-          
+
           return RefreshIndicator(
             onRefresh: () async {
               _loadData();
@@ -88,15 +91,15 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                   // Welcome Card
                   _buildWelcomeCard(context, state),
                   const SizedBox(height: 24),
-                  
+
                   // Stats Cards
                   _buildStatsGrid(context, state),
                   const SizedBox(height: 24),
-                  
+
                   // Today's Appointments
                   _buildTodayAppointments(context, state),
                   const SizedBox(height: 24),
-                  
+
                   // Quick Actions
                   _buildQuickActions(context),
                 ],
@@ -110,8 +113,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   }
 
   Widget _buildWelcomeCard(BuildContext context, EmployeeState state) {
-    String employeeName = 'Employee';
-    String role = 'Staff';
+    var employeeName = 'Employee';
+    var role = 'Staff';
     if (state is EmployeeProfileLoaded) {
       employeeName = state.profile.name;
       role = state.profile.role;
@@ -143,7 +146,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                   Text(
                     AppLocalizations.of(context).translate('welcome'),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                   ),
                   const SizedBox(height: 4),
@@ -151,14 +155,18 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                     employeeName,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     role,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.8),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onPrimaryContainer
+                              .withOpacity(0.8),
                         ),
                   ),
                 ],
@@ -171,7 +179,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   }
 
   Widget _buildStatsGrid(BuildContext context, EmployeeState state) {
-    Map<String, dynamic> stats = {};
+    var stats = <String, dynamic>{};
     if (state is DashboardStatsLoaded) {
       stats = state.stats;
     }
@@ -250,7 +258,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   }
 
   Widget _buildTodayAppointments(BuildContext context, EmployeeState state) {
-    List appointments = [];
+    var appointments = [];
     if (state is AppointmentsLoaded) {
       appointments = state.appointments;
     }
@@ -282,7 +290,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               padding: const EdgeInsets.all(32),
               child: Center(
                 child: Text(
-                  AppLocalizations.of(context).translate('no_appointments_today'),
+                  AppLocalizations.of(context)
+                      .translate('no_appointments_today'),
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -299,30 +308,42 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                   child: Icon(Icons.person),
                 ),
                 title: Text(appointment.patientName ?? 'Patient'),
-                subtitle: Text('${appointment.appointmentDate.hour}:${appointment.appointmentDate.minute.toString().padLeft(2, '0')}'),
-                trailing: appointment.status == 'pending'
+                subtitle: Text(
+                  '${appointment.appointmentDate.hour}:${appointment.appointmentDate.minute.toString().padLeft(2, '0')}',
+                ),
+                trailing: appointment.status == AppointmentStatus.pending
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.check_circle, color: Colors.green),
+                            icon: const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                            ),
                             onPressed: () {
-                              context.read<EmployeeBloc>().add(CheckInPatient(appointment.id));
+                              context
+                                  .read<EmployeeBloc>()
+                                  .add(CheckInPatient(appointment.id));
                             },
                           ),
                         ],
                       )
-                    : appointment.status == 'in_progress'
+                    : appointment.status == AppointmentStatus.confirmed
                         ? IconButton(
-                            icon: const Icon(Icons.check_circle_outline, color: Colors.blue),
+                            icon: const Icon(
+                              Icons.check_circle_outline,
+                              color: Colors.blue,
+                            ),
                             onPressed: () {
-                              context.read<EmployeeBloc>().add(CheckOutPatient(appointment.id));
+                              context
+                                  .read<EmployeeBloc>()
+                                  .add(CheckOutPatient(appointment.id));
                             },
                           )
                         : const Icon(Icons.check_circle, color: Colors.grey),
               ),
             );
-          }).toList(),
+          }),
       ],
     );
   }
@@ -344,7 +365,6 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           physics: const NeverScrollableScrollPhysics(),
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
-          childAspectRatio: 1,
           children: [
             _buildQuickActionCard(
               context,
@@ -436,9 +456,9 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                   child: Icon(Icons.person, size: 40, color: Colors.grey),
                 ),
                 const SizedBox(height: 16),
-                Text(
+                const Text(
                   'Employee Name',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

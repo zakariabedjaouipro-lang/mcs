@@ -16,6 +16,11 @@ class SupabaseService {
 
   final SupabaseClient _client;
 
+  // ── Current User ID ───────────────────────────────────────
+
+  /// Returns the current user's ID or null if not authenticated.
+  String? get currentUserId => _client.auth.currentUser?.id;
+
   // ── Table Query ──────────────────────────────────────────
 
   /// Returns a query builder for the given [table].

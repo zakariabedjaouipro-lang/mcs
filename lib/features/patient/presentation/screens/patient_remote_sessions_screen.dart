@@ -143,15 +143,15 @@ class _PatientRemoteSessionsScreenState extends State<PatientRemoteSessionsScree
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: session.status == 'scheduled'
+                    color: session.status == VideoSessionStatus.scheduled
                         ? Colors.blue.withOpacity(0.1)
                         : Colors.green.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    session.status.toUpperCase(),
+                    session.status.dbValue.toUpperCase(),
                     style: TextStyle(
-                      color: session.status == 'scheduled' ? Colors.blue : Colors.green,
+                      color: session.status == VideoSessionStatus.scheduled ? Colors.blue : Colors.green,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),

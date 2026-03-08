@@ -113,6 +113,15 @@ class PrescriptionModel extends Equatable {
       .map((m) => '${m.name} ${m.dosage} - ${m.frequency}')
       .join('\n');
 
+  /// Alias for createdAt for backward compatibility
+  DateTime get prescriptionDate => createdAt;
+
+  /// Get doctor name (to be loaded from doctor model)
+  String? get doctorName => null;
+
+  /// Get diagnosis (from notes)
+  String? get diagnosis => notes;
+
   /// Convert to JSON.
   Map<String, dynamic> toJson() => {
         'id': id,

@@ -9,8 +9,6 @@ import 'package:mcs/features/employee/presentation/bloc/employee_state.dart';
 
 /// Employee BLoC
 class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
-  final EmployeeRepository _employeeRepository;
-
   EmployeeBloc(this._employeeRepository) : super(const EmployeeInitial()) {
     on<LoadEmployeeProfile>(_onLoadEmployeeProfile);
     on<UpdateEmployeeProfile>(_onUpdateEmployeeProfile);
@@ -44,6 +42,7 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     on<ProcessPayment>(_onProcessPayment);
     on<LoadDashboardStats>(_onLoadDashboardStats);
   }
+  final EmployeeRepository _employeeRepository;
 
   Future<void> _onLoadEmployeeProfile(
     LoadEmployeeProfile event,
@@ -62,7 +61,8 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     Emitter<EmployeeState> emit,
   ) async {
     emit(const EmployeeLoading());
-    final result = await _employeeRepository.updateEmployeeProfile(event.profile);
+    final result =
+        await _employeeRepository.updateEmployeeProfile(event.profile);
     result.fold(
       (failure) => emit(EmployeeError(_mapFailureToMessage(failure))),
       (_) => emit(const EmployeeProfileUpdated('تم تحديث الملف الشخصي بنجاح')),
@@ -108,7 +108,10 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     UpdatePatient event,
     Emitter<EmployeeState> emit,
   ) async {
-    final result = await _employeeRepository.updatePatient(event.patientId, event.patientData);
+    final result = await _employeeRepository.updatePatient(
+      event.patientId,
+      event.patientData,
+    );
     result.fold(
       (failure) => emit(EmployeeError(_mapFailureToMessage(failure))),
       (_) => emit(const PatientUpdated('تم تحديث بيانات المريض بنجاح')),
@@ -148,7 +151,8 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     Emitter<EmployeeState> emit,
   ) async {
     emit(const EmployeeLoading());
-    final result = await _employeeRepository.getAppointmentDetails(event.appointmentId);
+    final result =
+        await _employeeRepository.getAppointmentDetails(event.appointmentId);
     result.fold(
       (failure) => emit(EmployeeError(_mapFailureToMessage(failure))),
       (appointment) => emit(AppointmentDetailsLoaded(appointment)),
@@ -159,7 +163,8 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     BookAppointment event,
     Emitter<EmployeeState> emit,
   ) async {
-    final result = await _employeeRepository.bookAppointment(event.appointmentData);
+    final result =
+        await _employeeRepository.bookAppointment(event.appointmentData);
     result.fold(
       (failure) => emit(EmployeeError(_mapFailureToMessage(failure))),
       (_) => emit(const AppointmentBooked('تم حجز الموعد بنجاح')),
@@ -198,7 +203,8 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     CheckInPatient event,
     Emitter<EmployeeState> emit,
   ) async {
-    final result = await _employeeRepository.checkInPatient(event.appointmentId);
+    final result =
+        await _employeeRepository.checkInPatient(event.appointmentId);
     result.fold(
       (failure) => emit(EmployeeError(_mapFailureToMessage(failure))),
       (_) => emit(const PatientCheckedIn('تم تسجيل دخول المريض بنجاح')),
@@ -209,7 +215,8 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     CheckOutPatient event,
     Emitter<EmployeeState> emit,
   ) async {
-    final result = await _employeeRepository.checkOutPatient(event.appointmentId);
+    final result =
+        await _employeeRepository.checkOutPatient(event.appointmentId);
     result.fold(
       (failure) => emit(EmployeeError(_mapFailureToMessage(failure))),
       (_) => emit(const PatientCheckedOut('تم تسجيل خروج المريض بنجاح')),
@@ -235,7 +242,8 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     Emitter<EmployeeState> emit,
   ) async {
     emit(const EmployeeLoading());
-    final result = await _employeeRepository.getPatientVitalSigns(event.patientId);
+    final result =
+        await _employeeRepository.getPatientVitalSigns(event.patientId);
     result.fold(
       (failure) => emit(EmployeeError(_mapFailureToMessage(failure))),
       (vitalSigns) => emit(PatientVitalSignsLoaded(vitalSigns)),
@@ -343,10 +351,13 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     RecordInventoryTransaction event,
     Emitter<EmployeeState> emit,
   ) async {
-    final result = await _employeeRepository.recordInventoryTransaction(event.transactionData);
+    final result = await _employeeRepository
+        .recordInventoryTransaction(event.transactionData);
     result.fold(
       (failure) => emit(EmployeeError(_mapFailureToMessage(failure))),
-      (_) => emit(const InventoryTransactionRecorded('تم تسجيل حركة المخزون بنجاح')),
+      (_) => emit(
+        const InventoryTransactionRecorded('تم تسجيل حركة المخزون بنجاح'),
+      ),
     );
   }
 

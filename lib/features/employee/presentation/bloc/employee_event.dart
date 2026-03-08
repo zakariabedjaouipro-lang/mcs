@@ -22,9 +22,8 @@ class LoadEmployeeProfile extends EmployeeEvent {
 }
 
 class UpdateEmployeeProfile extends EmployeeEvent {
-  final EmployeeModel profile;
-
   const UpdateEmployeeProfile(this.profile);
+  final EmployeeModel profile;
 
   @override
   List<Object?> get props => [profile];
@@ -36,37 +35,33 @@ class LoadPatients extends EmployeeEvent {
 }
 
 class LoadPatientDetails extends EmployeeEvent {
-  final String patientId;
-
   const LoadPatientDetails(this.patientId);
+  final String patientId;
 
   @override
   List<Object?> get props => [patientId];
 }
 
 class RegisterPatient extends EmployeeEvent {
-  final Map<String, dynamic> patientData;
-
   const RegisterPatient(this.patientData);
+  final Map<String, dynamic> patientData;
 
   @override
   List<Object?> get props => [patientData];
 }
 
 class UpdatePatient extends EmployeeEvent {
+  const UpdatePatient(this.patientId, this.patientData);
   final String patientId;
   final Map<String, dynamic> patientData;
-
-  const UpdatePatient(this.patientId, this.patientData);
 
   @override
   List<Object?> get props => [patientId, patientData];
 }
 
 class SearchPatients extends EmployeeEvent {
-  final String query;
-
   const SearchPatients(this.query);
+  final String query;
 
   @override
   List<Object?> get props => [query];
@@ -74,71 +69,64 @@ class SearchPatients extends EmployeeEvent {
 
 // Appointment Events
 class LoadAppointments extends EmployeeEvent {
-  final DateTime? startDate;
-  final DateTime? endDate;
-  final String? status;
-
   const LoadAppointments({
     this.startDate,
     this.endDate,
     this.status,
   });
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final String? status;
 
   @override
   List<Object?> get props => [startDate, endDate, status];
 }
 
 class LoadAppointmentDetails extends EmployeeEvent {
-  final String appointmentId;
-
   const LoadAppointmentDetails(this.appointmentId);
+  final String appointmentId;
 
   @override
   List<Object?> get props => [appointmentId];
 }
 
 class BookAppointment extends EmployeeEvent {
-  final Map<String, dynamic> appointmentData;
-
   const BookAppointment(this.appointmentData);
+  final Map<String, dynamic> appointmentData;
 
   @override
   List<Object?> get props => [appointmentData];
 }
 
 class CancelAppointment extends EmployeeEvent {
+  const CancelAppointment(this.appointmentId, this.reason);
   final String appointmentId;
   final String reason;
-
-  const CancelAppointment(this.appointmentId, this.reason);
 
   @override
   List<Object?> get props => [appointmentId, reason];
 }
 
 class RescheduleAppointment extends EmployeeEvent {
+  const RescheduleAppointment(this.appointmentId, this.newDateTime);
   final String appointmentId;
   final DateTime newDateTime;
-
-  const RescheduleAppointment(this.appointmentId, this.newDateTime);
 
   @override
   List<Object?> get props => [appointmentId, newDateTime];
 }
 
 class CheckInPatient extends EmployeeEvent {
-  final String appointmentId;
-
   const CheckInPatient(this.appointmentId);
+  final String appointmentId;
 
   @override
   List<Object?> get props => [appointmentId];
 }
 
 class CheckOutPatient extends EmployeeEvent {
-  final String appointmentId;
-
   const CheckOutPatient(this.appointmentId);
+  final String appointmentId;
 
   @override
   List<Object?> get props => [appointmentId];
@@ -146,19 +134,17 @@ class CheckOutPatient extends EmployeeEvent {
 
 // Vital Signs Events
 class RecordVitalSigns extends EmployeeEvent {
+  const RecordVitalSigns(this.patientId, this.vitalSigns);
   final String patientId;
   final Map<String, dynamic> vitalSigns;
-
-  const RecordVitalSigns(this.patientId, this.vitalSigns);
 
   @override
   List<Object?> get props => [patientId, vitalSigns];
 }
 
 class LoadPatientVitalSigns extends EmployeeEvent {
-  final String patientId;
-
   const LoadPatientVitalSigns(this.patientId);
+  final String patientId;
 
   @override
   List<Object?> get props => [patientId];
@@ -166,28 +152,25 @@ class LoadPatientVitalSigns extends EmployeeEvent {
 
 // Lab Results Events
 class UploadLabResult extends EmployeeEvent {
-  final Map<String, dynamic> labResult;
-
   const UploadLabResult(this.labResult);
+  final Map<String, dynamic> labResult;
 
   @override
   List<Object?> get props => [labResult];
 }
 
 class LoadLabResults extends EmployeeEvent {
-  final String patientId;
-
   const LoadLabResults(this.patientId);
+  final String patientId;
 
   @override
   List<Object?> get props => [patientId];
 }
 
 class UpdateLabResult extends EmployeeEvent {
+  const UpdateLabResult(this.resultId, this.resultData);
   final String resultId;
   final Map<String, dynamic> resultData;
-
-  const UpdateLabResult(this.resultId, this.resultData);
 
   @override
   List<Object?> get props => [resultId, resultData];
@@ -199,46 +182,41 @@ class LoadInventory extends EmployeeEvent {
 }
 
 class LoadInventoryItem extends EmployeeEvent {
-  final String itemId;
-
   const LoadInventoryItem(this.itemId);
+  final String itemId;
 
   @override
   List<Object?> get props => [itemId];
 }
 
 class AddInventoryItem extends EmployeeEvent {
-  final Map<String, dynamic> itemData;
-
   const AddInventoryItem(this.itemData);
+  final Map<String, dynamic> itemData;
 
   @override
   List<Object?> get props => [itemData];
 }
 
 class UpdateInventoryItem extends EmployeeEvent {
+  const UpdateInventoryItem(this.itemId, this.itemData);
   final String itemId;
   final Map<String, dynamic> itemData;
-
-  const UpdateInventoryItem(this.itemId, this.itemData);
 
   @override
   List<Object?> get props => [itemId, itemData];
 }
 
 class DeleteInventoryItem extends EmployeeEvent {
-  final String itemId;
-
   const DeleteInventoryItem(this.itemId);
+  final String itemId;
 
   @override
   List<Object?> get props => [itemId];
 }
 
 class RecordInventoryTransaction extends EmployeeEvent {
-  final Map<String, dynamic> transactionData;
-
   const RecordInventoryTransaction(this.transactionData);
+  final Map<String, dynamic> transactionData;
 
   @override
   List<Object?> get props => [transactionData];
@@ -246,53 +224,48 @@ class RecordInventoryTransaction extends EmployeeEvent {
 
 // Invoice Events
 class LoadInvoices extends EmployeeEvent {
-  final DateTime? startDate;
-  final DateTime? endDate;
-  final String? status;
-
   const LoadInvoices({
     this.startDate,
     this.endDate,
     this.status,
   });
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final String? status;
 
   @override
   List<Object?> get props => [startDate, endDate, status];
 }
 
 class LoadInvoiceDetails extends EmployeeEvent {
-  final String invoiceId;
-
   const LoadInvoiceDetails(this.invoiceId);
+  final String invoiceId;
 
   @override
   List<Object?> get props => [invoiceId];
 }
 
 class CreateInvoice extends EmployeeEvent {
-  final Map<String, dynamic> invoiceData;
-
   const CreateInvoice(this.invoiceData);
+  final Map<String, dynamic> invoiceData;
 
   @override
   List<Object?> get props => [invoiceData];
 }
 
 class UpdateInvoice extends EmployeeEvent {
+  const UpdateInvoice(this.invoiceId, this.invoiceData);
   final String invoiceId;
   final Map<String, dynamic> invoiceData;
-
-  const UpdateInvoice(this.invoiceId, this.invoiceData);
 
   @override
   List<Object?> get props => [invoiceId, invoiceData];
 }
 
 class ProcessPayment extends EmployeeEvent {
+  const ProcessPayment(this.invoiceId, this.paymentData);
   final String invoiceId;
   final Map<String, dynamic> paymentData;
-
-  const ProcessPayment(this.invoiceId, this.paymentData);
 
   @override
   List<Object?> get props => [invoiceId, paymentData];

@@ -2,11 +2,6 @@
 library;
 
 import 'package:equatable/equatable.dart';
-import 'package:mcs/core/models/appointment_model.dart';
-import 'package:mcs/core/models/lab_result_model.dart';
-import 'package:mcs/core/models/prescription_model.dart';
-import 'package:mcs/core/models/video_session_model.dart';
-import 'package:mcs/core/models/user_model.dart';
 
 /// Base class for patient events
 abstract class PatientEvent extends Equatable {
@@ -25,9 +20,8 @@ class LoadAppointments extends PatientEvent {}
 
 /// Load appointment by ID
 class LoadAppointmentById extends PatientEvent {
-  final String appointmentId;
-
   const LoadAppointmentById(this.appointmentId);
+  final String appointmentId;
 
   @override
   List<Object?> get props => [appointmentId];
@@ -35,13 +29,6 @@ class LoadAppointmentById extends PatientEvent {
 
 /// Book new appointment
 class BookAppointment extends PatientEvent {
-  final String clinicId;
-  final String doctorId;
-  final DateTime appointmentDate;
-  final String timeSlot;
-  final String appointmentType;
-  final String? notes;
-
   const BookAppointment({
     required this.clinicId,
     required this.doctorId,
@@ -50,6 +37,12 @@ class BookAppointment extends PatientEvent {
     required this.appointmentType,
     this.notes,
   });
+  final String clinicId;
+  final String doctorId;
+  final DateTime appointmentDate;
+  final String timeSlot;
+  final String appointmentType;
+  final String? notes;
 
   @override
   List<Object?> get props => [
@@ -64,9 +57,8 @@ class BookAppointment extends PatientEvent {
 
 /// Cancel appointment
 class CancelAppointment extends PatientEvent {
-  final String appointmentId;
-
   const CancelAppointment(this.appointmentId);
+  final String appointmentId;
 
   @override
   List<Object?> get props => [appointmentId];
@@ -74,15 +66,14 @@ class CancelAppointment extends PatientEvent {
 
 /// Reschedule appointment
 class RescheduleAppointment extends PatientEvent {
-  final String appointmentId;
-  final DateTime newDate;
-  final String newTimeSlot;
-
   const RescheduleAppointment({
     required this.appointmentId,
     required this.newDate,
     required this.newTimeSlot,
   });
+  final String appointmentId;
+  final DateTime newDate;
+  final String newTimeSlot;
 
   @override
   List<Object?> get props => [appointmentId, newDate, newTimeSlot];
@@ -103,9 +94,8 @@ class LoadPastRemoteSessions extends PatientEvent {}
 
 /// Join video session
 class JoinVideoSession extends PatientEvent {
-  final String sessionId;
-
   const JoinVideoSession(this.sessionId);
+  final String sessionId;
 
   @override
   List<Object?> get props => [sessionId];
@@ -113,9 +103,8 @@ class JoinVideoSession extends PatientEvent {
 
 /// Leave video session
 class LeaveVideoSession extends PatientEvent {
-  final String channelId;
-
   const LeaveVideoSession(this.channelId);
+  final String channelId;
 
   @override
   List<Object?> get props => [channelId];
@@ -130,9 +119,8 @@ class LoadPrescriptions extends PatientEvent {}
 
 /// Load prescription by ID
 class LoadPrescriptionById extends PatientEvent {
-  final String prescriptionId;
-
   const LoadPrescriptionById(this.prescriptionId);
+  final String prescriptionId;
 
   @override
   List<Object?> get props => [prescriptionId];
@@ -150,9 +138,8 @@ class LoadLabResults extends PatientEvent {}
 
 /// Load lab result by ID
 class LoadLabResultById extends PatientEvent {
-  final String labResultId;
-
   const LoadLabResultById(this.labResultId);
+  final String labResultId;
 
   @override
   List<Object?> get props => [labResultId];
@@ -160,9 +147,8 @@ class LoadLabResultById extends PatientEvent {
 
 /// Download lab result
 class DownloadLabResult extends PatientEvent {
-  final String labResultId;
-
   const DownloadLabResult(this.labResultId);
+  final String labResultId;
 
   @override
   List<Object?> get props => [labResultId];
@@ -177,15 +163,6 @@ class LoadProfile extends PatientEvent {}
 
 /// Update user profile
 class UpdateProfile extends PatientEvent {
-  final String? name;
-  final String? phone;
-  final String? address;
-  final DateTime? dateOfBirth;
-  final String? bloodType;
-  final String? allergies;
-  final String? emergencyContact;
-  final String? emergencyPhone;
-
   const UpdateProfile({
     this.name,
     this.phone,
@@ -196,6 +173,14 @@ class UpdateProfile extends PatientEvent {
     this.emergencyContact,
     this.emergencyPhone,
   });
+  final String? name;
+  final String? phone;
+  final String? address;
+  final DateTime? dateOfBirth;
+  final String? bloodType;
+  final String? allergies;
+  final String? emergencyContact;
+  final String? emergencyPhone;
 
   @override
   List<Object?> get props => [
@@ -212,13 +197,12 @@ class UpdateProfile extends PatientEvent {
 
 /// Change password
 class ChangePassword extends PatientEvent {
-  final String currentPassword;
-  final String newPassword;
-
   const ChangePassword({
     required this.currentPassword,
     required this.newPassword,
   });
+  final String currentPassword;
+  final String newPassword;
 
   @override
   List<Object?> get props => [currentPassword, newPassword];
@@ -230,15 +214,14 @@ class ChangePassword extends PatientEvent {
 
 /// Link social account
 class LinkSocialAccount extends PatientEvent {
-  final String provider;
-  final String providerId;
-  final String accessToken;
-
   const LinkSocialAccount({
     required this.provider,
     required this.providerId,
     required this.accessToken,
   });
+  final String provider;
+  final String providerId;
+  final String accessToken;
 
   @override
   List<Object?> get props => [provider, providerId, accessToken];
@@ -246,9 +229,8 @@ class LinkSocialAccount extends PatientEvent {
 
 /// Unlink social account
 class UnlinkSocialAccount extends PatientEvent {
-  final String provider;
-
   const UnlinkSocialAccount(this.provider);
+  final String provider;
 
   @override
   List<Object?> get props => [provider];
@@ -288,9 +270,8 @@ class NavigateToSettings extends PatientEvent {}
 
 /// Set loading state
 class SetLoading extends PatientEvent {
-  final bool isLoading;
-
   const SetLoading(this.isLoading);
+  final bool isLoading;
 
   @override
   List<Object?> get props => [isLoading];

@@ -13,16 +13,18 @@ class PatientChangePasswordScreen extends StatefulWidget {
   const PatientChangePasswordScreen({super.key});
 
   @override
-  State<PatientChangePasswordScreen> createState() => _PatientChangePasswordScreenState();
+  State<PatientChangePasswordScreen> createState() =>
+      _PatientChangePasswordScreenState();
 }
 
-class _PatientChangePasswordScreenState extends State<PatientChangePasswordScreen> {
+class _PatientChangePasswordScreenState
+    extends State<PatientChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  
+
   bool _obscureCurrentPassword = true;
   bool _obscureNewPassword = true;
   bool _obscureConfirmPassword = true;
@@ -78,7 +80,8 @@ class _PatientChangePasswordScreenState extends State<PatientChangePasswordScree
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context).translate('password_requirements'),
+                            AppLocalizations.of(context)
+                                .translate('password_requirements'),
                             style: TextStyle(color: Colors.blue[900]),
                           ),
                         ),
@@ -87,17 +90,21 @@ class _PatientChangePasswordScreenState extends State<PatientChangePasswordScree
                   ),
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Current Password
                 CustomTextField(
                   controller: _currentPasswordController,
-                  label: AppLocalizations.of(context).translate('current_password'),
-                  hintText: AppLocalizations.of(context).translate('enter_current_password'),
+                  label: AppLocalizations.of(context)
+                      .translate('current_password'),
+                  hintText: AppLocalizations.of(context)
+                      .translate('enter_current_password'),
                   prefixIcon: Icons.lock,
                   obscureText: _obscureCurrentPassword,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureCurrentPassword ? Icons.visibility : Icons.visibility_off,
+                      _obscureCurrentPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
                     onPressed: () {
                       setState(() {
@@ -107,23 +114,27 @@ class _PatientChangePasswordScreenState extends State<PatientChangePasswordScree
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context).translate('please_enter_current_password');
+                      return AppLocalizations.of(context)
+                          .translate('please_enter_current_password');
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
-                
+
                 // New Password
                 CustomTextField(
                   controller: _newPasswordController,
                   label: AppLocalizations.of(context).translate('new_password'),
-                  hintText: AppLocalizations.of(context).translate('enter_new_password'),
+                  hintText: AppLocalizations.of(context)
+                      .translate('enter_new_password'),
                   prefixIcon: Icons.lock_outline,
                   obscureText: _obscureNewPassword,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureNewPassword ? Icons.visibility : Icons.visibility_off,
+                      _obscureNewPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
                     onPressed: () {
                       setState(() {
@@ -133,10 +144,12 @@ class _PatientChangePasswordScreenState extends State<PatientChangePasswordScree
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context).translate('please_enter_new_password');
+                      return AppLocalizations.of(context)
+                          .translate('please_enter_new_password');
                     }
                     if (value.length < 8) {
-                      return AppLocalizations.of(context).translate('password_too_short');
+                      return AppLocalizations.of(context)
+                          .translate('password_too_short');
                     }
                     return null;
                   },
@@ -145,21 +158,25 @@ class _PatientChangePasswordScreenState extends State<PatientChangePasswordScree
                   },
                 ),
                 const SizedBox(height: 8),
-                
+
                 // Password Strength Indicator
                 _buildPasswordStrengthIndicator(),
                 const SizedBox(height: 16),
-                
+
                 // Confirm Password
                 CustomTextField(
                   controller: _confirmPasswordController,
-                  label: AppLocalizations.of(context).translate('confirm_password'),
-                  hintText: AppLocalizations.of(context).translate('confirm_new_password'),
+                  label: AppLocalizations.of(context)
+                      .translate('confirm_password'),
+                  hintText: AppLocalizations.of(context)
+                      .translate('confirm_new_password'),
                   prefixIcon: Icons.lock_outline,
                   obscureText: _obscureConfirmPassword,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                      _obscureConfirmPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
                     onPressed: () {
                       setState(() {
@@ -169,19 +186,22 @@ class _PatientChangePasswordScreenState extends State<PatientChangePasswordScree
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context).translate('please_confirm_password');
+                      return AppLocalizations.of(context)
+                          .translate('please_confirm_password');
                     }
                     if (value != _newPasswordController.text) {
-                      return AppLocalizations.of(context).translate('passwords_do_not_match');
+                      return AppLocalizations.of(context)
+                          .translate('passwords_do_not_match');
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Change Password Button
                 CustomButton(
-                  text: AppLocalizations.of(context).translate('change_password'),
+                  text:
+                      AppLocalizations.of(context).translate('change_password'),
                   onPressed: _changePassword,
                 ),
               ],
@@ -195,7 +215,7 @@ class _PatientChangePasswordScreenState extends State<PatientChangePasswordScree
   Widget _buildPasswordStrengthIndicator() {
     final password = _newPasswordController.text;
     final strength = _calculatePasswordStrength(password);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -239,42 +259,55 @@ class _PatientChangePasswordScreenState extends State<PatientChangePasswordScree
     if (password.isEmpty) {
       return PasswordStrength(0, '', Colors.grey);
     }
-    
-    int score = 0;
-    
+
+    var score = 0;
+
     // Length check
     if (password.length >= 8) score++;
     if (password.length >= 12) score++;
-    
+
     // Complexity checks
-    if (password.contains(RegExp(r'[A-Z]'))) score++;
-    if (password.contains(RegExp(r'[a-z]'))) score++;
-    if (password.contains(RegExp(r'[0-9]'))) score++;
+    if (password.contains(RegExp('[A-Z]'))) score++;
+    if (password.contains(RegExp('[a-z]'))) score++;
+    if (password.contains(RegExp('[0-9]'))) score++;
     if (password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) score++;
-    
+
     if (score <= 2) {
-      return PasswordStrength(0.33, AppLocalizations.of(context).translate('weak'), Colors.red);
+      return PasswordStrength(
+        0.33,
+        AppLocalizations.of(context).translate('weak'),
+        Colors.red,
+      );
     } else if (score <= 4) {
-      return PasswordStrength(0.66, AppLocalizations.of(context).translate('medium'), Colors.orange);
+      return PasswordStrength(
+        0.66,
+        AppLocalizations.of(context).translate('medium'),
+        Colors.orange,
+      );
     } else {
-      return PasswordStrength(1.0, AppLocalizations.of(context).translate('strong'), Colors.green);
+      return PasswordStrength(
+        1,
+        AppLocalizations.of(context).translate('strong'),
+        Colors.green,
+      );
     }
   }
 
   void _changePassword() {
     if (_formKey.currentState!.validate()) {
-      context.read<PatientBloc>().add(ChangePassword(
-        currentPassword: _currentPasswordController.text,
-        newPassword: _newPasswordController.text,
-      ));
+      context.read<PatientBloc>().add(
+            ChangePassword(
+              currentPassword: _currentPasswordController.text,
+              newPassword: _newPasswordController.text,
+            ),
+          );
     }
   }
 }
 
 class PasswordStrength {
+  PasswordStrength(this.value, this.label, this.color);
   final double value;
   final String label;
   final Color color;
-  
-  PasswordStrength(this.value, this.label, this.color);
 }

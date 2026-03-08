@@ -247,12 +247,15 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         final fromCurrency = item['from_currency'] as String;
         final toCurrency = item['to_currency'] as String;
         final effectiveDate = DateTime.parse(item['effective_date'] as String);
-        final key = '$fromCurrency\_$toCurrency';
+        final key = '${fromCurrency}_$toCurrency';
 
         // Keep only the most recent rate for each pair
         if (!latestRates.containsKey(key) ||
-            effectiveDate.isAfter(DateTime.parse(
-                latestRates[key]!['effective_date'] as String))) {
+            effectiveDate.isAfter(
+              DateTime.parse(
+                latestRates[key]!['effective_date'] as String,
+              ),
+            )) {
           latestRates[key] = item;
         }
       }

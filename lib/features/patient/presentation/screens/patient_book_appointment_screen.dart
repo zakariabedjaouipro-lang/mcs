@@ -16,15 +16,17 @@ class PatientBookAppointmentScreen extends StatefulWidget {
   const PatientBookAppointmentScreen({super.key});
 
   @override
-  State<PatientBookAppointmentScreen> createState() => _PatientBookAppointmentScreenState();
+  State<PatientBookAppointmentScreen> createState() =>
+      _PatientBookAppointmentScreenState();
 }
 
-class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScreen> {
+class _PatientBookAppointmentScreenState
+    extends State<PatientBookAppointmentScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   // Step tracking
   int _currentStep = 0;
-  
+
   // Form data
   String? _selectedCountry;
   String? _selectedRegion;
@@ -34,7 +36,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
   String? _selectedTimeSlot;
   bool _requestRemoteSession = false;
   final _notesController = TextEditingController();
-  
+
   @override
   void dispose() {
     _notesController.dispose();
@@ -52,7 +54,10 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
           if (state is AppointmentBooked) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(AppLocalizations.of(context).translate('appointment_booked_success')),
+                content: Text(
+                  AppLocalizations.of(context)
+                      .translate('appointment_booked_success'),
+                ),
                 backgroundColor: Colors.green,
               ),
             );
@@ -148,8 +153,13 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
           _buildTimeSlotPicker(),
           const SizedBox(height: 16),
           CheckboxListTile(
-            title: Text(AppLocalizations.of(context).translate('request_remote_session')),
-            subtitle: Text(AppLocalizations.of(context).translate('remote_session_description')),
+            title: Text(
+              AppLocalizations.of(context).translate('request_remote_session'),
+            ),
+            subtitle: Text(
+              AppLocalizations.of(context)
+                  .translate('remote_session_description'),
+            ),
             value: _requestRemoteSession,
             onChanged: (value) {
               setState(() {
@@ -165,7 +175,8 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
 
   Step _buildStep6() {
     return Step(
-      title: Text(AppLocalizations.of(context).translate('confirm_appointment')),
+      title:
+          Text(AppLocalizations.of(context).translate('confirm_appointment')),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -189,7 +200,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         labelText: AppLocalizations.of(context).translate('country'),
         border: const OutlineInputBorder(),
       ),
-      value: _selectedCountry,
+      initialValue: _selectedCountry,
       items: const [
         DropdownMenuItem(value: 'DZ', child: Text('الجزائر')),
         DropdownMenuItem(value: 'US', child: Text('United States')),
@@ -203,7 +214,8 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context).translate('please_select_country');
+          return AppLocalizations.of(context)
+              .translate('please_select_country');
         }
         return null;
       },
@@ -216,7 +228,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         labelText: AppLocalizations.of(context).translate('region'),
         border: const OutlineInputBorder(),
       ),
-      value: _selectedRegion,
+      initialValue: _selectedRegion,
       items: const [
         DropdownMenuItem(value: '01', child: Text('الجزائر العاصمة')),
         DropdownMenuItem(value: '31', child: Text('وهران')),
@@ -242,7 +254,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         labelText: AppLocalizations.of(context).translate('specialty'),
         border: const OutlineInputBorder(),
       ),
-      value: _selectedSpecialty,
+      initialValue: _selectedSpecialty,
       items: const [
         DropdownMenuItem(value: 'cardiology', child: Text('أمراض القلب')),
         DropdownMenuItem(value: 'pediatrics', child: Text('طب الأطفال')),
@@ -258,7 +270,8 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return AppLocalizations.of(context).translate('please_select_specialty');
+          return AppLocalizations.of(context)
+              .translate('please_select_specialty');
         }
         return null;
       },
@@ -271,7 +284,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         labelText: AppLocalizations.of(context).translate('doctor'),
         border: const OutlineInputBorder(),
       ),
-      value: _selectedDoctor,
+      initialValue: _selectedDoctor,
       items: const [
         DropdownMenuItem(value: 'dr1', child: Text('د. أحمد محمد')),
         DropdownMenuItem(value: 'dr2', child: Text('د. فاطمة علي')),
@@ -323,10 +336,20 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
 
   Widget _buildTimeSlotPicker() {
     final timeSlots = [
-      '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-      '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
+      '09:00',
+      '09:30',
+      '10:00',
+      '10:30',
+      '11:00',
+      '11:30',
+      '14:00',
+      '14:30',
+      '15:00',
+      '15:30',
+      '16:00',
+      '16:30',
     ];
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -442,18 +465,21 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
   }
 
   void _submitAppointment() {
-    if (_formKey.currentState!.validate() && 
-        _selectedDate != null && 
+    if (_formKey.currentState!.validate() &&
+        _selectedDate != null &&
         _selectedTimeSlot != null) {
-      
-      context.read<PatientBloc>().add(BookAppointment(
-        clinicId: 'clinic_001', // TODO: Get from selected region/doctor
-        doctorId: _selectedDoctor!,
-        appointmentDate: _selectedDate!,
-        timeSlot: _selectedTimeSlot!,
-        appointmentType: _requestRemoteSession ? 'remote' : 'in_person',
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
-      ));
+      context.read<PatientBloc>().add(
+            BookAppointment(
+              clinicId: 'clinic_001', // TODO: Get from selected region/doctor
+              doctorId: _selectedDoctor!,
+              appointmentDate: _selectedDate!,
+              timeSlot: _selectedTimeSlot!,
+              appointmentType: _requestRemoteSession ? 'remote' : 'in_person',
+              notes: _notesController.text.trim().isEmpty
+                  ? null
+                  : _notesController.text.trim(),
+            ),
+          );
     }
   }
 }

@@ -19,7 +19,7 @@ class PatientProfileScreen extends StatefulWidget {
 
 class _PatientProfileScreenState extends State<PatientProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
@@ -27,7 +27,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
   final _allergiesController = TextEditingController();
   final _emergencyContactController = TextEditingController();
   final _emergencyPhoneController = TextEditingController();
-  
+
   DateTime? _dateOfBirth;
   UserModel? _user;
 
@@ -63,7 +63,9 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
           } else if (state is ProfileUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(AppLocalizations.of(context).translate('profile_updated')),
+                content: Text(
+                  AppLocalizations.of(context).translate('profile_updated'),
+                ),
                 backgroundColor: Colors.green,
               ),
             );
@@ -81,7 +83,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
             if (state is PatientLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-            
+
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Form(
@@ -92,10 +94,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                     // Profile Header
                     _buildProfileHeader(),
                     const SizedBox(height: 24),
-                    
+
                     // Personal Information
                     _buildSection(
-                      AppLocalizations.of(context).translate('personal_information'),
+                      AppLocalizations.of(context)
+                          .translate('personal_information'),
                       [
                         _buildNameField(),
                         const SizedBox(height: 16),
@@ -107,10 +110,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // Medical Information
                     _buildSection(
-                      AppLocalizations.of(context).translate('medical_information'),
+                      AppLocalizations.of(context)
+                          .translate('medical_information'),
                       [
                         _buildBloodTypeField(),
                         const SizedBox(height: 16),
@@ -118,10 +122,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // Emergency Contact
                     _buildSection(
-                      AppLocalizations.of(context).translate('emergency_contact'),
+                      AppLocalizations.of(context)
+                          .translate('emergency_contact'),
                       [
                         _buildEmergencyContactField(),
                         const SizedBox(height: 16),
@@ -129,31 +134,38 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // Update Button
                     CustomButton(
-                      text: AppLocalizations.of(context).translate('update_profile'),
+                      text: AppLocalizations.of(context)
+                          .translate('update_profile'),
                       onPressed: _updateProfile,
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Change Password Button
                     OutlinedButton.icon(
                       onPressed: () {
                         // TODO: Navigate to change password screen
                       },
                       icon: const Icon(Icons.lock),
-                      label: Text(AppLocalizations.of(context).translate('change_password')),
+                      label: Text(
+                        AppLocalizations.of(context)
+                            .translate('change_password'),
+                      ),
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Social Accounts
                     OutlinedButton.icon(
                       onPressed: () {
                         // TODO: Navigate to social accounts screen
                       },
                       icon: const Icon(Icons.link),
-                      label: Text(AppLocalizations.of(context).translate('link_social_accounts')),
+                      label: Text(
+                        AppLocalizations.of(context)
+                            .translate('link_social_accounts'),
+                      ),
                     ),
                   ],
                 ),
@@ -192,7 +204,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    icon: const Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                    icon: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                     onPressed: () {
                       // TODO: Implement profile photo upload
                     },
@@ -285,7 +301,8 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context).translate('date_of_birth'),
-          hintText: AppLocalizations.of(context).translate('select_date_of_birth'),
+          hintText:
+              AppLocalizations.of(context).translate('select_date_of_birth'),
           prefixIcon: const Icon(Icons.calendar_today),
           border: const OutlineInputBorder(),
         ),
@@ -313,10 +330,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
       decoration: InputDecoration(
         labelText: AppLocalizations.of(context).translate('blood_type'),
         hintText: AppLocalizations.of(context).translate('select_blood_type'),
-        prefixIcon: const Icon(Icons.bloodtype),
+        prefixIcon: const Icon(Icons.opacity),
         border: const OutlineInputBorder(),
       ),
-      value: _bloodTypeController.text.isEmpty ? null : _bloodTypeController.text,
+      initialValue:
+          _bloodTypeController.text.isEmpty ? null : _bloodTypeController.text,
       items: const [
         DropdownMenuItem(value: 'A+', child: Text('A+')),
         DropdownMenuItem(value: 'A-', child: Text('A-')),
@@ -347,7 +365,8 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
     return CustomTextField(
       controller: _emergencyContactController,
       label: AppLocalizations.of(context).translate('emergency_contact_name'),
-      hintText: AppLocalizations.of(context).translate('enter_emergency_contact'),
+      hintText:
+          AppLocalizations.of(context).translate('enter_emergency_contact'),
       prefixIcon: Icons.person,
     );
   }
@@ -375,16 +394,28 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
 
   void _updateProfile() {
     if (_formKey.currentState!.validate()) {
-      context.read<PatientBloc>().add(UpdateProfile(
-        name: _nameController.text.trim(),
-        phone: _phoneController.text.trim(),
-        address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
-        dateOfBirth: _dateOfBirth,
-        bloodType: _bloodTypeController.text.trim().isEmpty ? null : _bloodTypeController.text.trim(),
-        allergies: _allergiesController.text.trim().isEmpty ? null : _allergiesController.text.trim(),
-        emergencyContact: _emergencyContactController.text.trim().isEmpty ? null : _emergencyContactController.text.trim(),
-        emergencyPhone: _emergencyPhoneController.text.trim().isEmpty ? null : _emergencyPhoneController.text.trim(),
-      ));
+      context.read<PatientBloc>().add(
+            UpdateProfile(
+              name: _nameController.text.trim(),
+              phone: _phoneController.text.trim(),
+              address: _addressController.text.trim().isEmpty
+                  ? null
+                  : _addressController.text.trim(),
+              dateOfBirth: _dateOfBirth,
+              bloodType: _bloodTypeController.text.trim().isEmpty
+                  ? null
+                  : _bloodTypeController.text.trim(),
+              allergies: _allergiesController.text.trim().isEmpty
+                  ? null
+                  : _allergiesController.text.trim(),
+              emergencyContact: _emergencyContactController.text.trim().isEmpty
+                  ? null
+                  : _emergencyContactController.text.trim(),
+              emergencyPhone: _emergencyPhoneController.text.trim().isEmpty
+                  ? null
+                  : _emergencyPhoneController.text.trim(),
+            ),
+          );
     }
   }
 }

@@ -12,7 +12,8 @@ class PatientLabResultsScreen extends StatefulWidget {
   const PatientLabResultsScreen({super.key});
 
   @override
-  State<PatientLabResultsScreen> createState() => _PatientLabResultsScreenState();
+  State<PatientLabResultsScreen> createState() =>
+      _PatientLabResultsScreenState();
 }
 
 class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
@@ -65,7 +66,8 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            AppLocalizations.of(context).translate('no_lab_results_description'),
+            AppLocalizations.of(context)
+                .translate('no_lab_results_description'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey[500],
                 ),
@@ -94,20 +96,17 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
   Widget _buildLabResultCard(LabResultModel result) {
     Color statusColor;
     String statusText;
-    
+
     switch (result.status) {
       case 'normal':
         statusColor = Colors.green;
         statusText = AppLocalizations.of(context).translate('normal');
-        break;
       case 'abnormal':
         statusColor = Colors.orange;
         statusText = AppLocalizations.of(context).translate('abnormal');
-        break;
       case 'critical':
         statusColor = Colors.red;
         statusText = AppLocalizations.of(context).translate('critical');
-        break;
       default:
         statusColor = Colors.grey;
         statusText = result.status;
@@ -204,10 +203,14 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        context.read<PatientBloc>().add(DownloadLabResult(result.id));
+                        context
+                            .read<PatientBloc>()
+                            .add(DownloadLabResult(result.id));
                       },
                       icon: const Icon(Icons.download, size: 16),
-                      label: Text(AppLocalizations.of(context).translate('download')),
+                      label: Text(
+                        AppLocalizations.of(context).translate('download'),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -217,7 +220,8 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
                         // TODO: Share result
                       },
                       icon: const Icon(Icons.share, size: 16),
-                      label: Text(AppLocalizations.of(context).translate('share')),
+                      label:
+                          Text(AppLocalizations.of(context).translate('share')),
                     ),
                   ),
                 ],

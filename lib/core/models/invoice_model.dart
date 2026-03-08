@@ -167,6 +167,9 @@ class InvoiceModel extends Equatable {
     return dueDate.difference(DateTime.now()).inDays;
   }
 
+  /// Alias for createdAt for backward compatibility
+  DateTime get invoiceDate => createdAt;
+
   /// Convert to JSON.
   Map<String, dynamic> toJson() => {
         'id': id,

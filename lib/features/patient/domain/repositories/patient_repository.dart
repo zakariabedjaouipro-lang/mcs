@@ -6,8 +6,8 @@ import 'package:mcs/core/errors/failures.dart';
 import 'package:mcs/core/models/appointment_model.dart';
 import 'package:mcs/core/models/lab_result_model.dart';
 import 'package:mcs/core/models/prescription_model.dart';
-import 'package:mcs/core/models/video_session_model.dart';
 import 'package:mcs/core/models/user_model.dart';
+import 'package:mcs/core/models/video_session_model.dart';
 
 /// Patient repository interface
 abstract class PatientRepository {
