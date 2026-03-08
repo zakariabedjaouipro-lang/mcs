@@ -9,7 +9,7 @@ class LocalizationRepositoryImpl extends LocalizationRepository {
   LocalizationRepositoryImpl(this._localDataSource);
 
   final LocalizationLocalDataSource _localDataSource;
-  late String _currentLanguageCode;
+  String _currentLanguageCode = 'ar';
 
   /// Load language preference from local storage
   @override

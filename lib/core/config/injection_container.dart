@@ -5,8 +5,6 @@
 library;
 
 import 'package:get_it/get_it.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/services/notification_service.dart';
@@ -30,6 +28,7 @@ import 'package:mcs/features/theme/data/repositories/theme_repository.dart'
     as theme_repo;
 import 'package:mcs/features/theme/domain/repositories/theme_repository.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Global service locator instance.

@@ -40,7 +40,7 @@ class LocalizationBloc extends Bloc<LocalizationEvent, LocalizationState> {
         emit(const LanguageEnglishState());
       }
     } catch (e) {
-      emit(LocalizationError('فشل تغيير اللغة: ${e.toString()}'));
+      emit(LocalizationError('فشل تغيير اللغة: ${e}'));
     }
   }
 
@@ -66,7 +66,7 @@ class LocalizationBloc extends Bloc<LocalizationEvent, LocalizationState> {
         emit(const LanguageEnglishState());
       }
     } catch (e) {
-      emit(LocalizationError('فشل حفظ اختيار اللغة: ${e.toString()}'));
+      emit(LocalizationError('فشل حفظ اختيار اللغة: ${e}'));
     }
   }
 
@@ -86,7 +86,7 @@ class LocalizationBloc extends Bloc<LocalizationEvent, LocalizationState> {
         emit(const LanguageEnglishState());
       }
     } catch (e) {
-      emit(LocalizationError('فشل تحميل اللغة: ${e.toString()}'));
+      emit(LocalizationError('فشل تحميل اللغة: ${e}'));
     }
   }
 }

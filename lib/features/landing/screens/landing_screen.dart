@@ -1,4 +1,5 @@
-/// Landing screen - main page for the landing website.
+/// Landing screen - Professional Medical Clinic Management System
+/// Modern, clean interface with medical branding and crescent symbol
 library;
 
 import 'package:flutter/material.dart';
@@ -6,14 +7,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mcs/core/config/router.dart';
-import 'package:mcs/core/theme/app_colors.dart';
+import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/extensions.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_state.dart';
-import 'package:mcs/features/landing/widgets/device_detector.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
+import 'package:mcs/features/landing/widgets/medical_hero_section.dart';
+import 'package:mcs/features/landing/widgets/medical_features_section.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 
@@ -53,16 +55,13 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        // Navigate on successful login
         if (state is LoginSuccess) {
           context.go(AppRoutes.dashboard);
-        }
-        // Show error on login failure
-        else if (state is LoginFailure) {
+        } else if (state is LoginFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: AppColors.error,
+              backgroundColor: MedicalColors.error,
               duration: const Duration(seconds: 3),
             ),
           );
@@ -73,19 +72,12 @@ class _LandingScreenState extends State<LandingScreen> {
           controller: _scrollController,
           child: Column(
             children: [
-              // 1. App Bar / Header
               _buildHeader(context),
-
-              // 2. Hero Section
-              _buildHeroSection(context),
-
-              // 3. Features Section
-              _buildFeaturesSection(context),
-
-              // 4. Download Section
-              _buildDownloadSection(context),
-
-              // 5. Footer
+              MedicalHeroSection(
+                onLoginPressed: () => context.go(AppRoutes.login),
+                onRegisterPressed: () => context.go(AppRoutes.register),
+              ),
+              const MedicalFeaturesSection(),
               _buildFooter(context),
             ],
           ),
@@ -94,14 +86,15 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  /// Build responsive app bar/header with logo, language switcher, and login button.
+  /// Professional medical header with branding
   Widget _buildHeader(BuildContext context) {
     final isSmall = context.isSmall;
+    final isDark = context.isDarkMode;
     final padding = isSmall ? 16.0 : 24.0;
 
     return Container(
       decoration: BoxDecoration(
-        color: context.isDarkMode ? Colors.grey[900] : Colors.white,
+        color: isDark ? Colors.grey[900] : Colors.white,
         boxShadow: _showElevation
             ? [
                 BoxShadow(
@@ -121,61 +114,96 @@ class _LandingScreenState extends State<LandingScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Logo
+              // Medical Logo Section
               Row(
                 children: [
-                  Icon(
-                    Icons.local_hospital,
-                    size: isSmall ? 28 : 32,
-                    color: AppColors.primary,
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: MedicalColors.medicalGradient,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.favorite,
+                      size: isSmall ? 24 : 28,
+                      color: Colors.white,
+                    ),
                   ),
                   if (!isSmall) ...[
                     const SizedBox(width: 12),
-                    Text(
-                      'MCS',
-                      style: TextStyles.headlineMedium.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'MCS',
+                          style: TextStyles.labelLarge.copyWith(
+                            color: MedicalColors.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          'Medical Clinic',
+                          style: TextStyles.bodySmall.copyWith(
+                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ],
               ),
 
-              // Navigation items (hidden on small screens)
+              // Navigation links (desktop only)
               if (!isSmall)
                 Row(
                   children: [
-                    _headerLink('Features', context,
-                        () => context.go(AppRoutes.features)),
-                    const SizedBox(width: 24),
-                    _headerLink('Download', context,
-                        () => context.go(AppRoutes.download)),
+                    _headerLink(
+                      'Features',
+                      context,
+                      () => context.go(AppRoutes.features),
+                    ),
                     const SizedBox(width: 24),
                     _headerLink(
-                        'About', context, () => context.go(AppRoutes.contact)),
+                      'Pricing',
+                      context,
+                      () => context.go(AppRoutes.pricing),
+                    ),
+                    const SizedBox(width: 24),
+                    _headerLink(
+                      'Contact',
+                      context,
+                      () => context.go(AppRoutes.contact),
+                    ),
                   ],
                 ),
 
-              // Right side: Language, Theme, Login
+              // Right section: theme, language, login
               Row(
                 children: [
-                  // Language switcher
                   _languageButton(context),
                   const SizedBox(width: 8),
-
-                  // Theme switcher
                   _themeButton(context),
-                  const SizedBox(width: 8),
-
-                  // Login button
+                  const SizedBox(width: 12),
                   ElevatedButton(
-                    onPressed: () {
-                      context.go(AppRoutes.login);
-                    },
+                    onPressed: () => context.go(AppRoutes.login),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: MedicalColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isSmall ? 12 : 20,
+                        vertical: 8,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                     child: Text(
-                      isSmall ? 'Login' : 'Sign In',
-                      style: TextStyles.labelLarge,
+                      isSmall ? 'Sign In' : 'Sign In',
+                      style: TextStyles.labelMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -187,7 +215,7 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  /// Build header navigation link.
+  /// Header navigation link
   Widget _headerLink(String label, BuildContext context, VoidCallback onTap) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -203,14 +231,13 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  /// Language switcher button.
+  /// Language switcher button
   Widget _languageButton(BuildContext context) {
     final currentLocale = Localizations.localeOf(context);
     final isArabic = currentLocale.languageCode == 'ar';
 
     return IconButton(
       onPressed: () {
-        // Toggle language
         context.read<LocalizationBloc>().add(const ToggleLanguageEvent());
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -226,17 +253,18 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  /// Theme switcher button.
+  /// Theme switcher button
   Widget _themeButton(BuildContext context) {
     return IconButton(
       onPressed: () {
-        // Toggle theme
         context.read<ThemeBloc>().add(const ToggleThemeEvent());
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(context.isDarkMode
-                ? 'تم التبديل للوضع الفاتح'
-                : 'تم التبديل للوضع الداكن'),
+            content: Text(
+              context.isDarkMode
+                  ? 'Switched to light mode'
+                  : 'تم التبديل للوضع الداكن',
+            ),
             duration: const Duration(seconds: 1),
           ),
         );
@@ -248,100 +276,91 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  /// Build hero section with main headline and CTA button.
-  Widget _buildHeroSection(BuildContext context) {
+  /// Professional footer
+  Widget _buildFooter(BuildContext context) {
     final isSmall = context.isSmall;
-    final isMedium = context.isMedium;
+    final isDark = context.isDarkMode;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primary,
-            AppColors.primary.withValues(alpha: 0.8),
+            if (isDark) Colors.grey[850]! else Colors.grey[50]!,
+            if (isDark) Colors.grey[900]! else Colors.grey[100]!,
           ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        border: Border(
+          top: BorderSide(
+            color: isDark ? Colors.grey[700]! : MedicalColors.mediumGrey,
+          ),
         ),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: isSmall ? 16 : 48,
-          vertical: isSmall ? 48 : 80,
+          vertical: isSmall ? 32 : 48,
         ),
         child: Column(
           children: [
-            // Main headline
-            Text(
-              'MCS',
-              style: TextStyles.headlineLarge.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: isSmall
-                    ? 32
-                    : isMedium
-                        ? 40
-                        : 56,
+            // Footer content grid
+            if (!isSmall)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _footerColumn('Product', ['Features', 'Pricing', 'Security']),
+                  _footerColumn('Company', ['About', 'Blog', 'Careers']),
+                  _footerColumn('Resources', ['Help', 'Contact', 'Privacy']),
+                  _footerColumn('Legal', ['Terms', 'Privacy', 'Cookies']),
+                ],
+              )
+            else
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _footerColumn('Product', ['Features', 'Pricing', 'Security']),
+                  const SizedBox(height: 24),
+                  _footerColumn('Company', ['About', 'Blog', 'Careers']),
+                ],
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
+            SizedBox(height: isSmall ? 24 : 40),
 
-            // Subheading
-            Text(
-              'Medical Clinic System\nManage Your Healthcare Efficiently',
-              style: TextStyles.titleMedium.copyWith(
-                color: Colors.white70,
-                fontSize: isSmall
-                    ? 14
-                    : isMedium
-                        ? 16
-                        : 20,
-              ),
-              textAlign: TextAlign.center,
+            // Divider
+            Divider(
+              color: isDark ? Colors.grey[700] : MedicalColors.mediumGrey,
+              height: 32,
             ),
-            const SizedBox(height: 32),
 
-            // CTA Buttons
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              alignment: WrapAlignment.center,
+            // Bottom section
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    context.go(AppRoutes.download);
-                  },
-                  icon: const Icon(Icons.download),
-                  label: const Text('Download Now'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primary,
+                Text(
+                  '© 2026 MCS. All rights reserved.',
+                  style: TextStyles.bodySmall.copyWith(
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
                   ),
                 ),
-                OutlinedButton(
-                  onPressed: () {
-                    context.go(AppRoutes.features);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.white),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
+                if (!isSmall)
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.verified_user,
+                        size: 16,
+                        color: MedicalColors.success,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'HIPAA Compliant',
+                        style: TextStyles.bodySmall.copyWith(
+                          color: MedicalColors.success,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Text(
-                    'Learn More',
-                    style: TextStyles.labelLarge.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
               ],
             ),
           ],
@@ -350,193 +369,34 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  /// Build features section showcasing key features.
-  Widget _buildFeaturesSection(BuildContext context) {
-    final features = [
-      (
-        icon: Icons.calendar_today,
-        title: 'Appointments',
-        description: 'Easy scheduling and management'
-      ),
-      (
-        icon: Icons.medical_services,
-        title: 'Prescriptions',
-        description: 'Digital prescription management'
-      ),
-      (
-        icon: Icons.video_call,
-        title: 'Video Consultations',
-        description: 'Connect with doctors online'
-      ),
-      (
-        icon: Icons.assignment,
-        title: 'Medical Records',
-        description: 'Secure health documentation'
-      ),
-    ];
-
-    final isSmall = context.isSmall;
-    final crossAxisCount = isSmall ? 1 : 2;
-
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: isSmall ? 16 : 48,
-        vertical: isSmall ? 48 : 80,
-      ),
-      child: Column(
-        children: [
-          // Section title
-          Text(
-            'Key Features',
-            style: TextStyles.headlineMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 48),
-
-          // Features grid
-          GridView.count(
-            crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 24,
-            crossAxisSpacing: 24,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: features
-                .map(
-                  (feature) => _buildFeatureCard(
-                    icon: feature.icon,
-                    title: feature.title,
-                    description: feature.description,
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Build feature card widget.
-  Widget _buildFeatureCard({
-    required IconData icon,
-    required String title,
-    required String description,
-  }) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 48,
-              color: AppColors.primary,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: TextStyles.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              description,
-              style: TextStyles.bodyMedium.copyWith(
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Build download section with platform-specific buttons.
-  Widget _buildDownloadSection(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      color: context.isDarkMode ? Colors.grey[850] : Colors.grey[50],
-      padding: EdgeInsets.symmetric(
-        horizontal: context.isSmall ? 16 : 48,
-        vertical: context.isSmall ? 48 : 80,
-      ),
-      child: Column(
-        children: [
-          // Section title
-          Text(
-            'Download MCS',
-            style: TextStyles.headlineMedium.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-
-          // Subtitle
-          Text(
-            'Available on all major platforms',
-            style: TextStyles.bodyLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 48),
-
-          // Device detection and platform buttons
-          const DeviceDetector(),
-        ],
-      ),
-    );
-  }
-
-  /// Build footer section.
-  Widget _buildFooter(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      color: context.isDarkMode ? Colors.grey[900] : Colors.grey[100],
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _footerLink('Privacy', context),
-              _footerLink('Terms', context),
-              _footerLink('Support', context),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '© 2026 MCS - Medical Clinic System. All rights reserved.',
-            style: TextStyles.bodySmall.copyWith(
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Build footer link.
-  Widget _footerLink(String label, BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {
-          // Handle footer link navigation
-        },
-        child: Text(
-          label,
-          style: TextStyles.bodyMedium.copyWith(
-            color: AppColors.primary,
+  /// Footer column with links
+  Widget _footerColumn(String title, List<String> links) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyles.labelLarge.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
-      ),
+        const SizedBox(height: 12),
+        ...links.map(
+          (link) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Text(
+                link,
+                style: TextStyles.bodySmall.copyWith(
+                  color:
+                      context.isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

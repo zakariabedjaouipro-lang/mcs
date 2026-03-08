@@ -7,7 +7,35 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mcs/core/config/supabase_config.dart';
+
+// Landing screens
 import 'package:mcs/features/landing/screens/landing_screen.dart';
+import 'package:mcs/features/landing/screens/features_screen.dart';
+import 'package:mcs/features/landing/screens/pricing_screen.dart';
+import 'package:mcs/features/landing/screens/contact_screen.dart' as contact;
+import 'package:mcs/features/landing/screens/download_screen.dart';
+
+// Auth screens
+import 'package:mcs/features/auth/screens/login_screen.dart';
+import 'package:mcs/features/auth/screens/register_screen.dart';
+import 'package:mcs/features/auth/screens/otp_verification_screen.dart';
+import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
+import 'package:mcs/features/auth/screens/change_password_screen.dart';
+
+// Role-based dashboards
+import 'package:mcs/features/patient/presentation/screens/patient_home_screen.dart';
+import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen.dart';
+import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart';
+
+// App Shell and new screens
+import 'package:mcs/features/app/shells/app_shell.dart';
+import 'package:mcs/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
+import 'package:mcs/features/appointment/presentation/screens/appointments_screen.dart';
+import 'package:mcs/features/records/presentation/screens/records_screen.dart';
+import 'package:mcs/features/settings/presentation/screens/settings_screen.dart';
 
 // ── Route Paths ────────────────────────────────────────────
 abstract class AppRoutes {
@@ -36,6 +64,10 @@ abstract class AppRoutes {
   // Patient
   static const String booking = '/patient/booking';
   static const String patientProfile = '/patient/profile';
+  static const String patients = '/patient/patients';
+  static const String appointments = '/patient/appointments';
+  static const String records = '/patient/records';
+  static const String settings = '/patient/settings';
 
   // Doctor
   static const String doctorAppointments = '/doctor/appointments';
@@ -85,7 +117,12 @@ class AppRouter {
     if (!isAuthenticated && !isAuthRoute) return AppRoutes.login;
 
     // Redirect authenticated users away from auth pages.
-    if (isAuthenticated && isAuthRoute) return AppRoutes.dashboard;
+    if (isAuthenticated && isAuthRoute) return AppRoutes.patientHome;
+
+    // Redirect /dashboard to patient home by default
+    if (isAuthenticated && state.matchedLocation == AppRoutes.dashboard) {
+      return AppRoutes.patientHome;
+    }
 
     return null;
   }
@@ -101,117 +138,130 @@ class AppRouter {
     GoRoute(
       path: AppRoutes.features,
       name: 'features',
-      builder: (context, state) => const _PlaceholderScreen(title: 'Features'),
+      builder: (context, state) => const FeaturesScreen(),
     ),
     GoRoute(
       path: AppRoutes.pricing,
       name: 'pricing',
-      builder: (context, state) => const _PlaceholderScreen(title: 'Pricing'),
+      builder: (context, state) => const PricingScreen(),
     ),
     GoRoute(
       path: AppRoutes.contact,
       name: 'contact',
-      builder: (context, state) => const _PlaceholderScreen(title: 'Contact'),
+      builder: (context, state) => const contact.ContactScreenLanding(),
     ),
     GoRoute(
       path: AppRoutes.download,
       name: 'download',
-      builder: (context, state) => const _PlaceholderScreen(title: 'Download'),
+      builder: (context, state) => const DownloadScreen(),
     ),
 
     // -- Auth --
     GoRoute(
       path: AppRoutes.login,
       name: 'login',
-      builder: (context, state) => const _PlaceholderScreen(title: 'Login'),
+      builder: (context, state) => const LoginScreen(),
     ),
     GoRoute(
       path: AppRoutes.register,
       name: 'register',
-      builder: (context, state) => const _PlaceholderScreen(title: 'Register'),
+      builder: (context, state) => const RegisterScreen(),
     ),
     GoRoute(
       path: AppRoutes.otpVerification,
       name: 'otpVerification',
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'OTP Verification'),
+      builder: (context, state) => const OtpVerificationScreen(),
     ),
     GoRoute(
       path: AppRoutes.forgotPassword,
       name: 'forgotPassword',
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Forgot Password'),
+      builder: (context, state) => const ForgotPasswordScreen(),
     ),
     GoRoute(
       path: AppRoutes.changePassword,
       name: 'changePassword',
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Change Password'),
+      builder: (context, state) => const ChangePasswordScreen(),
     ),
 
-    // -- Dashboard (redirects based on role) --
+    // -- Dashboard (redirects to /patient by default) --
     GoRoute(
       path: AppRoutes.dashboard,
       name: 'dashboard',
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Dashboard'),
+      builder: (context, state) => const AppShellScreen(
+        child: DashboardScreen(),
+      ),
     ),
 
     // -- Patient --
     GoRoute(
       path: AppRoutes.patientHome,
       name: 'patientHome',
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Patient Home'),
+      builder: (context, state) => const AppShellScreen(
+        child: DashboardScreen(),
+      ),
+      routes: [
+        GoRoute(
+          path: 'dashboard',
+          builder: (context, state) => const AppShellScreen(
+            child: DashboardScreen(),
+          ),
+        ),
+        GoRoute(
+          path: 'patients',
+          builder: (context, state) => const AppShellScreen(
+            child: PatientsScreen(),
+          ),
+        ),
+        GoRoute(
+          path: 'appointments',
+          builder: (context, state) => const AppShellScreen(
+            child: AppointmentsScreen(),
+          ),
+        ),
+        GoRoute(
+          path: 'records',
+          builder: (context, state) => const AppShellScreen(
+            child: RecordsScreen(),
+          ),
+        ),
+        GoRoute(
+          path: 'settings',
+          builder: (context, state) => const AppShellScreen(
+            child: SettingsScreen(),
+          ),
+        ),
+      ],
     ),
 
     // -- Doctor --
     GoRoute(
       path: AppRoutes.doctorHome,
       name: 'doctorHome',
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Doctor Home'),
+      builder: (context, state) => const DoctorDashboardScreen(),
     ),
 
     // -- Employee --
     GoRoute(
       path: AppRoutes.employeeHome,
       name: 'employeeHome',
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Employee Home'),
+      builder: (context, state) => const EmployeeDashboardScreen(),
     ),
 
     // -- Admin --
     GoRoute(
       path: AppRoutes.adminHome,
       name: 'adminHome',
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Admin Home'),
+      builder: (context, state) => const AdminDashboardScreen(),
     ),
     GoRoute(
       path: AppRoutes.superAdminHome,
       name: 'superAdminHome',
-      builder: (context, state) =>
-          const _PlaceholderScreen(title: 'Super Admin'),
+      builder: (context, state) => const SuperAdminScreen(),
     ),
   ];
 }
 
-// ── Temporary Placeholder (replaced in later phases) ───────
-class _PlaceholderScreen extends StatelessWidget {
-  const _PlaceholderScreen({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(child: Text('$title — coming soon')),
-    );
-  }
-}
-
+// ── Error Screen ────────────────────────────────────────────
 class _ErrorScreen extends StatelessWidget {
   const _ErrorScreen({required this.error});
 
@@ -225,4 +275,3 @@ class _ErrorScreen extends StatelessWidget {
     );
   }
 }
-

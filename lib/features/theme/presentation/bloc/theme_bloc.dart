@@ -42,7 +42,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
         emit(const ThemeDarkState());
       }
     } catch (e) {
-      emit(ThemeError('فشل تغيير الثيم: ${e.toString()}'));
+      emit(ThemeError('فشل تغيير الثيم: ${e}'));
     }
   }
 
@@ -62,7 +62,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
         emit(const ThemeDarkState());
       }
     } catch (e) {
-      emit(ThemeError('فشل حفظ اختيار الثيم: ${e.toString()}'));
+      emit(ThemeError('فشل حفظ اختيار الثيم: ${e}'));
     }
   }
 
@@ -82,7 +82,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
         emit(const ThemeDarkState());
       }
     } catch (e) {
-      emit(ThemeError('فشل تحميل الثيم: ${e.toString()}'));
+      emit(ThemeError('فشل تحميل الثيم: ${e}'));
     }
   }
 }

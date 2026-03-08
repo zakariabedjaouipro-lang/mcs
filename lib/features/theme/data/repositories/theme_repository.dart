@@ -10,7 +10,7 @@ class ThemeRepositoryImpl extends ThemeRepository {
   ThemeRepositoryImpl(this._localDataSource);
 
   final ThemeLocalDataSource _localDataSource;
-  late ThemeMode _currentThemeMode;
+  ThemeMode _currentThemeMode = ThemeMode.light;
 
   /// Load theme mode from local storage
   @override
