@@ -111,14 +111,48 @@ class AppRouter {
     if (!isAuthenticated && !isAuthRoute) return AppRoutes.login;
 
     // Redirect authenticated users away from auth pages.
-    if (isAuthenticated && isAuthRoute) return AppRoutes.patientHome;
+    if (isAuthenticated && isAuthRoute) {
+      return _getRoleBasedHomePath();
+    }
 
-    // Redirect /dashboard to patient home by default
+    // Redirect /dashboard to role-based home
     if (isAuthenticated && state.matchedLocation == AppRoutes.dashboard) {
-      return AppRoutes.patientHome;
+      return _getRoleBasedHomePath();
     }
 
     return null;
+  }
+
+  /// Get the home route based on the authenticated user's role.
+  static String _getRoleBasedHomePath() {
+    try {
+      final authUser = SupabaseConfig.client.auth.currentUser;
+      if (authUser == null) return AppRoutes.patientHome;
+
+      final roleStr = authUser.userMetadata?['role'] as String? ?? 'patient';
+
+      switch (roleStr) {
+        case 'super_admin':
+          return AppRoutes.superAdminHome;
+        case 'clinic_admin':
+          return AppRoutes.adminHome;
+        case 'doctor':
+          return AppRoutes.doctorHome;
+        case 'nurse':
+        case 'receptionist':
+        case 'pharmacist':
+        case 'lab_technician':
+        case 'radiographer':
+          return AppRoutes.employeeHome;
+        case 'patient':
+        case 'relative':
+        default:
+          return AppRoutes.patientHome;
+      }
+    } catch (e) {
+      // Fallback to patient home if anything goes wrong
+      return AppRoutes.patientHome;
+    }
   }
 
   // ── Routes ─────────────────────────────────────────────

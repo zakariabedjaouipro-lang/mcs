@@ -98,17 +98,48 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          // Sidebar
-          _buildSidebar(context),
-          // Main content
-          Expanded(
-            child: _tabs[_selectedIndex].builder(context),
-          ),
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+
+        if (isMobile) {
+          // Mobile layout with BottomNavigationBar
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('MCS Admin'),
+              elevation: 0,
+            ),
+            body: _tabs[_selectedIndex].builder(context),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              onTap: (index) => setState(() => _selectedIndex = index),
+              type: BottomNavigationBarType.fixed,
+              items: _tabs
+                  .map(
+                    (tab) => BottomNavigationBarItem(
+                      icon: Icon(tab.icon),
+                      label: tab.title,
+                    ),
+                  )
+                  .toList(),
+            ),
+          );
+        } else {
+          // Desktop layout with sidebar
+          return Scaffold(
+            body: Row(
+              children: [
+                // Sidebar
+                _buildSidebar(context),
+                // Main content
+                Expanded(
+                  child: _tabs[_selectedIndex].builder(context),
+                ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 

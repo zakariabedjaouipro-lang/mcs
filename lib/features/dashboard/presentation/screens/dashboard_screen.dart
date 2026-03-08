@@ -130,134 +130,148 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildDashboardContent() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Quick Stats Grid
-          GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            childAspectRatio: 1.2,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive column count: 2 on mobile, 3 on tablet, 6 on desktop for stat cards
+        final crossAxisCount = constraints.maxWidth < 600
+            ? 2
+            : constraints.maxWidth < 900
+                ? 3
+                : 6;
+
+        // Responsive aspect ratio
+        final childAspectRatio = constraints.maxWidth < 600 ? 1.2 : 1.4;
+
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DashboardStatCard(
-                icon: Icons.calendar_today,
-                label: "Today's Appointments",
-                value: '12',
-                color: MedicalColors.primary,
-                onTap: () {},
+              // Quick Stats Grid
+              GridView.count(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                childAspectRatio: childAspectRatio,
+                children: [
+                  DashboardStatCard(
+                    icon: Icons.calendar_today,
+                    label: "Today's Appointments",
+                    value: '12',
+                    color: MedicalColors.primary,
+                    onTap: () {},
+                  ),
+                  DashboardStatCard(
+                    icon: Icons.people,
+                    label: 'Total Patients',
+                    value: '248',
+                    color: MedicalColors.secondary,
+                    onTap: () {},
+                  ),
+                  DashboardStatCard(
+                    icon: Icons.description,
+                    label: 'Lab Results',
+                    value: '34',
+                    color: MedicalColors.accent,
+                    onTap: () {},
+                  ),
+                  DashboardStatCard(
+                    icon: Icons.description,
+                    label: 'Prescriptions',
+                    value: '56',
+                    color: MedicalColors.success,
+                    onTap: () {},
+                  ),
+                  DashboardStatCard(
+                    icon: Icons.receipt,
+                    label: 'Pending Bills',
+                    value: '8',
+                    color: const Color(0xFFFF9800),
+                    onTap: () {},
+                  ),
+                  DashboardStatCard(
+                    icon: Icons.security,
+                    label: 'Security',
+                    value: '✓',
+                    color: const Color(0xFF4CAF50),
+                    onTap: () {},
+                  ),
+                ],
               ),
-              DashboardStatCard(
-                icon: Icons.people,
-                label: 'Total Patients',
-                value: '248',
-                color: MedicalColors.secondary,
-                onTap: () {},
+              const SizedBox(height: 32),
+
+              // Recent Activity Section
+              Text(
+                'Recent Activity',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
-              DashboardStatCard(
-                icon: Icons.description,
-                label: 'Lab Results',
-                value: '34',
-                color: MedicalColors.accent,
-                onTap: () {},
+              const SizedBox(height: 12),
+
+              // Recent items list
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 5,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final activities = [
+                    {
+                      'icon': Icons.calendar_month,
+                      'title': 'New Appointment',
+                      'subtitle': 'Dr. Ahmed scheduled with Patient John',
+                      'time': '2 hours ago',
+                    },
+                    {
+                      'icon': Icons.assignment,
+                      'title': 'Lab Result Available',
+                      'subtitle': 'Blood test results ready for review',
+                      'time': '4 hours ago',
+                    },
+                    {
+                      'icon': Icons.receipt_long,
+                      'title': 'Invoice Generated',
+                      'subtitle': 'Patient Sarah - Amount: 250 AED',
+                      'time': '6 hours ago',
+                    },
+                    {
+                      'icon': Icons.person_add,
+                      'title': 'New Patient Registration',
+                      'subtitle': 'Fatima Al-Mazrouei - Female, 28 years',
+                      'time': '1 day ago',
+                    },
+                    {
+                      'icon': Icons.medication,
+                      'title': 'Prescription Created',
+                      'subtitle': 'Diabetes maintenance - Patient: Mohammed',
+                      'time': '1 day ago',
+                    },
+                  ];
+
+                  final activity = activities[index];
+
+                  return MedicalInfoCard(
+                    icon: activity['icon']! as IconData,
+                    title: activity['title']! as String,
+                    subtitle: activity['subtitle']! as String,
+                    iconColor: MedicalColors.primary,
+                    trailing: Text(
+                      activity['time']! as String,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.grey[500],
+                          ),
+                    ),
+                    onTap: () {},
+                  );
+                },
               ),
-              DashboardStatCard(
-                icon: Icons.description,
-                label: 'Prescriptions',
-                value: '56',
-                color: MedicalColors.success,
-                onTap: () {},
-              ),
-              DashboardStatCard(
-                icon: Icons.receipt,
-                label: 'Pending Bills',
-                value: '8',
-                color: const Color(0xFFFF9800),
-                onTap: () {},
-              ),
-              DashboardStatCard(
-                icon: Icons.security,
-                label: 'Security',
-                value: '✓',
-                color: const Color(0xFF4CAF50),
-                onTap: () {},
-              ),
+              const SizedBox(height: 24),
             ],
           ),
-          const SizedBox(height: 32),
-
-          // Recent Activity Section
-          Text(
-            'Recent Activity',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-          ),
-          const SizedBox(height: 12),
-
-          // Recent items list
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 5,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final activities = [
-                {
-                  'icon': Icons.calendar_month,
-                  'title': 'New Appointment',
-                  'subtitle': 'Dr. Ahmed scheduled with Patient John',
-                  'time': '2 hours ago',
-                },
-                {
-                  'icon': Icons.assignment,
-                  'title': 'Lab Result Available',
-                  'subtitle': 'Blood test results ready for review',
-                  'time': '4 hours ago',
-                },
-                {
-                  'icon': Icons.receipt_long,
-                  'title': 'Invoice Generated',
-                  'subtitle': 'Patient Sarah - Amount: 250 AED',
-                  'time': '6 hours ago',
-                },
-                {
-                  'icon': Icons.person_add,
-                  'title': 'New Patient Registration',
-                  'subtitle': 'Fatima Al-Mazrouei - Female, 28 years',
-                  'time': '1 day ago',
-                },
-                {
-                  'icon': Icons.medication,
-                  'title': 'Prescription Created',
-                  'subtitle': 'Diabetes maintenance - Patient: Mohammed',
-                  'time': '1 day ago',
-                },
-              ];
-
-              final activity = activities[index];
-
-              return MedicalInfoCard(
-                icon: activity['icon']! as IconData,
-                title: activity['title']! as String,
-                subtitle: activity['subtitle']! as String,
-                iconColor: MedicalColors.primary,
-                trailing: Text(
-                  activity['time']! as String,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[500],
-                      ),
-                ),
-                onTap: () {},
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-        ],
-      ),
+        );
+      },
     );
   }
 }

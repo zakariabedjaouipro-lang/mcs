@@ -417,82 +417,94 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   Widget _buildQuickActions(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n?.translate('quick_actions') ?? 'Quick Actions',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 16),
-        GridView.count(
-          crossAxisCount: 4,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive column count based on screen width
+        final crossAxisCount = constraints.maxWidth < 600
+            ? 2
+            : constraints.maxWidth < 900
+                ? 3
+                : 4;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildQuickActionCard(
-              context,
-              l10n?.translate('register_patient') ?? 'Register Patient',
-              Icons.person_add,
-              Colors.blue,
-              () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Patient registration screen coming soon'),
-                    duration: Duration(seconds: 2),
+            Text(
+              l10n?.translate('quick_actions') ?? 'Quick Actions',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
             ),
-            _buildQuickActionCard(
-              context,
-              l10n?.translate('book_appointment') ?? 'Book Appointment',
-              Icons.calendar_month,
-              Colors.green,
-              () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Appointment booking screen coming soon'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-            _buildQuickActionCard(
-              context,
-              l10n?.translate('inventory') ?? 'Inventory',
-              Icons.inventory_2,
-              Colors.orange,
-              () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Inventory screen coming soon'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-            ),
-            _buildQuickActionCard(
-              context,
-              l10n?.translate('invoices') ?? 'Invoices',
-              Icons.receipt,
-              Colors.red,
-              () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Invoices screen coming soon'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
+            const SizedBox(height: 16),
+            GridView.count(
+              crossAxisCount: crossAxisCount,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              children: [
+                _buildQuickActionCard(
+                  context,
+                  l10n?.translate('register_patient') ?? 'Register Patient',
+                  Icons.person_add,
+                  Colors.blue,
+                  () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text('Patient registration screen coming soon'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionCard(
+                  context,
+                  l10n?.translate('book_appointment') ?? 'Book Appointment',
+                  Icons.calendar_month,
+                  Colors.green,
+                  () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Appointment booking screen coming soon'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionCard(
+                  context,
+                  l10n?.translate('inventory') ?? 'Inventory',
+                  Icons.inventory_2,
+                  Colors.orange,
+                  () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Inventory screen coming soon'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+                _buildQuickActionCard(
+                  context,
+                  l10n?.translate('invoices') ?? 'Invoices',
+                  Icons.receipt,
+                  Colors.red,
+                  () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Invoices screen coming soon'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
