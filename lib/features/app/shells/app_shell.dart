@@ -9,7 +9,7 @@ import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/extensions.dart';
 
 class AppShellScreen extends StatefulWidget {
-  const AppShellScreen({super.key, required this.child});
+  const AppShellScreen({required this.child, super.key});
   final Widget child;
 
   @override

@@ -101,7 +101,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(
         LoginFailure(
-          'حدث خطأ: ${e}',
+          'حدث خطأ: $e',
         ),
       );
     }
@@ -136,7 +136,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(
         LoginFailure(
-          'حدث خطأ: ${e}',
+          'حدث خطأ: $e',
         ),
       );
     }
@@ -224,7 +224,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(
         RegisterFailure(
-          'حدث خطأ: ${e}',
+          'حدث خطأ: $e',
         ),
       );
     }
@@ -269,7 +269,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(
         ForgotPasswordFailure(
-          'حدث خطأ: ${e}',
+          'حدث خطأ: $e',
         ),
       );
     }
@@ -309,7 +309,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(
         OtpFailure(
-          'حدث خطأ: ${e}',
+          'حدث خطأ: $e',
         ),
       );
     }

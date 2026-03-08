@@ -9,10 +9,10 @@ import 'package:mcs/core/utils/extensions.dart';
 
 class MedicalFeatureCard extends StatefulWidget {
   const MedicalFeatureCard({
-    super.key,
     required this.icon,
     required this.title,
     required this.description,
+    super.key,
     this.iconColor,
     this.onTap,
   });

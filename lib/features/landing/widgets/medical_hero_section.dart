@@ -11,9 +11,9 @@ import 'package:mcs/features/landing/widgets/medical_cta_button.dart';
 
 class MedicalHeroSection extends StatefulWidget {
   const MedicalHeroSection({
-    super.key,
     required this.onLoginPressed,
     required this.onRegisterPressed,
+    super.key,
   });
   final VoidCallback onLoginPressed;
   final VoidCallback onRegisterPressed;

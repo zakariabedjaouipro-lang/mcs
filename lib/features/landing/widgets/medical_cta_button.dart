@@ -5,13 +5,12 @@ library;
 import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
-import 'package:mcs/core/utils/extensions.dart';
 
 class MedicalCTAButton extends StatefulWidget {
   const MedicalCTAButton({
-    super.key,
     required this.label,
     required this.onPressed,
+    super.key,
     this.style,
     this.isPrimary = true,
     this.isSmall = false,

@@ -325,12 +325,12 @@ class _PatientsScreenState extends State<PatientsScreen>
             itemBuilder: (context, index) {
               final prescription = prescriptions[index];
               return MedicalInfoCard(
-                icon: prescription['icon'] as IconData,
-                title: prescription['title'] as String,
-                subtitle: prescription['subtitle'] as String,
+                icon: prescription['icon']! as IconData,
+                title: prescription['title']! as String,
+                subtitle: prescription['subtitle']! as String,
                 iconColor: MedicalColors.accent,
                 trailing: Text(
-                  prescription['date'] as String,
+                  prescription['date']! as String,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 onTap: () {

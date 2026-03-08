@@ -276,7 +276,7 @@ class ThemeSwitcherTile extends StatelessWidget {
         value: isDark,
         onChanged: (value) {
           context.read<ThemeBloc>().add(
-                ToggleThemeEvent(),
+                const ToggleThemeEvent(),
               );
         },
       ),

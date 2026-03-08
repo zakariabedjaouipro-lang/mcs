@@ -9,11 +9,11 @@ import 'package:mcs/core/utils/extensions.dart';
 
 class DashboardStatCard extends StatelessWidget {
   const DashboardStatCard({
-    super.key,
     required this.label,
     required this.value,
     required this.icon,
     required this.color,
+    super.key,
     this.onTap,
     this.isLoading = false,
   });

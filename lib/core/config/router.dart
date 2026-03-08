@@ -5,34 +5,29 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:mcs/core/config/supabase_config.dart';
-
-// Landing screens
-import 'package:mcs/features/landing/screens/landing_screen.dart';
-import 'package:mcs/features/landing/screens/features_screen.dart';
-import 'package:mcs/features/landing/screens/pricing_screen.dart';
-import 'package:mcs/features/landing/screens/contact_screen.dart' as contact;
-import 'package:mcs/features/landing/screens/download_screen.dart';
-
+import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart';
+// App Shell and new screens
+import 'package:mcs/features/app/shells/app_shell.dart';
+import 'package:mcs/features/appointment/presentation/screens/appointments_screen.dart';
+import 'package:mcs/features/auth/screens/change_password_screen.dart';
+import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
 // Auth screens
 import 'package:mcs/features/auth/screens/login_screen.dart';
-import 'package:mcs/features/auth/screens/register_screen.dart';
 import 'package:mcs/features/auth/screens/otp_verification_screen.dart';
-import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
-import 'package:mcs/features/auth/screens/change_password_screen.dart';
-
+import 'package:mcs/features/auth/screens/register_screen.dart';
+import 'package:mcs/features/dashboard/presentation/screens/dashboard_screen.dart';
 // Role-based dashboards
 import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
-import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';
-import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart';
-
-// App Shell and new screens
-import 'package:mcs/features/app/shells/app_shell.dart';
-import 'package:mcs/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:mcs/features/landing/screens/contact_screen.dart' as contact;
+import 'package:mcs/features/landing/screens/download_screen.dart';
+import 'package:mcs/features/landing/screens/features_screen.dart';
+// Landing screens
+import 'package:mcs/features/landing/screens/landing_screen.dart';
+import 'package:mcs/features/landing/screens/pricing_screen.dart';
 import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
-import 'package:mcs/features/appointment/presentation/screens/appointments_screen.dart';
 import 'package:mcs/features/records/presentation/screens/records_screen.dart';
 import 'package:mcs/features/settings/presentation/screens/settings_screen.dart';
 

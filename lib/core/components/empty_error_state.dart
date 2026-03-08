@@ -9,10 +9,10 @@ import 'package:mcs/core/utils/extensions.dart';
 
 class EmptyStateWidget extends StatelessWidget {
   const EmptyStateWidget({
-    super.key,
     required this.icon,
     required this.title,
     required this.message,
+    super.key,
     this.onRefresh,
     this.buttonLabel,
   });
@@ -88,8 +88,8 @@ class EmptyStateWidget extends StatelessWidget {
 /// Error State Widget
 class ErrorStateWidget extends StatelessWidget {
   const ErrorStateWidget({
-    super.key,
     required this.message,
+    super.key,
     this.onRetry,
     this.retryLabel,
   });

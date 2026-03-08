@@ -6,15 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 
+enum LoadingButtonVariant { primary, secondary, outlined, text }
+
 class LoadingButton extends StatefulWidget {
   const LoadingButton({
-    super.key,
     required this.label,
     required this.onPressed,
+    super.key,
     this.isHidden = false,
     this.icon,
     this.isPrimary = true,
+    this.variant = LoadingButtonVariant.primary,
     this.width,
+    this.fullWidth = false,
     this.onError,
   });
   final String label;
@@ -22,7 +26,9 @@ class LoadingButton extends StatefulWidget {
   final bool isHidden;
   final IconData? icon;
   final bool isPrimary;
+  final LoadingButtonVariant variant;
   final double? width;
+  final bool fullWidth;
   final VoidCallback? onError;
 
   @override
@@ -60,10 +66,34 @@ class _LoadingButtonState extends State<LoadingButton> {
   Widget build(BuildContext context) {
     if (widget.isHidden) return const SizedBox.shrink();
 
-    final buttonStyle = widget.isPrimary
+    Color getBackgroundColor() {
+      switch (widget.variant) {
+        case LoadingButtonVariant.primary:
+          return MedicalColors.primary;
+        case LoadingButtonVariant.secondary:
+          return Colors.grey.shade200;
+        case LoadingButtonVariant.outlined:
+        case LoadingButtonVariant.text:
+          return Colors.transparent;
+      }
+    }
+
+    Color getTextColor() {
+      switch (widget.variant) {
+        case LoadingButtonVariant.primary:
+          return Colors.white;
+        case LoadingButtonVariant.secondary:
+          return Colors.black87;
+        case LoadingButtonVariant.outlined:
+        case LoadingButtonVariant.text:
+          return MedicalColors.primary;
+      }
+    }
+
+    final buttonStyle = widget.variant == LoadingButtonVariant.primary
         ? ElevatedButton.styleFrom(
-            backgroundColor: MedicalColors.primary,
-            foregroundColor: Colors.white,
+            backgroundColor: getBackgroundColor(),
+            foregroundColor: getTextColor(),
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

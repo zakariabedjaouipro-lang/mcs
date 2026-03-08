@@ -5,17 +5,16 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/extensions.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_state.dart';
+import 'package:mcs/features/landing/widgets/medical_features_section.dart';
+import 'package:mcs/features/landing/widgets/medical_hero_section.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
-import 'package:mcs/features/landing/widgets/medical_hero_section.dart';
-import 'package:mcs/features/landing/widgets/medical_features_section.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 

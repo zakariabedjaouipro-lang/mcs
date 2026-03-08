@@ -3,12 +3,9 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/appointment_model.dart';
-import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/widgets/loading_widget.dart';
 import 'package:mcs/features/employee/presentation/bloc/index.dart';
 
@@ -47,6 +44,33 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
         .add(const LoadAppointments(status: 'scheduled'));
   }
 
+  void _showLogoutConfirmation() {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // TODO: Implement logout logic
+              },
+              child: const Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -82,7 +106,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                   ),
                 );
               } else if (value == 'logout') {
-                _showLogoutConfirmation(context);
+                _showLogoutConfirmation();
               }
             },
             itemBuilder: (context) => [

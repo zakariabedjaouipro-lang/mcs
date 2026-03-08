@@ -5,7 +5,6 @@ library;
 import 'package:flutter/material.dart';
 
 import 'package:mcs/core/components/empty_error_state.dart';
-import 'package:mcs/core/components/skeleton_loaders.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/extensions.dart';
 
@@ -34,7 +33,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
 
     try {
       // Simulate API call
-      await Future.delayed(const Duration(milliseconds: 1500));
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
       setState(() {
         _isLoading = false;
       });
@@ -65,7 +64,6 @@ class _RecordsScreenState extends State<RecordsScreen> {
       body: _hasError
           ? Center(
               child: ErrorStateWidget(
-                title: 'Failed to Load Records',
                 message: 'Unable to fetch medical records',
                 onRetry: _loadRecords,
               ),
@@ -127,7 +125,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
       },
       {
         'title': 'Pathology',
-        'icon': Icons.microscope,
+        'icon': Icons.science,
         'color': const Color(0xFF9C27B0),
         'count': '3',
       },

@@ -4,12 +4,15 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:mcs/core/components/loading_button.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/extensions.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_state.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_state.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -165,7 +168,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: LoadingButton(
                 onPressed: () async {
                   // Simulate logout API call
-                  await Future.delayed(const Duration(seconds: 1));
+                  await Future<void>.delayed(const Duration(seconds: 1));
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Logged out successfully')),
@@ -247,7 +250,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildThemeToggle(BuildContext context) {
-    return BlocBuilder<ThemeBloc, ThemeBlocState>(
+    return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         final isDark = context.isDarkMode;
         return _buildSettingsTile(
@@ -260,17 +263,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             activeThumbColor: MedicalColors.primary,
             onChanged: (value) {
               context.read<ThemeBloc>().add(
-                    ToggleThemeEvent(
-                      themeMode: value ? ThemeMode.dark : ThemeMode.light,
+                    SetThemeModeEvent(
+                      value ? ThemeMode.dark : ThemeMode.light,
                     ),
                   );
             },
           ),
           onTap: () {
             context.read<ThemeBloc>().add(
-                  ToggleThemeEvent(
-                    themeMode: isDark ? ThemeMode.light : ThemeMode.dark,
-                  ),
+                  const ToggleThemeEvent(),
                 );
           },
         );
@@ -279,9 +280,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildLanguageToggle(BuildContext context) {
-    return BlocBuilder<LocalizationBloc, LocalizationBlocState>(
+    return BlocBuilder<LocalizationBloc, LocalizationState>(
       builder: (context, state) {
-        final isArabic = state.languageCode == 'ar';
+        final isArabic = state is LanguageArabicState ||
+            (state is LanguageChanged && state.languageCode == 'ar');
         return _buildSettingsTile(
           context,
           icon: Icons.language,
@@ -290,7 +292,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           trailing: GestureDetector(
             onTap: () {
               context.read<LocalizationBloc>().add(
-                    ChangeLanguageEvent(languageCode: isArabic ? 'en' : 'ar'),
+                    SetLanguageEvent(isArabic ? 'en' : 'ar'),
                   );
             },
             child: Container(
@@ -311,7 +313,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           onTap: () {
             context.read<LocalizationBloc>().add(
-                  ChangeLanguageEvent(languageCode: isArabic ? 'en' : 'ar'),
+                  SetLanguageEvent(isArabic ? 'en' : 'ar'),
                 );
           },
         );
@@ -340,7 +342,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required String title,
     required String subtitle,
     required bool value,
-    required Function(bool) onChanged,
+    required ValueChanged<bool> onChanged,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
