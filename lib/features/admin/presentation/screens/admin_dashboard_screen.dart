@@ -261,23 +261,28 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
         title: const Text('تسجيل الخروج'),
         content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              final authService = AuthService();
-              authService.signOut();
-              if (context.mounted) {
-                context.go(AppRoutes.login);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+          Expanded(
+            child: TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('إلغاء'),
             ),
-            child: const Text('تسجيل الخروج'),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                final authService = AuthService();
+                authService.signOut();
+                if (context.mounted) {
+                  context.go(AppRoutes.login);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+              ),
+              child: const Text('تسجيل الخروج'),
+            ),
           ),
         ],
       ),

@@ -52,18 +52,23 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           title: const Text('Logout'),
           content: const Text('Are you sure you want to logout?'),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // TODO: Implement logout logic
-              },
-              child: const Text('Logout'),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // TODO: Implement logout logic
+                },
+                child: const Text('Logout'),
+              ),
             ),
           ],
         );

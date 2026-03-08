@@ -45,7 +45,8 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => context.read<AdminBloc>().add(const LoadSubscriptionCodes()),
+            onPressed: () =>
+                context.read<AdminBloc>().add(const LoadSubscriptionCodes()),
             tooltip: 'تحديث',
           ),
           const SizedBox(width: 8),
@@ -70,7 +71,8 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
                   const SizedBox(height: 16),
                   Text(
                     state.message,
-                    style: TextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
+                    style:
+                        TextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -89,7 +91,8 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
     );
   }
 
-  Widget _subscriptionCodesTable({required List<SubscriptionModel> subscriptions}) {
+  Widget _subscriptionCodesTable(
+      {required List<SubscriptionModel> subscriptions}) {
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Card(
@@ -112,7 +115,8 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
                   DataCell(
                     Text(
                       sub.code,
-                      style: TextStyles.bodyMedium.copyWith(fontFamily: 'monospace'),
+                      style: TextStyles.bodyMedium
+                          .copyWith(fontFamily: 'monospace'),
                     ),
                   ),
                   DataCell(Text(sub.type.label('ar'))),
@@ -123,7 +127,8 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
                     _buildStatusChip(sub.isUsed),
                   ),
                   DataCell(Text(sub.clinicId ?? '-')),
-                  DataCell(Text(sub.usedAt != null ? _formatDate(sub.usedAt!) : '-')),
+                  DataCell(Text(
+                      sub.usedAt != null ? _formatDate(sub.usedAt!) : '-')),
                   DataCell(
                     _buildActionsCell(context, sub),
                   ),
@@ -173,7 +178,9 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
         const PopupMenuItem(value: 'copy', child: Text('نسخ الكود')),
         if (!sub.isUsed) ...[
           const PopupMenuItem(value: 'activate', child: Text('تفعيل للعيادة')),
-          const PopupMenuItem(value: 'delete', child: Text('حذف الكود', style: TextStyle(color: Colors.red))),
+          const PopupMenuItem(
+              value: 'delete',
+              child: Text('حذف الكود', style: TextStyle(color: Colors.red))),
         ],
       ],
       icon: const Icon(Icons.more_vert),
@@ -191,7 +198,8 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
     }
   }
 
-  Future<void> _showPriceDialog(BuildContext context, SubscriptionType type) async {
+  Future<void> _showPriceDialog(
+      BuildContext context, SubscriptionType type) async {
     final priceUsdController = TextEditingController();
     final priceEurController = TextEditingController();
     final priceDzdController = TextEditingController();
@@ -239,16 +247,22 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('إلغاء'),
+          Expanded(
+            child: TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('إلغاء'),
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('إنشاء'),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+              child: const Text('إنشاء'),
+            ),
           ),
         ],
       ),
@@ -256,30 +270,36 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
 
     if (result ?? false) {
       if (!context.mounted) return;
-      context.read<AdminBloc>().add(GenerateSubscriptionCode(
-        type: type,
-        priceUsd: double.parse(priceUsdController.text),
-        priceEur: double.parse(priceEurController.text),
-        priceDzd: double.parse(priceDzdController.text),
-      ),);
+      context.read<AdminBloc>().add(
+            GenerateSubscriptionCode(
+              type: type,
+              priceUsd: double.parse(priceUsdController.text),
+              priceEur: double.parse(priceEurController.text),
+              priceDzd: double.parse(priceDzdController.text),
+            ),
+          );
     }
   }
 
-  Future<void> _showActivateDialog(BuildContext context, SubscriptionModel sub) async {
+  Future<void> _showActivateDialog(
+      BuildContext context, SubscriptionModel sub) async {
     final clinicId = await showDialog<String>(
       context: context,
       builder: (context) => const _SelectClinicDialog(),
     );
 
     if (clinicId != null && context.mounted) {
-      context.read<AdminBloc>().add(ActivateSubscriptionCode(
-        code: sub.code,
-        clinicId: clinicId,
-      ),);
+      context.read<AdminBloc>().add(
+            ActivateSubscriptionCode(
+              code: sub.code,
+              clinicId: clinicId,
+            ),
+          );
     }
   }
 
-  Future<void> _confirmDeleteCode(BuildContext context, SubscriptionModel sub) async {
+  Future<void> _confirmDeleteCode(
+      BuildContext context, SubscriptionModel sub) async {
     final confirmed = await showConfirmDialog(
       context: context,
       title: 'حذف كود الاشتراك',

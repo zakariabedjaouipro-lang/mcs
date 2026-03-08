@@ -214,14 +214,20 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('إلغاء'),
+          Expanded(
+            child: TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('إلغاء'),
+            ),
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: const Text('حفظ التغييرات'),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+              child: const Text('حفظ التغييرات'),
+            ),
           ),
         ],
       ),
@@ -302,10 +308,12 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
                     DropdownButton<String>(
                       value: _fromCurrency,
                       items: const ['USD', 'EUR', 'DZD']
-                          .map((currency) => DropdownMenuItem(
-                                value: currency,
-                                child: Text(currency),
-                              ),)
+                          .map(
+                            (currency) => DropdownMenuItem(
+                              value: currency,
+                              child: Text(currency),
+                            ),
+                          )
                           .toList(),
                       onChanged: (value) {
                         setState(() {
@@ -320,10 +328,12 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
                     DropdownButton<String>(
                       value: _toCurrency,
                       items: const ['USD', 'EUR', 'DZD']
-                          .map((currency) => DropdownMenuItem(
-                                value: currency,
-                                child: Text(currency),
-                              ),)
+                          .map(
+                            (currency) => DropdownMenuItem(
+                              value: currency,
+                              child: Text(currency),
+                            ),
+                          )
                           .toList(),
                       onChanged: (value) {
                         setState(() {
@@ -398,4 +408,3 @@ class _ConversionCalculatorState extends State<_ConversionCalculator> {
     setState(() => _result = result.toStringAsFixed(2));
   }
 }
-

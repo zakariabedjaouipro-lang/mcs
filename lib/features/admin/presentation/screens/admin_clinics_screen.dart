@@ -553,8 +553,9 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
   }
 
   Future<void> _showClinicDetails(
-      BuildContext context,
-      ClinicModel clinic,) async {
+    BuildContext context,
+    ClinicModel clinic,
+  ) async {
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
@@ -684,8 +685,9 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
   }
 
   Future<void> _showEditClinicDialog(
-      BuildContext context,
-      ClinicModel clinic,) async {
+    BuildContext context,
+    ClinicModel clinic,
+  ) async {
     final nameController = TextEditingController(text: clinic.name);
     final emailController = TextEditingController(text: clinic.email);
     final phoneController = TextEditingController(text: clinic.phone);
@@ -898,16 +900,21 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('إلغاء'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(dialogContext, true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+            Expanded(
+              child: TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: const Text('إلغاء'),
               ),
-              child: const Text('حفظ'),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                ),
+                child: const Text('حفظ'),
+              ),
             ),
           ],
         ),
