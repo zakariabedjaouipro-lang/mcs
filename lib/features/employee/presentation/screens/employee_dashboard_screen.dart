@@ -4,6 +4,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/core/models/appointment_model.dart';
+import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/widgets/loading_widget.dart';
 import 'package:mcs/features/employee/presentation/bloc/index.dart';
 
@@ -32,9 +34,10 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('dashboard')),
+        title: Text(l10n?.translate('dashboard') ?? 'Dashboard'),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications),
@@ -55,17 +58,17 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'profile',
-                child: Text(AppLocalizations.of(context).translate('profile')),
+                child: Text(l10n?.translate('profile') ?? 'Profile'),
               ),
               PopupMenuItem(
                 value: 'settings',
-                child: Text(AppLocalizations.of(context).translate('settings')),
+                child: Text(l10n?.translate('settings') ?? 'Settings'),
               ),
               const PopupMenuDivider(),
               PopupMenuItem(
                 value: 'logout',
                 child: Text(
-                  AppLocalizations.of(context).translate('logout'),
+                  l10n?.translate('logout') ?? 'Logout',
                   style: const TextStyle(color: Colors.red),
                 ),
               ),
@@ -116,8 +119,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
     var employeeName = 'Employee';
     var role = 'Staff';
     if (state is EmployeeProfileLoaded) {
-      employeeName = state.profile.name;
-      role = state.profile.role;
+      employeeName = state.profile.name ?? 'Employee';
+      role = state.profile.role ?? 'Staff';
     }
 
     return Card(
@@ -130,7 +133,9 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               radius: 30,
               backgroundColor: Theme.of(context).colorScheme.primary,
               child: Text(
-                employeeName.substring(0, 1).toUpperCase(),
+                employeeName.isNotEmpty
+                    ? employeeName.substring(0, 1).toUpperCase()
+                    : 'E',
                 style: const TextStyle(
                   fontSize: 24,
                   color: Colors.white,
@@ -144,7 +149,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context).translate('welcome'),
+                    AppLocalizations.of(context)?.translate('welcome') ??
+                        'Welcome',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color:
                               Theme.of(context).colorScheme.onPrimaryContainer,
@@ -166,7 +172,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                           color: Theme.of(context)
                               .colorScheme
                               .onPrimaryContainer
-                              .withOpacity(0.8),
+                              .withValues(alpha: 0.8),
                         ),
                   ),
                 ],
@@ -184,6 +190,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
       stats = state.stats;
     }
 
+    final l10n = AppLocalizations.of(context);
+
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -194,28 +202,28 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
       children: [
         _buildStatCard(
           context,
-          AppLocalizations.of(context).translate('total_patients'),
+          l10n?.translate('total_patients') ?? 'Total Patients',
           (stats['total_patients'] ?? 0).toString(),
           Icons.people,
           Colors.blue,
         ),
         _buildStatCard(
           context,
-          AppLocalizations.of(context).translate('today_appointments'),
+          l10n?.translate('today_appointments') ?? "Today's Appointments",
           (stats['today_appointments'] ?? 0).toString(),
           Icons.calendar_today,
           Colors.green,
         ),
         _buildStatCard(
           context,
-          AppLocalizations.of(context).translate('pending_appointments'),
+          l10n?.translate('pending_appointments') ?? 'Pending Appointments',
           (stats['pending_appointments'] ?? 0).toString(),
           Icons.pending,
           Colors.orange,
         ),
         _buildStatCard(
           context,
-          AppLocalizations.of(context).translate('pending_invoices'),
+          l10n?.translate('pending_invoices') ?? 'Pending Invoices',
           (stats['pending_invoices'] ?? 0).toString(),
           Icons.receipt_long,
           Colors.red,
@@ -258,10 +266,11 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   }
 
   Widget _buildTodayAppointments(BuildContext context, EmployeeState state) {
-    var appointments = [];
-    if (state is AppointmentsLoaded) {
-      appointments = state.appointments;
-    }
+    final List<AppointmentModel> appointments = state is AppointmentsLoaded
+        ? state.appointments
+        : const <AppointmentModel>[];
+
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,7 +279,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              AppLocalizations.of(context).translate('today_appointments'),
+              l10n?.translate('today_appointments') ?? "Today's Appointments",
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -279,7 +288,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               onPressed: () {
                 // TODO: Navigate to all appointments
               },
-              child: Text(AppLocalizations.of(context).translate('view_all')),
+              child: Text(l10n?.translate('view_all') ?? 'View All'),
             ),
           ],
         ),
@@ -290,8 +299,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               padding: const EdgeInsets.all(32),
               child: Center(
                 child: Text(
-                  AppLocalizations.of(context)
-                      .translate('no_appointments_today'),
+                  l10n?.translate('no_appointments_today') ??
+                      'No appointments today',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -308,9 +317,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                   child: Icon(Icons.person),
                 ),
                 title: Text(appointment.patientName ?? 'Patient'),
-                subtitle: Text(
-                  '${appointment.appointmentDate.hour}:${appointment.appointmentDate.minute.toString().padLeft(2, '0')}',
-                ),
+                subtitle: Text(appointment.timeSlot),
                 trailing: appointment.status == AppointmentStatus.pending
                     ? Row(
                         mainAxisSize: MainAxisSize.min,
@@ -349,11 +356,13 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   }
 
   Widget _buildQuickActions(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppLocalizations.of(context).translate('quick_actions'),
+          l10n?.translate('quick_actions') ?? 'Quick Actions',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -368,7 +377,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           children: [
             _buildQuickActionCard(
               context,
-              AppLocalizations.of(context).translate('register_patient'),
+              l10n?.translate('register_patient') ?? 'Register Patient',
               Icons.person_add,
               Colors.blue,
               () {
@@ -377,7 +386,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
             ),
             _buildQuickActionCard(
               context,
-              AppLocalizations.of(context).translate('book_appointment'),
+              l10n?.translate('book_appointment') ?? 'Book Appointment',
               Icons.calendar_month,
               Colors.green,
               () {
@@ -386,7 +395,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
             ),
             _buildQuickActionCard(
               context,
-              AppLocalizations.of(context).translate('inventory'),
+              l10n?.translate('inventory') ?? 'Inventory',
               Icons.inventory_2,
               Colors.orange,
               () {
@@ -395,7 +404,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
             ),
             _buildQuickActionCard(
               context,
-              AppLocalizations.of(context).translate('invoices'),
+              l10n?.translate('invoices') ?? 'Invoices',
               Icons.receipt,
               Colors.red,
               () {
@@ -410,35 +419,33 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
 
   Widget _buildQuickActionCard(
     BuildContext context,
-    String title,
+    String label,
     IconData icon,
     Color color,
     VoidCallback onTap,
   ) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
       child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: color, size: 32),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.bodySmall,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 32),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildDrawer(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -456,20 +463,12 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
                   child: Icon(Icons.person, size: 40, color: Colors.grey),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'Employee Name',
-                  style: TextStyle(
+                Text(
+                  l10n?.translate('employee') ?? 'Employee',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Role',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
                   ),
                 ),
               ],
@@ -477,30 +476,30 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.dashboard),
-            title: Text(AppLocalizations.of(context).translate('dashboard')),
+            title: Text(l10n?.translate('dashboard') ?? 'Dashboard'),
             onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.calendar_month),
-            title: Text(AppLocalizations.of(context).translate('appointments')),
-            onTap: () {
-              // TODO: Navigate to appointments
               Navigator.pop(context);
             },
           ),
           ListTile(
             leading: const Icon(Icons.people),
-            title: Text(AppLocalizations.of(context).translate('patients')),
+            title: Text(l10n?.translate('patients') ?? 'Patients'),
             onTap: () {
               // TODO: Navigate to patients
               Navigator.pop(context);
             },
           ),
           ListTile(
+            leading: const Icon(Icons.calendar_month),
+            title: Text(l10n?.translate('appointments') ?? 'Appointments'),
+            onTap: () {
+              // TODO: Navigate to appointments
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.inventory_2),
-            title: Text(AppLocalizations.of(context).translate('inventory')),
+            title: Text(l10n?.translate('inventory') ?? 'Inventory'),
             onTap: () {
               // TODO: Navigate to inventory
               Navigator.pop(context);
@@ -508,7 +507,7 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.receipt),
-            title: Text(AppLocalizations.of(context).translate('invoices')),
+            title: Text(l10n?.translate('invoices') ?? 'Invoices'),
             onTap: () {
               // TODO: Navigate to invoices
               Navigator.pop(context);
@@ -517,9 +516,20 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: Text(AppLocalizations.of(context).translate('settings')),
+            title: Text(l10n?.translate('settings') ?? 'Settings'),
             onTap: () {
               // TODO: Navigate to settings
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: Text(
+              l10n?.translate('logout') ?? 'Logout',
+              style: const TextStyle(color: Colors.red),
+            ),
+            onTap: () {
+              // TODO: Implement logout
               Navigator.pop(context);
             },
           ),

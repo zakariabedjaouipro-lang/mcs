@@ -194,6 +194,57 @@ class AppLocalizations {
       locale.languageCode == 'ar' ? 'تحميل التطبيق' : 'Download App';
   String get systemRequirements =>
       locale.languageCode == 'ar' ? 'متطلبات النظام' : 'System Requirements';
+
+  // ── Translate Method for Dynamic Keys ─────────────────────────────
+  String translate(String key) {
+    return _translationMap[key] ?? key;
+  }
+
+  /// Map of translations for dynamic lookup
+  Map<String, String> get _translationMap => {
+        'dashboard': locale.languageCode == 'ar' ? 'لوحة التحكم' : 'Dashboard',
+        'profile': locale.languageCode == 'ar' ? 'الملف الشخصي' : 'Profile',
+        'settings': locale.languageCode == 'ar' ? 'الإعدادات' : 'Settings',
+        'logout': locale.languageCode == 'ar' ? 'تسجيل الخروج' : 'Logout',
+        'welcome': locale.languageCode == 'ar' ? 'أهلا وسهلا' : 'Welcome',
+        'total_patients':
+            locale.languageCode == 'ar' ? 'إجمالي المرضى' : 'Total Patients',
+        'today_appointments': locale.languageCode == 'ar'
+            ? 'مواعيد اليوم'
+            : "Today's Appointments",
+        'pending_appointments': locale.languageCode == 'ar'
+            ? 'المواعيد المعلقة'
+            : 'Pending Appointments',
+        'pending_invoices': locale.languageCode == 'ar'
+            ? 'الفواتير المعلقة'
+            : 'Pending Invoices',
+        'view_all': locale.languageCode == 'ar' ? 'عرض الكل' : 'View All',
+        'no_appointments_today': locale.languageCode == 'ar'
+            ? 'لا توجد مواعيد اليوم'
+            : 'No appointments today',
+        'quick_actions':
+            locale.languageCode == 'ar' ? 'إجراءات سريعة' : 'Quick Actions',
+        'register_patient':
+            locale.languageCode == 'ar' ? 'تسجيل مريض' : 'Register Patient',
+        'book_appointment':
+            locale.languageCode == 'ar' ? 'حجز موعد' : 'Book Appointment',
+        'inventory': locale.languageCode == 'ar' ? 'المخزون' : 'Inventory',
+        'invoices': locale.languageCode == 'ar' ? 'الفواتير' : 'Invoices',
+        'employee': locale.languageCode == 'ar' ? 'الموظف' : 'Employee',
+        'appointments':
+            locale.languageCode == 'ar' ? 'المواعيد' : 'Appointments',
+        'patients': locale.languageCode == 'ar' ? 'المرضى' : 'Patients',
+      };
+
+  // ── Delegate & Localization Support ─────────────────────────────
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = [
+    delegate,
+  ];
+
+  static const List<Locale> supportedLocales = [
+    Locale('ar'),
+    Locale('en'),
+  ];
 }
 
 class _AppLocalizationsDelegate

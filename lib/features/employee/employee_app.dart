@@ -17,8 +17,8 @@ class EmployeeApp extends StatelessWidget {
     return MaterialApp(
       title: 'MCS - Employee',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: BlocProvider(

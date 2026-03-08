@@ -2,11 +2,7 @@
 library;
 
 import 'package:equatable/equatable.dart';
-import 'package:mcs/core/models/appointment_model.dart';
 import 'package:mcs/core/models/employee_model.dart';
-import 'package:mcs/core/models/inventory_model.dart';
-import 'package:mcs/core/models/invoice_model.dart';
-import 'package:mcs/core/models/patient_model.dart';
 
 /// Base employee event
 abstract class EmployeeEvent extends Equatable {

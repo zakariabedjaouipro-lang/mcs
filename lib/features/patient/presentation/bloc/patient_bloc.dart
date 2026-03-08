@@ -47,7 +47,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     // ═════════════════════════════════════════════════════════════════════════════
     on<LoadProfile>(_onLoadProfile);
     on<UpdateProfile>(_onUpdateProfile);
-    onChangePassword(_onChangePassword);
+    on<ChangePassword>(_onChangePassword);
 
     // ═════════════════════════════════════════════════════════════════════════════
     // Social Accounts Handlers

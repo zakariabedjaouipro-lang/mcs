@@ -34,7 +34,7 @@ class PatientRepositoryImpl implements PatientRepository {
 
       return Right(appointments);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -47,7 +47,7 @@ class PatientRepositoryImpl implements PatientRepository {
       final appointment = AppointmentModel.fromJson(data);
       return Right(appointment);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -78,7 +78,7 @@ class PatientRepositoryImpl implements PatientRepository {
       final appointment = AppointmentModel.fromJson(data);
       return Right(appointment);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -96,7 +96,7 @@ class PatientRepositoryImpl implements PatientRepository {
       );
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -120,7 +120,7 @@ class PatientRepositoryImpl implements PatientRepository {
       final appointment = AppointmentModel.fromJson(data);
       return Right(appointment);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -142,7 +142,7 @@ class PatientRepositoryImpl implements PatientRepository {
 
       return Right(sessions);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -165,7 +165,7 @@ class PatientRepositoryImpl implements PatientRepository {
         },
       );
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -188,7 +188,7 @@ class PatientRepositoryImpl implements PatientRepository {
         },
       );
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -199,7 +199,7 @@ class PatientRepositoryImpl implements PatientRepository {
       // For now, return a mock channel ID
       return Right('channel_$sessionId');
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -209,7 +209,7 @@ class PatientRepositoryImpl implements PatientRepository {
       // TODO: Implement Agora video call integration
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -231,7 +231,7 @@ class PatientRepositoryImpl implements PatientRepository {
 
       return Right(prescriptions);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -244,7 +244,7 @@ class PatientRepositoryImpl implements PatientRepository {
       final prescription = PrescriptionModel.fromJson(data);
       return Right(prescription);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -257,13 +257,13 @@ class PatientRepositoryImpl implements PatientRepository {
         Left.new,
         (allPrescriptions) {
           final active = allPrescriptions
-              .where((prescription) => prescription.isActive)
+              .where((prescription) => prescription.isRecent)
               .toList();
           return Right(active);
         },
       );
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -285,7 +285,7 @@ class PatientRepositoryImpl implements PatientRepository {
 
       return Right(results);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -296,7 +296,7 @@ class PatientRepositoryImpl implements PatientRepository {
       final result = LabResultModel.fromJson(data);
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -306,7 +306,7 @@ class PatientRepositoryImpl implements PatientRepository {
       // TODO: Implement file download from Supabase Storage
       return Right('download_url_$labResultId');
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -319,14 +319,14 @@ class PatientRepositoryImpl implements PatientRepository {
     try {
       final userId = _supabaseService.currentUserId;
       if (userId == null) {
-        return const Left(AuthFailure('User not logged in'));
+        return const Left(AuthFailure(message: ''));
       }
 
       final data = await _supabaseService.fetchById('users', userId);
       final user = UserModel.fromJson(data);
       return Right(user);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -344,7 +344,7 @@ class PatientRepositoryImpl implements PatientRepository {
     try {
       final userId = _supabaseService.currentUserId;
       if (userId == null) {
-        return const Left(AuthFailure('User not logged in'));
+        return const Left(AuthFailure(message: ''));
       }
 
       final updateData = <String, dynamic>{};
@@ -368,7 +368,7 @@ class PatientRepositoryImpl implements PatientRepository {
       final user = UserModel.fromJson(data);
       return Right(user);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -381,7 +381,7 @@ class PatientRepositoryImpl implements PatientRepository {
       // TODO: Implement password change via Supabase Auth
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -402,7 +402,7 @@ class PatientRepositoryImpl implements PatientRepository {
         Right.new,
       );
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -417,7 +417,7 @@ class PatientRepositoryImpl implements PatientRepository {
         Right.new,
       );
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -428,7 +428,8 @@ class PatientRepositoryImpl implements PatientRepository {
       // TODO: Implement getting linked social accounts
       return const Right([]);
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 }
+

@@ -1,23 +1,23 @@
-/// Doctor Dashboard Screen
+/// Employee Dashboard Screen
 library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/appointment_model.dart';
 import 'package:mcs/core/widgets/loading_widget.dart';
-import 'package:mcs/features/doctor/presentation/bloc/index.dart';
+import 'package:mcs/features/employee/presentation/bloc/index.dart';
 
-/// Doctor dashboard screen
-class DoctorDashboardScreen extends StatefulWidget {
-  const DoctorDashboardScreen({super.key});
+/// Employee dashboard screen
+class EmployeeDashboardScreen extends StatefulWidget {
+  const EmployeeDashboardScreen({super.key});
 
   @override
-  State<DoctorDashboardScreen> createState() => _DoctorDashboardScreenState();
+  State<EmployeeDashboardScreen> createState() =>
+      _EmployeeDashboardScreenState();
 }
 
-class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
+class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
   @override
   void initState() {
     super.initState();
@@ -25,20 +25,17 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
   }
 
   void _loadData() {
-    context.read<DoctorBloc>().add(const LoadDashboardStats());
-    context.read<DoctorBloc>().add(const LoadAppointments(status: 'scheduled'));
-    context.read<DoctorBloc>().add(const LoadRemoteSessionRequests());
+    context.read<EmployeeBloc>().add(const LoadDashboardStats());
+    context
+        .read<EmployeeBloc>()
+        .add(const LoadAppointments(status: 'scheduled'));
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          localizations?.home ?? 'Dashboard',
-        ), // استخدام home بدلاً من dashboard
+        title: Text(AppLocalizations.of(context).translate('dashboard')),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications),
@@ -59,17 +56,17 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'profile',
-                child: Text(localizations?.profile ?? 'Profile'),
+                child: Text(AppLocalizations.of(context).translate('profile')),
               ),
               PopupMenuItem(
                 value: 'settings',
-                child: Text(localizations?.settings ?? 'Settings'),
+                child: Text(AppLocalizations.of(context).translate('settings')),
               ),
               const PopupMenuDivider(),
               PopupMenuItem(
                 value: 'logout',
                 child: Text(
-                  localizations?.logout ?? 'Logout',
+                  AppLocalizations.of(context).translate('logout'),
                   style: const TextStyle(color: Colors.red),
                 ),
               ),
@@ -77,9 +74,9 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
           ),
         ],
       ),
-      body: BlocBuilder<DoctorBloc, DoctorState>(
+      body: BlocBuilder<EmployeeBloc, EmployeeState>(
         builder: (context, state) {
-          if (state is DoctorLoading) {
+          if (state is EmployeeLoading) {
             return const LoadingWidget();
           }
 
@@ -104,8 +101,8 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                   _buildTodayAppointments(context, state),
                   const SizedBox(height: 24),
 
-                  // Remote Session Requests
-                  _buildRemoteSessionRequests(context, state),
+                  // Quick Actions
+                  _buildQuickActions(context),
                 ],
               ),
             ),
@@ -116,17 +113,13 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
     );
   }
 
-  Widget _buildWelcomeCard(BuildContext context, DoctorState state) {
-    final localizations = AppLocalizations.of(context);
-    var doctorName = 'Doctor';
-
-    if (state is DoctorProfileLoaded) {
-      // استخدام fullName إذا كان متوفراً، أو name
-      doctorName = (state.profile.fullName ?? state.profile.name ?? 'Doctor')
-              .trim()
-              .isEmpty
-          ? 'Doctor'
-          : (state.profile.fullName ?? state.profile.name ?? 'Doctor');
+  Widget _buildWelcomeCard(BuildContext context, EmployeeState state) {
+    var employeeName = 'Employee';
+    var role = 'Staff';
+    if (state is EmployeeProfileLoaded) {
+      employeeName = state.profile.name;
+      role = state.profile.role; ?? 'Employee';
+      role = state.profile.role ?? 'Staff';
     }
 
     return Card(
@@ -139,7 +132,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
               radius: 30,
               backgroundColor: Theme.of(context).colorScheme.primary,
               child: Text(
-                doctorName.isNotEmpty ? doctorName[0].toUpperCase() : 'D',
+                employeeName.isNotEmpty ? employeeName.substring(0, 1).toUpperCase() : 'E',
                 style: const TextStyle(
                   fontSize: 24,
                   color: Colors.white,
@@ -153,7 +146,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    localizations?.welcome ?? 'Welcome back,',
+                    AppLocalizations.of(context)?.translate('welcome') ?? 'Welcome',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color:
                               Theme.of(context).colorScheme.onPrimaryContainer,
@@ -161,12 +154,21 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    doctorName,
+                    employeeName,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color:
                               Theme.of(context).colorScheme.onPrimaryContainer,
                         ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    role,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onPrimaryContainer
+                              .withValues(alpha: 
                   ),
                 ],
               ),
@@ -177,10 +179,13 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
     );
   }
 
-  Widget _buildStatsGrid(BuildContext context, DoctorState state) {
-    final localizations = AppLocalizations.of(context);
-    final stats =
-        state is DashboardStatsLoaded ? state.stats : <String, dynamic>{};
+  Widget _buildStatsGrid(BuildContext context, EmployeeState state) {
+    var stats = <String, dynamic>{};
+    if (state is DashboardStatsLoaded) {
+      stats = state.stats;
+    }
+
+    final l10n = AppLocalizations.of(context);
 
     return GridView.count(
       crossAxisCount: 2,
@@ -192,30 +197,30 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
       children: [
         _buildStatCard(
           context,
-          localizations?.patients ?? 'Total Patients',
+          l10n?.translate('total_patients') ?? 'Total Patients',
           (stats['total_patients'] ?? 0).toString(),
           Icons.people,
           Colors.blue,
         ),
         _buildStatCard(
           context,
-          localizations?.appointments ?? "Today's Appointments",
+          l10n?.translate('today_appointments') ?? "Today's Appointments",
           (stats['today_appointments'] ?? 0).toString(),
           Icons.calendar_today,
           Colors.green,
         ),
         _buildStatCard(
           context,
-          'Upcoming',
-          (stats['upcoming_appointments'] ?? 0).toString(),
-          Icons.upcoming,
+          l10n?.translate('pending_appointments') ?? 'Pending Appointments',
+          (stats['pending_appointments'] ?? 0).toString(),
+          Icons.pending,
           Colors.orange,
         ),
         _buildStatCard(
           context,
-          localizations?.pending ?? 'Pending', // pending موجود في الـ getters
-          (stats['pending_appointments'] ?? 0).toString(),
-          Icons.pending,
+          l10n?.translate('pending_invoices') ?? 'Pending Invoices',
+          (stats['pending_invoices'] ?? 0).toString(),
+          Icons.receipt_long,
           Colors.red,
         ),
       ],
@@ -254,12 +259,11 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
       ),
     );
   }
-
-  Widget _buildTodayAppointments(BuildContext context, DoctorState state) {
-    final localizations = AppLocalizations.of(context);
-    final appointments = state is AppointmentsLoaded
+final List<AppointmentModel> appointments = state is AppointmentsLoaded
         ? state.appointments
         : const <AppointmentModel>[];
+
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,7 +272,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              localizations?.appointments ?? "Today's Appointments",
+              l10n?.translate('today_appointments') ?? "Today's Appointments",
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -277,9 +281,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
               onPressed: () {
                 // TODO: Navigate to all appointments
               },
-              child: const Text(
-                'View All',
-              ),
+              child: Text(l10n?.translate('view_all') ?? 'View All'),
             ),
           ],
         ),
@@ -290,7 +292,8 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
               padding: const EdgeInsets.all(32),
               child: Center(
                 child: Text(
-                  'No appointments today',
+                  l10n?.translate('no_appointments_today') ??
+                      'No appointments today',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -300,29 +303,46 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
           )
         else
           ...appointments.take(3).map((appointment) {
-            final appointmentDate = appointment?.appointmentDate;
-            final timeString = appointmentDate != null
-                ? '${appointmentDate.hour}:${appointmentDate.minute.toString().padLeft(2, '0')}'
-                : '';
-
             return Card(
               margin: const EdgeInsets.only(bottom: 8),
               child: ListTile(
                 leading: const CircleAvatar(
                   child: Icon(Icons.person),
                 ),
-                title: Text(
-                  appointment?.patientName ?? 'Patient',
-                ),
-                subtitle: Text(timeString),
-                trailing: Icon(
-                  appointment?.type == AppointmentType.remote
-                      ? Icons.video_call
-                      : Icons.calendar_month,
-                  color: appointment?.type == AppointmentType.remote
-                      ? Colors.blue
-                      : Colors.green,
-                ),
+                title: Text(appointment.patientName ?? 'Patient'),
+                subtitle: Text(appointment.timeSlot),
+                trailing: appointment.status == AppointmentStatus.pending
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                            ),
+                            onPressed: () {
+                              context
+                                  .read<EmployeeBloc>()
+                                  .add(AcceptAppointment(appointment.id));
+                            },
+                          ),
+                        ],
+                      )
+                    : appointment.status == AppointmentStatus.confirmed
+                        ? IconButton(
+                            icon: const Icon(
+                              Icons.check_circle_outline,
+                              color: Colors.blue,
+                            ),
+                            onPressed: () {
+                              context
+                                  .read<EmployeeBloc>()
+                                  .add(CompleteAppointm
+                                  .read<EmployeeBloc>()
+                                  .add(CheckOutPatient(appointment.id));
+                            },
+                          )
+                        : const Icon(Icons.check_circle, color: Colors.grey),
               ),
             );
           }),
@@ -330,72 +350,108 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
     );
   }
 
-  Widget _buildRemoteSessionRequests(BuildContext context, DoctorState state) {
-    final localizations = AppLocalizations.of(context);
-    final requests = state is RemoteSessionRequestsLoaded
-        ? state.requests
-        : const <AppointmentModel>[];
-
-    if (requests.isEmpty) return const SizedBox.shrink();
+  Widget _buildQuickActions(BuildContext context) {
+    return Column(
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          localizations?.videoCalls ??
-              'Remote Session Requests', // استخدام videoCalls بدلاً من remoteSessions
+          l10n?.translate('quick_actions') ?? 'Quick Actions',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
         const SizedBox(height: 16),
-        ...requests.map((request) {
-          final requestDate = request.appointmentDate;
-          final dateString = requestDate != null
-              ? '${requestDate.day}/${requestDate.month}/${requestDate.year}'
-              : '';
-
-          return Card(
-            margin: const EdgeInsets.only(bottom: 8),
-            color: Colors.blue.withValues(alpha: 0.1),
-            child: ListTile(
-              leading: const CircleAvatar(
-                backgroundColor: Colors.blue,
-                child: Icon(Icons.video_call, color: Colors.white),
-              ),
-              title: Text(
-                request.patientName ?? 'Patient',
-              ),
-              subtitle: Text(dateString),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.check, color: Colors.green),
-                    onPressed: () {
-                      context
-                          .read<DoctorBloc>()
-                          .add(ApproveRemoteSessionRequest(request.id));
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.red),
-                    onPressed: () {
-                      _showRejectDialog(context, request.id);
-                    },
-                  ),
-                ],
-              ),
+        GridView.count(
+          crossAxisCount: 4,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          children: [
+            _buildQuickActionCard(
+              context,
+              l10n?.translate('register_patient') ?? 'Register Patient',
+              Icons.person_add,
+              Colors.blue,
+              () {
+                // TODO: Navigate to patient registration
+              },
             ),
-          );
-        }),
+            _buildQuickActionCard(
+              context,
+              l10n?.translate('book_appointment') ?? 'Book Appointment',
+              Icons.calendar_month,
+              Colors.green,
+              () {
+                // TODO: Navigate to appointment booking
+              },
+            ),
+            _buildQuickActionCard(
+              context,
+              l10n?.translate('inventory') ?? 'Inventory',
+              Icons.inventory_2,
+              Colors.orange,
+              () {
+                // TODO: Navigate to inventory
+              },
+            ),
+            _buildQuickActionCard(
+              context,
+              l10n?.translate('invoices') ?? 'Invoices',
+              Icons.receipt,
+              Colors.red,
+              () {
+                // TODO: Navigate to invoices
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+                // TODO: Navigate to invoices
+              },
+            ),
+          ],
+        ),
       ],
     );
   }
 
-  Widget _buildDrawer(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+  Widget _buildQuickActionCard(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color, size: 32),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -413,9 +469,9 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                   child: Icon(Icons.person, size: 40, color: Colors.grey),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  localizations?.doctor ?? 'Doctor Name',
-                  style: const TextStyle(
+                const Text(
+                  'Employee Name',
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -423,9 +479,9 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Specialty',
+                  'Role',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: Colors.white.withOpacity(0.8),
                     fontSize: 14,
                   ),
                 ),
@@ -434,16 +490,14 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.dashboard),
-            title: Text(
-              localizations?.home ?? 'Dashboard',
-            ), // استخدام home بدلاً من dashboard
+            title: Text(AppLocalizations.of(context).translate('dashboard')),
             onTap: () {
               Navigator.pop(context);
             },
           ),
           ListTile(
             leading: const Icon(Icons.calendar_month),
-            title: Text(localizations?.appointments ?? 'Appointments'),
+            title: Text(AppLocalizations.of(context).translate('appointments')),
             onTap: () {
               // TODO: Navigate to appointments
               Navigator.pop(context);
@@ -451,87 +505,36 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.people),
-            title: Text(localizations?.patients ?? 'Patients'),
+            title: Text(AppLocalizations.of(context).translate('patients')),
             onTap: () {
               // TODO: Navigate to patients
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.video_call),
-            title: Text(
-              localizations?.videoCalls ?? 'Remote Sessions',
-            ), // استخدام videoCalls
+            leading: const Icon(Icons.inventory_2),
+            title: Text(AppLocalizations.of(context).translate('inventory')),
             onTap: () {
-              // TODO: Navigate to remote sessions
+              // TODO: Navigate to inventory
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.medication),
-            title: Text(localizations?.prescriptions ?? 'Prescriptions'),
+            leading: const Icon(Icons.receipt),
+            title: Text(AppLocalizations.of(context).translate('invoices')),
             onTap: () {
-              // TODO: Navigate to prescriptions
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.science),
-            title: Text(localizations?.labResults ?? 'Lab Results'),
-            onTap: () {
-              // TODO: Navigate to lab results
+              // TODO: Navigate to invoices
               Navigator.pop(context);
             },
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: Text(localizations?.settings ?? 'Settings'),
+            title: Text(AppLocalizations.of(context).translate('settings')),
             onTap: () {
               // TODO: Navigate to settings
               Navigator.pop(context);
             },
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showRejectDialog(BuildContext context, String appointmentId) {
-    final reasonController = TextEditingController();
-
-    showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Reject Request'),
-        content: TextField(
-          controller: reasonController,
-          decoration: const InputDecoration(
-            hintText: 'Enter reason',
-          ),
-          maxLines: 3,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              if (reasonController.text.isNotEmpty) {
-                Navigator.pop(context);
-                context.read<DoctorBloc>().add(
-                      RejectRemoteSessionRequest(
-                        appointmentId,
-                        reasonController.text,
-                      ),
-                    );
-              }
-            },
-            child: const Text(
-              'Reject',
-              style: TextStyle(color: Colors.red),
-            ),
           ),
         ],
       ),

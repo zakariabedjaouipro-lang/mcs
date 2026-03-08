@@ -16,6 +16,9 @@ class EmployeeModel extends Equatable {
     required this.joinedAt,
     required this.qualifications,
     required this.isActive,
+    this.name,
+    this.role,
+    this.fullName,
   });
 
   /// Create from JSON.
@@ -30,13 +33,19 @@ class EmployeeModel extends Equatable {
         joinedAt: DateTime.parse(json['joinedAt'] as String),
         qualifications: List<String>.from(json['qualifications'] as List),
         isActive: json['isActive'] as bool,
+        name: json['name'] as String?,
+        role: json['role'] as String?,
+        fullName: json['fullName'] as String? ?? json['full_name'] as String?,
       );
   final String id;
   final String userId;
   final String clinicId;
   final EmployeeType employeeType;
   final String department;
-  final String employeeId; // Internal employee ID
+  final String employe
+  final String? name;
+  final String? role;
+  final String? fullName;eId; // Internal employee ID
   final DateTime joinedAt;
   final List<String> qualifications;
   final bool isActive;
@@ -52,6 +61,9 @@ class EmployeeModel extends Equatable {
     DateTime? joinedAt,
     List<String>? qualifications,
     bool? isActive,
+    String? name,
+    String? role,
+    String? fullName,
   }) =>
       EmployeeModel(
         id: id ?? this.id,
@@ -63,6 +75,9 @@ class EmployeeModel extends Equatable {
         joinedAt: joinedAt ?? this.joinedAt,
         qualifications: qualifications ?? this.qualifications,
         isActive: isActive ?? this.isActive,
+        name: name ?? this.name,
+        role: role ?? this.role,
+        fullName: fullName ?? this.fullName,
       );
 
   /// Convert employee type to readable name.
@@ -113,6 +128,9 @@ class EmployeeModel extends Equatable {
         'joinedAt': joinedAt.toIso8601String(),
         'qualifications': qualifications,
         'isActive': isActive,
+        'name': name,
+        'role': role,
+        'fullName': fullName,
       };
 
   @override
@@ -126,5 +144,8 @@ class EmployeeModel extends Equatable {
         joinedAt,
         qualifications,
         isActive,
+        name,
+        role,
+        fullName,
       ];
 }

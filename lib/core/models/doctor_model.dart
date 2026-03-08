@@ -9,6 +9,8 @@ class DoctorModel extends Equatable {
     required this.userId,
     required this.clinicId,
     required this.specialtyId,
+    this.fullName,
+    this.name,
     this.licenseNumber,
     this.bioAr,
     this.bioEn,
@@ -26,6 +28,8 @@ class DoctorModel extends Equatable {
       userId: json['user_id'] as String,
       clinicId: json['clinic_id'] as String,
       specialtyId: json['specialty_id'] as String,
+      fullName: json['full_name'] as String? ?? json['fullName'] as String?,
+      name: json['name'] as String?,
       licenseNumber: json['license_number'] as String?,
       bioAr: json['bio_ar'] as String?,
       bioEn: json['bio_en'] as String?,
@@ -46,6 +50,8 @@ class DoctorModel extends Equatable {
   final String userId;
   final String clinicId;
   final String specialtyId;
+  final String? fullName;
+  final String? name;
   final String? licenseNumber;
   final String? bioAr;
   final String? bioEn;
@@ -74,6 +80,8 @@ class DoctorModel extends Equatable {
       'user_id': userId,
       'clinic_id': clinicId,
       'specialty_id': specialtyId,
+      'full_name': fullName,
+      'name': name,
       'license_number': licenseNumber,
       'bio_ar': bioAr,
       'bio_en': bioEn,
@@ -90,8 +98,8 @@ class DoctorModel extends Equatable {
   DoctorModel copyWith({
     String? id,
     String? userId,
-    String? clinicId,
-    String? specialtyId,
+    String? fullName,
+    String? name,
     String? licenseNumber,
     String? bioAr,
     String? bioEn,
@@ -105,6 +113,10 @@ class DoctorModel extends Equatable {
     return DoctorModel(
       id: id ?? this.id,
       userId: userId ?? this.userId,
+      clinicId: clinicId ?? this.clinicId,
+      specialtyId: specialtyId ?? this.specialtyId,
+      fullName: fullName ?? this.fullName,
+      name: name ?? this.name
       clinicId: clinicId ?? this.clinicId,
       specialtyId: specialtyId ?? this.specialtyId,
       licenseNumber: licenseNumber ?? this.licenseNumber,
@@ -138,6 +150,8 @@ class DoctorModel extends Equatable {
         userId,
         clinicId,
         specialtyId,
+        fullName,
+        name,
         licenseNumber,
         bioAr,
         bioEn,

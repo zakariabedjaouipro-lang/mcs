@@ -2,7 +2,7 @@
 library;
 
 import 'package:equatable/equatable.dart';
-
+import 'package:flutter/material.dart';
 import 'package:mcs/core/enums/appointment_status.dart';
 
 class AppointmentModel extends Equatable {
@@ -18,6 +18,8 @@ class AppointmentModel extends Equatable {
     this.remoteRequestStatus = RemoteRequestStatus.none,
     this.notes,
     this.createdAt,
+    this.patientName,
+    this.doctorName,
   });
 
   factory AppointmentModel.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,8 @@ class AppointmentModel extends Equatable {
           : RemoteRequestStatus.none,
       notes: json['notes'] as String?,
       createdAt: json['created_at'] != null
+      patientName: json['patient_name'] as String?,
+      doctorName: json['doctor_name'] as String?,
           ? DateTime.parse(json['created_at'] as String)
           : null,
     );
@@ -54,6 +58,8 @@ class AppointmentModel extends Equatable {
   final RemoteRequestStatus remoteRequestStatus;
   final String? notes;
   final DateTime? createdAt;
+  final String? patientName;
+  final String? doctorName;
 
   // ── Serialization ──────────────────────────────────────
   Map<String, dynamic> toJson() {
@@ -67,6 +73,8 @@ class AppointmentModel extends Equatable {
       'status': status.dbValue,
       'type': type.dbValue,
       'remote_request_status': remoteRequestStatus.dbValue,
+      'patient_name': patientName,
+      'doctor_name': doctorName,
       'notes': notes,
       'created_at': createdAt?.toIso8601String(),
     };
@@ -85,6 +93,8 @@ class AppointmentModel extends Equatable {
     RemoteRequestStatus? remoteRequestStatus,
     String? notes,
     DateTime? createdAt,
+    String? patientName,
+    String? doctorName,
   }) {
     return AppointmentModel(
       id: id ?? this.id,
@@ -98,6 +108,8 @@ class AppointmentModel extends Equatable {
       remoteRequestStatus: remoteRequestStatus ?? this.remoteRequestStatus,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
+      patientName: patientName ?? this.patientName,
+      doctorName: doctorName ?? this.doctorName,
     );
   }
 
@@ -111,13 +123,7 @@ class AppointmentModel extends Equatable {
 
   /// Get time slot as formatted string (HH:MM)
   String get timeSlot =>
-    '${scheduledAt.hour.toString().padLeft(2, '0')}:${scheduledAt.minute.toString().padLeft(2, '0')}';
-
-  /// Get patient name (to be loaded from patient model)
-  String? get patientName => null;
-
-  /// Get doctor name (to be loaded from doctor model)
-  String? get doctorName => null;
+      '${scheduledAt.hour.toString().padLeft(2, '0')}:${scheduledAt.minute.toString().padLeft(2, '0')}';
 
   /// Get status color for UI display
   Color get statusColor {
@@ -177,5 +183,7 @@ class AppointmentModel extends Equatable {
         remoteRequestStatus,
         notes,
         createdAt,
+        patientName,
+        doctorName,
       ];
 }

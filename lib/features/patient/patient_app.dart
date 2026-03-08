@@ -20,8 +20,8 @@ class PatientApp extends StatelessWidget {
       child: MaterialApp(
         title: 'MCS - Patient',
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('ar'),

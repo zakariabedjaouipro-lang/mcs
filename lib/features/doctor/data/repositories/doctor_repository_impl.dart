@@ -13,7 +13,6 @@ import 'package:mcs/features/doctor/domain/repositories/doctor_repository.dart';
 
 /// Doctor repository implementation
 class DoctorRepositoryImpl implements DoctorRepository {
-
   // ✅ Constructor قبل أي methods
   DoctorRepositoryImpl(this._supabaseService);
   final SupabaseService _supabaseService;
@@ -46,7 +45,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
 
   @override
   Future<Either<Failure, DoctorModel>> updateDoctorProfile(
-      DoctorModel profile,) async {
+    DoctorModel profile,
+  ) async {
     try {
       final response = await _supabaseService.update(
         'doctors',
@@ -58,7 +58,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
@@ -91,7 +92,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
@@ -137,13 +139,15 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, PatientModel>> getPatientDetails(
-      String patientId,) async {
+    String patientId,
+  ) async {
     try {
       final response = await _supabaseService.fetchById('patients', patientId);
       return Right(PatientModel.fromJson(response));
@@ -151,27 +155,29 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, List<PatientModel>>> searchPatients(
-      String query,) async {
+    String query,
+  ) async {
     try {
       final response = await _supabaseService.fetchAll(
         'patients',
         filters: {'name': query},
       );
 
-      final patients =
-          response.map(PatientModel.fromJson).toList();
+      final patients = response.map(PatientModel.fromJson).toList();
       return Right(patients);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
@@ -198,7 +204,7 @@ class DoctorRepositoryImpl implements DoctorRepository {
 
       final doctorId = response.first['id'] as String;
 
-      final var filters = <String, dynamic>{'doctor_id': doctorId};
+      final filters = <String, dynamic>{'doctor_id': doctorId};
       if (status != null) {
         filters['status'] = status;
       }
@@ -226,13 +232,15 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, AppointmentModel>> getAppointmentDetails(
-      String appointmentId,) async {
+    String appointmentId,
+  ) async {
     try {
       final response =
           await _supabaseService.fetchById('appointments', appointmentId);
@@ -241,7 +249,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
@@ -258,13 +267,16 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> rejectAppointment(
-      String appointmentId, String reason,) async {
+    String appointmentId,
+    String reason,
+  ) async {
     try {
       await _supabaseService.update(
         'appointments',
@@ -279,13 +291,16 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> cancelAppointment(
-      String appointmentId, String reason,) async {
+    String appointmentId,
+    String reason,
+  ) async {
     try {
       await _supabaseService.update(
         'appointments',
@@ -300,13 +315,16 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> completeAppointment(
-      String appointmentId, Map<String, dynamic> notes,) async {
+    String appointmentId,
+    Map<String, dynamic> notes,
+  ) async {
     try {
       await _supabaseService.update(
         'appointments',
@@ -321,13 +339,16 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> rescheduleAppointment(
-      String appointmentId, DateTime newDateTime,) async {
+    String appointmentId,
+    DateTime newDateTime,
+  ) async {
     try {
       await _supabaseService.update(
         'appointments',
@@ -341,13 +362,15 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> createPrescription(
-      PrescriptionModel prescription,) async {
+    PrescriptionModel prescription,
+  ) async {
     try {
       await _supabaseService.insert('prescriptions', prescription.toJson());
       return const Right(null);
@@ -355,33 +378,36 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, List<PrescriptionModel>>> getPrescriptions(
-      String patientId,) async {
+    String patientId,
+  ) async {
     try {
       final response = await _supabaseService.fetchAll(
         'prescriptions',
         filters: {'patient_id': patientId},
       );
 
-      final prescriptions =
-          response.map(PrescriptionModel.fromJson).toList();
+      final prescriptions = response.map(PrescriptionModel.fromJson).toList();
       return Right(prescriptions);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, PrescriptionModel>> getPrescriptionDetails(
-      String prescriptionId,) async {
+    String prescriptionId,
+  ) async {
     try {
       final response =
           await _supabaseService.fetchById('prescriptions', prescriptionId);
@@ -390,13 +416,16 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> updatePrescription(
-      String prescriptionId, PrescriptionModel prescription,) async {
+    String prescriptionId,
+    PrescriptionModel prescription,
+  ) async {
     try {
       await _supabaseService.update(
         'prescriptions',
@@ -408,13 +437,15 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> deletePrescription(
-      String prescriptionId,) async {
+    String prescriptionId,
+  ) async {
     try {
       await _supabaseService.delete('prescriptions', prescriptionId);
       return const Right(null);
@@ -422,7 +453,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
@@ -439,7 +471,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
@@ -456,13 +489,15 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, String>> generateRemoteSessionToken(
-      String appointmentId,) async {
+    String appointmentId,
+  ) async {
     try {
       // TODO: Implement token generation with Agora
       return const Right('mock_token');
@@ -470,13 +505,15 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> uploadLabResult(
-      Map<String, dynamic> labResult,) async {
+    Map<String, dynamic> labResult,
+  ) async {
     try {
       await _supabaseService.insert('lab_results', labResult);
       return const Right(null);
@@ -484,13 +521,15 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, List<Map<String, dynamic>>>> getLabResults(
-      String patientId,) async {
+    String patientId,
+  ) async {
     try {
       final response = await _supabaseService.fetchAll(
         'lab_results',
@@ -501,7 +540,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
@@ -564,7 +604,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
@@ -581,7 +622,10 @@ class DoctorRepositoryImpl implements DoctorRepository {
 
   @override
   Future<Either<Failure, void>> sendNotificationToPatient(
-      String patientId, String title, String body,) async {
+    String patientId,
+    String title,
+    String body,
+  ) async {
     try {
       // TODO: Implement notification sending
       return const Right(null);
@@ -589,7 +633,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
@@ -622,22 +667,23 @@ class DoctorRepositoryImpl implements DoctorRepository {
         },
       );
 
-      final appointments = appointmentsResponse
-          .map(AppointmentModel.fromJson)
-          .toList();
+      final appointments =
+          appointmentsResponse.map(AppointmentModel.fromJson).toList();
 
       return Right(appointments);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> approveRemoteSessionRequest(
-      String appointmentId,) async {
+    String appointmentId,
+  ) async {
     try {
       await _supabaseService.update(
         'appointments',
@@ -649,13 +695,16 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 
   @override
   Future<Either<Failure, void>> rejectRemoteSessionRequest(
-      String appointmentId, String reason,) async {
+    String appointmentId,
+    String reason,
+  ) async {
     try {
       await _supabaseService.update(
         'appointments',
@@ -670,7 +719,8 @@ class DoctorRepositoryImpl implements DoctorRepository {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-          ServerFailure(message: 'Failed to update doctor profile: $e'),);
+        ServerFailure(message: 'Failed to update doctor profile: $e'),
+      );
     }
   }
 }
