@@ -2,11 +2,20 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/extensions.dart';
+import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mcs/features/auth/presentation/bloc/auth_state.dart';
 import 'package:mcs/features/landing/widgets/device_detector.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -42,26 +51,44 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            // 1. App Bar / Header
-            _buildHeader(context),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        // Navigate on successful login
+        if (state is LoginSuccess) {
+          context.go(AppRoutes.dashboard);
+        }
+        // Show error on login failure
+        else if (state is LoginFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: AppColors.error,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        body: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            children: [
+              // 1. App Bar / Header
+              _buildHeader(context),
 
-            // 2. Hero Section
-            _buildHeroSection(context),
+              // 2. Hero Section
+              _buildHeroSection(context),
 
-            // 3. Features Section
-            _buildFeaturesSection(context),
+              // 3. Features Section
+              _buildFeaturesSection(context),
 
-            // 4. Download Section
-            _buildDownloadSection(context),
+              // 4. Download Section
+              _buildDownloadSection(context),
 
-            // 5. Footer
-            _buildFooter(context),
-          ],
+              // 5. Footer
+              _buildFooter(context),
+            ],
+          ),
         ),
       ),
     );
@@ -119,11 +146,14 @@ class _LandingScreenState extends State<LandingScreen> {
               if (!isSmall)
                 Row(
                   children: [
-                    _headerLink('Features', context),
+                    _headerLink('Features', context,
+                        () => context.go(AppRoutes.features)),
                     const SizedBox(width: 24),
-                    _headerLink('Download', context),
+                    _headerLink('Download', context,
+                        () => context.go(AppRoutes.download)),
                     const SizedBox(width: 24),
-                    _headerLink('About', context),
+                    _headerLink(
+                        'About', context, () => context.go(AppRoutes.contact)),
                   ],
                 ),
 
@@ -141,7 +171,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   // Login button
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to login
+                      context.go(AppRoutes.login);
                     },
                     child: Text(
                       isSmall ? 'Login' : 'Sign In',
@@ -158,13 +188,11 @@ class _LandingScreenState extends State<LandingScreen> {
   }
 
   /// Build header navigation link.
-  Widget _headerLink(String label, BuildContext context) {
+  Widget _headerLink(String label, BuildContext context, VoidCallback onTap) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () {
-          // Handle navigation
-        },
+        onTap: onTap,
         child: Text(
           label,
           style: TextStyles.bodyLarge.copyWith(
@@ -182,6 +210,8 @@ class _LandingScreenState extends State<LandingScreen> {
 
     return IconButton(
       onPressed: () {
+        // Toggle language
+        context.read<LocalizationBloc>().add(const ToggleLanguageEvent());
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -201,10 +231,11 @@ class _LandingScreenState extends State<LandingScreen> {
     return IconButton(
       onPressed: () {
         // Toggle theme
+        context.read<ThemeBloc>().add(const ToggleThemeEvent());
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(context.isDarkMode
-                ? 'Switched to Light Mode'
+                ? 'تم التبديل للوضع الفاتح'
                 : 'تم التبديل للوضع الداكن'),
             duration: const Duration(seconds: 1),
           ),
@@ -280,7 +311,7 @@ class _LandingScreenState extends State<LandingScreen> {
               children: [
                 ElevatedButton.icon(
                   onPressed: () {
-                    // Scroll to download section
+                    context.go(AppRoutes.download);
                   },
                   icon: const Icon(Icons.download),
                   label: const Text('Download Now'),
@@ -295,7 +326,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 ),
                 OutlinedButton(
                   onPressed: () {
-                    // Learn more
+                    context.go(AppRoutes.features);
                   },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.white),
