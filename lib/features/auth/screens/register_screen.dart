@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/validators.dart';
@@ -121,7 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 60),
+                    SizedBox(height: 60.h),
 
                     // Header
                     Text(
@@ -307,8 +308,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ? null
                                       : (value) {
                                           setState(
-                                              () => _selectedRegionId = value,
-                                            );
+                                            () => _selectedRegionId = value,
+                                          );
                                         },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -658,4 +659,3 @@ class RoleOption {
   final String description;
   final IconData icon;
 }
-

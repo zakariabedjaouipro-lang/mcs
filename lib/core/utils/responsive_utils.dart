@@ -80,7 +80,7 @@ extension ResponsiveLayout on BuildContext {
 
   /// Get responsive font scale factor
   double get fontScaleFactor {
-    if (isMobile) return 1.0;
+    if (isMobile) return 1;
     if (isTablet) return 1.1;
     return 1.2;
   }
@@ -89,10 +89,10 @@ extension ResponsiveLayout on BuildContext {
 /// Responsive widget that adapts layout based on screen size
 class ResponsiveWidget extends StatelessWidget {
   const ResponsiveWidget({
-    super.key,
     required this.mobile,
     required this.tablet,
     required this.desktop,
+    super.key,
   });
 
   /// Widget for mobile layout (< 600px)

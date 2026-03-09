@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:mcs/core/constants/ui_constants.dart';
 
@@ -45,7 +46,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final child = _buildChild(context);
     final button = SizedBox(
-      height: height,
+      height: height.h,
       width: isExpanded ? double.infinity : null,
       child: _buildButton(context, child),
     );
@@ -116,13 +117,12 @@ class CustomButton extends StatelessWidget {
   Widget _buildChild(BuildContext context) {
     if (isLoading) {
       return SizedBox(
-        width: 20,
-        height: 20,
+        width: 20.w,
+        height: 20.h,
         child: CircularProgressIndicator(
           strokeWidth: 2,
           valueColor: AlwaysStoppedAnimation<Color>(
-            foregroundColor ??
-                Theme.of(context).colorScheme.onPrimary,
+            foregroundColor ?? Theme.of(context).colorScheme.onPrimary,
           ),
         ),
       );
@@ -136,14 +136,14 @@ class CustomButton extends StatelessWidget {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18),
-          const SizedBox(width: UiConstants.spacing8),
+          Icon(icon, size: 18.sp),
+          SizedBox(width: 8.w),
           Text(label!, style: textStyle),
         ],
       );
     }
 
-    if (icon != null) return Icon(icon, size: 18);
+    if (icon != null) return Icon(icon, size: 18.sp);
     return Text(label ?? '', style: textStyle);
   }
 }

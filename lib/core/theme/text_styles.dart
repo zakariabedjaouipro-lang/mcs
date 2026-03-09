@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract class TextStyles {
@@ -21,7 +22,7 @@ abstract class TextStyles {
 
   static TextStyle get headline1 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 32,
+        fontSize: 32.sp,
         fontWeight: FontWeight.w700,
         color: Colors.black,
         height: 1.25,
@@ -29,7 +30,7 @@ abstract class TextStyles {
 
   static TextStyle get headline2 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 28,
+        fontSize: 28.sp,
         fontWeight: FontWeight.w700,
         color: Colors.black,
         height: 1.3,
@@ -37,7 +38,7 @@ abstract class TextStyles {
 
   static TextStyle get headline3 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 24,
+        fontSize: 24.sp,
         fontWeight: FontWeight.w600,
         color: Colors.black,
         height: 1.3,
@@ -45,7 +46,7 @@ abstract class TextStyles {
 
   static TextStyle get headline4 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 20,
+        fontSize: 20.sp,
         fontWeight: FontWeight.w600,
         color: Colors.black,
         height: 1.35,
@@ -53,7 +54,7 @@ abstract class TextStyles {
 
   static TextStyle get headline5 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 18,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w600,
         color: Colors.black,
         height: 1.4,
@@ -61,7 +62,7 @@ abstract class TextStyles {
 
   static TextStyle get headline6 => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 16,
+        fontSize: 16.sp,
         fontWeight: FontWeight.w600,
         color: Colors.black,
         height: 1.4,
@@ -71,7 +72,7 @@ abstract class TextStyles {
 
   static TextStyle get bodyLarge => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 16,
+        fontSize: 16.sp,
         fontWeight: FontWeight.w400,
         color: Colors.black,
         height: 1.5,
@@ -79,7 +80,7 @@ abstract class TextStyles {
 
   static TextStyle get bodyMedium => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 14,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w400,
         color: Colors.black,
         height: 1.5,
@@ -87,7 +88,7 @@ abstract class TextStyles {
 
   static TextStyle get bodySmall => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 12,
+        fontSize: 12.sp,
         fontWeight: FontWeight.w400,
         color: Colors.black,
         height: 1.5,
@@ -97,7 +98,7 @@ abstract class TextStyles {
 
   static TextStyle get labelLarge => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 14,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w600,
         color: Colors.black,
         letterSpacing: 0.5,
@@ -105,7 +106,7 @@ abstract class TextStyles {
 
   static TextStyle get labelSmall => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 11,
+        fontSize: 11.sp,
         fontWeight: FontWeight.w500,
         color: Colors.black,
         letterSpacing: 0.5,
@@ -113,7 +114,7 @@ abstract class TextStyles {
 
   static TextStyle get button => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 14,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w600,
         color: Colors.black,
         letterSpacing: 0.8,
@@ -123,7 +124,7 @@ abstract class TextStyles {
 
   static TextStyle get caption => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 12,
+        fontSize: 12.sp,
         fontWeight: FontWeight.w400,
         color: Colors.black,
         letterSpacing: 0.4,
@@ -131,7 +132,7 @@ abstract class TextStyles {
 
   static TextStyle get overline => TextStyle(
         fontFamily: _fontFamily,
-        fontSize: 10,
+        fontSize: 10.sp,
         fontWeight: FontWeight.w500,
         color: Colors.black,
         letterSpacing: 1.5,

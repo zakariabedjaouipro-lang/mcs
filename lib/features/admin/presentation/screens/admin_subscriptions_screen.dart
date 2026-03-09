@@ -91,8 +91,9 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
     );
   }
 
-  Widget _subscriptionCodesTable(
-      {required List<SubscriptionModel> subscriptions}) {
+  Widget _subscriptionCodesTable({
+    required List<SubscriptionModel> subscriptions,
+  }) {
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Card(
@@ -127,8 +128,11 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
                     _buildStatusChip(sub.isUsed),
                   ),
                   DataCell(Text(sub.clinicId ?? '-')),
-                  DataCell(Text(
-                      sub.usedAt != null ? _formatDate(sub.usedAt!) : '-')),
+                  DataCell(
+                    Text(
+                      sub.usedAt != null ? _formatDate(sub.usedAt!) : '-',
+                    ),
+                  ),
                   DataCell(
                     _buildActionsCell(context, sub),
                   ),
@@ -179,8 +183,9 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
         if (!sub.isUsed) ...[
           const PopupMenuItem(value: 'activate', child: Text('تفعيل للعيادة')),
           const PopupMenuItem(
-              value: 'delete',
-              child: Text('حذف الكود', style: TextStyle(color: Colors.red))),
+            value: 'delete',
+            child: Text('حذف الكود', style: TextStyle(color: Colors.red)),
+          ),
         ],
       ],
       icon: const Icon(Icons.more_vert),
@@ -199,7 +204,9 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
   }
 
   Future<void> _showPriceDialog(
-      BuildContext context, SubscriptionType type) async {
+    BuildContext context,
+    SubscriptionType type,
+  ) async {
     final priceUsdController = TextEditingController();
     final priceEurController = TextEditingController();
     final priceDzdController = TextEditingController();
@@ -282,7 +289,9 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
   }
 
   Future<void> _showActivateDialog(
-      BuildContext context, SubscriptionModel sub) async {
+    BuildContext context,
+    SubscriptionModel sub,
+  ) async {
     final clinicId = await showDialog<String>(
       context: context,
       builder: (context) => const _SelectClinicDialog(),
@@ -299,7 +308,9 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
   }
 
   Future<void> _confirmDeleteCode(
-      BuildContext context, SubscriptionModel sub) async {
+    BuildContext context,
+    SubscriptionModel sub,
+  ) async {
     final confirmed = await showConfirmDialog(
       context: context,
       title: 'حذف كود الاشتراك',

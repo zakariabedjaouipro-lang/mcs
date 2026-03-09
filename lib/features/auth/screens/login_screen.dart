@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/validators.dart';
@@ -44,8 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-            'تسجيل الدخول عبر $provider غير متاح حالياً. يرجى استخدام البريد الإلكتروني وكلمة المرور.',
-          ),
+          'تسجيل الدخول عبر $provider غير متاح حالياً. يرجى استخدام البريد الإلكتروني وكلمة المرور.',
+        ),
         backgroundColor: Colors.orange,
         duration: const Duration(seconds: 3),
       ),
@@ -85,11 +86,11 @@ class _LoginScreenState extends State<LoginScreen> {
           return Scaffold(
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 60),
+                    SizedBox(height: 60.h),
 
                     // Header
                     Text(
@@ -99,12 +100,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       'أهلاً بعودتك! تسجيل دخول للمتابعة',
                       style: TextStyles.body1.copyWith(color: AppColors.grey),
                     ),
-                    const SizedBox(height: 48),
+                    SizedBox(height: 48.h),
 
                     // Form
                     Form(
@@ -136,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20.h),
 
                           // Password Field
                           TextFormField(
@@ -176,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
 
                           // Forgot Password Link
                           Align(
@@ -269,9 +270,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: isLoading
                                       ? null
                                       : () => _showSocialLoginNotAvailable(
-                                          context,
-                                          'Facebook',
-                                        ),
+                                            context,
+                                            'Facebook',
+                                          ),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -283,9 +284,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: isLoading
                                       ? null
                                       : () => _showSocialLoginNotAvailable(
-                                          context,
-                                          'Google',
-                                        ),
+                                            context,
+                                            'Google',
+                                          ),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -297,9 +298,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: isLoading
                                       ? null
                                       : () => _showSocialLoginNotAvailable(
-                                          context,
-                                          'Apple',
-                                        ),
+                                            context,
+                                            'Apple',
+                                          ),
                                 ),
                               ),
                             ],
@@ -337,7 +338,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 40),
+                          SizedBox(height: 40.h),
                         ],
                       ),
                     ),
@@ -405,4 +406,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

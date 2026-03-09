@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/appointment_model.dart';
@@ -146,21 +147,21 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               _loadData();
             },
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Welcome Card
                   _buildWelcomeCard(context, state),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
 
                   // Stats Cards
                   _buildStatsGrid(context, state),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
 
                   // Today's Appointments
                   _buildTodayAppointments(context, state),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
 
                   // Quick Actions
                   _buildQuickActions(context),
