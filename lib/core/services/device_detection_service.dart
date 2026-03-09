@@ -81,7 +81,7 @@ class DeviceDetectionService {
     }
   }
 
-  // TODO(phase-1): Replace with actual store URLs once published.
+  // TODO(phase-1): Replace with actual store URLs once application is published.
   static const _playStoreUrl =
       'https://play.google.com/store/apps/details?id=com.mcs.medical';
   static const _appStoreUrl =

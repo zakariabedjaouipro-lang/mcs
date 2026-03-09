@@ -162,7 +162,6 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         onTap: () {
-          // TODO: Navigate to appointment details
           context.push(AppRoutes.appointmentDetails(appointment.id));
         },
         borderRadius: BorderRadius.circular(12),
@@ -257,7 +256,6 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () {
-                          // TODO: Reschedule appointment
                           context.push(
                             AppRoutes.rescheduleAppointment(appointment.id),
                           );

@@ -14,8 +14,7 @@ class LocalizationRepositoryImpl extends LocalizationRepository {
   /// Load language preference from local storage
   @override
   Future<String> loadLanguage() async {
-    _currentLanguageCode = await _localDataSource.loadLanguage();
-    return _currentLanguageCode;
+    return _currentLanguageCode = await _localDataSource.loadLanguage();
   }
 
   /// Save language preference to local storage

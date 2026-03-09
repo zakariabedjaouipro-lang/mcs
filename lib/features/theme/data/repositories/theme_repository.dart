@@ -15,8 +15,7 @@ class ThemeRepositoryImpl extends ThemeRepository {
   /// Load theme mode from local storage
   @override
   Future<ThemeMode> loadThemeMode() async {
-    _currentThemeMode = await _localDataSource.loadThemeMode();
-    return _currentThemeMode;
+    return _currentThemeMode = await _localDataSource.loadThemeMode();
   }
 
   /// Save theme mode to local storage
