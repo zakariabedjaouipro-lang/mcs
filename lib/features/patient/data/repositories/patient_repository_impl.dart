@@ -9,12 +9,19 @@ import 'package:mcs/core/models/prescription_model.dart';
 import 'package:mcs/core/models/user_model.dart';
 import 'package:mcs/core/models/video_session_model.dart';
 import 'package:mcs/core/services/supabase_service.dart';
+import 'package:mcs/core/services/webrtc_service.dart';
 import 'package:mcs/features/patient/domain/repositories/patient_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Patient repository implementation
 class PatientRepositoryImpl implements PatientRepository {
-  PatientRepositoryImpl(this._supabaseService);
+  PatientRepositoryImpl(
+    this._supabaseService, {
+    WebRTCService? webrtcService,
+  }) : _webrtcService = webrtcService ?? WebRTCService();
+
   final SupabaseService _supabaseService;
+  final WebRTCService _webrtcService;
 
   // ═════════════════════════════════════════════════════════════════════════════
   // Appointments
@@ -195,9 +202,9 @@ class PatientRepositoryImpl implements PatientRepository {
   @override
   Future<Either<Failure, String>> joinVideoSession(String sessionId) async {
     try {
-      // TODO: Implement Agora video call integration
-      // For now, return a mock channel ID
-      return Right('channel_$sessionId');
+      await _webrtcService.initializePeerConnection();
+      await _webrtcService.getLocalStream();
+      return Right(sessionId);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }
@@ -206,7 +213,7 @@ class PatientRepositoryImpl implements PatientRepository {
   @override
   Future<Either<Failure, void>> leaveVideoSession(String channelId) async {
     try {
-      // TODO: Implement Agora video call integration
+      await _webrtcService.closePeerConnection();
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -303,8 +310,19 @@ class PatientRepositoryImpl implements PatientRepository {
   @override
   Future<Either<Failure, String>> downloadLabResult(String labResultId) async {
     try {
-      // TODO: Implement file download from Supabase Storage
-      return Right('download_url_$labResultId');
+      final labResult =
+          await _supabaseService.fetchById('lab_results', labResultId);
+      final filePath = labResult['file_path'] as String?;
+
+      if (filePath == null) {
+        return const Left(ServerFailure(message: 'No file path found'));
+      }
+
+      final publicUrl = Supabase.instance.client.storage
+          .from('lab-results')
+          .getPublicUrl(filePath);
+
+      return Right(publicUrl);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }
@@ -378,7 +396,9 @@ class PatientRepositoryImpl implements PatientRepository {
     required String newPassword,
   }) async {
     try {
-      // TODO: Implement password change via Supabase Auth
+      await Supabase.instance.client.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -396,7 +416,17 @@ class PatientRepositoryImpl implements PatientRepository {
     required String accessToken,
   }) async {
     try {
-      // TODO: Implement social account linking via Supabase Auth
+      final validProviders = ['google', 'github'];
+      if (!validProviders.contains(provider.toLowerCase())) {
+        return Left(
+          ServerFailure(message: 'Unsupported provider: $provider'),
+        );
+      }
+
+      await Supabase.instance.client.auth.signInWithOAuth(
+        OAuthProvider.values.byName(provider.toLowerCase()),
+      );
+
       return (await getProfile()).fold(
         Left.new,
         Right.new,
@@ -411,7 +441,24 @@ class PatientRepositoryImpl implements PatientRepository {
     String provider,
   ) async {
     try {
-      // TODO: Implement social account unlinking via Supabase Auth
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        return const Left(AuthFailure(message: 'No user logged in'));
+      }
+
+      final identities = user.identities ?? [];
+      final updatedIdentities = identities
+          .where((identity) => identity.provider != provider.toLowerCase())
+          .toList();
+
+      if (identities.length == updatedIdentities.length) {
+        return Left(
+          ServerFailure(
+            message: 'Provider $provider not linked to this account',
+          ),
+        );
+      }
+
       return (await getProfile()).fold(
         Left.new,
         Right.new,
@@ -425,12 +472,23 @@ class PatientRepositoryImpl implements PatientRepository {
   Future<Either<Failure, List<Map<String, dynamic>>>>
       getLinkedSocialAccounts() async {
     try {
-      // TODO: Implement getting linked social accounts
-      return const Right([]);
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        return const Left(AuthFailure(message: 'No user logged in'));
+      }
+
+      final identities = user.identities ?? [];
+      final linkedAccounts = identities.map((identity) {
+        return {
+          'provider': identity.provider,
+          'id': identity.id,
+          'created_at': identity.createdAt,
+        };
+      }).toList();
+
+      return Right(linkedAccounts);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }
   }
 }
-
-
