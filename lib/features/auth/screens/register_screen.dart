@@ -30,6 +30,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _selectedCountryId;
   String? _selectedRegionId;
 
+  // ✅ تحميل الدول والمناطق مرة واحدة فقط
+  List<Map<String, dynamic>> _countries = [];
+  Map<String, List<Map<String, dynamic>>> _regionsCache = {};
+  bool _countriesLoaded = false;
+
   final List<RoleOption> _roles = [
     RoleOption(
       value: 'patient',
@@ -50,6 +55,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
       icon: Icons.admin_panel_settings,
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // ✅ تحميل الدول مرة واحدة عند فتح الشاشة
+    _loadCountriesOnce();
+  }
+
+  Future<void> _loadCountriesOnce() async {
+    if (_countriesLoaded) return;
+    try {
+      final supabase = Supabase.instance.client;
+      final data = await supabase
+          .from('countries')
+          .select()
+          .eq('is_supported', true)
+          .order('name', ascending: true);
+
+      if (mounted) {
+        setState(() {
+          _countries = data;
+          _countriesLoaded = true;
+          // تعيين أول دولة كقيمة افتراضية
+          if (_countries.isNotEmpty && _selectedCountryId == null) {
+            _selectedCountryId = _countries.first['id'] as String;
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('فشل تحميل الدول: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -144,12 +188,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       'انضم إلينا الآن والاستمتع بالخدمات',
                       style: TextStyles.body1.copyWith(color: AppColors.grey),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
 
                     // Role Selection
                     Text(
@@ -158,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Column(
                       children: List.generate(
                         _roles.length,
@@ -196,7 +240,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
 
                           // Email Field
                           TextFormField(
@@ -223,7 +267,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
 
                           // Phone Field
                           TextFormField(
@@ -250,51 +294,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
 
                           // Country Selection
-                          FutureBuilder<List<Map<String, dynamic>>>(
-                            future: _loadCountries(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const CircularProgressIndicator();
-                              }
-                              final countries = snapshot.data ?? [];
-                              return DropdownButtonFormField<String>(
-                                initialValue: _selectedCountryId,
-                                decoration: _buildInputDecoration(
-                                  label: 'الدولة',
-                                  hint: 'اختر الدولة',
-                                  icon: Icons.location_on,
-                                ),
-                                items: countries.map((country) {
-                                  return DropdownMenuItem(
-                                    value: country['id'] as String,
-                                    child: Text(country['name_ar'] as String),
-                                  );
-                                }).toList(),
-                                onChanged: isLoading
-                                    ? null
-                                    : (value) {
-                                        if (!mounted) return;
-                                        setState(() {
-                                          _selectedCountryId = value;
-                                          _selectedRegionId = null;
-                                        });
-                                      },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'الرجاء اختيار الدولة';
-                                  }
-                                  return null;
-                                },
+                          DropdownButtonFormField<String>(
+                            value: _selectedCountryId,
+                            decoration: _buildInputDecoration(
+                              label: 'الدولة',
+                              hint: 'اختر الدولة',
+                              icon: Icons.location_on,
+                            ),
+                            items: _countries.map((country) {
+                              return DropdownMenuItem(
+                                value: country['id'] as String,
+                                child: Text(country['name_ar'] as String),
                               );
+                            }).toList(),
+                            onChanged: isLoading
+                                ? null
+                                : (value) {
+                                    if (!mounted) return;
+                                    setState(() {
+                                      _selectedCountryId = value;
+                                      _selectedRegionId = null;
+                                      _regionsCache
+                                          .clear(); // مسح ذاكرة التخزين المؤقت
+                                    });
+                                  },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء اختيار الدولة';
+                              }
+                              return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
 
-                          // ⭕ Region Selection – تم الإصلاح
+                          // ⭕ Region Selection
                           if (_selectedCountryId != null)
                             FutureBuilder<List<Map<String, dynamic>>>(
                               future: _loadRegions(_selectedCountryId!),
@@ -319,7 +355,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 final regions =
                                     snapshot.data ?? <Map<String, dynamic>>[];
                                 return DropdownButtonFormField<String>(
-                                  initialValue: _selectedRegionId,
+                                  value: _selectedRegionId,
                                   decoration: _buildInputDecoration(
                                     label: 'المنطقة',
                                     hint: 'اختر المنطقة',
@@ -351,7 +387,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               },
                             ),
                           if (_selectedCountryId != null)
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16.h),
 
                           // Password Field
                           TextFormField(
@@ -394,7 +430,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
 
                           // Confirm Password Field
                           TextFormField(
@@ -432,7 +468,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             enabled: !isLoading,
                           ),
-                          const SizedBox(height: 24),
+                          SizedBox(height: 24.h),
 
                           // Register Button
                           SizedBox(
@@ -470,7 +506,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     ),
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20.h),
 
                           // ✅ Login Link - تم الإصلاح
                           Center(
@@ -505,7 +541,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 40),
+                          SizedBox(height: 40.h),
                         ],
                       ),
                     ),
@@ -649,21 +685,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return hasLetter && hasNumber && hasSpecialChar;
   }
 
-  Future<List<Map<String, dynamic>>> _loadCountries() async {
-    try {
-      final supabase = Supabase.instance.client;
-      final data = await supabase
-          .from('countries')
-          .select()
-          .eq('is_supported', true)
-          .order('name', ascending: true);
-      return data;
-    } catch (e) {
-      return [];
-    }
-  }
-
   Future<List<Map<String, dynamic>>> _loadRegions(String countryId) async {
+    // ✅ استخدام cache لتجنب استدعاءات متكررة
+    if (_regionsCache.containsKey(countryId)) {
+      return _regionsCache[countryId]!;
+    }
+
     try {
       final supabase = Supabase.instance.client;
       final data = await supabase
@@ -671,6 +698,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .select()
           .eq('country_id', countryId)
           .order('name', ascending: true);
+
+      _regionsCache[countryId] = data;
       return data;
     } catch (e) {
       return [];
