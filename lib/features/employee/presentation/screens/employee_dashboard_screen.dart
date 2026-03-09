@@ -4,10 +4,14 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/appointment_model.dart';
 import 'package:mcs/core/widgets/loading_widget.dart';
+import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mcs/features/auth/presentation/bloc/auth_event.dart';
 import 'package:mcs/features/employee/presentation/bloc/index.dart';
 
 /// Employee dashboard screen
@@ -66,7 +70,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  // TODO: Implement logout logic
+                  context.read<AuthBloc>().add(const LogoutRequested());
+                  context.go(AppRoutes.login);
                 },
                 child: const Text('Logout'),
               ),
@@ -608,16 +613,16 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
             leading: const Icon(Icons.inventory_2),
             title: Text(l10n?.translate('inventory') ?? 'Inventory'),
             onTap: () {
-              // TODO: Navigate to inventory
               Navigator.pop(context);
+              context.go(AppRoutes.inventoryList);
             },
           ),
           ListTile(
             leading: const Icon(Icons.receipt),
             title: Text(l10n?.translate('invoices') ?? 'Invoices'),
             onTap: () {
-              // TODO: Navigate to invoices
               Navigator.pop(context);
+              context.go(AppRoutes.invoicesList);
             },
           ),
           const Divider(),
@@ -625,8 +630,8 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
             leading: const Icon(Icons.settings),
             title: Text(l10n?.translate('settings') ?? 'Settings'),
             onTap: () {
-              // TODO: Navigate to settings
               Navigator.pop(context);
+              context.go(AppRoutes.settings);
             },
           ),
           ListTile(
@@ -636,8 +641,9 @@ class _EmployeeDashboardScreenState extends State<EmployeeDashboardScreen> {
               style: const TextStyle(color: Colors.red),
             ),
             onTap: () {
-              // TODO: Implement logout
               Navigator.pop(context);
+              context.read<AuthBloc>().add(const LogoutRequested());
+              context.go(AppRoutes.login);
             },
           ),
         ],

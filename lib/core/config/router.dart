@@ -63,9 +63,19 @@ abstract class AppRoutes {
   static const String records = '/patient/records';
   static const String settings = '/patient/settings';
 
+  // Employee
+  static const String inventoryList = '/employee/inventory';
+  static const String invoicesList = '/employee/invoices';
+
   // Doctor
   static const String doctorAppointments = '/doctor/appointments';
   static const String doctorPatients = '/doctor/patients';
+
+  // Appointment details (with ID parameter)
+  static String appointmentDetails(String appointmentId) =>
+      '/patient/appointment/$appointmentId';
+  static String rescheduleAppointment(String appointmentId) =>
+      '/patient/reschedule/$appointmentId';
 
   // Error
   static const String notFound = '/404';

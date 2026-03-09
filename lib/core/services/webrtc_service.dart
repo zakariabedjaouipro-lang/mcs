@@ -145,7 +145,7 @@ class WebRTCService {
   }
 
   /// Set remote stream
-  void setRemoteStream(MediaStream stream) {
+  set remoteStream(MediaStream? stream) {
     _remoteStream = stream;
   }
 

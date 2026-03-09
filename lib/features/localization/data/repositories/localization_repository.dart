@@ -22,7 +22,7 @@ class LocalizationRepositoryImpl extends LocalizationRepository {
   @override
   Future<void> saveLanguage(String languageCode) async {
     _currentLanguageCode = languageCode;
-    await _localDataSource.saveLanguage(languageCode);
+    return _localDataSource.saveLanguage(languageCode);
   }
 
   /// Get current language code

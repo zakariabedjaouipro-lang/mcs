@@ -23,7 +23,7 @@ class ThemeRepositoryImpl extends ThemeRepository {
   @override
   Future<void> saveThemeMode(ThemeMode themeMode) async {
     _currentThemeMode = themeMode;
-    await _localDataSource.saveThemeMode(themeMode);
+    return _localDataSource.saveThemeMode(themeMode);
   }
 
   /// Get current theme mode

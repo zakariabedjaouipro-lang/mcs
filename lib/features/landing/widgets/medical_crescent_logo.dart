@@ -87,40 +87,43 @@ class _CrescentLogoPainter extends CustomPainter {
 
     // Top circle (earpieces joined)
     final topCircleY = center.dy - radius * 0.3;
-    canvas.drawCircle(
-      Offset(center.dx - radius * 0.15, topCircleY),
-      radius * 0.15,
-      paint..style = PaintingStyle.stroke,
-    );
-    canvas.drawCircle(
-      Offset(center.dx + radius * 0.15, topCircleY),
-      radius * 0.15,
-      paint..style = PaintingStyle.stroke,
-    );
+    paint..style = PaintingStyle.stroke;
+    canvas
+      ..drawCircle(
+        Offset(center.dx - radius * 0.15, topCircleY),
+        radius * 0.15,
+        paint,
+      )
+      ..drawCircle(
+        Offset(center.dx + radius * 0.15, topCircleY),
+        radius * 0.15,
+        paint,
+      );
 
     // Curved tube connecting to center
-    path.moveTo(center.dx - radius * 0.15, topCircleY + radius * 0.15);
-    path.quadraticBezierTo(
-      center.dx - radius * 0.1,
-      center.dy,
-      center.dx,
-      center.dy + radius * 0.2,
-    );
-    path.moveTo(center.dx + radius * 0.15, topCircleY + radius * 0.15);
-    path.quadraticBezierTo(
-      center.dx + radius * 0.1,
-      center.dy,
-      center.dx,
-      center.dy + radius * 0.2,
-    );
+    path
+      ..moveTo(center.dx - radius * 0.15, topCircleY + radius * 0.15)
+      ..quadraticBezierTo(
+        center.dx - radius * 0.1,
+        center.dy,
+        center.dx,
+        center.dy + radius * 0.2,
+      )
+      ..moveTo(center.dx + radius * 0.15, topCircleY + radius * 0.15)
+      ..quadraticBezierTo(
+        center.dx + radius * 0.1,
+        center.dy,
+        center.dx,
+        center.dy + radius * 0.2,
+      );
 
-    canvas.drawPath(path, paint..style = PaintingStyle.stroke);
+    canvas.drawPath(path, paint);
 
     // Diaphragm (circle at bottom)
     canvas.drawCircle(
       Offset(center.dx, center.dy + radius * 0.4),
       radius * 0.25,
-      paint..style = PaintingStyle.stroke,
+      paint,
     );
   }
 
@@ -135,7 +138,7 @@ class _CrescentLogoPainter extends CustomPainter {
 
     for (var i = 0; i < pointCount * 2; i++) {
       final angle = (i * pi / pointCount) - pi / 2;
-      final radius = i % 2 == 0 ? size : size * 0.4;
+      final radius = i.isEven ? size : size * 0.4;
       final x = center.dx + radius * cos(angle);
       final y = center.dy + radius * sin(angle);
 
@@ -146,7 +149,8 @@ class _CrescentLogoPainter extends CustomPainter {
       }
     }
     path.close();
-    canvas.drawPath(path, paint..style = PaintingStyle.fill);
+    paint.style = PaintingStyle.fill;
+    canvas.drawPath(path, paint);
   }
 
   @override

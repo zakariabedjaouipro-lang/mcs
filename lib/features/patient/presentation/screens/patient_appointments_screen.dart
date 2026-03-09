@@ -3,6 +3,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/enums/appointment_status.dart';
 import 'package:mcs/core/extensions/context_extension.dart';
 import 'package:mcs/core/extensions/safe_extensions.dart';
@@ -161,6 +163,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
       child: InkWell(
         onTap: () {
           // TODO: Navigate to appointment details
+          context.push(AppRoutes.appointmentDetails(appointment.id));
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
@@ -255,6 +258,9 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                       child: OutlinedButton.icon(
                         onPressed: () {
                           // TODO: Reschedule appointment
+                          context.push(
+                            AppRoutes.rescheduleAppointment(appointment.id),
+                          );
                         },
                         icon: const Icon(Icons.schedule, size: 16),
                         label: Text(

@@ -50,10 +50,8 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<SupabaseService>(SupabaseService.new)
     ..registerLazySingleton<SmsService>(
       () => SmsService(supabaseService: sl()),
-    );
-
-  // ── Auth Feature ─────────────────────────────────────────
-  sl
+    )
+    // ── Auth Feature ─────────────────────────────────────────
     ..registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(authService: sl()),
     )
@@ -67,10 +65,8 @@ Future<void> configureDependencies() async {
         verifyOTPUseCase: sl(),
         authRepository: sl(),
       ),
-    );
-
-  // ── Theme Feature ────────────────────────────────────────
-  sl
+    )
+    // ── Theme Feature ────────────────────────────────────────
     ..registerLazySingleton<ThemeLocalDataSource>(
       () => ThemeLocalDataSource(sl<SharedPreferences>()),
     )
@@ -79,10 +75,8 @@ Future<void> configureDependencies() async {
     )
     ..registerFactory(
       () => ThemeBloc(themeRepository: sl()),
-    );
-
-  // ── Localization Feature ─────────────────────────────────
-  sl
+    )
+    // ── Localization Feature ─────────────────────────────────
     ..registerLazySingleton<LocalizationLocalDataSource>(
       () => LocalizationLocalDataSource(sl<SharedPreferences>()),
     )
@@ -91,11 +85,10 @@ Future<void> configureDependencies() async {
     )
     ..registerFactory(
       () => LocalizationBloc(localizationRepository: sl()),
-    );
-
-  // ── Other BLoCs ──────────────────────────────────────────
-  // ✅ Admin BLoC - محدد بشكل واضح
-  sl.registerFactory(() => AdminBloc(sl<SupabaseService>()));
+    )
+    // ── Other BLoCs ──────────────────────────────────────────
+    // ✅ Admin BLoC - محدد بشكل واضح
+    ..registerFactory(() => AdminBloc(sl<SupabaseService>()));
 }
 
 /// Alias for [configureDependencies] for backward compatibility.

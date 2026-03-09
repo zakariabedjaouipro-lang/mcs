@@ -1,24 +1,35 @@
-/// Doctor Repository Implementation
+/// Employee Repository Implementation
 library;
 
 import 'package:dartz/dartz.dart';
 import 'package:mcs/core/errors/exceptions.dart';
 import 'package:mcs/core/errors/failures.dart';
 import 'package:mcs/core/models/appointment_model.dart';
-import 'package:mcs/core/models/doctor_model.dart';
+import 'package:mcs/core/models/employee_model.dart';
+import 'package:mcs/core/models/inventory_model.dart';
+import 'package:mcs/core/models/invoice_model.dart';
 import 'package:mcs/core/models/patient_model.dart';
-import 'package:mcs/core/models/prescription_model.dart';
+import 'package:mcs/core/services/notification_service.dart';
 import 'package:mcs/core/services/supabase_service.dart';
-import 'package:mcs/features/doctor/domain/repositories/doctor_repository.dart';
+import 'package:mcs/features/employee/domain/repositories/employee_repository.dart';
 
-/// Doctor repository implementation
-class DoctorRepositoryImpl implements DoctorRepository {
-  // ✅ Constructor قبل أي methods
-  DoctorRepositoryImpl(this._supabaseService);
+/// Employee repository implementation
+/// Handles all employee-related data operations including profile, patients,
+/// appointments, inventory, invoices, and notifications.
+class EmployeeRepositoryImpl implements EmployeeRepository {
+  /// Constructor
+  EmployeeRepositoryImpl(
+    this._supabaseService,
+    this._notificationService,
+  );
+
   final SupabaseService _supabaseService;
+  final NotificationService _notificationService;
+
+  // PROFILE MANAGEMENT
 
   @override
-  Future<Either<Failure, DoctorModel>> getDoctorProfile() async {
+  Future<Either<Failure, EmployeeModel>> getEmployeeProfile() async {
     try {
       final userId = _supabaseService.currentUserId;
       if (userId == null) {
@@ -26,115 +37,51 @@ class DoctorRepositoryImpl implements DoctorRepository {
       }
 
       final response = await _supabaseService.fetchAll(
-        'doctors',
+        'employees',
         filters: {'user_id': userId},
       );
 
       if (response.isEmpty) {
-        throw const ServerException(message: 'Doctor profile not found');
+        throw const ServerException(message: 'Employee profile not found');
       }
 
-      return Right(DoctorModel.fromJson(response.first));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(ServerFailure(message: 'Failed to load doctor profile: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, DoctorModel>> updateDoctorProfile(
-    DoctorModel profile,
-  ) async {
-    try {
-      final response = await _supabaseService.update(
-        'doctors',
-        profile.id,
-        profile.toJson(),
-      );
-      return Right(DoctorModel.fromJson(response));
+      return Right(EmployeeModel.fromJson(response.first));
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'Failed to update doctor profile: $e'),
+        ServerFailure(message: 'Failed to load employee profile: $e'),
       );
     }
   }
 
   @override
-  Future<Either<Failure, void>> updateAvailability({
-    required bool isAvailable,
-  }) async {
+  Future<Either<Failure, EmployeeModel>> updateEmployeeProfile(
+    EmployeeModel profile,
+  ) async {
     try {
-      final userId = _supabaseService.currentUserId;
-      if (userId == null) {
-        throw const ServerException(message: 'User not authenticated');
-      }
-
-      final response = await _supabaseService.fetchAll(
-        'doctors',
-        filters: {'user_id': userId},
+      final response = await _supabaseService.update(
+        'employees',
+        profile.id,
+        profile.toJson(),
       );
-
-      if (response.isEmpty) {
-        throw const ServerException(message: 'Doctor profile not found');
-      }
-
-      final doctorId = response.first['id'] as String;
-      await _supabaseService.update(
-        'doctors',
-        doctorId,
-        {'is_available': isAvailable},
-      );
-
-      return const Right(null);
+      return Right(EmployeeModel.fromJson(response));
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Failed to update availability: $e'));
+      return Left(
+        ServerFailure(message: 'Failed to update employee profile: $e'),
+      );
     }
   }
+
+  // PATIENT MANAGEMENT
 
   @override
   Future<Either<Failure, List<PatientModel>>> getPatients() async {
     try {
-      final userId = _supabaseService.currentUserId;
-      if (userId == null) {
-        throw const ServerException(message: 'User not authenticated');
-      }
-
-      final response = await _supabaseService.fetchAll(
-        'doctors',
-        filters: {'user_id': userId},
-      );
-
-      if (response.isEmpty) {
-        throw const ServerException(message: 'Doctor profile not found');
-      }
-
-      final doctorId = response.first['id'] as String;
-
-      // Get patients who have appointments with this doctor
-      final appointmentsResponse = await _supabaseService.fetchAll(
-        'appointments',
-        filters: {'doctor_id': doctorId},
-      );
-
-      final patientIds = appointmentsResponse
-          .map((a) => a['patient_id'] as String)
-          .toSet()
-          .toList();
-
-      final patients = <PatientModel>[];
-      for (final patientId in patientIds) {
-        final patientResponse = await _supabaseService.fetchById(
-          'patients',
-          patientId,
-        );
-        patients.add(PatientModel.fromJson(patientResponse));
-      }
-
+      final response = await _supabaseService.fetchAll('patients');
+      final patients = response.map(PatientModel.fromJson).toList();
       return Right(patients);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
@@ -148,15 +95,43 @@ class DoctorRepositoryImpl implements DoctorRepository {
     String patientId,
   ) async {
     try {
-      final response = await _supabaseService.fetchById(
-        'patients',
-        patientId,
-      );
+      final response = await _supabaseService.fetchById('patients', patientId);
       return Right(PatientModel.fromJson(response));
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Failed to load patient details: $e'));
+      return Left(
+        ServerFailure(message: 'Failed to load patient details: $e'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> registerPatient(
+    Map<String, dynamic> patientData,
+  ) async {
+    try {
+      await _supabaseService.insert('patients', patientData);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to register patient: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updatePatient(
+    String patientId,
+    Map<String, dynamic> patientData,
+  ) async {
+    try {
+      await _supabaseService.update('patients', patientId, patientData);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to update patient: $e'));
     }
   }
 
@@ -165,19 +140,22 @@ class DoctorRepositoryImpl implements DoctorRepository {
     String query,
   ) async {
     try {
-      final response = await _supabaseService.fetchAll(
-        'patients',
-        filters: {'name': query},
-      );
-
-      final patients = response.map(PatientModel.fromJson).toList();
-      return Right(patients);
+      final response = await _supabaseService.fetchAll('patients');
+      // Filter patients locally by searching in their data
+      final filteredPatients =
+          response.map(PatientModel.fromJson).where((patient) {
+        // Search can be customized based on PatientModel properties
+        return patient.id.toLowerCase().contains(query.toLowerCase());
+      }).toList();
+      return Right(filteredPatients);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(ServerFailure(message: 'Failed to search patients: $e'));
     }
   }
+
+  // APPOINTMENT MANAGEMENT
 
   @override
   Future<Either<Failure, List<AppointmentModel>>> getAppointments({
@@ -186,44 +164,29 @@ class DoctorRepositoryImpl implements DoctorRepository {
     String? status,
   }) async {
     try {
-      final userId = _supabaseService.currentUserId;
-      if (userId == null) {
-        throw const ServerException(message: 'User not authenticated');
-      }
-
-      final response = await _supabaseService.fetchAll(
-        'doctors',
-        filters: {'user_id': userId},
-      );
-
-      if (response.isEmpty) {
-        throw const ServerException(message: 'Doctor profile not found');
-      }
-
-      final doctorId = response.first['id'] as String;
-
-      final filters = <String, dynamic>{'doctor_id': doctorId};
+      final filters = <String, dynamic>{};
       if (status != null) {
         filters['status'] = status;
       }
 
-      final appointmentsResponse = await _supabaseService.fetchAll(
+      final response = await _supabaseService.fetchAll(
         'appointments',
         filters: filters,
       );
 
-      final appointments = appointmentsResponse
-          .map(AppointmentModel.fromJson)
-          .where((appointment) {
-        if (startDate != null &&
-            appointment.appointmentDate.isBefore(startDate)) {
-          return false;
-        }
-        if (endDate != null && appointment.appointmentDate.isAfter(endDate)) {
-          return false;
-        }
-        return true;
-      }).toList();
+      var appointments = response.map(AppointmentModel.fromJson).toList();
+      if (startDate != null || endDate != null) {
+        appointments = appointments.where((appointment) {
+          if (startDate != null &&
+              appointment.appointmentDate.isBefore(startDate)) {
+            return false;
+          }
+          if (endDate != null && appointment.appointmentDate.isAfter(endDate)) {
+            return false;
+          }
+          return true;
+        }).toList();
+      }
 
       return Right(appointments);
     } on ServerException catch (e) {
@@ -253,42 +216,16 @@ class DoctorRepositoryImpl implements DoctorRepository {
   }
 
   @override
-  Future<Either<Failure, void>> acceptAppointment(
-    String appointmentId,
+  Future<Either<Failure, void>> bookAppointment(
+    Map<String, dynamic> appointmentData,
   ) async {
     try {
-      await _supabaseService.update(
-        'appointments',
-        appointmentId,
-        {'status': 'confirmed'},
-      );
+      await _supabaseService.insert('appointments', appointmentData);
       return const Right(null);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Failed to accept appointment: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> rejectAppointment(
-    String appointmentId,
-    String reason,
-  ) async {
-    try {
-      await _supabaseService.update(
-        'appointments',
-        appointmentId,
-        {
-          'status': 'cancelled',
-          'cancellation_reason': reason,
-        },
-      );
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(ServerFailure(message: 'Failed to reject appointment: $e'));
+      return Left(ServerFailure(message: 'Failed to book appointment: $e'));
     }
   }
 
@@ -315,28 +252,6 @@ class DoctorRepositoryImpl implements DoctorRepository {
   }
 
   @override
-  Future<Either<Failure, void>> completeAppointment(
-    String appointmentId,
-    Map<String, dynamic> notes,
-  ) async {
-    try {
-      await _supabaseService.update(
-        'appointments',
-        appointmentId,
-        {
-          'status': 'completed',
-          'notes': notes,
-        },
-      );
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(ServerFailure(message: 'Failed to complete appointment: $e'));
-    }
-  }
-
-  @override
   Future<Either<Failure, void>> rescheduleAppointment(
     String appointmentId,
     DateTime newDateTime,
@@ -347,6 +262,7 @@ class DoctorRepositoryImpl implements DoctorRepository {
         appointmentId,
         {
           'appointment_date': newDateTime.toIso8601String(),
+          'status': 'rescheduled',
         },
       );
       return const Right(null);
@@ -360,157 +276,97 @@ class DoctorRepositoryImpl implements DoctorRepository {
   }
 
   @override
-  Future<Either<Failure, void>> createPrescription(
-    PrescriptionModel prescription,
-  ) async {
+  Future<Either<Failure, void>> checkInPatient(String appointmentId) async {
     try {
-      await _supabaseService.insert(
-        'prescriptions',
-        prescription.toJson(),
+      await _supabaseService.update(
+        'appointments',
+        appointmentId,
+        {
+          'status': 'checked_in',
+          'checked_in_at': DateTime.now().toIso8601String(),
+        },
       );
       return const Right(null);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Failed to create prescription: $e'));
+      return Left(ServerFailure(message: 'Failed to check in patient: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, List<PrescriptionModel>>> getPrescriptions(
+  Future<Either<Failure, void>> checkOutPatient(String appointmentId) async {
+    try {
+      await _supabaseService.update(
+        'appointments',
+        appointmentId,
+        {
+          'status': 'completed',
+          'checked_out_at': DateTime.now().toIso8601String(),
+        },
+      );
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to check out patient: $e'));
+    }
+  }
+
+  // VITAL SIGNS MANAGEMENT
+
+  @override
+  Future<Either<Failure, void>> recordVitalSigns(
+    String patientId,
+    Map<String, dynamic> vitalSigns,
+  ) async {
+    try {
+      final data = {
+        ...vitalSigns,
+        'patient_id': patientId,
+        'recorded_at': DateTime.now().toIso8601String(),
+      };
+      await _supabaseService.insert('vital_signs', data);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to record vital signs: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> getPatientVitalSigns(
     String patientId,
   ) async {
     try {
       final response = await _supabaseService.fetchAll(
-        'prescriptions',
+        'vital_signs',
         filters: {'patient_id': patientId},
       );
 
-      final prescriptions = response.map(PrescriptionModel.fromJson).toList();
-      return Right(prescriptions);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(ServerFailure(message: 'Failed to load prescriptions: $e'));
-    }
-  }
+      if (response.isEmpty) {
+        return const Right({});
+      }
 
-  @override
-  Future<Either<Failure, PrescriptionModel>> getPrescriptionDetails(
-    String prescriptionId,
-  ) async {
-    try {
-      final response = await _supabaseService.fetchById(
-        'prescriptions',
-        prescriptionId,
-      );
-      return Right(PrescriptionModel.fromJson(response));
+      return Right(response.first);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(message: 'Failed to load prescription details: $e'),
+        ServerFailure(message: 'Failed to load patient vital signs: $e'),
       );
     }
   }
 
-  @override
-  Future<Either<Failure, void>> updatePrescription(
-    String prescriptionId,
-    PrescriptionModel prescription,
-  ) async {
-    try {
-      await _supabaseService.update(
-        'prescriptions',
-        prescriptionId,
-        prescription.toJson(),
-      );
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(ServerFailure(message: 'Failed to update prescription: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> deletePrescription(
-    String prescriptionId,
-  ) async {
-    try {
-      await _supabaseService.delete(
-        'prescriptions',
-        prescriptionId,
-      );
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(ServerFailure(message: 'Failed to delete prescription: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> startRemoteSession(
-    String appointmentId,
-  ) async {
-    try {
-      await _supabaseService.update(
-        'video_sessions',
-        appointmentId,
-        {'status': 'active'},
-      );
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(ServerFailure(message: 'Failed to start remote session: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> endRemoteSession(
-    String sessionId,
-  ) async {
-    try {
-      await _supabaseService.update(
-        'video_sessions',
-        sessionId,
-        {'status': 'ended'},
-      );
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(ServerFailure(message: 'Failed to end remote session: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, String>> generateRemoteSessionToken(
-    String appointmentId,
-  ) async {
-    try {
-      // TODO: Implement token generation with Agora
-      return const Right('mock_token');
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(
-        ServerFailure(message: 'Failed to generate session token: $e'),
-      );
-    }
-  }
+  // LAB RESULTS MANAGEMENT
 
   @override
   Future<Either<Failure, void>> uploadLabResult(
     Map<String, dynamic> labResult,
   ) async {
     try {
-      await _supabaseService.insert(
-        'lab_results',
-        labResult,
-      );
+      await _supabaseService.insert('lab_results', labResult);
       return const Right(null);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
@@ -537,76 +393,281 @@ class DoctorRepositoryImpl implements DoctorRepository {
   }
 
   @override
-  Future<Either<Failure, Map<String, dynamic>>> getDashboardStats() async {
+  Future<Either<Failure, void>> updateLabResult(
+    String resultId,
+    Map<String, dynamic> resultData,
+  ) async {
     try {
-      final userId = _supabaseService.currentUserId;
-      if (userId == null) {
-        throw const ServerException(message: 'User not authenticated');
-      }
-
-      final response = await _supabaseService.fetchAll(
-        'doctors',
-        filters: {'user_id': userId},
-      );
-
-      if (response.isEmpty) {
-        throw const ServerException(message: 'Doctor profile not found');
-      }
-
-      final doctorId = response.first['id'] as String;
-
-      final appointmentsResponse = await _supabaseService.fetchAll(
-        'appointments',
-        filters: {'doctor_id': doctorId},
-      );
-
-      final stats = {
-        'total_patients': await _getTotalPatients(doctorId),
-        'total_appointments': appointmentsResponse.length,
-        'today_appointments': appointmentsResponse.where((a) {
-          final dateStr = a['scheduled_at'] as String?;
-          if (dateStr == null) return false;
-          final date = DateTime.parse(dateStr);
-          final now = DateTime.now();
-          return date.year == now.year &&
-              date.month == now.month &&
-              date.day == now.day;
-        }).length,
-        'upcoming_appointments': appointmentsResponse.where((a) {
-          final dateStr = a['scheduled_at'] as String?;
-          if (dateStr == null) return false;
-          final date = DateTime.parse(dateStr);
-          final status = a['status'] as String?;
-          // Consider appointments in the future that are not in a terminal state
-          return date.isAfter(DateTime.now()) &&
-              status != 'cancelled' &&
-              status != 'completed' &&
-              status != 'no_show';
-        }).length,
-        'completed_appointments': appointmentsResponse
-            .where((a) => a['status'] == 'completed')
-            .length,
-        'pending_appointments':
-            appointmentsResponse.where((a) => a['status'] == 'pending').length,
-      };
-
-      return Right(stats);
+      await _supabaseService.update('lab_results', resultId, resultData);
+      return const Right(null);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Failed to load dashboard stats: $e'));
+      return Left(ServerFailure(message: 'Failed to update lab result: $e'));
     }
   }
 
-  Future<int> _getTotalPatients(String doctorId) async {
-    final appointmentsResponse = await _supabaseService.fetchAll(
-      'appointments',
-      filters: {'doctor_id': doctorId},
-    );
+  // INVENTORY MANAGEMENT
 
-    final patientIds =
-        appointmentsResponse.map((a) => a['patient_id']).toSet().toList();
-    return patientIds.length;
+  @override
+  Future<Either<Failure, List<InventoryModel>>> getInventory() async {
+    try {
+      final response = await _supabaseService.fetchAll('inventory');
+      final items = response.map(InventoryModel.fromJson).toList();
+      return Right(items);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to load inventory: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, InventoryModel>> getInventoryItem(
+    String itemId,
+  ) async {
+    try {
+      final response = await _supabaseService.fetchById('inventory', itemId);
+      return Right(InventoryModel.fromJson(response));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(
+        ServerFailure(message: 'Failed to load inventory item: $e'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> addInventoryItem(
+    Map<String, dynamic> itemData,
+  ) async {
+    try {
+      await _supabaseService.insert('inventory', itemData);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to add inventory item: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateInventoryItem(
+    String itemId,
+    Map<String, dynamic> itemData,
+  ) async {
+    try {
+      await _supabaseService.update('inventory', itemId, itemData);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(
+        ServerFailure(message: 'Failed to update inventory item: $e'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteInventoryItem(String itemId) async {
+    try {
+      await _supabaseService.delete('inventory', itemId);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(
+        ServerFailure(message: 'Failed to delete inventory item: $e'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> recordInventoryTransaction(
+    Map<String, dynamic> transactionData,
+  ) async {
+    try {
+      final data = {
+        ...transactionData,
+        'transaction_date': DateTime.now().toIso8601String(),
+      };
+      await _supabaseService.insert('inventory_transactions', data);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(
+        ServerFailure(
+          message: 'Failed to record inventory transaction: $e',
+        ),
+      );
+    }
+  }
+
+  // INVOICE MANAGEMENT
+
+  @override
+  Future<Either<Failure, List<InvoiceModel>>> getInvoices({
+    DateTime? startDate,
+    DateTime? endDate,
+    String? status,
+  }) async {
+    try {
+      final filters = <String, dynamic>{};
+      if (status != null) {
+        filters['status'] = status;
+      }
+
+      final response = await _supabaseService.fetchAll(
+        'invoices',
+        filters: filters,
+      );
+
+      var invoices = response.map(InvoiceModel.fromJson).toList();
+
+      if (startDate != null || endDate != null) {
+        invoices = invoices.where((invoice) {
+          if (startDate != null && invoice.createdAt.isBefore(startDate)) {
+            return false;
+          }
+          if (endDate != null && invoice.createdAt.isAfter(endDate)) {
+            return false;
+          }
+          return true;
+        }).toList();
+      }
+
+      return Right(invoices);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to load invoices: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, InvoiceModel>> getInvoiceDetails(
+    String invoiceId,
+  ) async {
+    try {
+      final response = await _supabaseService.fetchById('invoices', invoiceId);
+      return Right(InvoiceModel.fromJson(response));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(
+        ServerFailure(message: 'Failed to load invoice details: $e'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> createInvoice(
+    Map<String, dynamic> invoiceData,
+  ) async {
+    try {
+      final data = {
+        ...invoiceData,
+        'created_at': DateTime.now().toIso8601String(),
+        'status': 'draft',
+      };
+      await _supabaseService.insert('invoices', data);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to create invoice: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateInvoice(
+    String invoiceId,
+    Map<String, dynamic> invoiceData,
+  ) async {
+    try {
+      await _supabaseService.update('invoices', invoiceId, invoiceData);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to update invoice: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> processPayment(
+    String invoiceId,
+    Map<String, dynamic> paymentData,
+  ) async {
+    try {
+      await _supabaseService.update(
+        'invoices',
+        invoiceId,
+        {
+          'status': 'paid',
+          'paid_at': DateTime.now().toIso8601String(),
+        },
+      );
+
+      final payment = {
+        ...paymentData,
+        'invoice_id': invoiceId,
+        'payment_date': DateTime.now().toIso8601String(),
+      };
+      await _supabaseService.insert('payments', payment);
+
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to process payment: $e'));
+    }
+  }
+
+  // STATISTICS & NOTIFICATIONS
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> getDashboardStats() async {
+    try {
+      final patientsResponse = await _supabaseService.fetchAll('patients');
+      final totalPatients = patientsResponse.length;
+
+      final appointmentsResponse =
+          await _supabaseService.fetchAll('appointments');
+      final totalAppointments = appointmentsResponse.length;
+
+      final now = DateTime.now();
+      final todayAppointments = appointmentsResponse.where((a) {
+        final dateStr = a['appointment_date'] as String?;
+        if (dateStr == null) return false;
+        final date = DateTime.parse(dateStr);
+        return date.year == now.year &&
+            date.month == now.month &&
+            date.day == now.day;
+      }).length;
+
+      final pendingAppointments =
+          appointmentsResponse.where((a) => a['status'] == 'pending').length;
+
+      final completedAppointments =
+          appointmentsResponse.where((a) => a['status'] == 'completed').length;
+
+      return Right({
+        'total_patients': totalPatients,
+        'total_appointments': totalAppointments,
+        'today_appointments': todayAppointments,
+        'pending_appointments': pendingAppointments,
+        'completed_appointments': completedAppointments,
+      });
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(
+        ServerFailure(message: 'Failed to load dashboard stats: $e'),
+      );
+    }
   }
 
   @override
@@ -616,101 +677,18 @@ class DoctorRepositoryImpl implements DoctorRepository {
     String body,
   ) async {
     try {
-      // TODO: Implement notification sending
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(ServerFailure(message: 'Failed to send notification: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<AppointmentModel>>>
-      getRemoteSessionRequests() async {
-    try {
-      final userId = _supabaseService.currentUserId;
-      if (userId == null) {
-        throw const ServerException(message: 'User not authenticated');
-      }
-
-      final response = await _supabaseService.fetchAll(
-        'doctors',
-        filters: {'user_id': userId},
-      );
-
-      if (response.isEmpty) {
-        throw const ServerException(message: 'Doctor profile not found');
-      }
-
-      final doctorId = response.first['id'] as String;
-
-      final appointmentsResponse = await _supabaseService.fetchAll(
-        'appointments',
-        filters: {
-          'doctor_id': doctorId,
-          'type': 'remote',
-          'status': 'pending',
-        },
-      );
-
-      final appointments =
-          appointmentsResponse.map(AppointmentModel.fromJson).toList();
-
-      return Right(appointments);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(
-        ServerFailure(message: 'Failed to load remote session requests: $e'),
-      );
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> approveRemoteSessionRequest(
-    String appointmentId,
-  ) async {
-    try {
-      await _supabaseService.update(
-        'appointments',
-        appointmentId,
-        {'status': 'confirmed'},
+      await _supabaseService.fetchById('patients', patientId);
+      await _notificationService.showLocalNotification(
+        id: patientId.hashCode,
+        title: title,
+        body: body,
       );
       return const Right(null);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
       return Left(
-        ServerFailure(
-          message: 'Failed to approve remote session request: $e',
-        ),
-      );
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> rejectRemoteSessionRequest(
-    String appointmentId,
-    String reason,
-  ) async {
-    try {
-      await _supabaseService.update(
-        'appointments',
-        appointmentId,
-        {
-          'status': 'cancelled',
-          'cancellation_reason': reason,
-        },
-      );
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
-    } catch (e) {
-      return Left(
-        ServerFailure(
-          message: 'Failed to reject remote session request: $e',
-        ),
+        ServerFailure(message: 'Failed to send notification: $e'),
       );
     }
   }

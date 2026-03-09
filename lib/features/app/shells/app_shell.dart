@@ -26,7 +26,7 @@ class _AppShellScreenState extends State<AppShellScreen> {
 
   List<NavigationItem> _buildNavigationItems() {
     // بناء قائمة العناصر الأساسية
-    final List<NavigationItem> items = [
+    final items = <NavigationItem>[
       NavigationItem(
         label: 'Dashboard',
         icon: Icons.dashboard,

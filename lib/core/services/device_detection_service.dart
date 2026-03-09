@@ -83,13 +83,11 @@ class DeviceDetectionService {
 
   // TODO(phase-1): Replace with actual store URLs once published.
   static const _playStoreUrl =
-      'https://play.google.com/store/apps/details?id=io.mcs.app';
+      'https://play.google.com/store/apps/details?id=com.mcs.medical';
   static const _appStoreUrl =
-      'https://apps.apple.com/app/mcs/idXXXXXXXXXX';
-  static const _windowsDownloadUrl =
-      'https://mcs.app/download/windows';
-  static const _macDownloadUrl =
-      'https://mcs.app/download/macos';
+      'https://apps.apple.com/app/medical-clinic-system/id1234567890';
+  static const _windowsDownloadUrl = 'https://mcs.app/download/windows';
+  static const _macDownloadUrl = 'https://mcs.app/download/macos';
 
   // ── Device Info Map (for bug reports) ────────────────────
 
