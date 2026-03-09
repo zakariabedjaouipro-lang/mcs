@@ -272,8 +272,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                final authService = AuthService();
-                authService.signOut();
+                AuthService()..signOut();
                 if (context.mounted) {
                   context.go(AppRoutes.login);
                 }

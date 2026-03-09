@@ -87,7 +87,7 @@ class _CrescentLogoPainter extends CustomPainter {
 
     // Top circle (earpieces joined)
     final topCircleY = center.dy - radius * 0.3;
-    paint..style = PaintingStyle.stroke;
+    paint.style = PaintingStyle.stroke;
     canvas
       ..drawCircle(
         Offset(center.dx - radius * 0.15, topCircleY),
@@ -149,7 +149,9 @@ class _CrescentLogoPainter extends CustomPainter {
       }
     }
     path.close();
-    paint.style = PaintingStyle.fill;
+    paint
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 2;
     canvas.drawPath(path, paint);
   }
 

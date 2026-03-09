@@ -9,23 +9,14 @@ class WebRTCService {
   /// STUN server for NAT traversal
   static const String _stunServer = 'stun:stun.l.google.com:19302';
 
-  /// RTCPeerConnection for the current session
-  RTCPeerConnection? _peerConnection;
-
   /// Local media stream
-  MediaStream? _localStream;
+  MediaStream? localStream;
 
   /// Remote media stream
-  MediaStream? _remoteStream;
+  MediaStream? remoteStream;
 
-  /// Get the local media stream
-  MediaStream? get localStream => _localStream;
-
-  /// Get the remote media stream
-  MediaStream? get remoteStream => _remoteStream;
-
-  /// Get the peer connection
-  RTCPeerConnection? get peerConnection => _peerConnection;
+  /// RTCPeerConnection for the current session
+  RTCPeerConnection? peerConnection;
 
   /// Initialize the WebRTC peer connection
   Future<void> initializePeerConnection() async {
@@ -37,7 +28,7 @@ class WebRTCService {
       ],
     };
 
-    _peerConnection = await createPeerConnection(configuration);
+    peerConnection = await createPeerConnection(configuration);
   }
 
   /// Get local media stream (audio + video)
@@ -61,15 +52,15 @@ class WebRTCService {
             : false,
       };
 
-      _localStream = await navigator.mediaDevices.getUserMedia(constraints);
+      localStream = await navigator.mediaDevices.getUserMedia(constraints);
 
-      if (_peerConnection != null && _localStream != null) {
-        for (final track in _localStream!.getTracks()) {
-          await _peerConnection!.addTrack(track, _localStream!);
+      if (peerConnection != null && localStream != null) {
+        for (final track in localStream!.getTracks()) {
+          await peerConnection!.addTrack(track, localStream!);
         }
       }
 
-      return _localStream;
+      return localStream;
     } catch (e) {
       rethrow;
     }
@@ -77,9 +68,9 @@ class WebRTCService {
 
   /// Add ICE candidate
   Future<bool> addCandidate(RTCIceCandidate candidate) async {
-    if (_peerConnection == null) return false;
+    if (peerConnection == null) return false;
     try {
-      await _peerConnection!.addCandidate(candidate);
+      await peerConnection!.addCandidate(candidate);
       return true;
     } catch (e) {
       return false;
@@ -88,10 +79,10 @@ class WebRTCService {
 
   /// Create offer for peer connection
   Future<RTCSessionDescription?> createOffer() async {
-    if (_peerConnection == null) return null;
+    if (peerConnection == null) return null;
     try {
-      final offer = await _peerConnection!.createOffer();
-      await _peerConnection!.setLocalDescription(offer);
+      final offer = await peerConnection!.createOffer();
+      await peerConnection!.setLocalDescription(offer);
       return offer;
     } catch (e) {
       return null;
@@ -100,10 +91,10 @@ class WebRTCService {
 
   /// Create answer for peer connection
   Future<RTCSessionDescription?> createAnswer() async {
-    if (_peerConnection == null) return null;
+    if (peerConnection == null) return null;
     try {
-      final answer = await _peerConnection!.createAnswer();
-      await _peerConnection!.setLocalDescription(answer);
+      final answer = await peerConnection!.createAnswer();
+      await peerConnection!.setLocalDescription(answer);
       return answer;
     } catch (e) {
       return null;
@@ -112,9 +103,9 @@ class WebRTCService {
 
   /// Set remote description
   Future<bool> setRemoteDescription(RTCSessionDescription description) async {
-    if (_peerConnection == null) return false;
+    if (peerConnection == null) return false;
     try {
-      await _peerConnection!.setRemoteDescription(description);
+      await peerConnection!.setRemoteDescription(description);
       return true;
     } catch (e) {
       return false;
@@ -125,35 +116,33 @@ class WebRTCService {
   Future<void> closePeerConnection() async {
     try {
       // Stop all local tracks
-      if (_localStream != null) {
-        for (final track in _localStream!.getTracks()) {
+      if (localStream != null) {
+        for (final track in localStream!.getTracks()) {
           await track.stop();
         }
       }
 
       // Close peer connection
-      if (_peerConnection != null) {
-        await _peerConnection!.close();
+      if (peerConnection != null) {
+        await peerConnection!.close();
       }
 
-      _localStream = null;
-      _remoteStream = null;
-      _peerConnection = null;
+      localStream = null;
+      remoteStream = null;
+      peerConnection = null;
     } catch (e) {
       rethrow;
     }
   }
 
   /// Set remote stream
-  set remoteStream(MediaStream? stream) {
-    _remoteStream = stream;
-  }
+  // This is a public field now, no setter needed
 
   /// Get stats from peer connection
   Future<List<StatsReport>?> getStats() async {
-    if (_peerConnection == null) return null;
+    if (peerConnection == null) return null;
     try {
-      return await _peerConnection!.getStats();
+      return await peerConnection!.getStats();
     } catch (e) {
       return null;
     }
