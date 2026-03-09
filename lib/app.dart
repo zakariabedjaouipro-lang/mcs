@@ -4,6 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/constants/app_constants.dart';
@@ -72,25 +73,32 @@ class _McsAppState extends State<McsApp> {
               });
             }
           },
-          child: MaterialApp.router(
-            title: 'MCS - Medical Clinic System',
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            themeMode: _themeMode,
-            routerConfig: AppRouter.router,
-            debugShowCheckedModeBanner: false,
-            // Localization setup
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale(AppConstants.arabicCode),
-              Locale(AppConstants.englishCode),
-            ],
-            locale: _locale,
+          child: ScreenUtilInit(
+            designSize: const Size(360, 690),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (context, child) {
+              return MaterialApp.router(
+                title: 'MCS - Medical Clinic System',
+                theme: AppTheme.light,
+                darkTheme: AppTheme.dark,
+                themeMode: _themeMode,
+                routerConfig: AppRouter.router,
+                debugShowCheckedModeBanner: false,
+                // Localization setup
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale(AppConstants.arabicCode),
+                  Locale(AppConstants.englishCode),
+                ],
+                locale: _locale,
+              );
+            },
           ),
         ),
       ),
