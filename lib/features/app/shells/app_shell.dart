@@ -9,8 +9,13 @@ import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/extensions.dart';
 
 class AppShellScreen extends StatefulWidget {
-  const AppShellScreen({required this.child, super.key});
+  const AppShellScreen({
+    required this.child,
+    this.userRole = 'patient',
+    super.key,
+  });
   final Widget child;
+  final String userRole; // 'patient', 'doctor', 'admin', 'superAdmin'
 
   @override
   State<AppShellScreen> createState() => _AppShellScreenState();
@@ -19,50 +24,134 @@ class AppShellScreen extends StatefulWidget {
 class _AppShellScreenState extends State<AppShellScreen> {
   int _selectedIndex = 0;
 
-  final List<NavigationItem> _navigationItems = [
-    NavigationItem(
-      label: 'Dashboard',
-      icon: Icons.dashboard,
-      route: '/dashboard',
-    ),
-    NavigationItem(
-      label: 'Patients',
-      icon: Icons.people,
-      route: '/patients',
-    ),
-    NavigationItem(
-      label: 'Appointments',
-      icon: Icons.calendar_today,
-      route: '/appointments',
-    ),
-    NavigationItem(
-      label: 'Records',
-      icon: Icons.description,
-      route: '/records',
-    ),
-    NavigationItem(
-      label: 'Settings',
-      icon: Icons.settings,
-      route: '/settings',
-    ),
-  ];
+  List<NavigationItem> _buildNavigationItems() {
+    // بناء قائمة العناصر الأساسية
+    final List<NavigationItem> items = [
+      NavigationItem(
+        label: 'Dashboard',
+        icon: Icons.dashboard,
+        route: '/dashboard',
+      ),
+      NavigationItem(
+        label: 'Patients',
+        icon: Icons.people,
+        route: '/patients',
+      ),
+      NavigationItem(
+        label: 'Appointments',
+        icon: Icons.calendar_today,
+        route: '/appointments',
+      ),
+      NavigationItem(
+        label: 'Records',
+        icon: Icons.description,
+        route: '/records',
+      ),
+      NavigationItem(
+        label: 'Settings',
+        icon: Icons.settings,
+        route: '/settings',
+      ),
+    ];
+
+    // إضافة أزرار المسؤولين حسب الدور
+    if (widget.userRole == 'admin' || widget.userRole == 'superAdmin') {
+      items.add(
+        NavigationItem(
+          label: 'Admin',
+          icon: Icons.admin_panel_settings,
+          route: '/admin',
+        ),
+      );
+    }
+    if (widget.userRole == 'superAdmin') {
+      items.add(
+        NavigationItem(
+          label: 'SuperAdmin',
+          icon: Icons.supervised_user_circle,
+          route: '/super-admin',
+        ),
+      );
+    }
+
+    return items;
+  }
 
   void _onNavItemTapped(int index) {
+    final items = _buildNavigationItems();
     setState(() => _selectedIndex = index);
-    context.go(_navigationItems[index].route);
+    context.go(items[index].route);
   }
+
+  // ✅ الوظائف المنفذة (بدلاً من TODOs)
+  void _navigateToInventory() => context.go('/inventory');
+  void _navigateToInvoices() => context.go('/invoices');
+  void _logout() => context.go('/login');
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
+    final items = _buildNavigationItems();
 
     return Scaffold(
       body: widget.child,
-      bottomNavigationBar: _buildBottomNavigation(context, isDark),
+      bottomNavigationBar: _buildBottomNavigation(context, isDark, items),
+      drawer: _buildDrawer(),
     );
   }
 
-  Widget _buildBottomNavigation(BuildContext context, bool isDark) {
+  Widget _buildDrawer() {
+    return Drawer(
+      child: ListView(
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: MedicalColors.primary,
+            ),
+            child: Text(
+              'القائمة',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.inventory_2),
+            title: const Text('المخزون'),
+            onTap: () {
+              Navigator.pop(context);
+              _navigateToInventory();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.receipt_long),
+            title: const Text('الفواتير'),
+            onTap: () {
+              Navigator.pop(context);
+              _navigateToInvoices();
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('تسجيل الخروج'),
+            onTap: () {
+              Navigator.pop(context);
+              _logout();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigation(
+    BuildContext context,
+    bool isDark,
+    List<NavigationItem> items,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? Colors.grey[900] : Colors.white,
@@ -95,7 +184,7 @@ class _AppShellScreenState extends State<AppShellScreen> {
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
-        items: _navigationItems
+        items: items
             .map(
               (item) => BottomNavigationBarItem(
                 icon: Icon(item.icon),

@@ -94,7 +94,8 @@ Future<void> configureDependencies() async {
     );
 
   // ── Other BLoCs ──────────────────────────────────────────
-  sl.registerFactory(() => AdminBloc(sl()));
+  // ✅ Admin BLoC - محدد بشكل واضح
+  sl.registerFactory(() => AdminBloc(sl<SupabaseService>()));
 }
 
 /// Alias for [configureDependencies] for backward compatibility.

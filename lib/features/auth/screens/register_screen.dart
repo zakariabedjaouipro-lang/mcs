@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/validators.dart';
@@ -52,11 +53,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    // ✅ استخدام cascade operator لتبسيط الإغلاق
+    _nameController
+      ..dispose()
+      ..text = '';
+    _emailController
+      ..dispose()
+      ..text = '';
+    _phoneController
+      ..dispose()
+      ..text = '';
+    _passwordController
+      ..dispose()
+      ..text = '';
+    _confirmPasswordController
+      ..dispose()
+      ..text = '';
     super.dispose();
   }
 
@@ -265,6 +277,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 onChanged: isLoading
                                     ? null
                                     : (value) {
+                                        if (!mounted) return;
                                         setState(() {
                                           _selectedCountryId = value;
                                           _selectedRegionId = null;
@@ -281,16 +294,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Region Selection
+                          // ⭕ Region Selection – تم الإصلاح
                           if (_selectedCountryId != null)
                             FutureBuilder<List<Map<String, dynamic>>>(
                               future: _loadRegions(_selectedCountryId!),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
+                                  return const Center(
+                                    child: SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
                                 }
-                                final regions = snapshot.data ?? [];
+                                if (snapshot.hasError) {
+                                  return Text(
+                                    'فشل تحميل المناطق',
+                                    style: TextStyles.body2
+                                        .copyWith(color: Colors.red),
+                                  );
+                                }
+                                final regions =
+                                    snapshot.data ?? <Map<String, dynamic>>[];
                                 return DropdownButtonFormField<String>(
                                   initialValue: _selectedRegionId,
                                   decoration: _buildInputDecoration(
@@ -299,14 +326,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     icon: Icons.map,
                                   ),
                                   items: regions.map((region) {
-                                    return DropdownMenuItem(
+                                    return DropdownMenuItem<String>(
                                       value: region['id'] as String,
-                                      child: Text(region['name_ar'] as String),
+                                      child: Text(
+                                        region['name_ar'] as String,
+                                      ),
                                     );
                                   }).toList(),
                                   onChanged: isLoading
                                       ? null
                                       : (value) {
+                                          if (!mounted) return;
                                           setState(
                                             () => _selectedRegionId = value,
                                           );
@@ -442,7 +472,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: 20),
 
-                          // Login Link
+                          // ✅ Login Link - تم الإصلاح
                           Center(
                             child: RichText(
                               text: TextSpan(
@@ -458,8 +488,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     child: GestureDetector(
                                       onTap: isLoading
                                           ? null
-                                          : () => Navigator.of(context)
-                                              .pushNamed('/login'),
+                                          : () {
+                                              if (!mounted) return;
+                                              context.go('/login');
+                                            },
                                       child: Text(
                                         'تسجيل الدخول',
                                         style: TextStyles.body2.copyWith(
