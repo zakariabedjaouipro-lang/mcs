@@ -3,8 +3,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
@@ -12,7 +10,6 @@ import 'package:mcs/core/theme/premium_text_styles.dart';
 import 'package:mcs/core/widgets/premium_button.dart';
 import 'package:mcs/core/widgets/premium_card.dart';
 import 'package:mcs/core/widgets/premium_form_field.dart';
-import 'package:mcs/features/auth/presentation/bloc/index.dart' as auth;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PremiumRegisterScreen extends StatefulWidget {
@@ -38,7 +35,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
   bool _obscureConfirmPassword = true;
   String _selectedRole = 'patient';
   String? _selectedCountryId;
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   List<Map<String, dynamic>> _countries = [];
   bool _countriesLoaded = false;
@@ -159,9 +156,9 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         actions: [
           TextButton(
             onPressed: () => context.go(AppRoutes.login),
-            child: Text(
+            child: const Text(
               'Sign In',
-              style: PremiumTextStyles.bodyMedium.copyWith(
+              style: TextStyle(
                 color: PremiumColors.primaryBlue,
               ),
             ),
@@ -195,9 +192,9 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         children: [
           // Header
           const SizedBox(height: 16),
-          Text(
+          const Text(
             'Choose your role',
-            style: PremiumTextStyles.displayMedium,
+            style: TextStyle(),
           ),
           const SizedBox(height: 8),
           Text(
@@ -271,7 +268,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Already have an account? ",
+                'Already have an account? ',
                 style: PremiumTextStyles.bodyMedium,
               ),
               GestureDetector(
@@ -299,9 +296,9 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          Text(
+          const Text(
             'Basic information',
-            style: PremiumTextStyles.displayMedium,
+            style: TextStyle(),
           ),
           const SizedBox(height: 8),
           Text(
@@ -401,9 +398,9 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          Text(
+          const Text(
             'Secure your account',
-            style: PremiumTextStyles.displayMedium,
+            style: TextStyle(),
           ),
           const SizedBox(height: 8),
           Text(
@@ -549,9 +546,9 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
     final password = _passwordController.text;
     final requirements = {
       'At least 8 characters': password.length >= 8,
-      'Contains uppercase letter': password.contains(RegExp(r'[A-Z]')),
-      'Contains lowercase letter': password.contains(RegExp(r'[a-z]')),
-      'Contains number': password.contains(RegExp(r'[0-9]')),
+      'Contains uppercase letter': password.contains(RegExp('[A-Z]')),
+      'Contains lowercase letter': password.contains(RegExp('[a-z]')),
+      'Contains number': password.contains(RegExp('[0-9]')),
       'Contains special character': password.contains(RegExp(r'[!@#$%^&*]')),
     };
 

@@ -21,6 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _addressController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
@@ -105,6 +106,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ..dispose()
       ..text = '';
     _phoneController
+      ..dispose()
+      ..text = '';
+    _addressController
       ..dispose()
       ..text = '';
     _passwordController
@@ -405,6 +409,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           if (_selectedCountryId != null)
                             SizedBox(height: 16.h),
+
+                          // Address Field
+                          TextFormField(
+                            controller: _addressController,
+                            decoration: _buildInputDecoration(
+                              label: 'العنوان',
+                              hint: 'شارع النيل، الدقي',
+                              icon: Icons.location_city,
+                            ),
+                            keyboardType: TextInputType.multiline,
+                            minLines: 2,
+                            maxLines: 3,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'الرجاء إدخال العنوان';
+                              }
+                              if (value.length < 5) {
+                                return 'العنوان قصير جداً';
+                              }
+                              return null;
+                            },
+                            enabled: !isLoading,
+                          ),
+                          SizedBox(height: 16.h),
 
                           // Password Field
                           TextFormField(
