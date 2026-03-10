@@ -8,10 +8,12 @@
 /// variables are not provided at compile time.
 library;
 
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:mcs/core/config/app_config.dart';
 import 'package:mcs/core/config/env.dart';
+import 'package:mcs/core/services/connectivity_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseConfig {
@@ -24,18 +26,26 @@ class SupabaseConfig {
   /// 2. If those are empty, falls back to AppConfig runtime values
   /// 3. If both are missing, throws detailed error with setup instructions
   ///
+  /// **Timeout Protection:**
+  /// - Supabase initialization has a 10-second timeout
+  /// - If exceeded, throws TimeoutException with diagnostics
+  /// - Network connectivity is tested before initialization
+  ///
   /// **Advantages of this approach:**
   /// - Secure in production (uses dart-define)
   /// - Works in development without requiring dart-define
-  /// - Prevents black screen crashes
-  /// - Provides helpful error messages
+  /// - Prevents black screen crashes with timeout protection
+  /// - Provides helpful error messages with diagnostics
+  /// - Never hangs indefinitely
   ///
   /// Must be called once before any Supabase operations,
   /// typically in the app's `main()` function after AppConfig.initialize().
   ///
   /// Throws [SupabaseInitializationException] with detailed diagnostics
   /// if configuration cannot be resolved through either strategy.
-  static Future<void> initialize() async {
+  static Future<void> initialize({
+    Duration timeout = const Duration(seconds: 10),
+  }) async {
     try {
       // Strategy A: Try compile-time environment variables first (--dart-define)
       const envUrl = Env.supabaseUrl;
@@ -77,22 +87,28 @@ class SupabaseConfig {
         _throwConfigurationError(envUrl, envAnonKey);
       }
 
+      // Validate Supabase URL format
+      if (!url.contains('supabase.co')) {
+        throw SupabaseInitializationException(
+          'Invalid Supabase URL format: $url\n'
+          'URL must contain "supabase.co"',
+        );
+      }
+
       // Log initialization start
       log(
         'Initializing Supabase from $configSource\n'
-        'URL: ${url.replaceRange(0, 20, '***')}***',
+        'URL: ${url.replaceRange(0, url.length > 20 ? 20 : 0, '***')}***\n'
+        'Timeout: ${timeout.inSeconds}s',
         name: 'SupabaseConfig.Init',
         level: 1000,
       );
 
-      // Initialize Supabase with selected strategy
-      await Supabase.initialize(
-        url: url,
-        anonKey: anonKey,
-        realtimeClientOptions: const RealtimeClientOptions(
-          logLevel: RealtimeLogLevel.info,
-        ),
-      );
+      // Pre-initialization network check (optional, for diagnostics)
+      _checkNetworkAvailability(url);
+
+      // Initialize Supabase with timeout protection
+      await _initializeWithTimeout(url, anonKey, timeout);
 
       log(
         'Supabase initialized successfully from $configSource',
@@ -109,6 +125,75 @@ class SupabaseConfig {
       );
       rethrow;
     }
+  }
+
+  /// Initialize Supabase with timeout protection.
+  static Future<void> _initializeWithTimeout(
+    String url,
+    String anonKey,
+    Duration timeout,
+  ) async {
+    try {
+      await Supabase.initialize(
+        url: url,
+        anonKey: anonKey,
+        realtimeClientOptions: const RealtimeClientOptions(
+          logLevel: RealtimeLogLevel.info,
+        ),
+      ).timeout(
+        timeout,
+        onTimeout: () {
+          throw TimeoutException(
+            'Supabase initialization exceeded ${timeout.inSeconds}s timeout.\n'
+            'This usually indicates:\n'
+            '- Network connectivity issue\n'
+            '- DNS resolution failure\n'
+            '- Supabase server unreachable\n'
+            '- Invalid Supabase URL or key\n\n'
+            'Check your internet connection and try again.',
+          );
+        },
+      );
+    } on TimeoutException catch (e) {
+      throw SupabaseInitializationException(
+        'TIMEOUT: Supabase initialization took longer than ${timeout.inSeconds}s\n\n'
+        '${e.message}',
+      );
+    }
+  }
+
+  /// Check network availability asynchronously (non-blocking).
+  static void _checkNetworkAvailability(String url) {
+    // Fire and forget - log network status but don't block initialization
+    unawaited(
+      Future<void>(() async {
+        try {
+          final hasInternet = await ConnectivityService.hasInternet();
+          final diagnostic =
+              await ConnectivityService.diagnoseSupabaseConnectivity(url);
+
+          if (!hasInternet) {
+            log(
+              'Network check: Device appears to be offline\n$diagnostic',
+              name: 'SupabaseConfig.NetworkCheck',
+              level: 800, // warning
+            );
+          } else {
+            log(
+              'Network check: OK\n$diagnostic',
+              name: 'SupabaseConfig.NetworkCheck',
+              level: 1000,
+            );
+          }
+        } catch (e) {
+          log(
+            'Network diagnostic failed: $e',
+            name: 'SupabaseConfig.NetworkCheck',
+            level: 800,
+          );
+        }
+      }).catchError((_) {}),
+    );
   }
 
   /// Throws a detailed SupabaseInitializationException with diagnostic information.

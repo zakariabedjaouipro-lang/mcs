@@ -20,10 +20,8 @@ import 'package:mcs/core/screens/splash_screen.dart';
 import 'package:mcs/core/theme/app_theme.dart';
 import 'package:mcs/features/auth/presentation/bloc/index.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
-import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_state.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
-import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_state.dart';
 
 class McsApp extends StatefulWidget {
@@ -40,38 +38,10 @@ class _McsAppState extends State<McsApp> {
   // Localization state
   Locale _locale = const Locale(AppConstants.defaultLocale); // 'ar'
 
-  // Track initialization completion
-  bool _isInitialized = false;
-
   @override
   void initState() {
     super.initState();
-    // Trigger BLoC events to load theme and locale preferences
-    // This happens immediately after widget tree is built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeBLoCs();
-    });
-  }
-
-  /// Initialize BLoCs after first frame
-  ///
-  /// This ensures:
-  /// 1. Widget tree is fully built
-  /// 2. Context is available and safe
-  /// 3. BLoCs are ready before UI renders based on their state
-  void _initializeBLoCs() {
-    // Only initialize once
-    if (_isInitialized) return;
-    _isInitialized = true;
-
-    try {
-      // Load theme preferences
-      context.read<ThemeBloc>().add(const LoadThemeEvent());
-      // Load language preferences
-      context.read<LocalizationBloc>().add(const LoadLanguageEvent());
-    } catch (e) {
-      debugPrint('Error initializing BLoCs: $e');
-    }
+    // BLoCs are initialized in createState and handle own events
   }
 
   @override

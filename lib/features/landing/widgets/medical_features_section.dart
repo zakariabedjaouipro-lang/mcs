@@ -21,8 +21,8 @@ class MedicalFeaturesSection extends StatelessWidget {
       color: isDark ? Colors.grey[900] : Colors.white,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isSmall ? 16 : 48,
-          vertical: isSmall ? 48 : 80,
+          horizontal: isSmall ? 12 : 48,
+          vertical: isSmall ? 24 : 80,
         ),
         child: Column(
           children: [
@@ -31,22 +31,22 @@ class MedicalFeaturesSection extends StatelessWidget {
               'Why Choose MCS?',
               style: TextStyles.headlineMedium.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: isSmall ? 28 : 40,
+                fontSize: isSmall ? 20 : 40,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             Text(
               'Comprehensive features designed for modern healthcare management',
               style: TextStyles.bodyLarge.copyWith(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
-                fontSize: isSmall ? 14 : 16,
-                height: 1.6,
+                fontSize: isSmall ? 12 : 16,
+                height: 1.4,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
             ),
-            SizedBox(height: isSmall ? 32 : 56),
+            SizedBox(height: isSmall ? 16 : 56),
 
             // Features grid
             _buildFeaturesGrid(context, isSmall),
@@ -107,8 +107,8 @@ class MedicalFeaturesSection extends StatelessWidget {
             : context.isMedium
                 ? 2
                 : 3,
-        crossAxisSpacing: isSmall ? 16 : 24,
-        mainAxisSpacing: isSmall ? 16 : 24,
+        crossAxisSpacing: isSmall ? 12 : 24,
+        mainAxisSpacing: isSmall ? 12 : 24,
       ),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

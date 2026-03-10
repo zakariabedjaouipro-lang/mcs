@@ -22,7 +22,7 @@ dependencies:
   flutter_bloc: ^8.1.6
 
   # --- Supabase Backend ---
-  supabase_flutter: ^2.8.0
+  supabase_flutter: ^2.12.0
 
   # --- Navigation & Routing ---
   go_router: ^14.6.2

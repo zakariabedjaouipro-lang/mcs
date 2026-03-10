@@ -87,8 +87,8 @@ class _MedicalHeroSectionState extends State<MedicalHeroSection>
           // Main content
           Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: isSmall ? 16 : 48,
-              vertical: isSmall ? 40 : 80,
+              horizontal: isSmall ? 12 : 48,
+              vertical: isSmall ? 20 : 80,
             ),
             child: Column(
               children: [
@@ -103,14 +103,14 @@ class _MedicalHeroSectionState extends State<MedicalHeroSection>
                   },
                   child: MedicalCrescentLogo(
                     size: isSmall
-                        ? 80
+                        ? 60
                         : isMedium
                             ? 100
                             : 120,
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(height: isSmall ? 24 : 32),
+                SizedBox(height: isSmall ? 12 : 32),
 
                 // Main headline
                 Text(
@@ -119,7 +119,7 @@ class _MedicalHeroSectionState extends State<MedicalHeroSection>
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: isSmall
-                        ? 32
+                        ? 24
                         : isMedium
                             ? 44
                             : 56,
@@ -127,7 +127,7 @@ class _MedicalHeroSectionState extends State<MedicalHeroSection>
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: isSmall ? 16 : 20),
+                SizedBox(height: isSmall ? 8 : 20),
 
                 // Subtitle
                 Text(
@@ -135,16 +135,16 @@ class _MedicalHeroSectionState extends State<MedicalHeroSection>
                   style: TextStyles.titleMedium.copyWith(
                     color: Colors.white.withValues(alpha: 0.85),
                     fontSize: isSmall
-                        ? 14
+                        ? 12
                         : isMedium
                             ? 16
                             : 18,
-                    height: 1.6,
+                    height: 1.4,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 3,
                 ),
-                SizedBox(height: isSmall ? 32 : 48),
+                SizedBox(height: isSmall ? 16 : 48),
 
                 // CTA Buttons
                 _buildButtonRow(context),

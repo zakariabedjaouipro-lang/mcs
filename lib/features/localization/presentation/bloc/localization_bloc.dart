@@ -14,6 +14,9 @@ class LocalizationBloc extends Bloc<LocalizationEvent, LocalizationState> {
     on<ToggleLanguageEvent>(_onToggleLanguage);
     on<SetLanguageEvent>(_onSetLanguage);
     on<LoadLanguageEvent>(_onLoadLanguage);
+
+    // Load language immediately after initialization
+    Future.microtask(() => add(const LoadLanguageEvent()));
   }
 
   final LocalizationRepository _localizationRepository;

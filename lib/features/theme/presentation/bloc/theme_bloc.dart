@@ -15,6 +15,9 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     on<ToggleThemeEvent>(_onToggleTheme);
     on<SetThemeModeEvent>(_onSetThemeMode);
     on<LoadThemeEvent>(_onLoadTheme);
+
+    // Load theme immediately after initialization
+    Future.microtask(() => add(const LoadThemeEvent()));
   }
 
   final ThemeRepository _themeRepository;
