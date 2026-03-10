@@ -42,14 +42,14 @@ class _CrescentLogoPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
+    final paint = Paint();
+    paint.color = color;
+    paint.style = PaintingStyle.fill;
 
-    final strokePaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+    final strokePaint = Paint();
+    strokePaint.color = color;
+    strokePaint.style = PaintingStyle.stroke;
+    strokePaint.strokeWidth = 2;
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 3;
@@ -60,12 +60,13 @@ class _CrescentLogoPainter extends CustomPainter {
 
     // Inner circle (cutout) - slightly offset to create crescent
     final innerCircleOffset = Offset(center.dx + radius * 0.3, center.dy);
+    final innerCirclePaint = Paint();
+    innerCirclePaint.color = Colors.white;
+    innerCirclePaint.style = PaintingStyle.fill;
     canvas.drawCircle(
       innerCircleOffset,
       radius,
-      Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.fill,
+      innerCirclePaint,
     );
 
     // Draw stethoscope overlay if requested
@@ -88,34 +89,32 @@ class _CrescentLogoPainter extends CustomPainter {
     // Top circle (earpieces joined)
     final topCircleY = center.dy - radius * 0.3;
     paint.style = PaintingStyle.stroke;
-    canvas
-      ..drawCircle(
-        Offset(center.dx - radius * 0.15, topCircleY),
-        radius * 0.15,
-        paint,
-      )
-      ..drawCircle(
-        Offset(center.dx + radius * 0.15, topCircleY),
-        radius * 0.15,
-        paint,
-      );
+    canvas.drawCircle(
+      Offset(center.dx - radius * 0.15, topCircleY),
+      radius * 0.15,
+      paint,
+    );
+    canvas.drawCircle(
+      Offset(center.dx + radius * 0.15, topCircleY),
+      radius * 0.15,
+      paint,
+    );
 
     // Curved tube connecting to center
-    path
-      ..moveTo(center.dx - radius * 0.15, topCircleY + radius * 0.15)
-      ..quadraticBezierTo(
-        center.dx - radius * 0.1,
-        center.dy,
-        center.dx,
-        center.dy + radius * 0.2,
-      )
-      ..moveTo(center.dx + radius * 0.15, topCircleY + radius * 0.15)
-      ..quadraticBezierTo(
-        center.dx + radius * 0.1,
-        center.dy,
-        center.dx,
-        center.dy + radius * 0.2,
-      );
+    path.moveTo(center.dx - radius * 0.15, topCircleY + radius * 0.15);
+    path.quadraticBezierTo(
+      center.dx - radius * 0.1,
+      center.dy,
+      center.dx,
+      center.dy + radius * 0.2,
+    );
+    path.moveTo(center.dx + radius * 0.15, topCircleY + radius * 0.15);
+    path.quadraticBezierTo(
+      center.dx + radius * 0.1,
+      center.dy,
+      center.dx,
+      center.dy + radius * 0.2,
+    );
 
     canvas.drawPath(path, paint);
 
@@ -149,9 +148,8 @@ class _CrescentLogoPainter extends CustomPainter {
       }
     }
     path.close();
-    paint
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 2;
+    paint.style = PaintingStyle.fill;
+    paint.strokeWidth = 2;
     canvas.drawPath(path, paint);
   }
 

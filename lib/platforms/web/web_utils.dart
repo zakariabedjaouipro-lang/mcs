@@ -78,8 +78,8 @@ abstract class WebUtils {
     }
   }
 
-  /// Request PWA installation - simplified version.
-  static Future<bool> requestPWAInstall() async {
+  /// Check if PWA installation can be requested.
+  static Future<bool> get canRequestPWAInstall async {
     debugPrint('PWA installation requires user interaction');
     return false;
   }
@@ -87,10 +87,10 @@ abstract class WebUtils {
   // ── Deep Linking ─────────────────────────────────────────
 
   /// Get current URL from browser.
-  static String getCurrentUrl() => web.window.location.href;
+  static String get currentUrl => web.window.location.href;
 
   /// Navigate to URL.
-  static void navigateToUrl(String url) {
+  static set currentUrl(String url) {
     web.window.location.href = url;
   }
 

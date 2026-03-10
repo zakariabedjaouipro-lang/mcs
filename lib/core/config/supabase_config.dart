@@ -10,7 +10,6 @@ library;
 
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:mcs/core/config/app_config.dart';
 import 'package:mcs/core/config/env.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -76,7 +75,6 @@ class SupabaseConfig {
       } else {
         // Both strategies failed - provide helpful error
         _throwConfigurationError(envUrl, envAnonKey);
-        return; // Never reached, but satisfies analyzer
       }
 
       // Log initialization start
