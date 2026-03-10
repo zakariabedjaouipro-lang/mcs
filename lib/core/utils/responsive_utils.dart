@@ -1,88 +1,226 @@
 /// Responsive design utilities and breakpoints for MCS application.
 ///
-/// Provides standardized breakpoints and responsive helpers for consistent
-/// mobile, tablet, and desktop layouts across the application.
+/// Provides standardized breakpoints, spacing, dimensions, and responsive
+/// helpers for consistent mobile, tablet, and desktop layouts.
+///
+/// Features:
+/// - Device size classification (small phone, standard, tablet, desktop)
+/// - 8dp grid-based spacing system
+/// - Responsive text scales
+/// - Material Design compliant dimensions
+/// - Safe area handling
 library;
 
 import 'package:flutter/material.dart';
 
-/// Responsive breakpoints for the application.
-///
-/// Standard sizes:
-/// - Mobile: < 600px
-/// - Tablet: 600px - 900px
-/// - Desktop: >= 900px
+/// Device Size Breakpoints (Material Design 3)
 abstract class ResponsiveBreakpoints {
-  /// Mobile screen width threshold (small phones)
+  /// Small phone screen width threshold (< 400 dp)
+  static const double smallPhone = 400;
+
+  /// Mobile screen width threshold (< 600 dp) - phones
   static const double mobile = 600;
 
-  /// Tablet screen width threshold (tablets and large phones)
+  /// Tablet screen width threshold (600-900 dp)
   static const double tablet = 900;
 
-  /// Extra large screen threshold (desktop)
-  static const double desktop = 1200;
+  /// Desktop screen width threshold (>= 900 dp)
+  static const double desktop = 900;
+
+  /// Large desktop threshold (>= 1200 dp)
+  static const double largeDesktop = 1200;
 }
 
-/// Responsive layout helper for adaptive UI
+/// Responsive Spacing System (8dp grid base)
+abstract class ResponsiveSpacing {
+  static const double xs = 4; // Extra small
+  static const double sm = 8; // Small
+  static const double md = 16; // Medium (standard mobile)
+  static const double lg = 24; // Large (tablet)
+  static const double xl = 32; // Extra large
+  static const double xxl = 48; // 2X large
+}
+
+/// Responsive Layout Helper
 extension ResponsiveLayout on BuildContext {
-  /// Get the current screen width
+  /// Get current screen width
   double get screenWidth => MediaQuery.of(this).size.width;
 
-  /// Get the current screen height
+  /// Get current screen height
   double get screenHeight => MediaQuery.of(this).size.height;
 
-  /// Check if device is in mobile range (< 600px)
+  /// Get device pixel ratio for high-density displays
+  double get devicePixelRatio => MediaQuery.of(this).devicePixelRatio;
+
+  /// Check if small phone (< 400 dp)
+  bool get isSmallPhone => screenWidth < ResponsiveBreakpoints.smallPhone;
+
+  /// Check if mobile device (< 600 dp) - all phone sizes
   bool get isMobile => screenWidth < ResponsiveBreakpoints.mobile;
 
-  /// Check if device is in tablet range (600px - 900px)
+  /// Check if tablet (600-900 dp)
   bool get isTablet =>
       screenWidth >= ResponsiveBreakpoints.mobile &&
       screenWidth < ResponsiveBreakpoints.tablet;
 
-  /// Check if device is in desktop range (>= 900px)
+  /// Check if desktop (>= 900 dp)
   bool get isDesktop => screenWidth >= ResponsiveBreakpoints.tablet;
 
-  /// Check if device is in large desktop range (>= 1200px)
-  bool get isLargeDesktop => screenWidth >= ResponsiveBreakpoints.desktop;
+  /// Check if large desktop (>= 1200 dp)
+  bool get isLargeDesktop => screenWidth >= ResponsiveBreakpoints.largeDesktop;
 
-  /// Check if device is in landscape orientation
+  /// Check if landscape orientation
   bool get isLandscape =>
       MediaQuery.of(this).orientation == Orientation.landscape;
 
-  /// Check if device is in portrait orientation
+  /// Check if portrait orientation
   bool get isPortrait =>
       MediaQuery.of(this).orientation == Orientation.portrait;
 
-  /// Get responsive grid column count based on screen size
-  ///
-  /// - Mobile: 2 columns
-  /// - Tablet: 3 columns
-  /// - Desktop: 4 columns
-  int get responsiveGridColumns {
+  /// Get safe padding (includes system bars)
+  EdgeInsets get safePadding {
+    final padding = MediaQuery.of(this).padding;
+    final viewInsets = MediaQuery.of(this).viewInsets;
+    return padding.copyWith(
+      bottom: _max(padding.bottom, viewInsets.bottom),
+    );
+  }
+
+  /// Responsive horizontal padding following 8dp grid
+  double get horizontalPadding {
+    if (isSmallPhone) return ResponsiveSpacing.sm; // 8dp
+    if (isMobile) return ResponsiveSpacing.md; // 16dp
+    if (isTablet) return ResponsiveSpacing.lg; // 24dp
+    return ResponsiveSpacing.xl; // 32dp for desktop
+  }
+
+  /// Responsive vertical padding following 8dp grid
+  double get verticalPadding {
+    if (isMobile) return ResponsiveSpacing.md; // 16dp
+    if (isTablet) return ResponsiveSpacing.lg; // 24dp
+    return ResponsiveSpacing.xl; // 32dp for desktop
+  }
+
+  /// Button height (minimum 48dp per Material Design)
+  double get buttonHeight {
+    if (isMobile) return 48; // Minimum tap target
+    if (isTablet) return 52;
+    return 56;
+  }
+
+  /// Text field height (minimum 48dp)
+  double get textFieldHeight {
+    if (isMobile) return 48;
+    if (isTablet) return 52;
+    return 56;
+  }
+
+  /// Form field spacing
+  double get formFieldSpacing {
+    if (isMobile) return ResponsiveSpacing.sm; // 8dp
+    if (isTablet) return ResponsiveSpacing.md; // 16dp
+    return ResponsiveSpacing.lg; // 24dp
+  }
+
+  /// Responsive grid columns for layouts
+  /// Mobile: 2, Tablet: 3, Desktop: 4
+  int get gridColumns {
     if (isMobile) return 2;
     if (isTablet) return 3;
     return 4;
   }
 
-  /// Get responsive padding based on screen size
-  double get responsivePadding {
-    if (isMobile) return 12;
-    if (isTablet) return 16;
-    return 20;
+  /// Grid spacing between items
+  double get gridSpacing {
+    if (isMobile) return ResponsiveSpacing.sm; // 8dp
+    if (isTablet) return ResponsiveSpacing.md; // 16dp
+    return ResponsiveSpacing.lg; // 24dp
   }
 
-  /// Get responsive border radius
-  double get responsiveBorderRadius {
+  /// Card padding (consistent with screen padding)
+  double get cardPadding => horizontalPadding;
+
+  /// Border radius responsive to screen size
+  double get borderRadius {
     if (isMobile) return 8;
     if (isTablet) return 12;
     return 16;
   }
 
-  /// Get responsive font scale factor
-  double get fontScaleFactor {
+  /// Icon size - standard
+  double get iconSize => isSmallPhone ? 20 : 24;
+
+  /// Icon size - large
+  double get largeIconSize => isSmallPhone ? 32 : 40;
+
+  /// Max width for content (prevents stretching on huge screens)
+  double get maxContentWidth {
+    if (screenWidth < ResponsiveBreakpoints.tablet) return screenWidth;
+    return 900; // Center content on very large screens
+  }
+
+  /// Responsive font scale factor
+  double get fontScale {
+    if (isSmallPhone) return 0.9;
     if (isMobile) return 1;
     if (isTablet) return 1.1;
     return 1.2;
+  }
+
+  /// Responsive heading 1 font size
+  double get heading1Size {
+    if (isSmallPhone) return 24;
+    if (isMobile) return 28;
+    if (isTablet) return 32;
+    return 36;
+  }
+
+  /// Responsive heading 2 font size
+  double get heading2Size {
+    if (isSmallPhone) return 20;
+    if (isMobile) return 24;
+    if (isTablet) return 28;
+    return 32;
+  }
+
+  /// Responsive heading 3 font size
+  double get heading3Size {
+    if (isSmallPhone) return 18;
+    if (isMobile) return 20;
+    if (isTablet) return 24;
+    return 28;
+  }
+
+  /// Responsive body large font size
+  double get bodyLargeSize {
+    if (isSmallPhone) return 14;
+    if (isMobile) return 16;
+    if (isTablet) return 18;
+    return 20;
+  }
+
+  /// Responsive body medium font size
+  double get bodyMediumSize {
+    if (isSmallPhone) return 12;
+    if (isMobile) return 14;
+    if (isTablet) return 16;
+    return 18;
+  }
+
+  /// Responsive body small font size
+  double get bodySmallSize {
+    if (isSmallPhone) return 11;
+    if (isMobile) return 12;
+    if (isTablet) return 14;
+    return 16;
+  }
+
+  /// Responsive button text font size
+  double get buttonTextSize {
+    if (isSmallPhone) return 13;
+    if (isMobile) return 14;
+    if (isTablet) return 16;
+    return 18;
   }
 }
 
@@ -95,13 +233,13 @@ class ResponsiveWidget extends StatelessWidget {
     super.key,
   });
 
-  /// Widget for mobile layout (< 600px)
+  /// Widget for mobile layout (< 600 dp)
   final Widget Function(BuildContext context) mobile;
 
-  /// Widget for tablet layout (600px - 900px)
+  /// Widget for tablet layout (600-900 dp)
   final Widget Function(BuildContext context) tablet;
 
-  /// Widget for desktop layout (>= 900px)
+  /// Widget for desktop layout (>= 900 dp)
   final Widget Function(BuildContext context) desktop;
 
   @override
@@ -116,33 +254,19 @@ class ResponsiveWidget extends StatelessWidget {
   }
 }
 
-/// Helper class for responsive grid column count
+/// Helper class for responsive grid layouts
 class ResponsiveGridHelper {
   ResponsiveGridHelper(this.context);
 
   final BuildContext context;
 
-  /// Get column count for action grids (quick actions, buttons)
-  /// - Mobile: 2
-  /// - Tablet: 3
-  /// - Desktop: 4
-  int get actionGridColumns {
-    if (context.isMobile) return 2;
-    if (context.isTablet) return 3;
-    return 4;
-  }
-
-  /// Get column count for stat cards
-  /// - Mobile: 2
-  /// - Tablet: 3
-  /// - Desktop: 4
-  int get statGridColumns => context.responsiveGridColumns;
+  /// Get column count for action grids
+  int get actionGridColumns => context.gridColumns;
 
   /// Get spacing for grid items
-  double get gridSpacing => context.responsivePadding;
+  double get gridSpacing => context.gridSpacing;
 
   /// Get aspect ratio for grid items
-  /// Higher on smaller screens for better visibility
   double get gridItemAspectRatio {
     if (context.isMobile) return 1.3;
     if (context.isTablet) return 1.5;
@@ -150,44 +274,5 @@ class ResponsiveGridHelper {
   }
 }
 
-/// Responsive spacing helper
-class ResponsiveSpacing {
-  ResponsiveSpacing(this.context);
-
-  final BuildContext context;
-
-  /// Extra small spacing (4px / 6px / 8px)
-  double get xs {
-    if (context.isMobile) return 4;
-    if (context.isTablet) return 6;
-    return 8;
-  }
-
-  /// Small spacing (8px / 12px / 16px)
-  double get sm {
-    if (context.isMobile) return 8;
-    if (context.isTablet) return 12;
-    return 16;
-  }
-
-  /// Medium spacing (12px / 16px / 20px)
-  double get md {
-    if (context.isMobile) return 12;
-    if (context.isTablet) return 16;
-    return 20;
-  }
-
-  /// Large spacing (16px / 20px / 24px)
-  double get lg {
-    if (context.isMobile) return 16;
-    if (context.isTablet) return 20;
-    return 24;
-  }
-
-  /// Extra large spacing (20px / 24px / 32px)
-  double get xl {
-    if (context.isMobile) return 20;
-    if (context.isTablet) return 24;
-    return 32;
-  }
-}
+/// Helper to calculate max value
+double _max(double a, double b) => a > b ? a : b;

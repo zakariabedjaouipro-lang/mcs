@@ -1,4 +1,11 @@
 /// Main app widget with theme, router, bloc providers, and localization.
+///
+/// This is the root MaterialApp that configures:
+/// - All BLoC providers for state management
+/// - Theme and dark mode
+/// - Localization/internationalization
+/// - GoRouter for navigation
+/// - ScreenUtility for responsive design
 library;
 
 import 'package:flutter/material.dart';
@@ -9,6 +16,7 @@ import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/constants/app_constants.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/core/screens/splash_screen.dart';
 import 'package:mcs/core/theme/app_theme.dart';
 import 'package:mcs/features/auth/presentation/bloc/index.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
@@ -26,20 +34,44 @@ class McsApp extends StatefulWidget {
 }
 
 class _McsAppState extends State<McsApp> {
-  late ThemeMode _themeMode;
-  late Locale _locale;
+  // Theme state
+  ThemeMode _themeMode = ThemeMode.system;
+
+  // Localization state
+  Locale _locale = const Locale(AppConstants.defaultLocale); // 'ar'
+
+  // Track initialization completion
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _themeMode = ThemeMode.system;
-    _locale = const Locale(AppConstants.defaultLocale); // 'ar'
-
-    // Load initial theme and locale
+    // Trigger BLoC events to load theme and locale preferences
+    // This happens immediately after widget tree is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ThemeBloc>().add(const LoadThemeEvent());
-      context.read<LocalizationBloc>().add(const LoadLanguageEvent());
+      _initializeBLoCs();
     });
+  }
+
+  /// Initialize BLoCs after first frame
+  ///
+  /// This ensures:
+  /// 1. Widget tree is fully built
+  /// 2. Context is available and safe
+  /// 3. BLoCs are ready before UI renders based on their state
+  void _initializeBLoCs() {
+    // Only initialize once
+    if (_isInitialized) return;
+    _isInitialized = true;
+
+    try {
+      // Load theme preferences
+      context.read<ThemeBloc>().add(const LoadThemeEvent());
+      // Load language preferences
+      context.read<LocalizationBloc>().add(const LoadLanguageEvent());
+    } catch (e) {
+      debugPrint('Error initializing BLoCs: $e');
+    }
   }
 
   @override
@@ -47,17 +79,27 @@ class _McsAppState extends State<McsApp> {
     return MultiBlocProvider(
       providers: [
         // Auth BLoC
-        BlocProvider(create: (context) => sl<AuthBloc>()),
-        // Theme BLoC
-        BlocProvider(create: (context) => sl<ThemeBloc>()),
-        // Localization BLoC
-        BlocProvider(create: (context) => sl<LocalizationBloc>()),
-        // Add more BLoC providers here
+        BlocProvider<AuthBloc>(
+          create: (context) => sl<AuthBloc>(),
+        ),
+        // Theme BLoC - loads theme preference
+        BlocProvider(
+          create: (context) => sl<ThemeBloc>(),
+        ),
+        // Localization BLoC - loads language preference
+        BlocProvider(
+          create: (context) => sl<LocalizationBloc>(),
+        ),
+        // Add more BLoC providers here as needed
         // BlocProvider(create: (context) => sl<DoctorBloc>()),
-        // BlocProvider(create: (context) => sl<EmployeeBloc>()),
+        // BlocProvider(create: (context) => sl<PatientBloc>()),
         // etc.
       ],
       child: BlocListener<ThemeBloc, ThemeState>(
+        listenWhen: (previous, current) {
+          // Only rebuild when theme actually changes
+          return current is ThemeChanged;
+        },
         listener: (context, state) {
           if (state is ThemeChanged) {
             setState(() {
@@ -66,6 +108,10 @@ class _McsAppState extends State<McsApp> {
           }
         },
         child: BlocListener<LocalizationBloc, LocalizationState>(
+          listenWhen: (previous, current) {
+            // Only rebuild when language actually changes
+            return current is LanguageChanged;
+          },
           listener: (context, state) {
             if (state is LanguageChanged) {
               setState(() {
@@ -84,6 +130,7 @@ class _McsAppState extends State<McsApp> {
                 themeMode: _themeMode,
                 routerConfig: AppRouter.router,
                 debugShowCheckedModeBanner: false,
+
                 // Localization setup
                 localizationsDelegates: const [
                   AppLocalizations.delegate,
@@ -96,11 +143,55 @@ class _McsAppState extends State<McsApp> {
                   Locale(AppConstants.englishCode),
                 ],
                 locale: _locale,
+                builder: _buildAppWithLoadingState,
               );
             },
           ),
         ),
       ),
+    );
+  }
+
+  /// Wrap the app to show loading state during initialization
+  ///
+  /// Listens to ThemeBloc and LocalizationBloc to know when
+  /// initialization is complete
+  Widget _buildAppWithLoadingState(BuildContext context, Widget? child) {
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      buildWhen: (previous, current) {
+        // Show splash screen while theme is loading/initializing
+        return current is ThemeInitial ||
+            current is ThemeLoading ||
+            current is ThemeChanged;
+      },
+      builder: (context, themeState) {
+        return BlocBuilder<LocalizationBloc, LocalizationState>(
+          buildWhen: (previous, current) {
+            // Show splash screen while language is loading/initializing
+            return current is LocalizationInitial ||
+                current is LocalizationLoading ||
+                current is LanguageChanged;
+          },
+          builder: (context, localeState) {
+            // Show splash screen during initialization
+            final isThemeReady = themeState is ThemeChanged ||
+                (themeState is! ThemeInitial && themeState is! ThemeLoading);
+            final isLocaleReady = localeState is LanguageChanged ||
+                (localeState is! LocalizationInitial &&
+                    localeState is! LocalizationLoading);
+
+            if (!isThemeReady || !isLocaleReady) {
+              return const SplashScreen(
+                // ignore: avoid_redundant_argument_values
+                message: 'جاري تحميل التطبيق...',
+              );
+            }
+
+            // Once both theme and locale are ready, show the actual app
+            return child ?? const SizedBox.shrink();
+          },
+        );
+      },
     );
   }
 }
