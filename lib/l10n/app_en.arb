@@ -1,0 +1,107 @@
+{
+  "@@locale": "en",
+
+  "appName": "MCS",
+  "appFullName": "Medical Clinic Management System",
+
+  "loading": "Loading...",
+  "error": "An error occurred",
+  "success": "Success",
+  "warning": "Warning",
+  "info": "Info",
+
+  "retry": "Retry",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "add": "Add",
+
+  "search": "Search",
+  "filter": "Filter",
+  "sort": "Sort",
+  "view": "View",
+
+  "download": "Download",
+  "upload": "Upload",
+  "share": "Share",
+
+  "close": "Close",
+  "back": "Back",
+  "next": "Next",
+  "previous": "Previous",
+
+  "submit": "Submit",
+  "done": "Done",
+  "yes": "Yes",
+  "no": "No",
+  "ok": "OK",
+
+  "login": "Login",
+  "register": "Register",
+  "logout": "Logout",
+
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+
+  "forgotPassword": "Forgot Password?",
+  "resetPassword": "Reset Password",
+  "changePassword": "Change Password",
+
+  "name": "Name",
+  "phone": "Phone",
+
+  "patient": "Patient",
+  "doctor": "Doctor",
+  "staff": "Staff",
+  "admin": "Admin",
+
+  "home": "Home",
+  "profile": "Profile",
+  "settings": "Settings",
+  "notifications": "Notifications",
+
+  "appointments": "Appointments",
+  "patients": "Patients",
+  "doctors": "Doctors",
+
+  "reports": "Reports",
+  "prescriptions": "Prescriptions",
+  "invoices": "Invoices",
+  "inventory": "Inventory",
+
+  "labResults": "Lab Results",
+  "videoCalls": "Video Calls",
+
+  "pending": "Pending",
+  "confirmed": "Confirmed",
+  "completed": "Completed",
+  "cancelled": "Cancelled",
+
+  "active": "Active",
+  "inactive": "Inactive",
+
+  "paid": "Paid",
+  "unpaid": "Unpaid",
+
+  "welcome": "Welcome",
+  "getStarted": "Get Started",
+  "learnMore": "Learn More",
+
+  "features": "Features",
+  "pricing": "Pricing",
+
+  "contact": "Contact",
+  "support": "Support",
+
+  "about": "About",
+  "faq": "FAQ",
+
+  "privacy": "Privacy Policy",
+  "terms": "Terms of Service",
+
+  "downloadApp": "Download App",
+  "systemRequirements": "System Requirements"
+}

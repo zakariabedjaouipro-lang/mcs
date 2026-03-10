@@ -306,15 +306,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               hint: 'اختر الدولة',
                               icon: Icons.location_on,
                             ),
-                            items: _countries.map((country) {
-                              return DropdownMenuItem(
-                                value: country['id'] as String,
-                                child: Text(country['name_ar'] as String),
-                              );
-                            }).toList(),
+                            items: _countries.isEmpty
+                                ? []
+                                : _countries.map((country) {
+                                    final countryName =
+                                        (country['name_ar'] as String?) ??
+                                            (country['name'] as String?) ??
+                                            'Unknown';
+                                    return DropdownMenuItem(
+                                      value: country['id'] as String? ?? '',
+                                      child: Text(countryName),
+                                    );
+                                  }).toList(),
                             onChanged: isLoading
                                 ? null
                                 : (value) {
+                                    if (value == null || value.isEmpty) return;
                                     if (!mounted) return;
                                     setState(() {
                                       _selectedCountryId = value;
@@ -363,17 +370,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     hint: 'اختر المنطقة',
                                     icon: Icons.map,
                                   ),
-                                  items: regions.map((region) {
-                                    return DropdownMenuItem<String>(
-                                      value: region['id'] as String,
-                                      child: Text(
-                                        region['name_ar'] as String,
-                                      ),
-                                    );
-                                  }).toList(),
+                                  items: regions.isEmpty
+                                      ? []
+                                      : regions.map((region) {
+                                          final regionName =
+                                              (region['name_ar'] as String?) ??
+                                                  (region['name'] as String?) ??
+                                                  'Unknown';
+                                          return DropdownMenuItem<String>(
+                                            value:
+                                                region['id'] as String? ?? '',
+                                            child: Text(regionName),
+                                          );
+                                        }).toList(),
                                   onChanged: isLoading
                                       ? null
                                       : (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return;
+                                          }
                                           if (!mounted) return;
                                           setState(
                                             () => _selectedRegionId = value,

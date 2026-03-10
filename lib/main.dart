@@ -15,6 +15,8 @@ import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:mcs/app.dart';
 import 'package:mcs/core/config/app_config.dart';
 import 'package:mcs/core/config/injection_container.dart';
@@ -40,7 +42,7 @@ void main() async {
       'Phase 1.5: Starting Supabase verification in background...',
       name: 'AppInit',
     );
-    // Fire and forget - verification runs in background
+
     unawaited(
       Future<void>(() async {
         try {
@@ -48,6 +50,7 @@ void main() async {
             supabaseUrl: AppConfig.supabaseUrl,
             anonKey: AppConfig.supabaseAnonKey,
           );
+
           developer.log(
             verificationResult.toReport(),
             name: 'SupabaseVerification',
@@ -71,13 +74,8 @@ void main() async {
       ),
     );
 
-    // Phase 2: Initialize Supabase (with timeout protection)
+    // Phase 2: Initialize Supabase
     developer.log('Phase 2: Initializing Supabase...', name: 'AppInit');
-    developer.log(
-      'START INIT: About to call SupabaseConfig.initialize()',
-      name: 'SupabaseDebug',
-      level: 1000,
-    );
 
     await SupabaseConfig.initialize();
 
@@ -92,10 +90,12 @@ void main() async {
       'Phase 3: Setting up dependency injection...',
       name: 'AppInit',
     );
+
     await configureDependencies();
 
     // Phase 4: Launch main app
     developer.log('Phase 4: App ready, launching...', name: 'AppInit');
+
     runApp(const McsApp());
   } catch (error, stackTrace) {
     developer.log(
@@ -106,13 +106,11 @@ void main() async {
       level: 2000,
     );
 
-    // Show error recovery screen instead of crashing
     runApp(
       _ErrorRecoveryApp(
         error: error.toString(),
         stackTrace: stackTrace.toString(),
         onRetry: () {
-          // Restart the app by re-running main
           developer.log('User requested retry', name: 'AppInit');
           main();
         },
@@ -121,7 +119,7 @@ void main() async {
   }
 }
 
-/// Initialize app configuration with Supabase credentials
+/// Initialize app configuration
 void _initializeAppConfig() {
   AppConfig.initialize(
     supabaseUrl: 'https://rxwtdbvhxqxvckkllgep.supabase.co',
@@ -159,6 +157,19 @@ class _ErrorRecoveryAppState extends State<_ErrorRecoveryApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ar'),
+      ],
+
       home: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -167,7 +178,6 @@ class _ErrorRecoveryAppState extends State<_ErrorRecoveryApp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Error icon
                 Container(
                   width: 80,
                   height: 80,
@@ -181,112 +191,35 @@ class _ErrorRecoveryAppState extends State<_ErrorRecoveryApp> {
                     color: Colors.red,
                   ),
                 ),
+
                 const SizedBox(height: 24),
 
-                // Title
                 const Text(
                   'خطأ في التطبيق',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
                   ),
-                  textAlign: TextAlign.center,
                 ),
+
                 const SizedBox(height: 16),
 
-                // Error message
                 Text(
                   widget.error,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                    height: 1.5,
-                  ),
                   textAlign: TextAlign.center,
                 ),
+
                 const SizedBox(height: 24),
 
-                // Stack trace (debug only)
-                if (widget.stackTrace.isNotEmpty) ...[
-                  const Divider(),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'تفاصيل الخطأ:',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black45,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey[300]!),
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(
-                        widget.stackTrace,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontFamily: 'monospace',
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
-
-                // Retry button
                 SizedBox(
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
                     onPressed: _isRetrying ? null : _handleRetry,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      disabledBackgroundColor: Colors.grey[300],
-                    ),
                     child: _isRetrying
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : const Text(
-                            'إعادة محاولة',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                        ? const CircularProgressIndicator()
+                        : const Text('إعادة محاولة'),
                   ),
-                ),
-                const SizedBox(height: 12),
-
-                // Help text
-                const Text(
-                  'تأكد من:\n'
-                  '• اتصالك بالإنترنت\n'
-                  '• صحة بيانات اعتماد Supabase\n'
-                  '• إمكانية الوصول إلى خوادم Supabase',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.black45,
-                    height: 1.6,
-                  ),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -299,7 +232,6 @@ class _ErrorRecoveryAppState extends State<_ErrorRecoveryApp> {
   Future<void> _handleRetry() async {
     setState(() => _isRetrying = true);
 
-    // Wait a moment before retrying
     await Future<void>.delayed(const Duration(seconds: 1));
 
     widget.onRetry();

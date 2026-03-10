@@ -27,4 +27,3 @@ extension LocalizationExtension on BuildContext {
   /// This is an alias for trSafe() for consistency with AppLocalizations naming.
   String translateSafe(String key) => trSafe(key);
 }
-
