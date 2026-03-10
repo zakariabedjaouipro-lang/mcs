@@ -106,12 +106,12 @@ abstract class WebUtils {
 
   /// Get query parameters from URL.
   static Map<String, String> getQueryParameters() {
-    return Uri.parse(web.window.location.href).queryParameters;
+    return Uri.parse(currentUrl).queryParameters;
   }
 
   /// Get URL fragments.
   static String? getUrlFragment() {
-    final url = web.window.location.href;
+    final url = currentUrl;
     final hashIndex = url.indexOf('#');
     if (hashIndex == -1) return null;
     return url.substring(hashIndex + 1);
