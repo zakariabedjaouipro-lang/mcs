@@ -16,6 +16,19 @@ enum ResponsiveButtonSize { small, medium, large }
 enum ResponsiveButtonStyle { primary, secondary, outline, text }
 
 class ResponsiveButton extends StatelessWidget {
+  const ResponsiveButton({
+    required this.label,
+    required this.onPressed,
+    super.key,
+    this.isLoading = false,
+    this.size = ResponsiveButtonSize.medium,
+    this.style = ResponsiveButtonStyle.primary,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.width,
+    this.isFullWidth = true,
+  });
+
   /// Button label text.
   final String label;
 
@@ -42,19 +55,6 @@ class ResponsiveButton extends StatelessWidget {
 
   /// Whether button should be full width.
   final bool isFullWidth;
-
-  const ResponsiveButton({
-    required this.label,
-    required this.onPressed,
-    super.key,
-    this.isLoading = false,
-    this.size = ResponsiveButtonSize.medium,
-    this.style = ResponsiveButtonStyle.primary,
-    this.leadingIcon,
-    this.trailingIcon,
-    this.width,
-    this.isFullWidth = true,
-  });
 
   double _getButtonHeight() {
     return switch (size) {

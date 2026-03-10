@@ -11,6 +11,18 @@ import 'package:flutter/material.dart';
 import 'package:mcs/core/extensions/context_extensions.dart';
 
 class ResponsiveCard extends StatelessWidget {
+  const ResponsiveCard({
+    required this.child,
+    super.key,
+    this.onTap,
+    this.elevation = 2,
+    this.borderRadius = 12,
+    this.padding,
+    this.margin,
+    this.backgroundColor,
+    this.adaptivePadding = true,
+  });
+
   /// Child widget inside the card.
   final Widget child;
 
@@ -34,18 +46,6 @@ class ResponsiveCard extends StatelessWidget {
 
   /// Whether card should adapt padding based on screen size.
   final bool adaptivePadding;
-
-  const ResponsiveCard({
-    required this.child,
-    super.key,
-    this.onTap,
-    this.elevation = 2,
-    this.borderRadius = 12,
-    this.padding,
-    this.margin,
-    this.backgroundColor,
-    this.adaptivePadding = true,
-  });
 
   @override
   Widget build(BuildContext context) {

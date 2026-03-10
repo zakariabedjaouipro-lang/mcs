@@ -170,11 +170,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   // Simulate logout API call
                   await Future<void>.delayed(const Duration(seconds: 1));
                   if (!mounted) return;
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Logged out successfully')),
-                    );
-                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Logged out successfully')),
+                  );
                 },
                 label: 'Logout',
                 variant: LoadingButtonVariant.secondary,

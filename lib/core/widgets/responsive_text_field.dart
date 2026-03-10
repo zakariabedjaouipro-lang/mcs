@@ -13,6 +13,28 @@ import 'package:mcs/core/constants/responsive_constants.dart';
 import 'package:mcs/core/extensions/context_extensions.dart';
 
 class ResponsiveTextField extends StatelessWidget {
+  const ResponsiveTextField({
+    super.key,
+    this.controller,
+    this.label,
+    this.hintText,
+    this.errorText,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.onSuffixIconTap,
+    this.enabled = true,
+    this.isLoading = false,
+    this.keyboardType = TextInputType.text,
+    this.obscureText = false,
+    this.maxLines = 1,
+    this.minLines = 1,
+    this.maxLength,
+    this.onChanged,
+    this.onSubmitted,
+    this.height,
+    this.isFullWidth = true,
+  });
+
   /// Controller for the text field.
   final TextEditingController? controller;
 
@@ -67,28 +89,6 @@ class ResponsiveTextField extends StatelessWidget {
   /// Whether field is full width.
   final bool isFullWidth;
 
-  const ResponsiveTextField({
-    super.key,
-    this.controller,
-    this.label,
-    this.hintText,
-    this.errorText,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.onSuffixIconTap,
-    this.enabled = true,
-    this.isLoading = false,
-    this.keyboardType = TextInputType.text,
-    this.obscureText = false,
-    this.maxLines = 1,
-    this.minLines = 1,
-    this.maxLength,
-    this.onChanged,
-    this.onSubmitted,
-    this.height,
-    this.isFullWidth = true,
-  });
-
   double _getFieldHeight() {
     if (height != null) return height!;
     if (maxLines > 1) return ResponsiveConstants.inputHeightLarge * 2;
@@ -128,8 +128,8 @@ class ResponsiveTextField extends StatelessWidget {
               ? Icon(prefixIcon, size: ResponsiveConstants.iconSize)
               : null,
           suffixIcon: isLoading
-              ? Padding(
-                  padding: const EdgeInsets.all(12),
+              ? const Padding(
+                  padding: EdgeInsets.all(12),
                   child: SizedBox(
                     height: loadingSize,
                     width: loadingSize,

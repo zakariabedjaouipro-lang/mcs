@@ -70,7 +70,7 @@ abstract class ResponsiveConstants {
   /// - Tablet: 1.1x
   /// - Desktop: 1.2x
   static double fontScaleFactor(double width) {
-    if (width < mobileBreakpoint) return 1.0;
+    if (width < mobileBreakpoint) return 1;
     if (width < tabletBreakpoint) return 1.1;
     return 1.2;
   }

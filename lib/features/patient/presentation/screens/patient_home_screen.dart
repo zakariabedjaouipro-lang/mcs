@@ -102,7 +102,7 @@ class PatientHomeScreen extends StatelessWidget {
           CircleAvatar(
             radius: 36,
             backgroundColor: context.colorSchemeSafe.primary,
-            child: Icon(
+            child: const Icon(
               Icons.person,
               color: Colors.white,
               size: ResponsiveConstants.iconLarge,
@@ -121,7 +121,7 @@ class PatientHomeScreen extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: ResponsiveConstants.spacing4),
+                const SizedBox(height: ResponsiveConstants.spacing4),
                 Text(
                   context.translateSafe('patient_dashboard'),
                   style: context.textThemeSafe.bodySmall?.copyWith(

@@ -32,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   // ✅ تحميل الدول والمناطق مرة واحدة فقط
   List<Map<String, dynamic>> _countries = [];
-  Map<String, List<Map<String, dynamic>>> _regionsCache = {};
+  final Map<String, List<Map<String, dynamic>>> _regionsCache = {};
   bool _countriesLoaded = false;
 
   final List<RoleOption> _roles = [
@@ -298,7 +298,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           // Country Selection
                           DropdownButtonFormField<String>(
-                            value: _selectedCountryId,
+                            initialValue: _selectedCountryId,
                             decoration: _buildInputDecoration(
                               label: 'الدولة',
                               hint: 'اختر الدولة',
@@ -355,7 +355,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 final regions =
                                     snapshot.data ?? <Map<String, dynamic>>[];
                                 return DropdownButtonFormField<String>(
-                                  value: _selectedRegionId,
+                                  initialValue: _selectedRegionId,
                                   decoration: _buildInputDecoration(
                                     label: 'المنطقة',
                                     hint: 'اختر المنطقة',
