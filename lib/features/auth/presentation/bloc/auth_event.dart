@@ -123,15 +123,19 @@ class RegisterSubmitted extends AuthEvent {
     required this.phone,
     required this.password,
     required this.role,
+    this.countryId,
+    this.regionId,
   });
   final String name;
   final String email;
   final String phone;
   final String password;
   final String role;
+  final String? countryId;
+  final String? regionId;
 
   @override
-  List<Object?> get props => [name, email, phone, password, role];
+  List<Object?> get props => [name, email, phone, password, role, countryId, regionId];
 }
 
 /// ==============================

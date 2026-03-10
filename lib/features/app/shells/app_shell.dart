@@ -154,7 +154,7 @@ class _AppShellScreenState extends State<AppShellScreen> {
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[900] : Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         border: Border(
           top: BorderSide(
             color: isDark ? Colors.grey[800]! : MedicalColors.mediumGrey,

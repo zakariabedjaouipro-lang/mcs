@@ -93,7 +93,7 @@ class _LandingScreenState extends State<LandingScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[900] : Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: _showElevation
             ? [
                 BoxShadow(
@@ -222,9 +222,8 @@ class _LandingScreenState extends State<LandingScreen> {
         onTap: onTap,
         child: Text(
           label,
-          style: TextStyles.bodyLarge.copyWith(
-            color: context.isDarkMode ? Colors.white70 : Colors.grey[800],
-          ),
+          style: TextStyles.bodyLarge
+              .copyWith(color: Theme.of(context).colorScheme.onSurface),
         ),
       ),
     );

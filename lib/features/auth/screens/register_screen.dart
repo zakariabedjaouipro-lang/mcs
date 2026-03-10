@@ -138,6 +138,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             phone: _phoneController.text.trim(),
             password: _passwordController.text,
             role: _selectedRole,
+            countryId: _selectedCountryId,
+            regionId: _selectedRegionId,
           ),
         );
   }

@@ -18,7 +18,7 @@ class MedicalFeaturesSection extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      color: isDark ? Colors.grey[900] : Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: isSmall ? 12 : 48,
