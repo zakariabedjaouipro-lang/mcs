@@ -61,6 +61,7 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     // ═════════════════════════════════════════════════════════════════════════════
     on<SetLoading>(_onSetLoading);
     on<ClearPatientState>(_onClearPatientState);
+    on<LogoutEvent>(_onLogout);
   }
   final PatientRepository _patientRepository;
 
@@ -401,6 +402,22 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     Emitter<PatientState> emit,
   ) async {
     emit(const PatientInitial());
+  }
+
+  /// Handle logout event
+  Future<void> _onLogout(
+    LogoutEvent event,
+    Emitter<PatientState> emit,
+  ) async {
+    emit(const PatientLoading());
+    try {
+      // Sign out from authentication service
+      // This would typically be done via an auth repository method
+      // For now, just clear the patient state
+      emit(const PatientInitial());
+    } catch (e) {
+      emit(PatientError('فشل تسجيل الخروج: $e'));
+    }
   }
 
   // ═════════════════════════════════════════════════════════════════════════════

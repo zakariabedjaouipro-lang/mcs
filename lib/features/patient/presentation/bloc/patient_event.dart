@@ -264,6 +264,9 @@ class NavigateToProfile extends PatientEvent {}
 /// Navigate to settings screen
 class NavigateToSettings extends PatientEvent {}
 
+/// Logout user
+class LogoutEvent extends PatientEvent {}
+
 // ═════════════════════════════════════════════════════════════════════════════
 // Generic Events
 // ═════════════════════════════════════════════════════════════════════════════
