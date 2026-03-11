@@ -89,13 +89,27 @@ class _AppShellScreenState extends State<AppShellScreen> {
   void _navigateToInvoices() => context.go('/invoices');
 
   Future<void> _logout() async {
+    Navigator.pop(context); // أغلق الدرواِر أولاً
+
+    // أظهر loading
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
     try {
       await SupabaseConfig.auth.signOut();
       if (mounted) {
+        Navigator.pop(context); // أغلق loading dialog
         context.go('/login');
       }
     } catch (e) {
       if (mounted) {
+        Navigator.pop(context); // أغلق loading dialog
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('خطأ في تسجيل الخروج: $e')),
         );
@@ -109,6 +123,12 @@ class _AppShellScreenState extends State<AppShellScreen> {
     final items = _buildNavigationItems();
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Medical Clinic System'),
+        elevation: 0,
+        backgroundColor: MedicalColors.primary,
+        foregroundColor: Colors.white,
+      ),
       body: widget.child,
       bottomNavigationBar: _buildBottomNavigation(context, isDark, items),
       drawer: _buildDrawer(),
@@ -150,12 +170,10 @@ class _AppShellScreenState extends State<AppShellScreen> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('تسجيل الخروج'),
-            onTap: () {
-              Navigator.pop(context);
-              _logout();
-            },
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title:
+                const Text('تسجيل الخروج', style: TextStyle(color: Colors.red)),
+            onTap: _logout,
           ),
         ],
       ),

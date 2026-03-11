@@ -3,6 +3,9 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mcs/core/config/injection_container.dart';
+import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 import 'package:mcs/core/widgets/premium_button.dart';
@@ -295,14 +298,32 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                               Expanded(
                                 child: PremiumButton(
                                   label: 'Google',
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Google login coming soon',
-                                        ),
-                                      ),
-                                    );
+                                  onPressed: () async {
+                                    try {
+                                      final success = await context
+                                          .read<AuthService>()
+                                          .signInWithGoogle();
+                                      if (success && mounted) {
+                                        // إعادة التوجيه ستتم تلقائياً عبر auth state listener
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content:
+                                                Text('جاري تحميل حسابك...'),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content:
+                                                Text('خطأ في تسجيل الدخول: $e'),
+                                          ),
+                                        );
+                                      }
+                                    }
                                   },
                                   size: PremiumButtonSize.medium,
                                   variant: PremiumButtonVariant.secondary,
