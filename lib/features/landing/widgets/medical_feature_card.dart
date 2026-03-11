@@ -97,11 +97,11 @@ class _MedicalFeatureCardState extends State<MedicalFeatureCard>
             );
           },
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Icon with gradient background
                 Container(
                   width: 80,
                   height: 80,
@@ -124,9 +124,7 @@ class _MedicalFeatureCardState extends State<MedicalFeatureCard>
                     color: widget.iconColor ?? MedicalColors.primary,
                   ),
                 ),
-                const SizedBox(height: 24),
-
-                // Title
+                const SizedBox(height: 16),
                 Text(
                   widget.title,
                   style: TextStyles.titleMedium.copyWith(
@@ -134,17 +132,21 @@ class _MedicalFeatureCardState extends State<MedicalFeatureCard>
                     fontSize: 18,
                   ),
                   textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 12),
-
-                // Description
-                Text(
-                  widget.description,
-                  style: TextStyles.bodyMedium.copyWith(
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                    height: 1.5,
+                const SizedBox(height: 8),
+                Flexible(
+                  child: Text(
+                    widget.description,
+                    style: TextStyles.bodyMedium.copyWith(
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),

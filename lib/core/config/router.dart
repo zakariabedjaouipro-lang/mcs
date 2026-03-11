@@ -18,7 +18,7 @@ import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
 import 'package:mcs/features/auth/screens/otp_verification_screen.dart';
 import 'package:mcs/features/auth/screens/premium_login_screen.dart';
 import 'package:mcs/features/auth/screens/premium_register_screen.dart';
-import 'package:mcs/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:mcs/features/dashboard/screens/premium_dashboard_screen.dart';
 // Role-based dashboards
 import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
@@ -31,6 +31,7 @@ import 'package:mcs/features/landing/screens/pricing_screen.dart';
 import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
 import 'package:mcs/features/records/presentation/screens/records_screen.dart';
 import 'package:mcs/features/settings/presentation/screens/settings_screen.dart';
+import 'package:mcs/features/splash/screens/splash_screen.dart';
 
 // ── Route Paths ────────────────────────────────────────────
 abstract class AppRoutes {
@@ -227,7 +228,7 @@ class AppRouter {
       path: AppRoutes.dashboard,
       name: 'dashboard',
       builder: (context, state) => const AppShellScreen(
-        child: DashboardScreen(),
+        child: PremiumDashboardScreen(),
       ),
     ),
 
@@ -236,13 +237,13 @@ class AppRouter {
       path: AppRoutes.patientHome,
       name: 'patientHome',
       builder: (context, state) => const AppShellScreen(
-        child: DashboardScreen(),
+        child: PremiumDashboardScreen(),
       ),
       routes: [
         GoRoute(
           path: 'dashboard',
           builder: (context, state) => const AppShellScreen(
-            child: DashboardScreen(),
+            child: PremiumDashboardScreen(),
           ),
         ),
         GoRoute(
@@ -296,6 +297,31 @@ class AppRouter {
       path: AppRoutes.superAdminHome,
       name: 'superAdminHome',
       builder: (context, state) => const SuperAdminScreen(),
+    ),
+    GoRoute(
+      path: '/splash',
+      name: 'splash',
+      builder: (context, state) => const SplashScreen(),
+    ),
+    GoRoute(
+      path: '/admin',
+      name: 'adminDashboard',
+      builder: (context, state) => const AdminDashboardScreen(),
+    ),
+    GoRoute(
+      path: '/super-admin',
+      name: 'superAdminDashboard',
+      builder: (context, state) => const SuperAdminScreen(),
+    ),
+    GoRoute(
+      path: '/doctor',
+      name: 'doctorDashboard',
+      builder: (context, state) => const DoctorDashboardScreen(),
+    ),
+    GoRoute(
+      path: '/employee',
+      name: 'employeeDashboard',
+      builder: (context, state) => const EmployeeDashboardScreen(),
     ),
   ];
 }
