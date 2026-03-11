@@ -5,13 +5,13 @@ library;
 import 'package:flutter/material.dart';
 
 class PremiumColors {
-  // ── Primary Gradient ────────────────────────────────────────
+  // ── Primary Gradients ───────────────────────────────────────
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFF0066FF), // Vibrant Blue
-      Color(0xFF0052CC), // Deep Blue
+      Color(0xFF0066FF),
+      Color(0xFF0052CC),
     ],
   );
 
@@ -19,8 +19,17 @@ class PremiumColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFF00D4FF), // Cyan
-      Color(0xFF0099FF), // Sky Blue
+      Color(0xFF00D4FF),
+      Color(0xFF0099FF),
+    ],
+  );
+
+  static const LinearGradient cardGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFFFFFFFF),
+      Color(0xFFF8FAFC),
     ],
   );
 
@@ -32,7 +41,7 @@ class PremiumColors {
   static const Color warningOrange = Color(0xFFF59E0B);
   static const Color errorRed = Color(0xFFEF4444);
 
-  // ── Neutral Colors ────────────────────────────────────────
+  // ── Neutral Colors ─────────────────────────────────────────
   static const Color white = Color(0xFFFFFFFF);
   static const Color almostWhite = Color(0xFFFAFBFC);
   static const Color lightGrey = Color(0xFFF3F4F6);

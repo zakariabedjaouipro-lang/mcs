@@ -6,128 +6,49 @@ import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 
-class PremiumCard extends StatefulWidget {
-  const PremiumCard({
-    required this.child,
-    this.onTap,
-    this.isSelected = false,
-    this.padding = const EdgeInsets.all(20),
-    this.borderRadius = 16,
-    this.useGlass = false,
-    super.key,
-  });
-
+class PremiumCard extends StatelessWidget {
   final Widget child;
+  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry margin;
+  final BorderRadiusGeometry borderRadius;
+  final List<BoxShadow>? boxShadow;
+  final Gradient? gradient;
+
   final VoidCallback? onTap;
   final bool isSelected;
-  final EdgeInsets padding;
-  final double borderRadius;
-  final bool useGlass;
 
-  @override
-  State<PremiumCard> createState() => _PremiumCardState();
-}
-
-class _PremiumCardState extends State<PremiumCard>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-  late Animation<Color?> _colorAnimation;
-  bool _isHovered = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-
-    _scaleAnimation = Tween<double>(begin: 1, end: 1.02).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
-
-    _colorAnimation = ColorTween(
-      begin: PremiumColors.white,
-      end: PremiumColors.almostWhite,
-    ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
-
-    if (widget.isSelected) {
-      _animationController.forward();
-    }
-  }
-
-  @override
-  void didUpdateWidget(PremiumCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.isSelected && !oldWidget.isSelected) {
-      _animationController.forward();
-    } else if (!widget.isSelected && oldWidget.isSelected) {
-      _animationController.reverse();
-    }
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _onEnter() {
-    if (widget.onTap != null) {
-      _animationController.forward();
-      setState(() => _isHovered = true);
-    }
-  }
-
-  void _onExit() {
-    if (widget.onTap != null && !widget.isSelected) {
-      _animationController.reverse();
-      setState(() => _isHovered = false);
-    }
-  }
+  const PremiumCard({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(16),
+    this.margin = const EdgeInsets.all(8),
+    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
+    this.boxShadow,
+    this.gradient,
+    this.onTap,
+    this.isSelected = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => _onEnter(),
-      onExit: (_) => _onExit(),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: ScaleTransition(
-          scale: _scaleAnimation,
-          child: AnimatedBuilder(
-            animation: _colorAnimation,
-            builder: (context, child) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(widget.borderRadius),
-                  boxShadow: _isHovered || widget.isSelected
-                      ? PremiumColors.mediumShadow
-                      : PremiumColors.softShadow,
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(widget.borderRadius),
-                    color: _colorAnimation.value,
-                    border: Border.all(
-                      color: widget.isSelected
-                          ? PremiumColors.primaryBlue
-                          : _isHovered
-                              ? PremiumColors.primaryBlue.withValues(alpha: 0.3)
-                              : PremiumColors.mediumGrey,
-                      width: widget.isSelected ? 2 : 1.5,
-                    ),
-                  ),
-                  padding: widget.padding,
-                  child: widget.child,
-                ),
-              );
-            },
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: margin,
+        padding: padding,
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          boxShadow: boxShadow ?? PremiumColors.softShadow,
+          gradient: gradient ?? PremiumColors.cardGradient,
+          border: isSelected
+              ? Border.all(
+                  color: PremiumColors.primaryBlue,
+                  width: 2,
+                )
+              : null,
         ),
+        child: child,
       ),
     );
   }
@@ -157,7 +78,6 @@ class PremiumRoleCard extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          // Icon Container
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             width: 56,
@@ -179,10 +99,7 @@ class PremiumRoleCard extends StatelessWidget {
               color: isSelected ? Colors.white : PremiumColors.darkText,
             ),
           ),
-
           const SizedBox(height: 16),
-
-          // Title
           Text(
             title,
             style: PremiumTextStyles.headingSmall.copyWith(
@@ -192,10 +109,7 @@ class PremiumRoleCard extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-
           const SizedBox(height: 8),
-
-          // Description
           Text(
             description,
             style: PremiumTextStyles.bodySmall.copyWith(
@@ -204,7 +118,6 @@ class PremiumRoleCard extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-
           if (isSelected) ...[
             const SizedBox(height: 8),
             Container(

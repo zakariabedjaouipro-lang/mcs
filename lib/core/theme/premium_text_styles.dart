@@ -126,10 +126,10 @@ class PremiumTextStyles {
 
   // ── Caption (10px) ────────────────────────────────────────
   static const TextStyle caption = TextStyle(
-    fontSize: 10,
-    fontWeight: FontWeight.w500,
-    letterSpacing: 0.5,
-    height: 1.2,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    letterSpacing: 0.4,
+    height: 1.5,
     color: PremiumColors.lightText,
   );
 }

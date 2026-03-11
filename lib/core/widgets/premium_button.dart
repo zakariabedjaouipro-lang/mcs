@@ -48,8 +48,8 @@ class _PremiumButtonState extends State<PremiumButton>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.98).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    _scaleAnimation = Tween<double>(begin: 1, end: 1.05).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
 
@@ -59,11 +59,11 @@ class _PremiumButtonState extends State<PremiumButton>
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails) {
+  void _onTapDown(TapDownDetails details) {
     _animationController.forward();
   }
 
-  void _onTapUp(TapUpDetails) {
+  void _onTapUp(TapUpDetails details) {
     _animationController.reverse();
   }
 

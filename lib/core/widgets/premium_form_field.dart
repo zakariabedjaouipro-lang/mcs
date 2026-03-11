@@ -46,7 +46,6 @@ class _PremiumFormFieldState extends State<PremiumFormField>
   late AnimationController _animationController;
   late Animation<Color?> _borderColorAnimation;
   bool _isFocused = false;
-  bool _hasError = false;
 
   @override
   void initState() {
@@ -134,7 +133,7 @@ class _PremiumFormFieldState extends State<PremiumFormField>
                 validator: (value) {
                   final error = widget.validator?.call(value);
                   setState(() {
-                    _hasError = error != null;
+                    _isFocused = error != null;
                   });
                   return error;
                 },
@@ -158,50 +157,7 @@ class _PremiumFormFieldState extends State<PremiumFormField>
                       : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: _hasError
-                          ? PremiumColors.errorRed
-                          : _borderColorAnimation.value ??
-                              PremiumColors.mediumGrey,
-                      width: 1.5,
-                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: _hasError
-                          ? PremiumColors.errorRed
-                          : PremiumColors.mediumGrey,
-                      width: 1.5,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: PremiumColors.primaryBlue,
-                      width: 2,
-                    ),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: PremiumColors.errorRed,
-                      width: 1.5,
-                    ),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: PremiumColors.errorRed,
-                      width: 2,
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: _isFocused
-                      ? PremiumColors.almostWhite
-                      : PremiumColors.white,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
               ),
             );
