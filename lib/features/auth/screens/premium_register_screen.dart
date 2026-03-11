@@ -4,7 +4,9 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/config/router.dart';
+import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 import 'package:mcs/core/widgets/premium_button.dart';
@@ -35,7 +37,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
   bool _obscureConfirmPassword = true;
   String _selectedRole = 'patient';
   String? _selectedCountryId;
-  final bool _isLoading = false;
+  bool _isLoading = false;
 
   List<Map<String, dynamic>> _countries = [];
   bool _countriesLoaded = false;
@@ -116,15 +118,6 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
     super.dispose();
   }
 
-  void _nextStep() {
-    if (_currentStep < 2) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOutCubic,
-      );
-    }
-  }
-
   void _previousStep() {
     if (_currentStep > 0) {
       _pageController.previousPage(
@@ -134,28 +127,57 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
     }
   }
 
+  Future<void> _handleCreateAccount() async {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('كلمات المرور غير متطابقة'),
+          backgroundColor: PremiumColors.errorRed,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final authService = sl<AuthService>();
+      final user = await authService.registerWithEmail(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        fullName: _nameController.text.trim(),
+        phone: _phoneController.text.trim(),
+        role: _selectedRole,
+      );
+
+      if (user != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تم إنشاء الحساب بنجاح'),
+            backgroundColor: PremiumColors.successGreen,
+          ),
+        );
+        // Navigate to dashboard or login
+        if (mounted) context.go(AppRoutes.login);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('خطأ: ${e.toString()}'),
+            backgroundColor: PremiumColors.errorRed,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: PremiumColors.almostWhite,
-      appBar: AppBar(
-        backgroundColor: PremiumColors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: _currentStep > 0 ? _previousStep : () => context.pop(),
-          color: PremiumColors.darkText,
-        ),
-        title: const Text(
-          'Create Account',
-          style: PremiumTextStyles.headingMedium,
-        ),
-        centerTitle: true,
-        actions: [
-          TextButton(
-            onPressed: () => context.go(AppRoutes.login),
-            child: const Text(
-              'Sign In',
               style: TextStyle(
                 color: PremiumColors.primaryBlue,
               ),
@@ -485,7 +507,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
                 child: PremiumButton(
                   label: 'Create Account',
                   isLoading: _isLoading,
-                  onPressed: _isLoading ? null : () {},
+                  onPressed: _isLoading ? null : _handleCreateAccount,
                   icon: Icons.check,
                 ),
               ),

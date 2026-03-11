@@ -10,6 +10,7 @@ import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 import 'package:mcs/core/widgets/premium_button.dart';
 import 'package:mcs/core/widgets/premium_form_field.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show OAuthProvider;
 
 class PremiumLoginScreen extends StatefulWidget {
   const PremiumLoginScreen({super.key});
@@ -293,18 +294,18 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                           const SizedBox(height: 16),
 
                           // Social login buttons
-                          Row(
+                          Column(
                             children: [
-                              Expanded(
-                                child: PremiumButton(
-                                  label: 'Google',
+                              // Google Sign In
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
                                   onPressed: () async {
                                     try {
-                                      final success = await context
-                                          .read<AuthService>()
+                                      setState(() => _isLoading = true);
+                                      final success = await sl<AuthService>()
                                           .signInWithGoogle();
                                       if (success && mounted) {
-                                        // إعادة التوجيه ستتم تلقائياً عبر auth state listener
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
@@ -319,33 +320,87 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                             .showSnackBar(
                                           SnackBar(
                                             content:
-                                                Text('خطأ في تسجيل الدخول: $e'),
+                                                Text('خطأ: ${e.toString()}'),
                                           ),
                                         );
                                       }
+                                    } finally {
+                                      if (mounted) {
+                                        setState(() => _isLoading = false);
+                                      }
                                     }
                                   },
-                                  size: PremiumButtonSize.medium,
-                                  variant: PremiumButtonVariant.secondary,
-                                  icon: Icons.mail_outline,
+                                  icon:
+                                      const Icon(Icons.g_mobiledata, size: 24),
+                                  label: const Text(
+                                    'تسجيل الدخول عبر Google',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.black87,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    side: const BorderSide(
+                                      color: Colors.grey,
+                                      width: 1,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: PremiumButton(
-                                  label: 'Apple',
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Apple login coming soon',
-                                        ),
-                                      ),
-                                    );
+                              const SizedBox(height: 12),
+                              // Facebook Sign In
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  onPressed: () async {
+                                    try {
+                                      setState(() => _isLoading = true);
+                                      final success = await sl<AuthService>()
+                                          .signInWithOAuth(
+                                        OAuthProvider.facebook,
+                                      );
+                                      if (success && mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content:
+                                                Text('جاري تحميل حسابك...'),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content:
+                                                Text('خطأ: ${e.toString()}'),
+                                          ),
+                                        );
+                                      }
+                                    } finally {
+                                      if (mounted) {
+                                        setState(() => _isLoading = false);
+                                      }
+                                    }
                                   },
-                                  size: PremiumButtonSize.medium,
-                                  variant: PremiumButtonVariant.secondary,
-                                  icon: Icons.apple,
+                                  icon: const Icon(Icons.facebook,
+                                      size: 24, color: Color(0xFF1877F2)),
+                                  label: const Text(
+                                    'تسجيل الدخول عبر Facebook',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.black87,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    side: const BorderSide(
+                                      color: Colors.grey,
+                                      width: 1,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -441,23 +496,25 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
     setState(() => _isLoading = true);
 
     try {
-      // Simulate API call
-      await Future<void>.delayed(const Duration(seconds: 2));
+      final authService = sl<AuthService>();
+      final user = await authService.signInWithEmail(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
 
-      if (mounted) {
+      if (user != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Login successful!'),
+            content: Text('تم تسجيل الدخول بنجاح'),
             backgroundColor: PremiumColors.successGreen,
           ),
         );
-        // Navigate to dashboard
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Login failed: $e'),
+            content: Text('خطأ: ${e.toString()}'),
             backgroundColor: PremiumColors.errorRed,
           ),
         );

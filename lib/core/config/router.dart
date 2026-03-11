@@ -14,8 +14,10 @@ import 'package:mcs/features/appointment/presentation/screens/appointments_scree
 import 'package:mcs/features/auth/screens/change_password_screen.dart';
 import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
 // Auth screens
-import 'package:mcs/features/auth/screens/login_screen.dart';
+
 import 'package:mcs/features/auth/screens/otp_verification_screen.dart';
+import 'package:mcs/features/auth/screens/premium_login_screen.dart';
+import 'package:mcs/features/auth/screens/premium_register_screen.dart';
 import 'package:mcs/features/auth/screens/register_screen.dart';
 import 'package:mcs/features/dashboard/presentation/screens/dashboard_screen.dart';
 // Role-based dashboards
@@ -198,12 +200,12 @@ class AppRouter {
     GoRoute(
       path: AppRoutes.login,
       name: 'login',
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) => const PremiumLoginScreen(),
     ),
     GoRoute(
       path: AppRoutes.register,
       name: 'register',
-      builder: (context, state) => const RegisterScreen(),
+      builder: (context, state) => const PremiumRegisterScreen(),
     ),
     GoRoute(
       path: AppRoutes.otpVerification,
