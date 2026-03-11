@@ -3,7 +3,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
@@ -319,7 +318,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
-                                            content: Text('خطأ: ${e}'),
+                                            content: Text('خطأ: $e'),
                                           ),
                                         );
                                       }
@@ -373,7 +372,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
-                                            content: Text('خطأ: ${e}'),
+                                            content: Text('خطأ: $e'),
                                           ),
                                         );
                                       }
@@ -515,7 +514,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('خطأ: ${e}'),
+            content: Text('خطأ: $e'),
             backgroundColor: PremiumColors.errorRed,
           ),
         );

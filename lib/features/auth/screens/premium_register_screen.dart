@@ -151,12 +151,14 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
 
     try {
       final authService = sl<AuthService>();
-      final user = await authService.registerWithEmail(
+      final user = await authService.signUpWithEmail(
         email: _emailController.text.trim(),
         password: _passwordController.text,
-        fullName: _nameController.text.trim(),
-        phone: _phoneController.text.trim(),
-        role: _selectedRole,
+        metadata: {
+          'fullName': _nameController.text.trim(),
+          'phone': _phoneController.text.trim(),
+          'role': _selectedRole,
+        },
       );
 
       if (user != null && mounted) {
@@ -173,7 +175,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('خطأ: ${e.toString()}'),
+            content: Text('خطأ: $e'),
             backgroundColor: PremiumColors.errorRed,
           ),
         );
@@ -188,7 +190,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
-    
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
