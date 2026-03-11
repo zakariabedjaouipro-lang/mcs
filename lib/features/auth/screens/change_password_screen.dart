@@ -137,6 +137,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             appBar: widget.isForcedChange
                 ? null
                 : AppBar(
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
                     title: Text(
                       'تغيير كلمة المرور',
                       style: TextStyles.subtitle1

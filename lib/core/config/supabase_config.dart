@@ -96,9 +96,13 @@ class SupabaseConfig {
       }
 
       // Log initialization start
+      final keyPreview = anonKey.length > 20
+          ? '${anonKey.substring(0, 10)}...${anonKey.substring(anonKey.length - 10)}'
+          : '***REDACTED***';
       log(
         'Initializing Supabase from $configSource\n'
         'URL: ${url.replaceRange(0, url.length > 20 ? 20 : 0, '***')}***\n'
+        'Anon Key preview: $keyPreview\n'
         'Timeout: ${timeout.inSeconds}s',
         name: 'SupabaseConfig.Init',
         level: 1000,

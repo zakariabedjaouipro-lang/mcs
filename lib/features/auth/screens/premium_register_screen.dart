@@ -141,14 +141,12 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       appBar: AppBar(
         backgroundColor: PremiumColors.white,
         elevation: 0,
-        leading: _currentStep > 0
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new),
-                onPressed: _previousStep,
-                color: PremiumColors.darkText,
-              )
-            : null,
-        title: Text(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: _currentStep > 0 ? _previousStep : () => context.pop(),
+          color: PremiumColors.darkText,
+        ),
+        title: const Text(
           'Create Account',
           style: PremiumTextStyles.headingMedium,
         ),
@@ -255,8 +253,6 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           // Next Button
           PremiumButton(
             label: 'Continue',
-            isFullWidth: true,
-            size: PremiumButtonSize.large,
             onPressed: _nextStep,
             icon: Icons.arrow_forward,
           ),
@@ -267,7 +263,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Already have an account? ',
                 style: PremiumTextStyles.bodyMedium,
               ),
@@ -371,7 +367,6 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
                   label: 'Back',
                   variant: PremiumButtonVariant.secondary,
                   onPressed: _previousStep,
-                  size: PremiumButtonSize.large,
                 ),
               ),
               const SizedBox(width: 12),
@@ -379,7 +374,6 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
                 child: PremiumButton(
                   label: 'Next',
                   onPressed: _nextStep,
-                  size: PremiumButtonSize.large,
                   icon: Icons.arrow_forward,
                 ),
               ),
@@ -437,7 +431,8 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
             suffixIcon: GestureDetector(
               onTap: () {
                 setState(
-                    () => _obscureConfirmPassword = !_obscureConfirmPassword);
+                  () => _obscureConfirmPassword = !_obscureConfirmPassword,
+                );
               },
               child: Icon(
                 _obscureConfirmPassword
@@ -483,7 +478,6 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
                   label: 'Back',
                   variant: PremiumButtonVariant.secondary,
                   onPressed: _previousStep,
-                  size: PremiumButtonSize.large,
                 ),
               ),
               const SizedBox(width: 12),
@@ -492,7 +486,6 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
                   label: 'Create Account',
                   isLoading: _isLoading,
                   onPressed: _isLoading ? null : () {},
-                  size: PremiumButtonSize.large,
                   icon: Icons.check,
                 ),
               ),
@@ -557,7 +550,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Password requirements',
             style: PremiumTextStyles.labelLarge,
           ),

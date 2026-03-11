@@ -69,6 +69,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
           return Scaffold(
             appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
               title: Text(
                 'استعادة كلمة المرور',
                 style:

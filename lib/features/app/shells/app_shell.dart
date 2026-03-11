@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/extensions.dart';
 
@@ -30,27 +31,27 @@ class _AppShellScreenState extends State<AppShellScreen> {
       NavigationItem(
         label: 'Dashboard',
         icon: Icons.dashboard,
-        route: '/dashboard',
+        route: '/patient/dashboard',
       ),
       NavigationItem(
         label: 'Patients',
         icon: Icons.people,
-        route: '/patients',
+        route: '/patient/patients',
       ),
       NavigationItem(
         label: 'Appointments',
         icon: Icons.calendar_today,
-        route: '/appointments',
+        route: '/patient/appointments',
       ),
       NavigationItem(
         label: 'Records',
         icon: Icons.description,
-        route: '/records',
+        route: '/patient/records',
       ),
       NavigationItem(
         label: 'Settings',
         icon: Icons.settings,
-        route: '/settings',
+        route: '/patient/settings',
       ),
     ];
 
@@ -86,7 +87,21 @@ class _AppShellScreenState extends State<AppShellScreen> {
   // ✅ الوظائف المنفذة (بدلاً من TODOs)
   void _navigateToInventory() => context.go('/inventory');
   void _navigateToInvoices() => context.go('/invoices');
-  void _logout() => context.go('/login');
+
+  Future<void> _logout() async {
+    try {
+      await SupabaseConfig.auth.signOut();
+      if (mounted) {
+        context.go('/login');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('خطأ في تسجيل الخروج: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -165,7 +165,7 @@ class PremiumRoleCard extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: isSelected
                   ? PremiumColors.primaryGradient
-                  : LinearGradient(
+                  : const LinearGradient(
                       colors: [
                         PremiumColors.lightGrey,
                         PremiumColors.mediumGrey,
@@ -216,7 +216,7 @@ class PremiumRoleCard extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.check_circle,
                     size: 14,
                     color: PremiumColors.primaryBlue,

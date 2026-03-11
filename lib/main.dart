@@ -121,15 +121,16 @@ void main() async {
 
 /// Initialize app configuration
 void _initializeAppConfig() {
+  // Credentials are loaded via AppConfig -> SupabaseConfig -> Env class
+  // which uses --dart-define (compile-time) or defaultValues
   AppConfig.initialize(
-    supabaseUrl: 'https://rxwtdbvhxqxvckkllgep.supabase.co',
-    supabaseAnonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2Z3V4anlnaGZuZGxpcHRtaW5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MTAzOTAsImV4cCI6MjA4ODE4NjM5MH0.5mXSPfGwan9b37oo2xeOL_kG3ajrjcoAWWpZdurJnSQ',
-    environment: AppEnvironment.production,
+    supabaseUrl: '',
+    supabaseAnonKey: '',
+    environment: AppEnvironment.development,
   );
 
   developer.log(
-    '✓ STEP 1: AppConfig loaded with credentials',
+    '✓ STEP 1: AppConfig initialized',
     name: 'SupabaseVerification',
     level: 1000,
   );
@@ -158,18 +159,15 @@ class _ErrorRecoveryAppState extends State<_ErrorRecoveryApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-
       supportedLocales: const [
         Locale('en'),
         Locale('ar'),
       ],
-
       home: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -191,9 +189,7 @@ class _ErrorRecoveryAppState extends State<_ErrorRecoveryApp> {
                     color: Colors.red,
                   ),
                 ),
-
                 const SizedBox(height: 24),
-
                 const Text(
                   'خطأ في التطبيق',
                   style: TextStyle(
@@ -201,16 +197,12 @@ class _ErrorRecoveryAppState extends State<_ErrorRecoveryApp> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
                 Text(
                   widget.error,
                   textAlign: TextAlign.center,
                 ),
-
                 const SizedBox(height: 24),
-
                 SizedBox(
                   width: double.infinity,
                   height: 48,

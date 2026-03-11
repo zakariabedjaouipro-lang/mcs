@@ -157,17 +157,17 @@ class _PremiumButtonState extends State<PremiumButton>
     switch (widget.variant) {
       case PremiumButtonVariant.primary:
         return _isHovered
-            ? LinearGradient(
+            ? const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  const Color(0xFF0052CC),
-                  const Color(0xFF0066FF),
+                  Color(0xFF0052CC),
+                  Color(0xFF0066FF),
                 ],
               )
             : PremiumColors.primaryGradient;
       case PremiumButtonVariant.secondary:
-        return LinearGradient(
+        return const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
@@ -180,8 +180,11 @@ class _PremiumButtonState extends State<PremiumButton>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            _isHovered ? const Color(0xFFDC2626) : PremiumColors.errorRed,
-            _isHovered ? const Color(0xFFEF4444) : const Color(0xFFF87171),
+            if (_isHovered) const Color(0xFFDC2626) else PremiumColors.errorRed,
+            if (_isHovered)
+              const Color(0xFFEF4444)
+            else
+              const Color(0xFFF87171),
           ],
         );
       case PremiumButtonVariant.success:
@@ -189,8 +192,14 @@ class _PremiumButtonState extends State<PremiumButton>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            _isHovered ? const Color(0xFF059669) : PremiumColors.successGreen,
-            _isHovered ? const Color(0xFF10B981) : const Color(0xFF34D399),
+            if (_isHovered)
+              const Color(0xFF059669)
+            else
+              PremiumColors.successGreen,
+            if (_isHovered)
+              const Color(0xFF10B981)
+            else
+              const Color(0xFF34D399),
           ],
         );
     }

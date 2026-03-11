@@ -68,6 +68,16 @@ class _LoginScreenState extends State<LoginScreen> {
           final isLoading = state is AuthLoading;
 
           return Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.pop(),
+              ),
+              title: const Text('تسجيل الدخول'),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              foregroundColor: AppColors.primary,
+            ),
             body: SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
@@ -79,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       children: [
                         // Spacer
-                        SizedBox(height: context.verticalPadding),
+                        SizedBox(height: context.verticalPadding / 2),
 
                         // Header
                         Text(

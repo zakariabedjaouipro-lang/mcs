@@ -33,12 +33,23 @@ class AuthService {
     required String password,
   }) async {
     try {
+      log(
+        'Attempting to sign in with email: $email',
+        name: 'AuthService.signInWithEmail',
+        level: 800,
+      );
       return await _auth.signInWithPassword(
         email: email,
         password: password,
       );
     } catch (e, st) {
       _logError('signInWithEmail', e, st);
+      log(
+        '❌ Sign-in failed with error type: ${e.runtimeType}\n'
+        'Error message: $e',
+        name: 'AuthService.signInWithEmail',
+        level: 1000,
+      );
       throw _mapException(e);
     }
   }
@@ -234,4 +245,3 @@ class AuthService {
     return app.ServerException(message: error.toString());
   }
 }
-

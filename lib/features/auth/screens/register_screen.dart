@@ -66,6 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _loadCountriesOnce() async {
     if (_countriesLoaded) return;
+    print('Loading countries from Supabase...');
     try {
       final supabase = Supabase.instance.client;
       final data = await supabase
@@ -74,6 +75,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .eq('is_supported', true)
           .order('name', ascending: true);
 
+      print('Loaded ${data.length} countries from Supabase');
+
       if (mounted) {
         setState(() {
           _countries = data;
@@ -81,14 +84,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
           // تعيين أول دولة كقيمة افتراضية
           if (_countries.isNotEmpty && _selectedCountryId == null) {
             _selectedCountryId = _countries.first['id'] as String;
+            print(
+                'Default country set to: ${_countries.first['name_ar'] ?? _countries.first['name']}');
           }
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Error loading countries: $e');
+      print('Stack trace: $stackTrace');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('فشل تحميل الدول: $e'),
+            content: Text('فشل تحميل الدول: ${e}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -178,13 +185,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
           final isLoading = state is auth.AuthLoading;
 
           return Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.pop(),
+              ),
+              title: const Text('إنشاء حساب جديد'),
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+            ),
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 60.h),
+                    SizedBox(height: 20.h),
 
                     // Header
                     Text(
@@ -199,7 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       'انضم إلينا الآن والاستمتع بالخدمات',
                       style: TextStyles.body1.copyWith(color: AppColors.grey),
                     ),
-                    SizedBox(height: 40.h),
+                    SizedBox(height: 30.h),
 
                     // Role Selection
                     Text(
@@ -303,44 +319,119 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           SizedBox(height: 16.h),
 
                           // Country Selection
-                          DropdownButtonFormField<String>(
-                            initialValue: _selectedCountryId,
-                            decoration: _buildInputDecoration(
-                              label: 'الدولة',
-                              hint: 'اختر الدولة',
-                              icon: Icons.location_on,
+                          if (!_countriesLoaded)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'الدولة',
+                                  style: TextStyles.body2.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.grey,
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                const Center(
+                                  child: SizedBox(
+                                    height: 24,
+                                    width: 24,
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'جاري تحميل قائمة الدول...',
+                                  style: TextStyles.caption.copyWith(
+                                    color: AppColors.grey,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            )
+                          else if (_countries.isEmpty)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'الدولة',
+                                  style: TextStyles.body2.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.grey,
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                Container(
+                                  padding: EdgeInsets.all(16.h),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.greyLight,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        134,
+                                        65,
+                                        65,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.error_outline,
+                                        color: Colors.orange,
+                                        size: 20.h,
+                                      ),
+                                      SizedBox(width: 8.h),
+                                      Expanded(
+                                        child: Text(
+                                          'لا توجد دول متاحة. تأكد من اتصال الإنترنت.',
+                                          style: TextStyles.caption.copyWith(
+                                            color: AppColors.greyDark,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          else
+                            DropdownButtonFormField<String>(
+                              initialValue: _selectedCountryId,
+                              decoration: _buildInputDecoration(
+                                label: 'الدولة',
+                                hint: 'اختر الدولة',
+                                icon: Icons.location_on,
+                              ),
+                              items: _countries.map((country) {
+                                final countryName =
+                                    (country['name_ar'] as String?) ??
+                                        (country['name'] as String?) ??
+                                        'Unknown';
+                                return DropdownMenuItem(
+                                  value: country['id'] as String? ?? '',
+                                  child: Text(countryName),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return;
+                                }
+                                if (!mounted) return;
+                                setState(() {
+                                  _selectedCountryId = value;
+                                  _selectedRegionId = null;
+                                  _regionsCache
+                                      .clear(); // مسح ذاكرة التخزين المؤقت
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'الرجاء اختيار الدولة';
+                                }
+                                return null;
+                              },
                             ),
-                            items: _countries.isEmpty
-                                ? []
-                                : _countries.map((country) {
-                                    final countryName =
-                                        (country['name_ar'] as String?) ??
-                                            (country['name'] as String?) ??
-                                            'Unknown';
-                                    return DropdownMenuItem(
-                                      value: country['id'] as String? ?? '',
-                                      child: Text(countryName),
-                                    );
-                                  }).toList(),
-                            onChanged: isLoading
-                                ? null
-                                : (value) {
-                                    if (value == null || value.isEmpty) return;
-                                    if (!mounted) return;
-                                    setState(() {
-                                      _selectedCountryId = value;
-                                      _selectedRegionId = null;
-                                      _regionsCache
-                                          .clear(); // مسح ذاكرة التخزين المؤقت
-                                    });
-                                  },
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'الرجاء اختيار الدولة';
-                              }
-                              return null;
-                            },
-                          ),
                           SizedBox(height: 16.h),
 
                           // ⭕ Region Selection
@@ -387,17 +478,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             child: Text(regionName),
                                           );
                                         }).toList(),
-                                  onChanged: isLoading
-                                      ? null
-                                      : (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return;
-                                          }
-                                          if (!mounted) return;
-                                          setState(
-                                            () => _selectedRegionId = value,
-                                          );
-                                        },
+                                  onChanged: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return;
+                                    }
+                                    if (!mounted) return;
+                                    setState(
+                                      () => _selectedRegionId = value,
+                                    );
+                                  },
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'الرجاء اختيار المنطقة';

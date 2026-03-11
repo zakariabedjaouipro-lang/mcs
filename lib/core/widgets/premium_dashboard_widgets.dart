@@ -306,7 +306,6 @@ class PremiumStatsRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: PremiumColors.mediumGrey,
-                    width: 1,
                   ),
                   boxShadow: PremiumColors.softShadow,
                 ),

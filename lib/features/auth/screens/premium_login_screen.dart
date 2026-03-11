@@ -56,6 +56,16 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
     final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+          color: PremiumColors.darkText,
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: PremiumColors.darkText,
+      ),
       backgroundColor: PremiumColors.white,
       body: FadeTransition(
         opacity: _fadeAnimation,
@@ -91,7 +101,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                         const SizedBox(height: 32),
 
                         // Title
-                        Text(
+                        const Text(
                           'Welcome Back',
                           style: PremiumTextStyles.displayMedium,
                         ),
@@ -244,9 +254,6 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                             label: 'Sign In',
                             onPressed: _isLoading ? null : _handleSignIn,
                             isLoading: _isLoading,
-                            size: PremiumButtonSize.large,
-                            variant: PremiumButtonVariant.primary,
-                            isFullWidth: true,
                           ),
 
                           const SizedBox(height: 16),
@@ -254,7 +261,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                           // Divider
                           Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: Divider(
                                   color: PremiumColors.mediumGrey,
                                   height: 24,
@@ -271,7 +278,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                   ),
                                 ),
                               ),
-                              Expanded(
+                              const Expanded(
                                 child: Divider(
                                   color: PremiumColors.mediumGrey,
                                   height: 24,
