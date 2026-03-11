@@ -319,8 +319,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
-                                            content:
-                                                Text('خطأ: ${e.toString()}'),
+                                            content: Text('خطأ: ${e}'),
                                           ),
                                         );
                                       }
@@ -340,10 +339,10 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                     backgroundColor: Colors.white,
                                     foregroundColor: Colors.black87,
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 12),
+                                      vertical: 12,
+                                    ),
                                     side: const BorderSide(
                                       color: Colors.grey,
-                                      width: 1,
                                     ),
                                   ),
                                 ),
@@ -374,8 +373,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
-                                            content:
-                                                Text('خطأ: ${e.toString()}'),
+                                            content: Text('خطأ: ${e}'),
                                           ),
                                         );
                                       }
@@ -385,8 +383,11 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                       }
                                     }
                                   },
-                                  icon: const Icon(Icons.facebook,
-                                      size: 24, color: Color(0xFF1877F2)),
+                                  icon: const Icon(
+                                    Icons.facebook,
+                                    size: 24,
+                                    color: Color(0xFF1877F2),
+                                  ),
                                   label: const Text(
                                     'تسجيل الدخول عبر Facebook',
                                     style: TextStyle(fontSize: 16),
@@ -395,10 +396,10 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                     backgroundColor: Colors.white,
                                     foregroundColor: Colors.black87,
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 12),
+                                      vertical: 12,
+                                    ),
                                     side: const BorderSide(
                                       color: Colors.grey,
-                                      width: 1,
                                     ),
                                   ),
                                 ),
@@ -502,7 +503,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
         password: _passwordController.text,
       );
 
-      if (user != null && mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('تم تسجيل الدخول بنجاح'),
@@ -514,7 +515,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('خطأ: ${e.toString()}'),
+            content: Text('خطأ: ${e}'),
             backgroundColor: PremiumColors.errorRed,
           ),
         );

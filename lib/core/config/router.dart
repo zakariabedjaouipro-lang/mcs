@@ -18,7 +18,6 @@ import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
 import 'package:mcs/features/auth/screens/otp_verification_screen.dart';
 import 'package:mcs/features/auth/screens/premium_login_screen.dart';
 import 'package:mcs/features/auth/screens/premium_register_screen.dart';
-import 'package:mcs/features/auth/screens/register_screen.dart';
 import 'package:mcs/features/dashboard/presentation/screens/dashboard_screen.dart';
 // Role-based dashboards
 import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen.dart';

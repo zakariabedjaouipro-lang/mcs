@@ -127,6 +127,15 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
     }
   }
 
+  void _nextStep() {
+    if (_currentStep < 2) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOutCubic,
+      );
+    }
+  }
+
   Future<void> _handleCreateAccount() async {
     if (_passwordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -178,13 +187,20 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
 
   @override
   Widget build(BuildContext context) {
-              style: TextStyle(
-                color: PremiumColors.primaryBlue,
-              ),
-            ),
-          ),
-        ],
+    final isMobile = MediaQuery.of(context).size.width < 600;
+    
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+          color: PremiumColors.darkText,
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: PremiumColors.darkText,
       ),
+      backgroundColor: PremiumColors.white,
       body: FadeTransition(
         opacity: _fadeController,
         child: PageView(

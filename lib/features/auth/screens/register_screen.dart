@@ -85,7 +85,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           if (_countries.isNotEmpty && _selectedCountryId == null) {
             _selectedCountryId = _countries.first['id'] as String;
             print(
-                'Default country set to: ${_countries.first['name_ar'] ?? _countries.first['name']}');
+              'Default country set to: ${_countries.first['name_ar'] ?? _countries.first['name']}',
+            );
           }
         });
       }
@@ -95,7 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('فشل تحميل الدول: ${e}'),
+            content: Text('فشل تحميل الدول: $e'),
             backgroundColor: Colors.red,
           ),
         );

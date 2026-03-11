@@ -126,7 +126,6 @@ void _initializeAppConfig() {
   AppConfig.initialize(
     supabaseUrl: '',
     supabaseAnonKey: '',
-    environment: AppEnvironment.development,
   );
 
   developer.log(
