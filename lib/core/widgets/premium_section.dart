@@ -7,20 +7,18 @@ import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class PremiumSection extends StatelessWidget {
+
+  const PremiumSection({
+    required this.title, required this.child, super.key,
+    this.padding = const EdgeInsets.all(16),
+    this.margin = const EdgeInsets.symmetric(vertical: 8),
+    this.showDivider = true,
+  });
   final String title;
   final Widget child;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry margin;
   final bool showDivider;
-
-  const PremiumSection({
-    super.key,
-    required this.title,
-    required this.child,
-    this.padding = const EdgeInsets.all(16),
-    this.margin = const EdgeInsets.symmetric(vertical: 8),
-    this.showDivider = true,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +39,8 @@ class PremiumSection extends StatelessWidget {
             ),
           ),
           if (showDivider)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16),
               child: Divider(
                 color: PremiumColors.mediumGrey,
                 thickness: 1,

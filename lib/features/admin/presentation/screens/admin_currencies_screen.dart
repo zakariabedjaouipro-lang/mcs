@@ -74,16 +74,15 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
                   ..._buildExchangeRateCards(state.rates, isArabic),
                   const SizedBox(height: 32),
                   Align(
-                    alignment: Alignment.center,
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.add),
                       label: Text(isArabic ? 'إضافة عملة' : 'Add Currency'),
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 16),
+                            horizontal: 32, vertical: 16,),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
+                            borderRadius: BorderRadius.circular(12),),
                       ),
                     ),
                   ),
@@ -116,8 +115,8 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
   }
 
   List<Widget> _buildExchangeRateCards(
-      Map<String, double> rates, bool isArabic) {
-    final List<Map<String, String>> pairs = [
+      Map<String, double> rates, bool isArabic,) {
+    final pairs = <Map<String, String>>[
       {'from': 'USD', 'to': 'EUR'},
       {'from': 'USD', 'to': 'DZD'},
       {'from': 'EUR', 'to': 'USD'},
@@ -135,13 +134,13 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           elevation: 2,
           child: ListTile(
-            leading: Icon(Icons.currency_exchange, color: Colors.purple),
+            leading: const Icon(Icons.currency_exchange, color: Colors.purple),
             title: Text(isArabic
                 ? 'من ${pair['from']} إلى ${pair['to']}'
-                : 'From ${pair['from']} to ${pair['to']}'),
+                : 'From ${pair['from']} to ${pair['to']}',),
             subtitle: Text(isArabic ? 'السعر الحالي' : 'Current Rate'),
             trailing: Text(rate.toStringAsFixed(4),
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+                style: const TextStyle(fontWeight: FontWeight.bold),),
           ),
         ),
       );

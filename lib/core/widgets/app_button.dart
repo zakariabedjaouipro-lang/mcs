@@ -6,6 +6,16 @@ import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class AppButton extends StatelessWidget {
+
+  const AppButton({
+    required this.label, required this.onPressed, super.key,
+    this.icon,
+    this.isLoading = false,
+    this.isFullWidth = true,
+    this.size = AppButtonSize.medium,
+    this.variant = AppButtonVariant.primary,
+    this.width,
+  });
   final String label;
   final VoidCallback? onPressed;
   final IconData? icon;
@@ -15,23 +25,11 @@ class AppButton extends StatelessWidget {
   final AppButtonVariant variant;
   final double? width;
 
-  const AppButton({
-    super.key,
-    required this.label,
-    required this.onPressed,
-    this.icon,
-    this.isLoading = false,
-    this.isFullWidth = true,
-    this.size = AppButtonSize.medium,
-    this.variant = AppButtonVariant.primary,
-    this.width,
-  });
-
   @override
   Widget build(BuildContext context) {
     final isDisabled = onPressed == null || isLoading;
 
-    return Container(
+    return SizedBox(
       width: isFullWidth ? double.infinity : width,
       height: _getButtonHeight(),
       child: ElevatedButton(

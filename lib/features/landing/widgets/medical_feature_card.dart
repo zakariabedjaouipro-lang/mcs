@@ -100,7 +100,6 @@ class _MedicalFeatureCardState extends State<MedicalFeatureCard>
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 80,

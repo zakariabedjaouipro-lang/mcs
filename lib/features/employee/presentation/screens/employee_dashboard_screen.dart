@@ -2,8 +2,8 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:mcs/core/widgets/premium_card.dart';
 import 'package:mcs/core/widgets/premium_button.dart';
+import 'package:mcs/core/widgets/premium_card.dart';
 import 'package:mcs/core/widgets/premium_section.dart';
 
 class EmployeeDashboardScreen extends StatelessWidget {
@@ -25,7 +25,7 @@ class EmployeeDashboardScreen extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         children: [
           PremiumSection(
-            title: isArabic ? 'إحصائيات اليوم' : 'Today\'s Stats',
+            title: isArabic ? 'إحصائيات اليوم' : "Today's Stats",
             child: Row(
               children: [
                 Expanded(
@@ -33,11 +33,11 @@ class EmployeeDashboardScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.inventory, color: Colors.blue, size: 36),
+                        const Icon(Icons.inventory, color: Colors.blue, size: 36),
                         const SizedBox(height: 8),
                         Text(isArabic ? 'المخزون' : 'Inventory'),
                         Text('120',
-                            style: Theme.of(context).textTheme.headlineMedium),
+                            style: Theme.of(context).textTheme.headlineMedium,),
                       ],
                     ),
                   ),
@@ -48,11 +48,11 @@ class EmployeeDashboardScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.receipt, color: Colors.green, size: 36),
+                        const Icon(Icons.receipt, color: Colors.green, size: 36),
                         const SizedBox(height: 8),
                         Text(isArabic ? 'الفواتير' : 'Invoices'),
                         Text('32',
-                            style: Theme.of(context).textTheme.headlineMedium),
+                            style: Theme.of(context).textTheme.headlineMedium,),
                       ],
                     ),
                   ),

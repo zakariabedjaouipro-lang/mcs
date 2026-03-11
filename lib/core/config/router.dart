@@ -5,35 +5,26 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:mcs/core/config/supabase_config.dart';
-
 // Admin
 import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart';
-
 // App shell
 import 'package:mcs/features/app/shells/app_shell.dart';
-
 // Appointment
 import 'package:mcs/features/appointment/presentation/screens/premium_appointments_screen.dart';
-
 // Auth
 import 'package:mcs/features/auth/screens/change_password_screen.dart';
 import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
 import 'package:mcs/features/auth/screens/otp_verification_screen.dart';
 import 'package:mcs/features/auth/screens/premium_login_screen.dart';
 import 'package:mcs/features/auth/screens/premium_register_screen.dart';
-
 // Dashboard
 import 'package:mcs/features/dashboard/screens/premium_dashboard_screen.dart';
-
 // Doctor
 import 'package:mcs/features/doctor/presentation/screens/premium_doctor_dashboard_screen.dart';
-
 // Employee
 import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
-
 // Landing
 import 'package:mcs/features/landing/screens/contact_screen.dart' as contact;
 import 'package:mcs/features/landing/screens/download_screen.dart';
@@ -41,17 +32,13 @@ import 'package:mcs/features/landing/screens/features_screen.dart';
 import 'package:mcs/features/landing/screens/premium_landing_screen.dart'
     as premium_landing;
 import 'package:mcs/features/landing/screens/pricing_screen.dart';
-
+import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
 // Patient
 import 'package:mcs/features/patient/presentation/screens/premium_patient_home_screen.dart';
-import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
-
 // Records
 import 'package:mcs/features/records/presentation/screens/records_screen.dart';
-
 // Settings
 import 'package:mcs/features/settings/presentation/screens/premium_settings_screen.dart';
-
 // Splash
 import 'package:mcs/features/splash/screens/splash_screen.dart';
 

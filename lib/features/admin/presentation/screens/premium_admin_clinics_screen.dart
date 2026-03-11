@@ -17,7 +17,7 @@ class PremiumAdminClinicsScreen extends StatefulWidget {
 }
 
 class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,6 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
 
     return AppScaffold(
       title: isArabic ? 'العيادات' : 'Clinics',
-      showBackButton: true,
       actions: [
         IconButton(
           icon: const Icon(Icons.refresh),
@@ -75,7 +74,7 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.local_hospital_outlined,
               size: 64,
               color: PremiumColors.mediumGrey,
@@ -117,7 +116,6 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
           child: AppButton(
             label: isArabic ? 'إضافة عيادة' : 'Add Clinic',
             icon: Icons.add_business,
-            isFullWidth: true,
             onPressed: () => _showAddClinicDialog(context, isArabic),
           ),
         ),
@@ -126,7 +124,7 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
   }
 
   Widget _buildClinicCard(
-      BuildContext context, Map<String, dynamic> clinic, bool isArabic) {
+      BuildContext context, Map<String, dynamic> clinic, bool isArabic,) {
     Color statusColor;
     String statusText;
 
@@ -134,19 +132,15 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
       case 'active':
         statusColor = PremiumColors.successGreen;
         statusText = isArabic ? 'نشط' : 'Active';
-        break;
       case 'expired':
         statusColor = PremiumColors.errorRed;
         statusText = isArabic ? 'منتهي' : 'Expired';
-        break;
       case 'expiring_soon':
         statusColor = PremiumColors.warningOrange;
         statusText = isArabic ? 'ينتهي قريباً' : 'Expiring Soon';
-        break;
       case 'trial':
         statusColor = PremiumColors.primaryBlue;
         statusText = isArabic ? 'تجريبي' : 'Trial';
-        break;
       default:
         statusColor = PremiumColors.mediumGrey;
         statusText = isArabic ? 'غير معروف' : 'Unknown';
@@ -236,7 +230,6 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
                   child: AppButton(
                     label: isArabic ? 'تعديل' : 'Edit',
                     size: AppButtonSize.small,
-                    variant: AppButtonVariant.primary,
                     onPressed: () =>
                         _showEditClinicDialog(context, clinic, isArabic),
                   ),
@@ -304,25 +297,24 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
           AppButton(
             label: isArabic ? 'إضافة' : 'Add',
             size: AppButtonSize.small,
-            variant: AppButtonVariant.primary,
             onPressed: () => Navigator.pop(dialogContext, true),
           ),
         ],
       ),
     );
 
-    if (result == true && mounted) {
+    if ((result ?? false) && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              isArabic ? 'تمت إضافة العيادة' : 'Clinic added successfully'),
+              isArabic ? 'تمت إضافة العيادة' : 'Clinic added successfully',),
         ),
       );
     }
   }
 
   Future<void> _showClinicDetails(
-      BuildContext context, Map<String, dynamic> clinic, bool isArabic) async {
+      BuildContext context, Map<String, dynamic> clinic, bool isArabic,) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -367,7 +359,7 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
   }
 
   Future<void> _showEditClinicDialog(
-      BuildContext context, Map<String, dynamic> clinic, bool isArabic) async {
+      BuildContext context, Map<String, dynamic> clinic, bool isArabic,) async {
     final nameController =
         TextEditingController(text: clinic['name']?.toString() ?? '');
     final emailController =

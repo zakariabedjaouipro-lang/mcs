@@ -4,9 +4,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
-import 'package:mcs/core/widgets/app_scaffold.dart';
 import 'package:mcs/core/widgets/app_card.dart';
-import 'package:mcs/core/widgets/app_button.dart';
+import 'package:mcs/core/widgets/app_scaffold.dart';
 
 class PremiumPatientHomeScreen extends StatelessWidget {
   const PremiumPatientHomeScreen({super.key});
@@ -339,7 +338,7 @@ class PremiumPatientHomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.arrow_forward_ios,
               size: 16,
               color: PremiumColors.lightText,

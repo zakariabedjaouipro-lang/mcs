@@ -6,30 +6,28 @@ import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class AppHeader extends StatelessWidget {
+
+  const AppHeader({
+    required this.title, super.key,
+    this.actions,
+    this.onBack,
+    this.leading,
+    this.showBackButton = true,
+  });
   final String title;
   final List<Widget>? actions;
   final VoidCallback? onBack;
   final Widget? leading;
   final bool showBackButton;
 
-  const AppHeader({
-    super.key,
-    required this.title,
-    this.actions,
-    this.onBack,
-    this.leading,
-    this.showBackButton = true,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(
           bottom: BorderSide(
             color: PremiumColors.mediumGrey,
-            width: 1,
           ),
         ),
       ),

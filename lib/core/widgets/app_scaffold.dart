@@ -6,22 +6,20 @@ import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class AppScaffold extends StatelessWidget {
+
+  const AppScaffold({
+    required this.title, required this.child, super.key,
+    this.actions,
+    this.drawer,
+    this.appBar,
+    this.showBackButton = true,
+  });
   final String title;
   final Widget child;
   final List<Widget>? actions;
   final Widget? drawer;
   final PreferredSizeWidget? appBar;
   final bool showBackButton;
-
-  const AppScaffold({
-    super.key,
-    required this.title,
-    required this.child,
-    this.actions,
-    this.drawer,
-    this.appBar,
-    this.showBackButton = true,
-  });
 
   @override
   Widget build(BuildContext context) {

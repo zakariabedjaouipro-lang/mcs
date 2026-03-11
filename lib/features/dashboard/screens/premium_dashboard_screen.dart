@@ -3,9 +3,9 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:mcs/core/widgets/premium_dashboard_widgets.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
+import 'package:mcs/core/widgets/premium_dashboard_widgets.dart';
 
 class PremiumDashboardScreen extends StatelessWidget {
   const PremiumDashboardScreen({super.key});
@@ -17,8 +17,8 @@ class PremiumDashboardScreen extends StatelessWidget {
         title: const Text('Dashboard', style: PremiumTextStyles.headingLarge),
         backgroundColor: PremiumColors.primaryBlue,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: const Padding(
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -28,7 +28,7 @@ class PremiumDashboardScreen extends StatelessWidget {
               icon: Icons.calendar_today,
               backgroundColor: PremiumColors.cardGradient,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             PremiumDashboardCard(
               title: 'Revenue',
               value: '2,000',

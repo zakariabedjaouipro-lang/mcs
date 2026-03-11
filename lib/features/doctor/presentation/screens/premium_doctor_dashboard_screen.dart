@@ -4,9 +4,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
-import 'package:mcs/core/widgets/app_scaffold.dart';
-import 'package:mcs/core/widgets/app_card.dart';
 import 'package:mcs/core/widgets/app_button.dart';
+import 'package:mcs/core/widgets/app_card.dart';
+import 'package:mcs/core/widgets/app_scaffold.dart';
 
 class PremiumDoctorDashboardScreen extends StatefulWidget {
   const PremiumDoctorDashboardScreen({super.key});
@@ -176,24 +176,24 @@ class _PremiumDoctorDashboardScreenState
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: (stat['color'] as Color).withValues(alpha: 0.1),
+                    color: (stat['color']! as Color).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
-                    stat['icon'] as IconData,
-                    color: stat['color'] as Color,
+                    stat['icon']! as IconData,
+                    color: stat['color']! as Color,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  stat['value'] as String,
+                  stat['value']! as String,
                   style: PremiumTextStyles.headingSmall.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  stat['title'] as String,
+                  stat['title']! as String,
                   style: PremiumTextStyles.bodySmall,
                   textAlign: TextAlign.center,
                 ),
@@ -239,7 +239,7 @@ class _PremiumDoctorDashboardScreenState
             margin: const EdgeInsets.only(bottom: 8),
             child: ListTile(
               leading: const Icon(Icons.person),
-              title: Text(appointment['patient'] as String),
+              title: Text(appointment['patient']!),
               subtitle: Text(
                 '${appointment['time']} • ${appointment['type']}',
               ),
@@ -282,13 +282,13 @@ class _PremiumDoctorDashboardScreenState
               child: Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: AppButton(
-                  label: action['label'] as String,
-                  icon: action['icon'] as IconData,
+                  label: action['label']! as String,
+                  icon: action['icon']! as IconData,
                   size: AppButtonSize.small,
                   variant: AppButtonVariant.secondary,
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(action['label'] as String)),
+                      SnackBar(content: Text(action['label']! as String)),
                     );
                   },
                 ),

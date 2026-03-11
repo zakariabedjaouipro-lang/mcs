@@ -7,6 +7,17 @@ import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class PremiumCard extends StatelessWidget {
+
+  const PremiumCard({
+    required this.child, super.key,
+    this.padding = const EdgeInsets.all(16),
+    this.margin = const EdgeInsets.all(8),
+    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
+    this.boxShadow,
+    this.gradient,
+    this.onTap,
+    this.isSelected = false,
+  });
   final Widget child;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry margin;
@@ -16,18 +27,6 @@ class PremiumCard extends StatelessWidget {
 
   final VoidCallback? onTap;
   final bool isSelected;
-
-  const PremiumCard({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.all(16),
-    this.margin = const EdgeInsets.all(8),
-    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
-    this.boxShadow,
-    this.gradient,
-    this.onTap,
-    this.isSelected = false,
-  });
 
   @override
   Widget build(BuildContext context) {

@@ -4,9 +4,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
-import 'package:mcs/core/widgets/app_scaffold.dart';
 import 'package:mcs/core/widgets/app_card.dart';
-import 'package:mcs/core/widgets/app_button.dart';
+import 'package:mcs/core/widgets/app_scaffold.dart';
 
 class PremiumAdminDashboardScreen extends StatelessWidget {
   const PremiumAdminDashboardScreen({super.key});
@@ -193,18 +192,18 @@ class PremiumAdminDashboardScreen extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: (stat['color'] as Color).withValues(alpha: 0.1),
+                    color: (stat['color']! as Color).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
-                    stat['icon'] as IconData,
-                    color: stat['color'] as Color,
+                    stat['icon']! as IconData,
+                    color: stat['color']! as Color,
                     size: 20,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  stat['value'] as String,
+                  stat['value']! as String,
                   style: PremiumTextStyles.headingSmall.copyWith(
                     fontWeight: FontWeight.bold,
                     color: PremiumColors.darkText,
@@ -212,7 +211,7 @@ class PremiumAdminDashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  stat['title'] as String,
+                  stat['title']! as String,
                   style: PremiumTextStyles.bodySmall.copyWith(
                     color: PremiumColors.lightText,
                   ),
@@ -273,7 +272,7 @@ class PremiumAdminDashboardScreen extends StatelessWidget {
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(action['label'] as String),
+                    content: Text(action['label']! as String),
                   ),
                 );
               },
@@ -287,18 +286,18 @@ class PremiumAdminDashboardScreen extends StatelessWidget {
                       height: 48,
                       decoration: BoxDecoration(
                         color:
-                            (action['color'] as Color).withValues(alpha: 0.1),
+                            (action['color']! as Color).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
-                        action['icon'] as IconData,
-                        color: action['color'] as Color,
+                        action['icon']! as IconData,
+                        color: action['color']! as Color,
                         size: 24,
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      action['label'] as String,
+                      action['label']! as String,
                       textAlign: TextAlign.center,
                       style: PremiumTextStyles.bodySmall.copyWith(
                         fontWeight: FontWeight.w500,

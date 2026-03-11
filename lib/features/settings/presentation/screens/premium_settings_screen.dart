@@ -27,7 +27,6 @@ class _PremiumSettingsScreenState extends State<PremiumSettingsScreen> {
 
     return AppScaffold(
       title: isArabic ? 'الإعدادات' : 'Settings',
-      showBackButton: true,
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -87,7 +86,7 @@ class _PremiumSettingsScreenState extends State<PremiumSettingsScreen> {
             Container(
               width: 64,
               height: 64,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: PremiumColors.primaryGradient,
                 shape: BoxShape.circle,
               ),
@@ -105,7 +104,7 @@ class _PremiumSettingsScreenState extends State<PremiumSettingsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Dr. Ahmed',
                     style: PremiumTextStyles.headingSmall,
                   ),
@@ -120,7 +119,7 @@ class _PremiumSettingsScreenState extends State<PremiumSettingsScreen> {
               ),
             ),
 
-            Icon(
+            const Icon(
               Icons.edit,
               color: PremiumColors.darkGrey,
             ),

@@ -14,10 +14,10 @@ class PremiumLandingScreen extends StatelessWidget {
     final isArabic = Directionality.of(context) == TextDirection.rtl;
     final width = MediaQuery.of(context).size.width;
 
-    final bool isMobile = width < 700;
-    final double horizontalPadding = isMobile ? 24 : 80;
-    final double heroSpacing = isMobile ? 40 : 80;
-    final double buttonSpacing = isMobile ? 16 : 24;
+    final isMobile = width < 700;
+    final horizontalPadding = isMobile ? 24.0 : 80.0;
+    final heroSpacing = isMobile ? 40.0 : 80.0;
+    final buttonSpacing = isMobile ? 16.0 : 24.0;
 
     return Scaffold(
       backgroundColor: PremiumColors.white,
@@ -41,7 +41,10 @@ class PremiumLandingScreen extends StatelessWidget {
   }
 
   Widget _buildHeader(
-      BuildContext context, bool isArabic, double horizontalPadding) {
+    BuildContext context,
+    bool isArabic,
+    double horizontalPadding,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: horizontalPadding,
@@ -68,7 +71,7 @@ class PremiumLandingScreen extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Text(
-                "MCS",
+                'MCS',
                 style: PremiumTextStyles.headingMedium.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -78,7 +81,7 @@ class PremiumLandingScreen extends StatelessWidget {
           const Spacer(),
           TextButton(
             onPressed: () {},
-            child: Text(isArabic ? "تسجيل الدخول" : "Login"),
+            child: Text(isArabic ? 'تسجيل الدخول' : 'Login'),
           ),
         ],
       ),
@@ -101,7 +104,7 @@ class PremiumLandingScreen extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            PremiumColors.primaryBlue.withOpacity(0.05),
+            PremiumColors.primaryBlue.withValues(alpha: 0.05),
             PremiumColors.white,
           ],
           begin: Alignment.topCenter,
@@ -112,8 +115,8 @@ class PremiumLandingScreen extends StatelessWidget {
         children: [
           Text(
             isArabic
-                ? "منصة متكاملة لإدارة العيادات الطبية"
-                : "Complete Platform for Medical Clinic Management",
+                ? 'منصة متكاملة لإدارة العيادات الطبية'
+                : 'Complete Platform for Medical Clinic Management',
             style: PremiumTextStyles.headingLarge.copyWith(
               fontSize: 40,
               fontWeight: FontWeight.bold,
@@ -123,8 +126,8 @@ class PremiumLandingScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             isArabic
-                ? "إدارة المرضى والمواعيد والفواتير بسهولة واحترافية"
-                : "Manage patients, appointments and billing with ease",
+                ? 'إدارة المرضى والمواعيد والفواتير بسهولة واحترافية'
+                : 'Manage patients, appointments and billing with ease',
             style: PremiumTextStyles.headingMedium.copyWith(
               color: PremiumColors.lightText,
             ),
@@ -137,12 +140,12 @@ class PremiumLandingScreen extends StatelessWidget {
             alignment: WrapAlignment.center,
             children: [
               AppButton(
-                label: isArabic ? "ابدأ الآن" : "Get Started",
+                label: isArabic ? 'ابدأ الآن' : 'Get Started',
                 icon: Icons.arrow_forward,
                 onPressed: () {},
               ),
               AppButton(
-                label: isArabic ? "عرض المزايا" : "View Features",
+                label: isArabic ? 'عرض المزايا' : 'View Features',
                 variant: AppButtonVariant.secondary,
                 onPressed: () {},
               ),
@@ -154,32 +157,35 @@ class PremiumLandingScreen extends StatelessWidget {
   }
 
   Widget _buildFeatures(
-      BuildContext context, bool isArabic, double horizontalPadding) {
+    BuildContext context,
+    bool isArabic,
+    double horizontalPadding,
+  ) {
     final features = [
       {
-        "icon": Icons.people,
-        "title": isArabic ? "إدارة المرضى" : "Patient Management",
-        "desc": isArabic
-            ? "إدارة ملفات المرضى بسهولة"
-            : "Manage patient records easily",
+        'icon': Icons.people,
+        'title': isArabic ? 'إدارة المرضى' : 'Patient Management',
+        'desc': isArabic
+            ? 'إدارة ملفات المرضى بسهولة'
+            : 'Manage patient records easily',
       },
       {
-        "icon": Icons.calendar_today,
-        "title": isArabic ? "إدارة المواعيد" : "Appointments",
-        "desc":
-            isArabic ? "جدولة المواعيد بسرعة" : "Schedule appointments quickly",
+        'icon': Icons.calendar_today,
+        'title': isArabic ? 'إدارة المواعيد' : 'Appointments',
+        'desc':
+            isArabic ? 'جدولة المواعيد بسرعة' : 'Schedule appointments quickly',
       },
       {
-        "icon": Icons.receipt_long,
-        "title": isArabic ? "الفواتير" : "Billing",
-        "desc": isArabic ? "نظام فواتير متكامل" : "Complete billing system",
+        'icon': Icons.receipt_long,
+        'title': isArabic ? 'الفواتير' : 'Billing',
+        'desc': isArabic ? 'نظام فواتير متكامل' : 'Complete billing system',
       },
       {
-        "icon": Icons.analytics,
-        "title": isArabic ? "التقارير" : "Analytics",
-        "desc": isArabic
-            ? "تقارير وإحصائيات متقدمة"
-            : "Advanced reports and analytics",
+        'icon': Icons.analytics,
+        'title': isArabic ? 'التقارير' : 'Analytics',
+        'desc': isArabic
+            ? 'تقارير وإحصائيات متقدمة'
+            : 'Advanced reports and analytics',
       },
     ];
 
@@ -194,7 +200,7 @@ class PremiumLandingScreen extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            isArabic ? "المميزات الرئيسية" : "Key Features",
+            isArabic ? 'المميزات الرئيسية' : 'Key Features',
             style: PremiumTextStyles.headingLarge.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -229,11 +235,17 @@ class PremiumLandingScreen extends StatelessWidget {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: PremiumColors.primaryBlue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                          colors: [
+                            PremiumColors.primaryBlue.withValues(alpha: 13),
+                            PremiumColors.white,
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
                       ),
                       child: Icon(
-                        feature["icon"] as IconData,
+                        feature['icon']! as IconData,
                         color: PremiumColors.primaryBlue,
                       ),
                     ),
@@ -244,14 +256,14 @@ class PremiumLandingScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            feature["title"] as String,
+                            feature['title']! as String,
                             style: PremiumTextStyles.headingSmall.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            feature["desc"] as String,
+                            feature['desc']! as String,
                             style: PremiumTextStyles.bodySmall.copyWith(
                               color: PremiumColors.lightText,
                             ),
@@ -276,8 +288,8 @@ class PremiumLandingScreen extends StatelessWidget {
       child: Center(
         child: Text(
           isArabic
-              ? "© 2026 نظام إدارة العيادات الطبية"
-              : "© 2026 Medical Clinic System",
+              ? '© 2026 نظام إدارة العيادات الطبية'
+              : '© 2026 Medical Clinic System',
           style: PremiumTextStyles.bodySmall.copyWith(
             color: PremiumColors.darkGrey,
           ),

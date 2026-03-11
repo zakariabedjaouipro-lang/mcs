@@ -161,7 +161,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         },
       );
 
-      if (user != null && mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('تم إنشاء الحساب بنجاح'),
@@ -586,7 +586,6 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
     };
 
     return PremiumCard(
-      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

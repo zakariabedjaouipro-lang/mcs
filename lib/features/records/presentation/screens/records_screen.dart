@@ -51,7 +51,6 @@ class _RecordsScreenState extends State<RecordsScreen> {
 
     return AppScaffold(
       title: isArabic ? 'السجلات الطبية' : 'Records & Documents',
-      showBackButton: true,
       child: _hasError
           ? _buildErrorState(isArabic)
           : _isLoading
@@ -82,7 +81,6 @@ class _RecordsScreenState extends State<RecordsScreen> {
           AppButton(
             label: isArabic ? 'إعادة المحاولة' : 'Retry',
             variant: AppButtonVariant.secondary,
-            size: AppButtonSize.medium,
             onPressed: _loadRecords,
           ),
         ],
@@ -140,10 +138,10 @@ class _RecordsScreenState extends State<RecordsScreen> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: records.map((record) {
-        final Color color = record['color'] as Color;
-        final IconData icon = record['icon'] as IconData;
-        final String title = record['title'] as String;
-        final String count = record['count'] as String;
+        final color = record['color']! as Color;
+        final icon = record['icon']! as IconData;
+        final title = record['title']! as String;
+        final count = record['count']! as String;
 
         return AppCard(
           onTap: () {
@@ -212,7 +210,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 1000),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               colors: [
                 PremiumColors.lightGrey,
                 PremiumColors.mediumGrey,

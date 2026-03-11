@@ -4,9 +4,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
-import 'package:mcs/core/widgets/app_scaffold.dart';
-import 'package:mcs/core/widgets/app_card.dart';
 import 'package:mcs/core/widgets/app_button.dart';
+import 'package:mcs/core/widgets/app_card.dart';
+import 'package:mcs/core/widgets/app_scaffold.dart';
 
 class PremiumAdminCurrenciesScreen extends StatelessWidget {
   const PremiumAdminCurrenciesScreen({super.key});
@@ -17,7 +17,6 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
 
     return AppScaffold(
       title: isArabic ? 'العملات وأسعار الصرف' : 'Currencies & Exchange Rates',
-      showBackButton: true,
       actions: [
         IconButton(
           icon: const Icon(Icons.refresh),
@@ -84,7 +83,7 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
                     decoration: InputDecoration(
                       labelText: isArabic ? 'المبلغ' : 'Amount',
                       border: const OutlineInputBorder(),
-                      prefixText: ' \$ ',
+                      prefixText: r' $ ',
                     ),
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   ),
@@ -222,7 +221,7 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              rate['rate'] as String,
+                              rate['rate']!,
                               style: PremiumTextStyles.bodyLarge.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: PremiumColors.darkText,
@@ -249,7 +248,6 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
           AppButton(
             label: isArabic ? 'إضافة عملة' : 'Add Currency',
             icon: Icons.add,
-            isFullWidth: true,
             onPressed: () {
               _showAddCurrencyDialog(context, isArabic);
             },
@@ -296,7 +294,6 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
           AppButton(
             label: isArabic ? 'حفظ' : 'Save',
             size: AppButtonSize.small,
-            variant: AppButtonVariant.primary,
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
@@ -347,7 +344,6 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
           AppButton(
             label: isArabic ? 'إضافة' : 'Add',
             size: AppButtonSize.small,
-            variant: AppButtonVariant.primary,
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(

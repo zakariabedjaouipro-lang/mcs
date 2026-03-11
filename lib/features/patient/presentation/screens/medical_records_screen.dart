@@ -1,4 +1,5 @@
 /// Medical Records Screen
+library;
 
 import 'package:flutter/material.dart';
 

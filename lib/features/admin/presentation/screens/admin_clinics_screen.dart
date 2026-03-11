@@ -67,8 +67,11 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.local_hospital_outlined,
-                        size: 64, color: Colors.grey[400]),
+                    Icon(
+                      Icons.local_hospital_outlined,
+                      size: 64,
+                      color: Colors.grey[400],
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       isArabic
@@ -97,7 +100,8 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                   final clinic = state.clinics[index];
                   return Card(
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     elevation: 2,
                     child: Padding(
                       padding: const EdgeInsets.all(20),
@@ -115,14 +119,18 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                                       : Colors.grey[200],
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: Icon(Icons.local_hospital,
-                                    color: Colors.teal, size: 32),
+                                child: const Icon(
+                                  Icons.local_hospital,
+                                  color: Colors.teal,
+                                  size: 32,
+                                ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  clinic.name ??
-                                      (isArabic ? 'عيادة' : 'Clinic'),
+                                  clinic.name.isNotEmpty
+                                      ? clinic.name
+                                      : (isArabic ? 'عيادة' : 'Clinic'),
                                   style:
                                       Theme.of(context).textTheme.titleMedium,
                                 ),
@@ -157,7 +165,8 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),

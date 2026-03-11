@@ -7,8 +7,7 @@ import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class AppTextField extends StatefulWidget {
   const AppTextField({
-    super.key,
-    required this.label,
+    required this.label, super.key,
     this.hint,
     this.controller,
     this.keyboardType = TextInputType.text,
@@ -162,7 +161,6 @@ class _AppTextFieldState extends State<AppTextField>
                     borderSide: BorderSide(
                       color: _borderColorAnimation.value ??
                           PremiumColors.mediumGrey,
-                      width: 1.0,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
@@ -170,7 +168,6 @@ class _AppTextFieldState extends State<AppTextField>
                     borderSide: BorderSide(
                       color: _borderColorAnimation.value ??
                           PremiumColors.mediumGrey,
-                      width: 1.0,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -178,7 +175,7 @@ class _AppTextFieldState extends State<AppTextField>
                     borderSide: BorderSide(
                       color: _borderColorAnimation.value ??
                           PremiumColors.primaryBlue,
-                      width: 2.0,
+                      width: 2,
                     ),
                   ),
                 ),

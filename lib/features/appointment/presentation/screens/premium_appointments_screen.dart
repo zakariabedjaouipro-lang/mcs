@@ -5,9 +5,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
-import 'package:mcs/core/widgets/app_scaffold.dart';
 import 'package:mcs/core/widgets/app_card.dart';
-import 'package:mcs/core/widgets/app_button.dart';
+import 'package:mcs/core/widgets/app_scaffold.dart';
 
 class PremiumAppointmentsScreen extends StatefulWidget {
   const PremiumAppointmentsScreen({super.key});
@@ -61,12 +60,11 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
 
     return AppScaffold(
       title: isArabic ? 'المواعيد' : 'Appointments',
-      showBackButton: true,
       child: Column(
         children: [
           // Tab bar
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
                   color: PremiumColors.mediumGrey,
@@ -150,7 +148,7 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.calendar_today_outlined,
               size: 64,
               color: PremiumColors.mediumGrey,
@@ -192,7 +190,7 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
               SnackBar(
                 content: Text(isArabic
                     ? 'موعد مع ${appointment['patient']}'
-                    : 'Appointment with ${appointment['patient']}'),
+                    : 'Appointment with ${appointment['patient']}',),
               ),
             );
           },
@@ -333,7 +331,7 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
               SnackBar(
                 content: Text(isArabic
                     ? 'موعد مع ${appointment['patient']}'
-                    : 'Appointment with ${appointment['patient']}'),
+                    : 'Appointment with ${appointment['patient']}',),
               ),
             );
           },
@@ -474,7 +472,7 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
               SnackBar(
                 content: Text(isArabic
                     ? 'موعد مع ${appointment['patient']}'
-                    : 'Appointment with ${appointment['patient']}'),
+                    : 'Appointment with ${appointment['patient']}',),
               ),
             );
           },
@@ -566,9 +564,7 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 1000),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
+                gradient: const LinearGradient(
                   colors: [
                     PremiumColors.lightGrey,
                     PremiumColors.mediumGrey,

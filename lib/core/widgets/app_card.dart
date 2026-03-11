@@ -3,22 +3,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
-import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class AppCard extends StatelessWidget {
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-  final EdgeInsetsGeometry margin;
-  final BorderRadiusGeometry borderRadius;
-  final List<BoxShadow>? boxShadow;
-  final Gradient? gradient;
-  final Color? backgroundColor;
-  final VoidCallback? onTap;
-  final bool isSelected;
 
   const AppCard({
-    super.key,
-    required this.child,
+    required this.child, super.key,
     this.padding = const EdgeInsets.all(16),
     this.margin = const EdgeInsets.all(8),
     this.borderRadius = const BorderRadius.all(Radius.circular(12)),
@@ -28,6 +17,15 @@ class AppCard extends StatelessWidget {
     this.onTap,
     this.isSelected = false,
   });
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry margin;
+  final BorderRadiusGeometry borderRadius;
+  final List<BoxShadow>? boxShadow;
+  final Gradient? gradient;
+  final Color? backgroundColor;
+  final VoidCallback? onTap;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
