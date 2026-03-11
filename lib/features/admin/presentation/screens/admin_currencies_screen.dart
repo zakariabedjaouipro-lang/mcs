@@ -35,17 +35,22 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Directionality.of(context) == TextDirection.rtl;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('إدارة أسعار الصرف'),
+        title: Text(
+          isArabic ? 'العملات وأسعار الصرف' : 'Currencies & Exchange Rates',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        centerTitle: true,
+        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () =>
                 context.read<AdminBloc>().add(const LoadExchangeRates()),
-            tooltip: 'تحديث',
+            tooltip: isArabic ? 'تحديث' : 'Refresh',
           ),
-          const SizedBox(width: 8),
         ],
       ),
       body: BlocBuilder<AdminBloc, AdminState>(
@@ -53,11 +58,39 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
           if (state is AdminLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (state is ExchangeRatesLoaded) {
-            return _exchangeRatesTable(state.rates);
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isArabic
+                        ? 'أسعار الصرف الحالية:'
+                        : 'Current Exchange Rates:',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 16),
+                  ..._buildExchangeRateCards(state.rates, isArabic),
+                  const SizedBox(height: 32),
+                  Align(
+                    alignment: Alignment.center,
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.add),
+                      label: Text(isArabic ? 'إضافة عملة' : 'Add Currency'),
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
-
           if (state is AdminError) {
             return Center(
               child: Column(
@@ -67,18 +100,52 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
                   const SizedBox(height: 16),
                   Text(
                     state.message,
-                    style:
-                        TextStyles.bodyMedium.copyWith(color: Colors.grey[600]),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.grey[600]),
                   ),
                 ],
               ),
             );
           }
-
           return const Center(child: Text('جاري تحميل البيانات...'));
         },
       ),
     );
+  }
+
+  List<Widget> _buildExchangeRateCards(
+      Map<String, double> rates, bool isArabic) {
+    final List<Map<String, String>> pairs = [
+      {'from': 'USD', 'to': 'EUR'},
+      {'from': 'USD', 'to': 'DZD'},
+      {'from': 'EUR', 'to': 'USD'},
+      {'from': 'EUR', 'to': 'DZD'},
+      {'from': 'DZD', 'to': 'USD'},
+      {'from': 'DZD', 'to': 'EUR'},
+    ];
+    return pairs.map((pair) {
+      final key = '${pair['from']}_${pair['to']}';
+      final rate = rates[key] ?? 0.0;
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          elevation: 2,
+          child: ListTile(
+            leading: Icon(Icons.currency_exchange, color: Colors.purple),
+            title: Text(isArabic
+                ? 'من ${pair['from']} إلى ${pair['to']}'
+                : 'From ${pair['from']} to ${pair['to']}'),
+            subtitle: Text(isArabic ? 'السعر الحالي' : 'Current Rate'),
+            trailing: Text(rate.toStringAsFixed(4),
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ),
+      );
+    }).toList();
   }
 
   Widget _exchangeRatesTable(Map<String, double> rates) {

@@ -41,6 +41,12 @@ class PremiumColors {
   static const Color warningOrange = Color(0xFFF59E0B);
   static const Color errorRed = Color(0xFFEF4444);
 
+// ── Status Aliases (for compatibility) ───────────────────────
+  static const Color green = successGreen;
+  static const Color orange = warningOrange;
+  static const Color red = errorRed;
+  static const Color blue = primaryBlue;
+
   // ── Neutral Colors ─────────────────────────────────────────
   static const Color white = Color(0xFFFFFFFF);
   static const Color almostWhite = Color(0xFFFAFBFC);

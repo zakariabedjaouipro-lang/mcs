@@ -1,41 +1,65 @@
 /// Application router using GoRouter.
-///
 /// Defines all routes and role-based navigation guards.
+
 library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:mcs/core/config/supabase_config.dart';
+
+// Admin
 import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart';
-// App Shell and new screens
+
+// App shell
 import 'package:mcs/features/app/shells/app_shell.dart';
-import 'package:mcs/features/appointment/presentation/screens/appointments_screen.dart';
+
+// Appointment
+import 'package:mcs/features/appointment/presentation/screens/premium_appointments_screen.dart';
+
+// Auth
 import 'package:mcs/features/auth/screens/change_password_screen.dart';
 import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
-// Auth screens
-
 import 'package:mcs/features/auth/screens/otp_verification_screen.dart';
 import 'package:mcs/features/auth/screens/premium_login_screen.dart';
 import 'package:mcs/features/auth/screens/premium_register_screen.dart';
+
+// Dashboard
 import 'package:mcs/features/dashboard/screens/premium_dashboard_screen.dart';
-// Role-based dashboards
-import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen.dart';
+
+// Doctor
+import 'package:mcs/features/doctor/presentation/screens/premium_doctor_dashboard_screen.dart';
+
+// Employee
 import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
+
+// Landing
 import 'package:mcs/features/landing/screens/contact_screen.dart' as contact;
 import 'package:mcs/features/landing/screens/download_screen.dart';
 import 'package:mcs/features/landing/screens/features_screen.dart';
-// Landing screens
-import 'package:mcs/features/landing/screens/landing_screen.dart';
+import 'package:mcs/features/landing/screens/premium_landing_screen.dart'
+    as premium_landing;
 import 'package:mcs/features/landing/screens/pricing_screen.dart';
+
+// Patient
+import 'package:mcs/features/patient/presentation/screens/premium_patient_home_screen.dart';
 import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
+
+// Records
 import 'package:mcs/features/records/presentation/screens/records_screen.dart';
-import 'package:mcs/features/settings/presentation/screens/settings_screen.dart';
+
+// Settings
+import 'package:mcs/features/settings/presentation/screens/premium_settings_screen.dart';
+
+// Splash
 import 'package:mcs/features/splash/screens/splash_screen.dart';
 
-// ── Route Paths ────────────────────────────────────────────
+/// ─────────────────────────────────────────────────
+/// Route Paths
+/// ─────────────────────────────────────────────────
 abstract class AppRoutes {
-  // Landing / public
+  // Public
   static const String landing = '/';
   static const String features = '/features';
   static const String pricing = '/pricing';
@@ -49,8 +73,9 @@ abstract class AppRoutes {
   static const String forgotPassword = '/forgot-password';
   static const String changePassword = '/change-password';
 
-  // Dashboards (role-based)
+  // Dashboards
   static const String dashboard = '/dashboard';
+
   static const String patientHome = '/patient';
   static const String doctorHome = '/doctor';
   static const String employeeHome = '/employee';
@@ -58,24 +83,15 @@ abstract class AppRoutes {
   static const String superAdminHome = '/super-admin';
 
   // Patient
-  static const String booking = '/patient/booking';
-  static const String patientProfile = '/patient/profile';
   static const String patients = '/patient/patients';
   static const String appointments = '/patient/appointments';
   static const String records = '/patient/records';
   static const String settings = '/patient/settings';
 
-  // Employee
-  static const String inventoryList = '/employee/inventory';
-  static const String invoicesList = '/employee/invoices';
-
-  // Doctor
-  static const String doctorAppointments = '/doctor/appointments';
-  static const String doctorPatients = '/doctor/patients';
-
-  // Appointment details (with ID parameter)
+  // Dynamic routes
   static String appointmentDetails(String appointmentId) =>
       '/patient/appointment/$appointmentId';
+
   static String rescheduleAppointment(String appointmentId) =>
       '/patient/reschedule/$appointmentId';
 
@@ -83,7 +99,9 @@ abstract class AppRoutes {
   static const String notFound = '/404';
 }
 
-// ── Router Configuration ───────────────────────────────────
+/// ─────────────────────────────────────────────────
+/// Router Configuration
+/// ─────────────────────────────────────────────────
 class AppRouter {
   const AppRouter._();
 
@@ -98,36 +116,37 @@ class AppRouter {
     debugLogDiagnostics: true,
     redirect: _guard,
     routes: _routes,
-    errorBuilder: (context, state) => _ErrorScreen(
-      error: state.error?.toString() ?? 'Page not found',
-    ),
+    errorBuilder: (context, state) =>
+        _ErrorScreen(error: state.error?.toString() ?? 'Page not found'),
   );
 
-  // ── Route Guard ────────────────────────────────────────
+  /// ─────────────────────────────────────────────────
+  /// Route Guard
+  /// ─────────────────────────────────────────────────
   static String? _guard(BuildContext context, GoRouterState state) {
     final isAuthenticated = SupabaseConfig.isAuthenticated;
+
     final isAuthRoute = state.matchedLocation == AppRoutes.login ||
         state.matchedLocation == AppRoutes.register ||
         state.matchedLocation == AppRoutes.forgotPassword ||
         state.matchedLocation == AppRoutes.otpVerification;
+
     final isPublicRoute = state.matchedLocation == AppRoutes.landing ||
         state.matchedLocation == AppRoutes.features ||
         state.matchedLocation == AppRoutes.pricing ||
         state.matchedLocation == AppRoutes.contact ||
         state.matchedLocation == AppRoutes.download;
 
-    // Allow public routes always.
     if (isPublicRoute) return null;
 
-    // Redirect unauthenticated users to login.
-    if (!isAuthenticated && !isAuthRoute) return AppRoutes.login;
+    if (!isAuthenticated && !isAuthRoute) {
+      return AppRoutes.login;
+    }
 
-    // Redirect authenticated users away from auth pages.
     if (isAuthenticated && isAuthRoute) {
       return _getRoleBasedHomePath();
     }
 
-    // Redirect /dashboard to role-based home
     if (isAuthenticated && state.matchedLocation == AppRoutes.dashboard) {
       return _getRoleBasedHomePath();
     }
@@ -135,198 +154,169 @@ class AppRouter {
     return null;
   }
 
-  /// Get the home route based on the authenticated user's role.
+  /// Get role-based home
   static String _getRoleBasedHomePath() {
     try {
       final authUser = SupabaseConfig.client.auth.currentUser;
-      if (authUser == null) return AppRoutes.patientHome;
 
-      final roleStr = authUser.userMetadata?['role'] as String? ?? 'patient';
+      if (authUser == null) {
+        return AppRoutes.patientHome;
+      }
 
-      switch (roleStr) {
+      final role = authUser.userMetadata?['role'] as String? ?? 'patient';
+
+      switch (role) {
         case 'super_admin':
           return AppRoutes.superAdminHome;
+
         case 'clinic_admin':
           return AppRoutes.adminHome;
+
         case 'doctor':
           return AppRoutes.doctorHome;
+
         case 'nurse':
         case 'receptionist':
         case 'pharmacist':
         case 'lab_technician':
         case 'radiographer':
           return AppRoutes.employeeHome;
-        case 'patient':
-        case 'relative':
+
         default:
           return AppRoutes.patientHome;
       }
-    } catch (e) {
-      // Fallback to patient home if anything goes wrong
+    } catch (_) {
       return AppRoutes.patientHome;
     }
   }
 
-  // ── Routes ─────────────────────────────────────────────
+  /// ─────────────────────────────────────────────────
+  /// Routes
+  /// ─────────────────────────────────────────────────
   static final List<RouteBase> _routes = [
-    // -- Public / Landing --
+    /// Public
     GoRoute(
       path: AppRoutes.landing,
-      name: 'landing',
-      builder: (context, state) => const LandingScreen(),
+      builder: (context, state) => const premium_landing.PremiumLandingScreen(),
     ),
+
     GoRoute(
       path: AppRoutes.features,
-      name: 'features',
       builder: (context, state) => const FeaturesScreen(),
     ),
+
     GoRoute(
       path: AppRoutes.pricing,
-      name: 'pricing',
       builder: (context, state) => const PricingScreen(),
     ),
+
     GoRoute(
       path: AppRoutes.contact,
-      name: 'contact',
       builder: (context, state) => const contact.ContactScreenLanding(),
     ),
+
     GoRoute(
       path: AppRoutes.download,
-      name: 'download',
       builder: (context, state) => const DownloadScreen(),
     ),
 
-    // -- Auth --
+    /// Auth
     GoRoute(
       path: AppRoutes.login,
-      name: 'login',
       builder: (context, state) => const PremiumLoginScreen(),
     ),
+
     GoRoute(
       path: AppRoutes.register,
-      name: 'register',
       builder: (context, state) => const PremiumRegisterScreen(),
     ),
+
     GoRoute(
       path: AppRoutes.otpVerification,
-      name: 'otpVerification',
       builder: (context, state) => const OtpVerificationScreen(),
     ),
+
     GoRoute(
       path: AppRoutes.forgotPassword,
-      name: 'forgotPassword',
       builder: (context, state) => const ForgotPasswordScreen(),
     ),
+
     GoRoute(
       path: AppRoutes.changePassword,
-      name: 'changePassword',
       builder: (context, state) => const ChangePasswordScreen(),
     ),
 
-    // -- Dashboard (redirects to /patient by default) --
+    /// Dashboard
     GoRoute(
       path: AppRoutes.dashboard,
-      name: 'dashboard',
-      builder: (context, state) => const AppShellScreen(
-        child: PremiumDashboardScreen(),
-      ),
+      builder: (context, state) =>
+          const AppShellScreen(child: PremiumDashboardScreen()),
     ),
 
-    // -- Patient --
+    /// Patient
     GoRoute(
       path: AppRoutes.patientHome,
-      name: 'patientHome',
-      builder: (context, state) => const AppShellScreen(
-        child: PremiumDashboardScreen(),
-      ),
+      builder: (context, state) =>
+          const AppShellScreen(child: PremiumPatientHomeScreen()),
       routes: [
         GoRoute(
-          path: 'dashboard',
-          builder: (context, state) => const AppShellScreen(
-            child: PremiumDashboardScreen(),
-          ),
-        ),
-        GoRoute(
           path: 'patients',
-          builder: (context, state) => const AppShellScreen(
-            child: PatientsScreen(),
-          ),
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientsScreen()),
         ),
         GoRoute(
           path: 'appointments',
-          builder: (context, state) => const AppShellScreen(
-            child: AppointmentsScreen(),
-          ),
+          builder: (context, state) =>
+              const AppShellScreen(child: PremiumAppointmentsScreen()),
         ),
         GoRoute(
           path: 'records',
-          builder: (context, state) => const AppShellScreen(
-            child: RecordsScreen(),
-          ),
+          builder: (context, state) =>
+              const AppShellScreen(child: RecordsScreen()),
         ),
         GoRoute(
           path: 'settings',
-          builder: (context, state) => const AppShellScreen(
-            child: SettingsScreen(),
-          ),
+          builder: (context, state) =>
+              const AppShellScreen(child: PremiumSettingsScreen()),
         ),
       ],
     ),
 
-    // -- Doctor --
+    /// Doctor
     GoRoute(
       path: AppRoutes.doctorHome,
-      name: 'doctorHome',
-      builder: (context, state) => const DoctorDashboardScreen(),
+      builder: (context, state) => const PremiumDoctorDashboardScreen(),
     ),
 
-    // -- Employee --
+    /// Employee
     GoRoute(
       path: AppRoutes.employeeHome,
-      name: 'employeeHome',
       builder: (context, state) => const EmployeeDashboardScreen(),
     ),
 
-    // -- Admin --
+    /// Admin
     GoRoute(
       path: AppRoutes.adminHome,
-      name: 'adminHome',
       builder: (context, state) => const AdminDashboardScreen(),
     ),
+
+    /// Super Admin
     GoRoute(
       path: AppRoutes.superAdminHome,
-      name: 'superAdminHome',
       builder: (context, state) => const SuperAdminScreen(),
     ),
+
+    /// Splash
     GoRoute(
       path: '/splash',
-      name: 'splash',
       builder: (context, state) => const SplashScreen(),
-    ),
-    GoRoute(
-      path: '/admin',
-      name: 'adminDashboard',
-      builder: (context, state) => const AdminDashboardScreen(),
-    ),
-    GoRoute(
-      path: '/super-admin',
-      name: 'superAdminDashboard',
-      builder: (context, state) => const SuperAdminScreen(),
-    ),
-    GoRoute(
-      path: '/doctor',
-      name: 'doctorDashboard',
-      builder: (context, state) => const DoctorDashboardScreen(),
-    ),
-    GoRoute(
-      path: '/employee',
-      name: 'employeeDashboard',
-      builder: (context, state) => const EmployeeDashboardScreen(),
     ),
   ];
 }
 
-// ── Error Screen ────────────────────────────────────────────
+/// ─────────────────────────────────────────────────
+/// Error Screen
+/// ─────────────────────────────────────────────────
 class _ErrorScreen extends StatelessWidget {
   const _ErrorScreen({required this.error});
 

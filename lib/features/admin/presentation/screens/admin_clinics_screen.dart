@@ -39,83 +39,162 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = Directionality.of(context) == TextDirection.rtl;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('إدارة العيادات'),
+        title: Text(
+          isArabic ? 'العيادات' : 'Clinics',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        centerTitle: true,
+        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => context.read<AdminBloc>().add(const LoadClinics()),
-            tooltip: 'تحديث',
+            tooltip: isArabic ? 'تحديث' : 'Refresh',
           ),
-          const SizedBox(width: 8),
         ],
       ),
       body: BlocBuilder<AdminBloc, AdminState>(
         builder: (context, state) {
           if (state is AdminLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
-
           if (state is ClinicsLoaded) {
             if (state.clinics.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.local_hospital_outlined,
-                      size: 64,
-                      color: Colors.grey[400],
-                    ),
+                    Icon(Icons.local_hospital_outlined,
+                        size: 64, color: Colors.grey[400]),
                     const SizedBox(height: 16),
                     Text(
-                      'لا توجد عيادات مسجلة بعد',
-                      style: TextStyles.bodyMedium.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                      isArabic
+                          ? 'لا توجد عيادات مسجلة بعد'
+                          : 'No clinics registered yet',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.grey[600]),
                     ),
                   ],
                 ),
               );
             }
-            return _clinicsGrid(clinics: state.clinics);
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                  childAspectRatio: 0.75,
+                ),
+                itemCount: state.clinics.length,
+                itemBuilder: (context, index) {
+                  final clinic = state.clinics[index];
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: clinic.logoUrl != null
+                                      ? Colors.white
+                                      : Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(Icons.local_hospital,
+                                    color: Colors.teal, size: 32),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  clinic.name ??
+                                      (isArabic ? 'عيادة' : 'Clinic'),
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            isArabic
+                                ? 'المدينة: ${clinic.city ?? '-'}'
+                                : 'City: ${clinic.city ?? '-'}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            isArabic
+                                ? 'الحالة: ${clinic.isSubscriptionExpired ? 'منتهية' : 'نشطة'}'
+                                : 'Status: ${clinic.isSubscriptionExpired ? 'Expired' : 'Active'}',
+                            style: TextStyle(
+                              color: clinic.isSubscriptionExpired
+                                  ? Colors.red
+                                  : Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.edit),
+                              label: Text(isArabic ? 'تعديل' : 'Edit'),
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
           }
-
           if (state is AdminError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.grey[400],
-                  ),
+                  Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
                   Text(
                     state.message,
-                    style: TextStyles.bodyMedium.copyWith(
-                      color: Colors.grey[600],
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.grey[600]),
                   ),
                 ],
               ),
             );
           }
-
-          return const Center(
-            child: Text('جاري تحميل البيانات...'),
-          );
+          return const Center(child: Text('جاري تحميل البيانات...'));
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddClinicDialog(context),
         icon: const Icon(Icons.add_business),
-        label: const Text('إضافة عيادة'),
-        backgroundColor: AppColors.primary,
+        label: Text(isArabic ? 'إضافة عيادة' : 'Add Clinic'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
