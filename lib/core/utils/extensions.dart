@@ -391,9 +391,6 @@ extension BuildContextExtensions on BuildContext {
   }) =>
       Navigator.of(this).pushNamed<T>(routeName, arguments: arguments);
 
-  /// Pop route.
-  void pop<T extends Object?>([T? result]) => Navigator.of(this).pop(result);
-
   /// Show snackbar.
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
     String message, {

@@ -4,8 +4,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:mcs/core/config/supabase_config.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/extensions.dart';
 
@@ -85,12 +85,12 @@ class _AppShellScreenState extends State<AppShellScreen> {
   }
 
   // ✅ الوظائف المنفذة (بدلاً من TODOs)
-  void _navigateToInventory() => context.go('/inventory');
-  void _navigateToInvoices() => context.go('/invoices');
+  void _navigateToInventory() => context.go(AppRoutes.inventory);
+  void _navigateToInvoices() => context.go(AppRoutes.invoices);
 
   Future<void> _logout() async {
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context); // أغلق الدرواِر أولاً
+    if (context.canPop()) {
+      context.pop(); // أغلق الدرواِر أولاً
     }
 
     // أظهر loading
@@ -105,15 +105,15 @@ class _AppShellScreenState extends State<AppShellScreen> {
 
     try {
       await SupabaseConfig.auth.signOut();
-      if (mounted && Navigator.canPop(context)) {
-        Navigator.pop(context); // أغلق loading dialog
+      if (mounted && context.canPop()) {
+        context.pop(); // أغلق loading dialog
         if (mounted) {
-          context.go('/login');
+          context.go(AppRoutes.login);
         }
       }
     } catch (e) {
-      if (mounted && Navigator.canPop(context)) {
-        Navigator.pop(context); // أغلق loading dialog
+      if (mounted && context.canPop()) {
+        context.pop(); // أغلق loading dialog
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('خطأ في تسجيل الخروج: $e')),
@@ -162,7 +162,7 @@ class _AppShellScreenState extends State<AppShellScreen> {
             leading: const Icon(Icons.inventory_2),
             title: const Text('المخزون'),
             onTap: () {
-              Navigator.pop(context);
+              context.pop();
               _navigateToInventory();
             },
           ),
@@ -170,7 +170,7 @@ class _AppShellScreenState extends State<AppShellScreen> {
             leading: const Icon(Icons.receipt_long),
             title: const Text('الفواتير'),
             onTap: () {
-              Navigator.pop(context);
+              context.pop();
               _navigateToInvoices();
             },
           ),

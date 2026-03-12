@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mcs/core/services/video_call_service.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
@@ -185,8 +186,8 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
             _localRenderer.dispose();
             _remoteRenderer.dispose();
 
-            if (mounted && Navigator.canPop(context)) {
-              Navigator.pop(context);
+            if (mounted && context.canPop()) {
+              context.pop();
             }
           },
         ),

@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 
@@ -47,7 +48,7 @@ class AppHeader extends StatelessWidget {
                           if (context.canPop()) {
                             context.pop();
                           } else {
-                            context.go('/');
+                            context.go(AppRoutes.landing);
                           }
                         },
                   ),

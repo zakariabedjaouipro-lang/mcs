@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:go_router/go_router.dart';
 import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:mcs/core/widgets/custom_button.dart';
 import 'package:mcs/core/widgets/custom_text_field.dart';
@@ -55,8 +55,8 @@ class _PatientChangePasswordScreenState
               ),
             );
 
-            if (Navigator.canPop(context)) {
-              Navigator.pop(context);
+            if (context.canPop()) {
+              context.pop();
             }
           }
 

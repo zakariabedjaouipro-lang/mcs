@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/services/currency_service.dart';
 
@@ -157,8 +158,8 @@ class CurrencySwitcherSimple extends StatelessWidget {
                   trailing:
                       currency == curr ? const Icon(Icons.check_circle) : null,
                   onTap: () {
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
+                    if (context.canPop()) {
+                      context.pop();
                     }
                     onChanged?.call(curr);
                   },
@@ -170,8 +171,8 @@ class CurrencySwitcherSimple extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              if (Navigator.canPop(context)) {
-                Navigator.pop(context);
+              if (context.canPop()) {
+                context.pop();
               }
             },
             child: const Text('Cancel'),

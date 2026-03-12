@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/validators.dart';
@@ -50,9 +52,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
           );
           // توجيه إلى شاشة التحقق من OTP
-          Navigator.of(context).pushNamed(
-            '/otp-verification',
-            arguments: _inputController.text.trim(),
+          context.push(
+            AppRoutes.otpVerification,
           );
         } else if (state is ForgotPasswordFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -222,9 +223,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           // Back to Login
                           Center(
                             child: GestureDetector(
-                              onTap: isLoading
-                                  ? null
-                                  : () => Navigator.pop(context),
+                              onTap: isLoading ? null : () => context.pop(),
                               child: Text(
                                 'العودة إلى تسجيل الدخول',
                                 style: TextStyles.subtitle2.copyWith(

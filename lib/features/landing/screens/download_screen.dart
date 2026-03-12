@@ -2,7 +2,8 @@
 library;
 
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/extensions.dart';
@@ -88,8 +89,8 @@ class _DownloadScreenState extends State<DownloadScreen> {
             children: [
               IconButton(
                 onPressed: () {
-                  if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
+                  if (context.canPop()) {
+                    context.pop();
                   } else {
                     context.go(AppRoutes.landing);
                   }

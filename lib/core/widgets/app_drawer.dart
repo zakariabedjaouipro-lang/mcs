@@ -3,6 +3,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/models/user_model.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
@@ -121,80 +123,83 @@ class AppDrawer extends StatelessWidget {
           context,
           icon: Icons.home_outlined,
           title: localizations.home,
-          onTap: () => _navigateTo(context, '/home'),
+          onTap: () => context.go(AppRoutes.patientHome),
         ),
         _buildNavItem(
           context,
           icon: Icons.person_outline,
           title: localizations.profile,
-          onTap: () => _navigateTo(context, '/profile'),
+          onTap: () => context.go(AppRoutes.settings),
         ),
         _buildNavItem(
           context,
           icon: Icons.calendar_today_outlined,
           title: localizations.appointments,
-          onTap: () => _navigateTo(context, '/appointments'),
+          onTap: () => context.go(AppRoutes.appointments),
         ),
         _buildNavItem(
           context,
           icon: Icons.people_outline,
           title: localizations.patients,
-          onTap: () => _navigateTo(context, '/patients'),
+          onTap: () => context.go(AppRoutes.patients),
         ),
         _buildNavItem(
           context,
           icon: Icons.local_hospital_outlined,
           title: localizations.doctors,
-          onTap: () => _navigateTo(context, '/doctors'),
+          onTap: () => Navigator.pop(context), // TODO: Implement doctors route
         ),
         _buildNavItem(
           context,
           icon: Icons.description_outlined,
           title: localizations.prescriptions,
-          onTap: () => _navigateTo(context, '/prescriptions'),
+          onTap: () =>
+              Navigator.pop(context), // TODO: Implement prescriptions route
         ),
         _buildNavItem(
           context,
           icon: Icons.receipt_long_outlined,
           title: localizations.invoices,
-          onTap: () => _navigateTo(context, '/invoices'),
+          onTap: () => context.go(AppRoutes.invoices),
         ),
         _buildNavItem(
           context,
           icon: Icons.inventory_2_outlined,
           title: localizations.inventory,
-          onTap: () => _navigateTo(context, '/inventory'),
+          onTap: () => context.go(AppRoutes.inventory),
         ),
         _buildNavItem(
           context,
           icon: Icons.science_outlined,
           title: localizations.labResults,
-          onTap: () => _navigateTo(context, '/lab-results'),
+          onTap: () =>
+              Navigator.pop(context), // TODO: Implement lab results route
         ),
         _buildNavItem(
           context,
           icon: Icons.videocam_outlined,
           title: localizations.videoCalls,
-          onTap: () => _navigateTo(context, '/video-calls'),
+          onTap: () =>
+              Navigator.pop(context), // TODO: Implement video calls route
         ),
         _buildNavItem(
           context,
           icon: Icons.assessment_outlined,
           title: localizations.reports,
-          onTap: () => _navigateTo(context, '/reports'),
+          onTap: () => Navigator.pop(context), // TODO: Implement reports route
         ),
         const Divider(height: 32),
         _buildNavItem(
           context,
           icon: Icons.settings_outlined,
           title: localizations.settings,
-          onTap: () => _navigateTo(context, '/settings'),
+          onTap: () => context.go(AppRoutes.settings),
         ),
         _buildNavItem(
           context,
           icon: Icons.help_outline,
           title: localizations.support,
-          onTap: () => _navigateTo(context, '/support'),
+          onTap: () => Navigator.pop(context), // TODO: Implement support route
         ),
       ],
     );
@@ -218,14 +223,14 @@ class AppDrawer extends StatelessWidget {
                   ),
                   onTap: () {
                     context.read<AuthBloc>().add(const LogoutRequested());
-                    Navigator.pop(context);
+                    context.pop();
                   },
                 ),
               ListTile(
                 leading: const Icon(Icons.info_outline),
                 title: Text(localizations.about),
                 onTap: () {
-                  Navigator.pop(context);
+                  context.pop();
                   _showAboutDialog(context, localizations);
                 },
               ),
@@ -246,16 +251,12 @@ class AppDrawer extends StatelessWidget {
       leading: Icon(icon),
       title: Text(title),
       onTap: () {
-        if (Navigator.canPop(context)) {
-          Navigator.pop(context);
+        if (context.canPop()) {
+          context.pop();
         }
         onTap();
       },
     );
-  }
-
-  void _navigateTo(BuildContext context, String route) {
-    Navigator.pushNamed(context, route);
   }
 
   void _showAboutDialog(BuildContext context, AppLocalizations localizations) {

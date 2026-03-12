@@ -6,6 +6,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mcs/core/config/supabase_config.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 // Admin
 import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart';
@@ -25,6 +26,7 @@ import 'package:mcs/features/dashboard/screens/premium_dashboard_screen.dart';
 import 'package:mcs/features/doctor/presentation/screens/premium_doctor_dashboard_screen.dart';
 // Employee
 import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
+import 'package:mcs/features/employee/presentation/screens/inventory_screen.dart';
 // Landing
 import 'package:mcs/features/landing/screens/contact_screen.dart' as contact;
 import 'package:mcs/features/landing/screens/download_screen.dart';
@@ -41,50 +43,6 @@ import 'package:mcs/features/records/presentation/screens/records_screen.dart';
 import 'package:mcs/features/settings/presentation/screens/premium_settings_screen.dart';
 // Splash
 import 'package:mcs/features/splash/screens/splash_screen.dart';
-
-/// ─────────────────────────────────────────────────
-/// Route Paths
-/// ─────────────────────────────────────────────────
-abstract class AppRoutes {
-  // Public
-  static const String landing = '/';
-  static const String features = '/features';
-  static const String pricing = '/pricing';
-  static const String contact = '/contact';
-  static const String download = '/download';
-
-  // Auth
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String otpVerification = '/otp-verification';
-  static const String forgotPassword = '/forgot-password';
-  static const String changePassword = '/change-password';
-
-  // Dashboards
-  static const String dashboard = '/dashboard';
-
-  static const String patientHome = '/patient';
-  static const String doctorHome = '/doctor';
-  static const String employeeHome = '/employee';
-  static const String adminHome = '/admin';
-  static const String superAdminHome = '/super-admin';
-
-  // Patient
-  static const String patients = '/patient/patients';
-  static const String appointments = '/patient/appointments';
-  static const String records = '/patient/records';
-  static const String settings = '/patient/settings';
-
-  // Dynamic routes
-  static String appointmentDetails(String appointmentId) =>
-      '/patient/appointment/$appointmentId';
-
-  static String rescheduleAppointment(String appointmentId) =>
-      '/patient/reschedule/$appointmentId';
-
-  // Error
-  static const String notFound = '/404';
-}
 
 /// ─────────────────────────────────────────────────
 /// Router Configuration
@@ -279,6 +237,17 @@ class AppRouter {
     GoRoute(
       path: AppRoutes.employeeHome,
       builder: (context, state) => const EmployeeDashboardScreen(),
+      routes: [
+        GoRoute(
+          path: 'inventory',
+          builder: (context, state) => const InventoryScreen(),
+        ),
+        // TODO: Implement InvoicesScreen
+        // GoRoute(
+        //   path: 'invoices',
+        //   builder: (context, state) => const InvoicesScreen(),
+        // ),
+      ],
     ),
 
     /// Admin

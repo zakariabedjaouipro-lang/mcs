@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 import 'package:mcs/core/widgets/app_button.dart';
@@ -124,7 +125,10 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
   }
 
   Widget _buildClinicCard(
-      BuildContext context, Map<String, dynamic> clinic, bool isArabic,) {
+    BuildContext context,
+    Map<String, dynamic> clinic,
+    bool isArabic,
+  ) {
     Color statusColor;
     String statusText;
 
@@ -307,14 +311,18 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              isArabic ? 'تمت إضافة العيادة' : 'Clinic added successfully',),
+            isArabic ? 'تمت إضافة العيادة' : 'Clinic added successfully',
+          ),
         ),
       );
     }
   }
 
   Future<void> _showClinicDetails(
-      BuildContext context, Map<String, dynamic> clinic, bool isArabic,) async {
+    BuildContext context,
+    Map<String, dynamic> clinic,
+    bool isArabic,
+  ) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -359,7 +367,10 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
   }
 
   Future<void> _showEditClinicDialog(
-      BuildContext context, Map<String, dynamic> clinic, bool isArabic,) async {
+    BuildContext context,
+    Map<String, dynamic> clinic,
+    bool isArabic,
+  ) async {
     final nameController =
         TextEditingController(text: clinic['name']?.toString() ?? '');
     final emailController =

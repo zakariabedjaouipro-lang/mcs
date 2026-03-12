@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 
 /// Theme mode enum.
@@ -110,8 +111,8 @@ class ThemeSwitcher extends StatelessWidget {
             )
           : null,
       onTap: () {
-        if (Navigator.canPop(context)) {
-          Navigator.pop(context);
+        if (context.canPop()) {
+          context.pop();
         }
         _changeTheme(context, mode);
       },

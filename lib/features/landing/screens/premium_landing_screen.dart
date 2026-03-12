@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 import 'package:mcs/core/widgets/app_button.dart';
@@ -82,7 +83,7 @@ class PremiumLandingScreen extends StatelessWidget {
           const Spacer(),
           TextButton(
             onPressed: () {
-              context.go('/login');
+              context.go(AppRoutes.login);
             },
             child: Text(isArabic ? 'تسجيل الدخول' : 'Login'),
           ),
@@ -146,14 +147,14 @@ class PremiumLandingScreen extends StatelessWidget {
                 label: isArabic ? 'ابدأ الآن' : 'Get Started',
                 icon: Icons.arrow_forward,
                 onPressed: () {
-                  context.go('/register');
+                  context.go(AppRoutes.register);
                 },
               ),
               AppButton(
                 label: isArabic ? 'عرض المزايا' : 'View Features',
                 variant: AppButtonVariant.secondary,
                 onPressed: () {
-                  context.go('/features');
+                  context.go(AppRoutes.features);
                 },
               ),
             ],
