@@ -432,4 +432,3 @@ class IncomingCallScreen extends StatelessWidget {
     );
   }
 }
-

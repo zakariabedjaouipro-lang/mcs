@@ -408,4 +408,3 @@ class ShakeTransition extends StatelessWidget {
     );
   }
 }
-
