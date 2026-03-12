@@ -2,6 +2,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 import 'package:mcs/core/widgets/app_button.dart';
@@ -80,7 +81,9 @@ class PremiumLandingScreen extends StatelessWidget {
           ),
           const Spacer(),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              context.go('/login');
+            },
             child: Text(isArabic ? 'تسجيل الدخول' : 'Login'),
           ),
         ],
@@ -142,12 +145,16 @@ class PremiumLandingScreen extends StatelessWidget {
               AppButton(
                 label: isArabic ? 'ابدأ الآن' : 'Get Started',
                 icon: Icons.arrow_forward,
-                onPressed: () {},
+                onPressed: () {
+                  context.go('/register');
+                },
               ),
               AppButton(
                 label: isArabic ? 'عرض المزايا' : 'View Features',
                 variant: AppButtonVariant.secondary,
-                onPressed: () {},
+                onPressed: () {
+                  context.go('/features');
+                },
               ),
             ],
           ),
@@ -214,7 +221,7 @@ class PremiumLandingScreen extends StatelessWidget {
               crossAxisCount: crossAxis,
               crossAxisSpacing: 24,
               mainAxisSpacing: 24,
-              childAspectRatio: 3,
+              childAspectRatio: 2.4,
             ),
             itemBuilder: (context, index) {
               final feature = features[index];
@@ -237,12 +244,13 @@ class PremiumLandingScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            PremiumColors.primaryBlue.withValues(alpha: 13),
+                            PremiumColors.primaryBlue.withValues(alpha: 0.13),
                             PremiumColors.white,
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
                         feature['icon']! as IconData,
@@ -252,25 +260,30 @@ class PremiumLandingScreen extends StatelessWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             feature['title']! as String,
                             style: PremiumTextStyles.headingSmall.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 6),
                           Text(
                             feature['desc']! as String,
                             style: PremiumTextStyles.bodySmall.copyWith(
                               color: PremiumColors.lightText,
                             ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
-                    ),
+                    )
                   ],
                 ),
               );

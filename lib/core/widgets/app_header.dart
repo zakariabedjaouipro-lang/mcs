@@ -2,18 +2,20 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class AppHeader extends StatelessWidget {
-
   const AppHeader({
-    required this.title, super.key,
+    required this.title,
+    super.key,
     this.actions,
     this.onBack,
     this.leading,
     this.showBackButton = true,
   });
+
   final String title;
   final List<Widget>? actions;
   final VoidCallback? onBack;
@@ -39,13 +41,15 @@ class AppHeader extends StatelessWidget {
               child: leading ??
                   IconButton(
                     icon: const Icon(Icons.arrow_back),
+                    color: PremiumColors.darkText,
                     onPressed: onBack ??
                         () {
-                          if (Navigator.of(context).canPop()) {
-                            Navigator.of(context).pop();
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go('/');
                           }
                         },
-                    color: PremiumColors.darkText,
                   ),
             ),
           Expanded(
