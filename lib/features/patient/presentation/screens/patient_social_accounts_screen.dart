@@ -300,8 +300,12 @@ class _PatientChangePasswordScreenState
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
             },
             child: const Text('OK'),
           ),

@@ -332,12 +332,16 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            },
             child: Text(context.translateSafe('no')),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               context
                   .read<PatientBloc>()
                   .add(CancelAppointment(appointment.id));

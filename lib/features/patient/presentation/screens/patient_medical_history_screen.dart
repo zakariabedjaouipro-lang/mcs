@@ -159,7 +159,11 @@ class _PatientMedicalHistoryScreenState
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+              },
               child: Text(context.translateSafe('close')),
             ),
           ],
@@ -168,4 +172,3 @@ class _PatientMedicalHistoryScreenState
     );
   }
 }
-

@@ -723,7 +723,11 @@ class _AdminClinicsViewState extends State<AdminClinicsView> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            },
             child: const Text('إغلاق'),
           ),
         ],

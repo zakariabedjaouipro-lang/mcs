@@ -195,7 +195,13 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.login);
+            }
+          },
           color: PremiumColors.darkText,
         ),
         backgroundColor: Colors.transparent,

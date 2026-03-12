@@ -219,12 +219,16 @@ class PatientSettingsScreen extends StatelessWidget {
         content: Text(loc.translate('logout_confirmation')),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            },
             child: Text(loc.translate('cancel')),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
             child: Text(

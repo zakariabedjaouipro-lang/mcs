@@ -71,7 +71,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go(AppRoutes.login);
+                  }
+                },
               ),
               title: Text(
                 'استعادة كلمة المرور',

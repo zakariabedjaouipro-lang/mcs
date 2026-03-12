@@ -23,7 +23,8 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(isArabic ? 'تحديث البيانات...' : 'Refreshing data...'),
+                content:
+                    Text(isArabic ? 'تحديث البيانات...' : 'Refreshing data...'),
               ),
             );
           },
@@ -85,7 +86,8 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
                       border: const OutlineInputBorder(),
                       prefixText: r' $ ',
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -120,7 +122,8 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: PremiumColors.primaryBlue.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: PremiumColors.primaryBlue.withValues(alpha: 0.2)),
+                border: Border.all(
+                    color: PremiumColors.primaryBlue.withValues(alpha: 0.2)),
               ),
               child: Column(
                 children: [
@@ -187,7 +190,8 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
                               width: 40,
                               height: 40,
                               decoration: BoxDecoration(
-                                color: PremiumColors.orange.withValues(alpha: 0.1),
+                                color:
+                                    PremiumColors.orange.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(
@@ -201,7 +205,9 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  isArabic ? 'من ${rate['from']} إلى ${rate['to']}' : 'From ${rate['from']} to ${rate['to']}',
+                                  isArabic
+                                      ? 'من ${rate['from']} إلى ${rate['to']}'
+                                      : 'From ${rate['from']} to ${rate['to']}',
                                   style: PremiumTextStyles.bodyMedium.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: PremiumColors.darkText,
@@ -257,7 +263,8 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _showEditRateDialog(BuildContext context, Map<String, dynamic> rate, bool isArabic) async {
+  Future<void> _showEditRateDialog(
+      BuildContext context, Map<String, dynamic> rate, bool isArabic) async {
     final rateController = TextEditingController(text: rate['rate'] as String);
 
     await showDialog<void>(
@@ -282,23 +289,29 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
                 labelText: isArabic ? 'سعر الصرف' : 'Exchange Rate',
                 border: const OutlineInputBorder(),
               ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
             ),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            },
             child: Text(isArabic ? 'إلغاء' : 'Cancel'),
           ),
           AppButton(
             label: isArabic ? 'حفظ' : 'Save',
             size: AppButtonSize.small,
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(isArabic ? 'تم حفظ السعر' : 'Rate saved successfully'),
+                  content: Text(
+                      isArabic ? 'تم حفظ السعر' : 'Rate saved successfully'),
                 ),
               );
             },
@@ -308,7 +321,8 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _showAddCurrencyDialog(BuildContext context, bool isArabic) async {
+  Future<void> _showAddCurrencyDialog(
+      BuildContext context, bool isArabic) async {
     final codeController = TextEditingController();
     final nameController = TextEditingController();
 
@@ -338,17 +352,23 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            },
             child: Text(isArabic ? 'إلغاء' : 'Cancel'),
           ),
           AppButton(
             label: isArabic ? 'إضافة' : 'Add',
             size: AppButtonSize.small,
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(isArabic ? 'تمت إضافة العملة' : 'Currency added successfully'),
+                  content: Text(isArabic
+                      ? 'تمت إضافة العملة'
+                      : 'Currency added successfully'),
                 ),
               );
             },

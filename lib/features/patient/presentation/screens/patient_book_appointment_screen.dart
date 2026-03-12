@@ -322,7 +322,9 @@ class _PatientBookAppointmentScreenState
                 backgroundColor: Colors.green,
               ),
             );
-            Navigator.pop(context);
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
           } else if (state is PatientError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

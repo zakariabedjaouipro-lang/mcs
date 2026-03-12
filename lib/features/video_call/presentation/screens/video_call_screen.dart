@@ -179,7 +179,16 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
         // Back button
         IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            // End call resources first
+            _videoCallService.dispose();
+            _localRenderer.dispose();
+            _remoteRenderer.dispose();
+
+            if (mounted && Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+          },
         ),
         const Spacer(),
         // Duration timer

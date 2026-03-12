@@ -87,7 +87,13 @@ class _DownloadScreenState extends State<DownloadScreen> {
           child: Row(
             children: [
               IconButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  } else {
+                    context.go(AppRoutes.landing);
+                  }
+                },
                 icon: const Icon(Icons.arrow_back),
               ),
               const SizedBox(width: 16),
@@ -520,4 +526,3 @@ class _DownloadScreenState extends State<DownloadScreen> {
     );
   }
 }
-

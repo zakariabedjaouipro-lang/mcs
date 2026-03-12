@@ -79,7 +79,11 @@ class ThemeSwitcher extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+            },
             child: Text(localizations.close),
           ),
         ],
@@ -106,7 +110,9 @@ class ThemeSwitcher extends StatelessWidget {
             )
           : null,
       onTap: () {
-        Navigator.pop(context);
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
         _changeTheme(context, mode);
       },
       selected: isSelected,
@@ -346,7 +352,11 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+            },
             child: Text(localizations.close),
           ),
         ],
@@ -373,7 +383,9 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
             )
           : null,
       onTap: () {
-        Navigator.pop(context);
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
         _changeTheme(context, mode);
       },
       selected: isSelected,
@@ -393,4 +405,3 @@ class _AnimatedThemeSwitcherState extends State<AnimatedThemeSwitcher>
     );
   }
 }
-

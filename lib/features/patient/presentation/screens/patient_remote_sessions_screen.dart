@@ -217,12 +217,16 @@ void _joinDialog(BuildContext context, VideoSessionModel session) {
         content: Text(context.translateSafe('confirm_join_session')),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            },
             child: Text(context.translateSafe('cancel')),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               context.read<PatientBloc>().add(
                     JoinVideoSession(session.id),
                   );

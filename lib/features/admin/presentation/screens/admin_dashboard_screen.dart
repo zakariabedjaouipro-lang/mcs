@@ -263,7 +263,11 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
         actions: [
           Expanded(
             child: TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+              },
               child: const Text('إلغاء'),
             ),
           ),
@@ -271,7 +275,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
                 AuthService().signOut();
                 if (context.mounted) {
                   context.go(AppRoutes.login);

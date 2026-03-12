@@ -2,13 +2,16 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class AppScaffold extends StatelessWidget {
-
   const AppScaffold({
-    required this.title, required this.child, super.key,
+    required this.title,
+    required this.child,
+    super.key,
     this.actions,
     this.drawer,
     this.appBar,
@@ -29,7 +32,13 @@ class AppScaffold extends StatelessWidget {
             leading: showBackButton
                 ? IconButton(
                     icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () {
+                      if (context.canPop()) {
+                        context.pop();
+                      } else {
+                        context.go(AppRoutes.landing);
+                      }
+                    },
                     color: PremiumColors.darkText,
                   )
                 : null,
@@ -50,4 +59,4 @@ class AppScaffold extends StatelessWidget {
       ),
     );
   }
-}
+}

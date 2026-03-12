@@ -424,12 +424,16 @@ class PremiumAdminDashboardScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            },
             child: Text(isArabic ? 'إلغاء' : 'Cancel'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(

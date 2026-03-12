@@ -157,7 +157,9 @@ class CurrencySwitcherSimple extends StatelessWidget {
                   trailing:
                       currency == curr ? const Icon(Icons.check_circle) : null,
                   onTap: () {
-                    Navigator.pop(context);
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    }
                     onChanged?.call(curr);
                   },
                   selected: currency == curr,
@@ -167,7 +169,11 @@ class CurrencySwitcherSimple extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+            },
             child: const Text('Cancel'),
           ),
         ],
@@ -337,4 +343,3 @@ class PriceDisplay extends StatelessWidget {
     );
   }
 }
-

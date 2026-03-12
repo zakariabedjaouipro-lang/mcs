@@ -55,7 +55,9 @@ class _PatientChangePasswordScreenState
               ),
             );
 
-            Navigator.pop(context);
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
           }
 
           if (state is PatientError) {

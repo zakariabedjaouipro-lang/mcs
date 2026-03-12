@@ -246,7 +246,9 @@ class AppDrawer extends StatelessWidget {
       leading: Icon(icon),
       title: Text(title),
       onTap: () {
-        Navigator.pop(context);
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
         onTap();
       },
     );
@@ -268,4 +270,3 @@ class AppDrawer extends StatelessWidget {
     );
   }
 }
-

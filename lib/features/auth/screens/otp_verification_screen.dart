@@ -123,7 +123,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go(AppRoutes.login);
+                  }
+                },
               ),
               title: Text(
                 'التحقق من الهوية',

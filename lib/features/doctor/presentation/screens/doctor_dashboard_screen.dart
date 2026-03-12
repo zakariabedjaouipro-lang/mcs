@@ -568,12 +568,16 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            },
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
               AuthService().signOut();
               if (mounted) {
                 context.go(AppRoutes.login);
@@ -605,13 +609,17 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+            },
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
               if (reasonController.text.isNotEmpty) {
-                Navigator.pop(context);
+                Navigator.of(context).pop();
                 context.read<DoctorBloc>().add(
                       RejectRemoteSessionRequest(
                         appointmentId,

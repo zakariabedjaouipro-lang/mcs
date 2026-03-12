@@ -89,7 +89,9 @@ class _AppShellScreenState extends State<AppShellScreen> {
   void _navigateToInvoices() => context.go('/invoices');
 
   Future<void> _logout() async {
-    Navigator.pop(context); // أغلق الدرواِر أولاً
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context); // أغلق الدرواِر أولاً
+    }
 
     // أظهر loading
     if (!mounted) return;
@@ -103,16 +105,20 @@ class _AppShellScreenState extends State<AppShellScreen> {
 
     try {
       await SupabaseConfig.auth.signOut();
-      if (mounted) {
+      if (mounted && Navigator.canPop(context)) {
         Navigator.pop(context); // أغلق loading dialog
-        context.go('/login');
+        if (mounted) {
+          context.go('/login');
+        }
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted && Navigator.canPop(context)) {
         Navigator.pop(context); // أغلق loading dialog
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('خطأ في تسجيل الخروج: $e')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('خطأ في تسجيل الخروج: $e')),
+          );
+        }
       }
     }
   }

@@ -189,7 +189,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.pop(),
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go(AppRoutes.login);
+                  }
+                },
               ),
               title: const Text('إنشاء حساب جديد'),
               backgroundColor: AppColors.primary,
