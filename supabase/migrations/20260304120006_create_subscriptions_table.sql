@@ -134,6 +134,10 @@ COMMENT ON COLUMN subscriptions.is_expired IS 'Whether the subscription has expi
 -- Helper Functions
 -- ══════════════════════════════════════════════════════════════════════════════
 
+-- Drop any conflicting functions from clinics migration
+DROP FUNCTION IF EXISTS is_subscription_expired(UUID) CASCADE;
+DROP FUNCTION IF EXISTS get_subscription_days_remaining(UUID) CASCADE;
+
 -- Function to calculate subscription end date
 CREATE OR REPLACE FUNCTION get_subscription_end_date(subscription_id UUID)
 RETURNS TIMESTAMP WITH TIME ZONE AS $$

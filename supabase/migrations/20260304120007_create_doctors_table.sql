@@ -74,14 +74,14 @@ CREATE TABLE IF NOT EXISTS doctors (
 
 -- Create indexes for common queries
 CREATE INDEX idx_doctors_user_id ON doctors(user_id);
-CREATE INDEX idx_doctors_clinic_id ON doctors(clinic_id) WHERE is_active = true;
-CREATE INDEX idx_doctors_specialty_id ON doctors(specialty_id) WHERE is_active = true;
-CREATE INDEX idx_doctors_is_available ON doctors(is_available) WHERE is_active = true;
+CREATE INDEX idx_doctors_clinic_id ON doctors(clinic_id) WHERE is_available = true;
+CREATE INDEX idx_doctors_specialty_id ON doctors(specialty_id) WHERE is_available = true;
+CREATE INDEX idx_doctors_is_available ON doctors(is_available);
 CREATE INDEX idx_doctors_is_verified ON doctors(is_verified);
-CREATE INDEX idx_doctors_rating ON doctors(rating DESC) WHERE is_active = true;
+CREATE INDEX idx_doctors_rating ON doctors(rating DESC) WHERE is_available = true;
 CREATE INDEX idx_doctors_created_at ON doctors(created_at DESC);
 CREATE INDEX idx_doctors_license_number ON doctors(license_number);
-CREATE INDEX idx_doctors_is_accepting_new_patients ON doctors(is_accepting_new_patients) WHERE is_active = true;
+CREATE INDEX idx_doctors_is_accepting_new_patients ON doctors(is_accepting_new_patients) WHERE is_available = true;
 
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies

@@ -192,7 +192,7 @@ INSERT INTO countries (name, name_ar, iso2_code, iso3_code, numeric_code, phone_
 ('Lebanon', 'لبنان', 'LB', 'LBN', 422, '+961', 'LBP', 'Lebanese Pound', 'ليرة لبنانية', 'ل.ل', 'Asia', 'Asia', 'Western Asia', 'Beirut', 'بيروت'),
 ('Syria', 'سوريا', 'SY', 'SYR', 760, '+963', 'SYP', 'Syrian Pound', 'ليرة سورية', 'ل.س', 'Asia', 'Asia', 'Western Asia', 'Damascus', 'دمشق'),
 ('Iraq', 'العراق', 'IQ', 'IRQ', 368, '+964', 'IQD', 'Iraqi Dinar', 'دينار عراقي', 'ع.د', 'Asia', 'Asia', 'Western Asia', 'Baghdad', 'بغداد'),
-('Yemen', 'اليمن', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'ريال يمني', 'ر.ي', 'Asia', 'Asia', 'Western Asia', "Sana'a", 'صنعاء'),
+('Yemen', 'اليمن', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'ريال يمني', 'ر.ي', 'Asia', 'Asia', 'Western Asia', 'Sana''a', 'صنعاء'),
 ('Oman', 'عمان', 'OM', 'OMN', 512, '+968', 'OMR', 'Omani Rial', 'ريال عماني', 'ر.ع', 'Asia', 'Asia', 'Western Asia', 'Muscat', 'مسقط'),
 ('Bahrain', 'البحرين', 'BH', 'BHR', 48, '+973', 'BHD', 'Bahraini Dinar', 'دينار بحريني', 'د.ب', 'Asia', 'Asia', 'Western Asia', 'Manama', 'المنامة'),
 ('Palestin', 'قلسطين', 'IL', 'ISR', 376, '+972', 'ILS', 'Palestiny New Shekel', 'شيكل فلسطيني جديد', '₪', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'القدس'),

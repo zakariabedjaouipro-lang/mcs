@@ -102,27 +102,12 @@ CREATE POLICY "Active verified clinics are viewable by everyone"
 -- Policy: Clinic owners can view their own clinic
 CREATE POLICY "Clinic owners can view their clinic"
   ON clinics FOR SELECT
-  USING (
-    created_by = auth.uid()
-    OR EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE clinic_id = clinics.id
-      AND user_id = auth.uid()
-    )
-  );
+  USING (created_by = auth.uid());
 
 -- Policy: Clinic owners can update their clinic
 CREATE POLICY "Clinic owners can update their clinic"
   ON clinics FOR UPDATE
-  USING (
-    created_by = auth.uid()
-    OR EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE clinic_id = clinics.id
-      AND user_id = auth.uid()
-      AND role IN ('admin', 'manager')
-    )
-  );
+  USING (created_by = auth.uid());
 
 -- Policy: Clinic owners can delete their clinic
 CREATE POLICY "Clinic owners can delete their clinic"
@@ -186,7 +171,7 @@ COMMENT ON COLUMN clinics.is_featured IS 'Whether this clinic is featured';
 -- ══════════════════════════════════════════════════════════════════════════════
 
 -- Function to check if clinic subscription is expired
-CREATE OR REPLACE FUNCTION is_subscription_expired(clinic_id UUID)
+CREATE OR REPLACE FUNCTION is_clinic_subscription_expired(clinic_id UUID)
 RETURNS BOOLEAN AS $$
 DECLARE
   end_date TIMESTAMP WITH TIME ZONE;
@@ -200,7 +185,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Function to get days remaining in subscription
-CREATE OR REPLACE FUNCTION get_subscription_days_remaining(clinic_id UUID)
+CREATE OR REPLACE FUNCTION get_clinic_subscription_days_remaining(clinic_id UUID)
 RETURNS INTEGER AS $$
 DECLARE
   end_date TIMESTAMP WITH TIME ZONE;
@@ -218,12 +203,12 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Function to check if subscription is expiring soon (within 7 days)
-CREATE OR REPLACE FUNCTION is_subscription_expiring_soon(clinic_id UUID)
+CREATE OR REPLACE FUNCTION is_clinic_subscription_expiring_soon(clinic_id UUID)
 RETURNS BOOLEAN AS $$
 DECLARE
   days_remaining INTEGER;
 BEGIN
-  days_remaining := get_subscription_days_remaining(clinic_id);
+  days_remaining := get_clinic_subscription_days_remaining(clinic_id);
   RETURN days_remaining <= 7 AND days_remaining >= 0;
 END;
 $$ LANGUAGE plpgsql;

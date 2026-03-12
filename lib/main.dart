@@ -19,6 +19,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:mcs/app.dart';
 import 'package:mcs/core/config/app_config.dart';
+import 'package:mcs/core/config/env.dart';
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/services/supabase_verification_service.dart';
@@ -124,8 +125,8 @@ void _initializeAppConfig() {
   // Credentials are loaded via AppConfig -> SupabaseConfig -> Env class
   // which uses --dart-define (compile-time) or defaultValues
   AppConfig.initialize(
-    supabaseUrl: '',
-    supabaseAnonKey: '',
+    supabaseUrl: Env.supabaseUrl,
+    supabaseAnonKey: Env.supabaseAnonKey,
   );
 
   developer.log(

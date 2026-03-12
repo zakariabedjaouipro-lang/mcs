@@ -233,7 +233,7 @@ INSERT INTO regions (country_id, name, name_ar, code, iso_code, region_type, cap
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  "M'Sila", 'المسيلة', '28', 'DZ-28', 'Wilaya', "M'Sila", 'المسيلة', true, true
+  'M''Sila', 'المسيلة', '28', 'DZ-28', 'Wilaya', 'M''Sila', 'المسيلة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
@@ -349,46 +349,8 @@ INSERT INTO regions (country_id, name, name_ar, code, iso_code, region_type, cap
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El M\'Ghair', 'المغير', '57', 'DZ-57', 'Wilaya', 'El M\'Ghair', 'المغير', true, true),
+  'El M''Ghair', 'المغير', '57', 'DZ-57', 'Wilaya', 'El M''Ghair', 'المغير', true, true),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
   'El Meniaa', 'المنيعة', '58', 'DZ-58', 'Wilaya', 'El Meniaa', 'المنيعة', true, true
 );
-
--- Insert a few regions from other countries for testing
-INSERT INTO regions (country_id, name, name_ar, code, region_type, capital, capital_ar, is_active, is_supported) VALUES
--- United States (California, New York, Texas)
-((SELECT id FROM countries WHERE iso2_code = 'US'), 'California', 'كاليفورنيا', 'CA', 'State', 'Sacramento', 'ساكرامنتو', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'US'), 'New York', 'نيويورك', 'NY', 'State', 'Albany', 'ألباني', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'US'), 'Texas', 'تكساس', 'TX', 'State', 'Austin', 'أوستن', true, true),
-
--- France (Île-de-France, Provence-Alpes-Côte d'Azur)
-((SELECT id FROM countries WHERE iso2_code = 'FR'), 'Île-de-France', 'إيل دو فرانس', 'IDF', 'Region', 'Paris', 'باريس', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'FR'), 'Provence-Alpes-Côte d\'Azur', 'بروفانس ألب كوت دازور', 'PACA', 'Region', 'Marseille', 'مارسيليا', true, true),
-
--- Saudi Arabia (Riyadh, Mecca, Medina)
-((SELECT id FROM countries WHERE iso2_code = 'SA'), 'Riyadh Province', 'منطقة الرياض', 'RI', 'Province', 'Riyadh', 'الرياض', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'SA'), 'Mecca Province', 'منطقة مكة المكرمة', 'MK', 'Province', 'Mecca', 'مكة المكرمة', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'SA'), 'Medina Province', 'منطقة المدينة المنورة', 'MD', 'Province', 'Medina', 'المدينة المنورة', true, true),
-
--- United Arab Emirates (Abu Dhabi, Dubai, Sharjah)
-((SELECT id FROM countries WHERE iso2_code = 'AE'), 'Abu Dhabi', 'أبو ظبي', 'AZ', 'Emirate', 'Abu Dhabi', 'أبو ظبي', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'AE'), 'Dubai', 'دبي', 'DU', 'Emirate', 'Dubai', 'دبي', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'AE'), 'Sharjah', 'الشارقة', 'SH', 'Emirate', 'Sharjah', 'الشارقة', true, true),
-
--- Egypt (Cairo, Alexandria, Giza)
-((SELECT id FROM countries WHERE iso2_code = 'EG'), 'Cairo', 'القاهرة', 'C', 'Governorate', 'Cairo', 'القاهرة', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'EG'), 'Alexandria', 'الإسكندرية', 'ALX', 'Governorate', 'Alexandria', 'الإسكندرية', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'EG'), 'Giza', 'الجيزة', 'GZ', 'Governorate', 'Giza', 'الجيزة', true, true),
-
--- Morocco (Casablanca, Rabat, Marrakech)
-((SELECT id FROM countries WHERE iso2_code = 'MA'), 'Casablanca-Settat', 'الدار البيضاء-سطات', 'CAS', 'Region', 'Casablanca', 'الدار البيضاء', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'MA'), 'Rabat-Salé-Kénitra', 'الرباط-سلا-القنيطرة', 'RAB', 'Region', 'Rabat', 'الرباط', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'MA'), 'Marrakech-Safi', 'مراكش-آسفي', 'MAR', 'Region', 'Marrakech', 'مراكش', true, true),
-
--- Tunisia (Tunis, Sfax, Sousse)
-((SELECT id FROM countries WHERE iso2_code = 'TN'), 'Tunis', 'تونس', 'TN', 'Governorate', 'Tunis', 'تونس', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'TN'), 'Sfax', 'صفاقس', 'SF', 'Governorate', 'Sfax', 'صفاقس', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'TN'), 'Sousse', 'سوسة', 'SU', 'Governorate', 'Sousse', 'سوسة', true, true)
-
-ON CONFLICT (country_id, code) DO NOTHING;

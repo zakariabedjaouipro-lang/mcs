@@ -21,13 +21,13 @@ class Env {
   // ── Supabase ─────────────────────────────────────────────
   static const String supabaseUrl = String.fromEnvironment(
     'SUPABASE_URL',
-    defaultValue: 'https://rxwtdbvhxqxvckkllgep.supabase.co',
+    defaultValue: 'https://ivguxjyghfndliptmink.supabase.co',
   );
 
   static const String supabaseAnonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
     defaultValue:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4d3RkYnZoeHF4dmNra2xsZ2VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MTA1NTMsImV4cCI6MjA4ODE4NjU1M30.RZfSJBgb9DUq6Fqq_HhgG1dCgtAN-_hBmzHRuaUDP38',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2Z3V4anlnaGZuZGxpcHRtaW5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MTAzOTAsImV4cCI6MjA4ODE4NjM5MH0.5mXSPfGwan9b37oo2xeOL_kG3ajrjcoAWWpZdurJnSQ',
   );
 
   // ── Signaling Server (WebRTC) ──────────────────────────────
