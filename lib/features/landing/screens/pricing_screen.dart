@@ -2,7 +2,9 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/extensions.dart';
@@ -40,6 +42,17 @@ class _PricingScreenState extends State<PricingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.landing);
+            }
+          },
+          tooltip: 'Go back',
+        ),
         title: Text(
           'Pricing Plans',
           style: TextStyles.headlineMedium.copyWith(

@@ -577,7 +577,9 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
               AuthService().signOut();
               if (mounted) {
                 context.go(AppRoutes.login);

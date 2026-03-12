@@ -67,9 +67,11 @@ class PremiumPatientHomeScreen extends StatelessWidget {
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(isArabic
-                          ? 'الانتقال إلى المواعيد'
-                          : 'Navigate to appointments'),
+                      content: Text(
+                        isArabic
+                            ? 'الانتقال إلى المواعيد'
+                            : 'Navigate to appointments',
+                      ),
                     ),
                   );
                 },
@@ -87,9 +89,11 @@ class PremiumPatientHomeScreen extends StatelessWidget {
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(isArabic
-                          ? 'الانتقال إلى الوصفات'
-                          : 'Navigate to prescriptions'),
+                      content: Text(
+                        isArabic
+                            ? 'الانتقال إلى الوصفات'
+                            : 'Navigate to prescriptions',
+                      ),
                     ),
                   );
                 },
@@ -106,9 +110,11 @@ class PremiumPatientHomeScreen extends StatelessWidget {
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(isArabic
-                          ? 'الانتقال إلى نتائج المختبر'
-                          : 'Navigate to lab results'),
+                      content: Text(
+                        isArabic
+                            ? 'الانتقال إلى نتائج المختبر'
+                            : 'Navigate to lab results',
+                      ),
                     ),
                   );
                 },
@@ -198,7 +204,8 @@ class PremiumPatientHomeScreen extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                        isArabic ? 'حجز موعد جديد' : 'Book new appointment'),
+                      isArabic ? 'حجز موعد جديد' : 'Book new appointment',
+                    ),
                   ),
                 );
               },
@@ -240,7 +247,8 @@ class PremiumPatientHomeScreen extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                        isArabic ? 'عرض نتائج المختبر' : 'View lab results'),
+                      isArabic ? 'عرض نتائج المختبر' : 'View lab results',
+                    ),
                   ),
                 );
               },

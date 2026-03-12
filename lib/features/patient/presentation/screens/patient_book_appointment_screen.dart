@@ -175,7 +175,10 @@ class AppointmentDataService {
 
       return _countryCache.values.toList();
     } catch (e) {
-      throw AppointmentException('Failed to load countries: $e');
+      debugPrint('❌ Error loading countries: $e');
+      
+      // Return empty list as fallback (user will be notified in UI)
+      return [];
     }
   }
 

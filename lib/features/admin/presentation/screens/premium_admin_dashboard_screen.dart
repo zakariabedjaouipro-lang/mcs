@@ -433,7 +433,9 @@ class PremiumAdminDashboardScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(

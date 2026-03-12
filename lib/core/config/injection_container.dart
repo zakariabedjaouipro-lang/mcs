@@ -7,10 +7,12 @@ library;
 import 'package:get_it/get_it.dart';
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/services/auth_service.dart';
+import 'package:mcs/core/services/demo_account_service.dart';
 import 'package:mcs/core/services/notification_service.dart';
 import 'package:mcs/core/services/sms_service.dart';
 import 'package:mcs/core/services/storage_service.dart';
 import 'package:mcs/core/services/supabase_service.dart';
+import 'package:mcs/core/usecases/demo_accounts_usecase.dart';
 import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:mcs/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
@@ -50,6 +52,13 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<SupabaseService>(SupabaseService.new)
     ..registerLazySingleton<SmsService>(
       () => SmsService(supabaseService: sl()),
+    )
+    ..registerLazySingleton<DemoAccountService>(DemoAccountService.new)
+    ..registerLazySingleton(
+      () => CreateDemoAccountsUseCase(sl<DemoAccountService>()),
+    )
+    ..registerLazySingleton(
+      () => CheckDemoAccountExistsUseCase(sl<DemoAccountService>()),
     )
     // ── Auth Feature ─────────────────────────────────────────
     ..registerLazySingleton<AuthRepository>(

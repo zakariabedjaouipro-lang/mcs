@@ -303,9 +303,6 @@ class _PatientChangePasswordScreenState
               if (Navigator.canPop(context)) {
                 Navigator.of(context).pop();
               }
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).pop();
-              }
             },
             child: const Text('OK'),
           ),

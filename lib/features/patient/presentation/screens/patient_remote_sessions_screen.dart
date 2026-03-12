@@ -226,7 +226,9 @@ void _joinDialog(BuildContext context, VideoSessionModel session) {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
               context.read<PatientBloc>().add(
                     JoinVideoSession(session.id),
                   );

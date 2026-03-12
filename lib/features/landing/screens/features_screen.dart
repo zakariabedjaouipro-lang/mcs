@@ -2,7 +2,8 @@
 library;
 
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/core/utils/extensions.dart';
 import 'package:mcs/features/landing/widgets/feature_card.dart';
@@ -14,6 +15,17 @@ class FeaturesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.landing);
+            }
+          },
+          tooltip: 'Go back',
+        ),
         title: Text(
           'Features',
           style: TextStyles.headlineMedium.copyWith(
@@ -321,4 +333,3 @@ class FeatureItem {
   final String title;
   final String description;
 }
-

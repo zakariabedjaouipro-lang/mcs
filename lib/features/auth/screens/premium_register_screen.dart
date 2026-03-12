@@ -95,13 +95,79 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         });
       }
     } catch (e) {
+      debugPrint('❌ Error loading countries: $e');
+
       if (mounted) {
+        // Fallback data for testing
+        final fallbackCountries = [
+          {
+            'id': '1',
+            'name': 'Algeria',
+            'name_ar': 'الجزائر',
+            'iso2_code': 'DZ',
+            'is_supported': true,
+          },
+          {
+            'id': '2',
+            'name': 'Morocco',
+            'name_ar': 'المغرب',
+            'iso2_code': 'MA',
+            'is_supported': true,
+          },
+          {
+            'id': '3',
+            'name': 'Egypt',
+            'name_ar': 'مصر',
+            'iso2_code': 'EG',
+            'is_supported': true,
+          },
+          {
+            'id': '4',
+            'name': 'Saudi Arabia',
+            'name_ar': 'السعودية',
+            'iso2_code': 'SA',
+            'is_supported': true,
+          },
+          {
+            'id': '5',
+            'name': 'United Arab Emirates',
+            'name_ar': 'الإمارات',
+            'iso2_code': 'AE',
+            'is_supported': true,
+          },
+          {
+            'id': '6',
+            'name': 'Tunisia',
+            'name_ar': 'تونس',
+            'iso2_code': 'TN',
+            'is_supported': true,
+          },
+          {
+            'id': '7',
+            'name': 'Other Countries',
+            'name_ar': 'دول أخرى',
+            'iso2_code': 'OTH',
+            'is_supported': true,
+          },
+        ];
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to load countries: $e'),
-            backgroundColor: PremiumColors.errorRed,
+          const SnackBar(
+            content: Text(
+              'تحديث: يتم استخدام بيانات مؤقتة. '
+              'تحقق من اتصالك بـ Supabase.',
+            ),
+            backgroundColor: Colors.orange,
           ),
         );
+
+        setState(() {
+          _countries = fallbackCountries;
+          _countriesLoaded = true;
+          if (_selectedCountryId == null && _countries.isNotEmpty) {
+            _selectedCountryId = _countries.first['id'] as String;
+          }
+        });
       }
     }
   }

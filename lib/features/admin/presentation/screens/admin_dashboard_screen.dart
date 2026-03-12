@@ -274,7 +274,9 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
                 AuthService().signOut();
                 if (context.mounted) {
                   context.go(AppRoutes.login);

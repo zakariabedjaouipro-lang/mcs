@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mcs/core/localization/app_localizations.dart';
+import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
@@ -228,8 +229,11 @@ class PatientSettingsScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              if (Navigator.canPop(context)) {
+                Navigator.of(context).pop();
+              }
+              // Close dialog and logout
+              AuthService().signOut();
             },
             child: Text(
               loc.translate('logout'),

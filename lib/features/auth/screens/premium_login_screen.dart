@@ -3,6 +3,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/constants/app_routes.dart';
@@ -12,6 +13,34 @@ import 'package:mcs/core/theme/premium_text_styles.dart';
 import 'package:mcs/core/widgets/premium_button.dart';
 import 'package:mcs/core/widgets/premium_form_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show OAuthProvider;
+
+/// Demo accounts for testing
+final _demoAccounts = [
+  {
+    'role': 'Doctor',
+    'email': 'doctor@mcs.demo',
+    'password': 'Demo123456',
+    'description': 'Doctor Account',
+  },
+  {
+    'role': 'Patient',
+    'email': 'patient@mcs.demo',
+    'password': 'Demo123456',
+    'description': 'Patient Account',
+  },
+  {
+    'role': 'Admin',
+    'email': 'admin@mcs.demo',
+    'password': 'Demo123456',
+    'description': 'Admin Account',
+  },
+  {
+    'role': 'Staff',
+    'email': 'staff@mcs.demo',
+    'password': 'Demo123456',
+    'description': 'Staff Account',
+  },
+];
 
 class PremiumLoginScreen extends StatefulWidget {
   const PremiumLoginScreen({super.key});
@@ -119,11 +148,33 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                         const SizedBox(height: 8),
 
                         // Subtitle
-                        Text(
-                          'Sign in to your medical clinic account',
-                          style: PremiumTextStyles.bodyRegular.copyWith(
-                            color: PremiumColors.lightText,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Sign in to your medical clinic account',
+                                style: PremiumTextStyles.bodyRegular.copyWith(
+                                  color: PremiumColors.lightText,
+                                ),
+                              ),
+                            ),
+                            // Demo Button
+                            TextButton.icon(
+                              onPressed: _showDemoAccountsDialog,
+                              icon: const Icon(
+                                Icons.info_outline,
+                                size: 16,
+                              ),
+                              label: const Text('Demo'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: PremiumColors.primaryBlue,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -532,5 +583,155 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  void _showDemoAccountsDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: PremiumColors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Text(
+          'Demo Accounts',
+          style: PremiumTextStyles.headingMedium,
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Tap any account to auto-fill credentials',
+                style: PremiumTextStyles.bodySmall.copyWith(
+                  color: PremiumColors.lightText,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...(_demoAccounts.map((account) {
+                return _buildDemoAccountTile(
+                  role: account['role']!,
+                  email: account['email']!,
+                  password: account['password']!,
+                  description: account['description']!,
+                );
+              })),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDemoAccountTile({
+    required String role,
+    required String email,
+    required String password,
+    required String description,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: PremiumColors.mediumGrey,
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ListTile(
+          contentPadding: const EdgeInsets.all(12),
+          title: Text(
+            role,
+            style: PremiumTextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Text(
+            description,
+            style: PremiumTextStyles.bodySmall.copyWith(
+              color: PremiumColors.lightText,
+            ),
+          ),
+          trailing: PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'email') {
+                await _copyToClipboard(email);
+              } else if (value == 'password') {
+                await _copyToClipboard(password);
+              } else if (value == 'fill') {
+                _autofillDemoAccount(email, password);
+                if (mounted) {
+                  Navigator.pop(context);
+                }
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem(
+                value: 'email',
+                child: Row(
+                  children: [
+                    Icon(Icons.email_outlined, size: 18),
+                    SizedBox(width: 8),
+                    Text('Copy Email'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'password',
+                child: Row(
+                  children: [
+                    Icon(Icons.lock_outline, size: 18),
+                    SizedBox(width: 8),
+                    Text('Copy Password'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'fill',
+                child: Row(
+                  children: [
+                    Icon(Icons.check_circle_outline, size: 18),
+                    SizedBox(width: 8),
+                    Text('Auto-fill'),
+                  ],
+                ),
+              ),
+            ],
+            child: const Icon(Icons.more_vert),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _copyToClipboard(String text) async {
+    await Clipboard.setData(ClipboardData(text: text));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Copied to clipboard!'),
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
+  }
+
+  void _autofillDemoAccount(String email, String password) {
+    _emailController.text = email;
+    _passwordController.text = password;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Account details filled in!'),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 }
