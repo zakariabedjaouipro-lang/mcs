@@ -505,7 +505,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
 
     try {
       final authService = sl<AuthService>();
-      final user = await authService.signInWithEmail(
+      await authService.signInWithEmail(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );

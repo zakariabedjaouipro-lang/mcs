@@ -80,9 +80,12 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 16,),
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
@@ -115,7 +118,9 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
   }
 
   List<Widget> _buildExchangeRateCards(
-      Map<String, double> rates, bool isArabic,) {
+    Map<String, double> rates,
+    bool isArabic,
+  ) {
     final pairs = <Map<String, String>>[
       {'from': 'USD', 'to': 'EUR'},
       {'from': 'USD', 'to': 'DZD'},
@@ -135,84 +140,20 @@ class _AdminCurrenciesViewState extends State<AdminCurrenciesView> {
           elevation: 2,
           child: ListTile(
             leading: const Icon(Icons.currency_exchange, color: Colors.purple),
-            title: Text(isArabic
-                ? 'من ${pair['from']} إلى ${pair['to']}'
-                : 'From ${pair['from']} to ${pair['to']}',),
+            title: Text(
+              isArabic
+                  ? 'من ${pair['from']} إلى ${pair['to']}'
+                  : 'From ${pair['from']} to ${pair['to']}',
+            ),
             subtitle: Text(isArabic ? 'السعر الحالي' : 'Current Rate'),
-            trailing: Text(rate.toStringAsFixed(4),
-                style: const TextStyle(fontWeight: FontWeight.bold),),
+            trailing: Text(
+              rate.toStringAsFixed(4),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       );
     }).toList();
-  }
-
-  Widget _exchangeRatesTable(Map<String, double> rates) {
-    final currencies = [
-      {'code': 'USD', 'name': 'دولار أمريكي', 'symbol': r'$'},
-      {'code': 'EUR', 'name': 'يورو', 'symbol': '€'},
-      {'code': 'DZD', 'name': 'دينار جزائري', 'symbol': 'دج'},
-    ];
-
-    final exchangeRates = [
-      {'from': 'USD', 'to': 'EUR', 'rate': rates['USD_EUR'] ?? 0.0},
-      {'from': 'USD', 'to': 'DZD', 'rate': rates['USD_DZD'] ?? 0.0},
-      {'from': 'EUR', 'to': 'USD', 'rate': rates['EUR_USD'] ?? 0.0},
-      {'from': 'EUR', 'to': 'DZD', 'rate': rates['EUR_DZD'] ?? 0.0},
-      {'from': 'DZD', 'to': 'USD', 'rate': rates['DZD_USD'] ?? 0.0},
-      {'from': 'DZD', 'to': 'EUR', 'rate': rates['DZD_EUR'] ?? 0.0},
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'أسعار الصرف الحالية',
-            style: TextStyles.headline4,
-          ),
-          const SizedBox(height: 24),
-          _ConversionCalculator(currencies, exchangeRates),
-          const SizedBox(height: 32),
-          Text(
-            'جدول أسعار الصرف',
-            style: TextStyles.titleMedium,
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: SingleChildScrollView(
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('من')),
-                  DataColumn(label: Text('إلى')),
-                  DataColumn(label: Text('سعر الصرف')),
-                  DataColumn(label: Text('الإجراءات')),
-                ],
-                rows: exchangeRates.map((rate) {
-                  return DataRow(
-                    cells: [
-                      DataCell(_buildCurrencyBadge(rate['from']! as String)),
-                      DataCell(_buildCurrencyBadge(rate['to']! as String)),
-                      DataCell(
-                        Text((rate['rate']! as double).toStringAsFixed(4)),
-                      ),
-                      DataCell(
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () => _showEditRateDialog(context, rate),
-                          tooltip: 'تعديل السعر',
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildCurrencyBadge(String currencyCode) {

@@ -301,7 +301,7 @@ class _PremiumDoctorDashboardScreenState
   }
 
   void _showLogoutConfirmation(BuildContext context, bool isArabic) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(isArabic ? 'تسجيل الخروج' : 'Logout'),

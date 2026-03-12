@@ -7,7 +7,8 @@ import 'package:mcs/core/theme/premium_text_styles.dart';
 
 class AppTextField extends StatefulWidget {
   const AppTextField({
-    required this.label, super.key,
+    required this.label,
+    super.key,
     this.hint,
     this.controller,
     this.keyboardType = TextInputType.text,

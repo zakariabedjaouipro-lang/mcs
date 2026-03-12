@@ -67,7 +67,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _loadCountriesOnce() async {
     if (_countriesLoaded) return;
-    print('Loading countries from Supabase...');
     try {
       final supabase = Supabase.instance.client;
       final data = await supabase
@@ -76,8 +75,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .eq('is_supported', true)
           .order('name', ascending: true);
 
-      print('Loaded ${data.length} countries from Supabase');
-
       if (mounted) {
         setState(() {
           _countries = data;
@@ -85,15 +82,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           // تعيين أول دولة كقيمة افتراضية
           if (_countries.isNotEmpty && _selectedCountryId == null) {
             _selectedCountryId = _countries.first['id'] as String;
-            print(
-              'Default country set to: ${_countries.first['name_ar'] ?? _countries.first['name']}',
-            );
           }
         });
       }
-    } catch (e, stackTrace) {
-      print('Error loading countries: $e');
-      print('Stack trace: $stackTrace');
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

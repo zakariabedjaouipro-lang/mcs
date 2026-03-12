@@ -151,7 +151,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
 
     try {
       final authService = sl<AuthService>();
-      final user = await authService.signUpWithEmail(
+      await authService.signUpWithEmail(
         email: _emailController.text.trim(),
         password: _passwordController.text,
         metadata: {
@@ -189,8 +189,6 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.of(context).size.width < 600;
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

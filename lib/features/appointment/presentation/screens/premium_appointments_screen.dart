@@ -12,14 +12,14 @@ class PremiumAppointmentsScreen extends StatefulWidget {
   const PremiumAppointmentsScreen({super.key});
 
   @override
-  State<PremiumAppointmentsScreen> createState() => _PremiumAppointmentsScreenState();
+  State<PremiumAppointmentsScreen> createState() =>
+      _PremiumAppointmentsScreenState();
 }
 
 class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
   bool _isLoading = true;
-  bool _hasError = false;
 
   @override
   void initState() {
@@ -37,7 +37,6 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
   Future<void> _loadAppointmentData() async {
     setState(() {
       _isLoading = true;
-      _hasError = false;
     });
 
     try {
@@ -49,7 +48,6 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _hasError = true;
       });
     }
   }
@@ -103,7 +101,7 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
   /// Tab 1: Today's Appointments
   Widget _buildTodayTab() {
     final isArabic = Directionality.of(context) == TextDirection.rtl;
-    
+
     if (_isLoading) {
       return _buildLoadingList();
     }
@@ -182,15 +180,18 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
       separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final appointment = appointments[index];
-        final statusColor = _getStatusColor(appointment['status']! as String, isArabic);
+        final statusColor =
+            _getStatusColor(appointment['status']! as String, isArabic);
 
         return AppCard(
           onTap: () {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(isArabic
-                    ? 'موعد مع ${appointment['patient']}'
-                    : 'Appointment with ${appointment['patient']}',),
+                content: Text(
+                  isArabic
+                      ? 'موعد مع ${appointment['patient']}'
+                      : 'Appointment with ${appointment['patient']}',
+                ),
               ),
             );
           },
@@ -269,7 +270,7 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
   /// Tab 2: Upcoming Appointments
   Widget _buildUpcomingTab() {
     final isArabic = Directionality.of(context) == TextDirection.rtl;
-    
+
     if (_isLoading) {
       return _buildLoadingList();
     }
@@ -323,15 +324,18 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
       separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final appointment = appointments[index];
-        final statusColor = _getStatusColor(appointment['status']! as String, isArabic);
+        final statusColor =
+            _getStatusColor(appointment['status']! as String, isArabic);
 
         return AppCard(
           onTap: () {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(isArabic
-                    ? 'موعد مع ${appointment['patient']}'
-                    : 'Appointment with ${appointment['patient']}',),
+                content: Text(
+                  isArabic
+                      ? 'موعد مع ${appointment['patient']}'
+                      : 'Appointment with ${appointment['patient']}',
+                ),
               ),
             );
           },
@@ -410,7 +414,7 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
   /// Tab 3: Appointment History
   Widget _buildHistoryTab() {
     final isArabic = Directionality.of(context) == TextDirection.rtl;
-    
+
     if (_isLoading) {
       return _buildLoadingList();
     }
@@ -464,15 +468,18 @@ class _PremiumAppointmentsScreenState extends State<PremiumAppointmentsScreen>
       separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
         final appointment = appointments[index];
-        final statusColor = _getStatusColor(appointment['status']! as String, isArabic);
+        final statusColor =
+            _getStatusColor(appointment['status']! as String, isArabic);
 
         return AppCard(
           onTap: () {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(isArabic
-                    ? 'موعد مع ${appointment['patient']}'
-                    : 'Appointment with ${appointment['patient']}',),
+                content: Text(
+                  isArabic
+                      ? 'موعد مع ${appointment['patient']}'
+                      : 'Appointment with ${appointment['patient']}',
+                ),
               ),
             );
           },

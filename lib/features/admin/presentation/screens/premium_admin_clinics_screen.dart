@@ -322,7 +322,7 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
     Map<String, dynamic> clinic,
     bool isArabic,
   ) async {
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(clinic['name']?.toString() ?? ''),
@@ -379,7 +379,7 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
     final cityController =
         TextEditingController(text: clinic['city']?.toString() ?? '');
 
-    await showDialog(
+    await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(isArabic ? 'تعديل العيادة' : 'Edit Clinic'),
