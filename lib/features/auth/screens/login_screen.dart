@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mcs/core/constants/app_routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mcs/core/config/router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/utils/responsive_utils.dart';
 import 'package:mcs/core/utils/validators.dart';

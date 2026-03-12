@@ -1,10 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mcs/core/constants/app_routes.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/features/auth/presentation/bloc/index.dart';

@@ -123,7 +123,7 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
                 color: PremiumColors.primaryBlue.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                    color: PremiumColors.primaryBlue.withValues(alpha: 0.2)),
+                    color: PremiumColors.primaryBlue.withValues(alpha: 0.2),),
               ),
               child: Column(
                 children: [
@@ -264,7 +264,7 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
   }
 
   Future<void> _showEditRateDialog(
-      BuildContext context, Map<String, dynamic> rate, bool isArabic) async {
+      BuildContext context, Map<String, dynamic> rate, bool isArabic,) async {
     final rateController = TextEditingController(text: rate['rate'] as String);
 
     await showDialog<void>(
@@ -311,7 +311,7 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                      isArabic ? 'تم حفظ السعر' : 'Rate saved successfully'),
+                      isArabic ? 'تم حفظ السعر' : 'Rate saved successfully',),
                 ),
               );
             },
@@ -322,7 +322,7 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
   }
 
   Future<void> _showAddCurrencyDialog(
-      BuildContext context, bool isArabic) async {
+      BuildContext context, bool isArabic,) async {
     final codeController = TextEditingController();
     final nameController = TextEditingController();
 
@@ -368,7 +368,7 @@ class PremiumAdminCurrenciesScreen extends StatelessWidget {
                 SnackBar(
                   content: Text(isArabic
                       ? 'تمت إضافة العملة'
-                      : 'Currency added successfully'),
+                      : 'Currency added successfully',),
                 ),
               );
             },

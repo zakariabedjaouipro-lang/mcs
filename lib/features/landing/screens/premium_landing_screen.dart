@@ -284,7 +284,7 @@ class PremiumLandingScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               );
