@@ -13,7 +13,7 @@ import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart'
 // App shell
 import 'package:mcs/features/app/shells/app_shell.dart';
 // Appointment
-import 'package:mcs/features/appointment/presentation/screens/premium_appointments_screen.dart';
+import 'package:mcs/features/appointment/presentation/screens/appointments_screen.dart';
 // Auth
 import 'package:mcs/features/auth/screens/change_password_screen.dart';
 import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
@@ -23,7 +23,7 @@ import 'package:mcs/features/auth/screens/premium_register_screen.dart';
 // Dashboard
 import 'package:mcs/features/dashboard/screens/premium_dashboard_screen.dart';
 // Doctor
-import 'package:mcs/features/doctor/presentation/screens/premium_doctor_dashboard_screen.dart';
+import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen.dart';
 // Employee
 import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/inventory_screen.dart';
@@ -36,11 +36,11 @@ import 'package:mcs/features/landing/screens/premium_landing_screen.dart'
 import 'package:mcs/features/landing/screens/pricing_screen.dart';
 import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
 // Patient
-import 'package:mcs/features/patient/presentation/screens/premium_patient_home_screen.dart';
+import 'package:mcs/features/patient/presentation/screens/patient_home_screen.dart';
 // Records
 import 'package:mcs/features/records/presentation/screens/records_screen.dart';
 // Settings
-import 'package:mcs/features/settings/presentation/screens/premium_settings_screen.dart';
+import 'package:mcs/features/settings/presentation/screens/settings_screen.dart';
 // Splash
 import 'package:mcs/features/splash/screens/splash_screen.dart';
 
@@ -202,7 +202,7 @@ class AppRouter {
     GoRoute(
       path: AppRoutes.patientHome,
       builder: (context, state) =>
-          const AppShellScreen(child: PremiumPatientHomeScreen()),
+          const AppShellScreen(child: PatientHomeScreen(isPremium: true)),
       routes: [
         GoRoute(
           path: 'patients',
@@ -212,7 +212,7 @@ class AppRouter {
         GoRoute(
           path: 'appointments',
           builder: (context, state) =>
-              const AppShellScreen(child: PremiumAppointmentsScreen()),
+              const AppShellScreen(child: AppointmentsScreen(isPremium: true)),
         ),
         GoRoute(
           path: 'records',
@@ -222,7 +222,7 @@ class AppRouter {
         GoRoute(
           path: 'settings',
           builder: (context, state) =>
-              const AppShellScreen(child: PremiumSettingsScreen()),
+              const AppShellScreen(child: SettingsScreen(isPremium: true)),
         ),
       ],
     ),
@@ -230,7 +230,7 @@ class AppRouter {
     /// Doctor
     GoRoute(
       path: AppRoutes.doctorHome,
-      builder: (context, state) => const PremiumDoctorDashboardScreen(),
+      builder: (context, state) => const DoctorDashboardScreen(isPremium: true),
     ),
 
     /// Employee

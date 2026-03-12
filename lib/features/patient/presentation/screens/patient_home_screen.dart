@@ -3,12 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mcs/core/constants/responsive_constants.dart';
 import 'package:mcs/core/extensions/context_extensions.dart';
+import 'package:mcs/core/theme/premium_colors.dart';
+import 'package:mcs/core/theme/premium_text_styles.dart';
+import 'package:mcs/core/widgets/app_card.dart';
 import 'package:mcs/core/widgets/responsive_card.dart';
 import 'package:mcs/core/widgets/responsive_grid_view.dart';
 import 'package:mcs/features/patient/presentation/bloc/index.dart';
 
 class PatientHomeScreen extends StatelessWidget {
-  const PatientHomeScreen({super.key});
+  const PatientHomeScreen({this.isPremium = false, super.key});
+
+  final bool isPremium;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +101,53 @@ class PatientHomeScreen extends StatelessWidget {
 
   /// Welcome Card with user information
   Widget _welcomeCard(BuildContext context) {
+    if (isPremium) {
+      return AppCard(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  gradient: PremiumColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Icon(
+                  Icons.person,
+                  color: Colors.white,
+                  size: 36,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.translateSafe('welcome'),
+                      style: PremiumTextStyles.headingMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: PremiumColors.darkText,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      context.translateSafe('patient_dashboard'),
+                      style: PremiumTextStyles.bodyMedium.copyWith(
+                        color: PremiumColors.lightText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return ResponsiveCard(
       child: Row(
         children: [
@@ -200,6 +252,45 @@ class PatientHomeScreen extends StatelessWidget {
     required String label,
     required VoidCallback onTap,
   }) {
+    if (isPremium) {
+      return AppCard(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: PremiumColors.primaryBlue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  size: 24,
+                  color: PremiumColors.primaryBlue,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: PremiumTextStyles.bodySmall.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: PremiumColors.darkText,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return ResponsiveCard(
       onTap: onTap,
       padding: EdgeInsets.all(context.adaptiveCardPadding),
@@ -237,6 +328,65 @@ class PatientHomeScreen extends StatelessWidget {
     required String subtitle,
     required VoidCallback onTap,
   }) {
+    if (isPremium) {
+      return AppCard(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: PremiumColors.primaryBlue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  size: 24,
+                  color: PremiumColors.primaryBlue,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: PremiumTextStyles.bodyMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: PremiumColors.darkText,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: PremiumTextStyles.bodySmall.copyWith(
+                        color: PremiumColors.lightText,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: PremiumColors.lightText,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return ResponsiveCard(
       onTap: onTap,
       child: SizedBox(

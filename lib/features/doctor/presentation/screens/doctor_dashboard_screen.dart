@@ -14,7 +14,9 @@ import 'package:mcs/features/doctor/presentation/bloc/index.dart';
 
 /// Doctor dashboard screen
 class DoctorDashboardScreen extends StatefulWidget {
-  const DoctorDashboardScreen({super.key});
+  const DoctorDashboardScreen({this.isPremium = false, super.key});
+
+  final bool isPremium;
 
   @override
   State<DoctorDashboardScreen> createState() => _DoctorDashboardScreenState();

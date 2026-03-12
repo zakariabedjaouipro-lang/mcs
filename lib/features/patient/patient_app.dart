@@ -7,7 +7,7 @@ import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
 import 'package:mcs/core/theme/app_theme.dart';
 import 'package:mcs/features/patient/presentation/bloc/patient_bloc.dart';
-import 'package:mcs/features/patient/presentation/screens/premium_patient_home_screen.dart';
+import 'package:mcs/features/patient/presentation/screens/patient_home_screen.dart';
 
 /// Patient Application Widget
 class PatientApp extends StatelessWidget {
@@ -25,7 +25,7 @@ class PatientApp extends StatelessWidget {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('ar'),
-        home: const PremiumPatientHomeScreen(),
+        home: const PatientHomeScreen(isPremium: true),
       ),
     );
   }

@@ -15,7 +15,9 @@ import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_state.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({this.isPremium = false, super.key});
+
+  final bool isPremium;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();

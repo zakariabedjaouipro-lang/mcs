@@ -11,7 +11,9 @@ import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/extensions.dart';
 
 class AppointmentsScreen extends StatefulWidget {
-  const AppointmentsScreen({super.key});
+  const AppointmentsScreen({this.isPremium = false, super.key});
+
+  final bool isPremium;
 
   @override
   State<AppointmentsScreen> createState() => _AppointmentsScreenState();
