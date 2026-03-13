@@ -5,7 +5,10 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/constants/app_routes.dart';
+import 'package:mcs/features/admin/presentation/bloc/approval_bloc.dart';
+import 'package:mcs/features/admin/presentation/screens/approvals_management_screen.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
 import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
@@ -235,6 +238,13 @@ class _SuperAdminScreenState extends State<SuperAdminScreen> {
               children: [
                 _buildActionButton(
                   context,
+                  'Approvals',
+                  Icons.check_circle,
+                  Colors.amber,
+                  () => _showApprovalsModal(context),
+                ),
+                _buildActionButton(
+                  context,
                   'Clinics',
                   Icons.local_hospital,
                   Colors.blue,
@@ -428,6 +438,18 @@ class _SuperAdminScreenState extends State<SuperAdminScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showApprovalsModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => BlocProvider(
+        create: (_) => sl<ApprovalBloc>(),
+        child: const ApprovalsManagementScreen(),
+      ),
     );
   }
 }

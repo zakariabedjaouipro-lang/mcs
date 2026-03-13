@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/constants/app_constants.dart';
-import '../../../../../core/models/user_approval_model.dart';
-import '../../../../../core/theme/premium_colors.dart';
-import '../../bloc/approval_bloc.dart';
+import 'package:mcs/core/models/user_approval_model.dart';
+import 'package:mcs/core/theme/premium_colors.dart';
+import 'package:mcs/features/admin/presentation/bloc/approval_bloc.dart';
 
 /// Screen for managing user approvals
 /// شاشة لإدارة موافقات المستخدمين
 class ApprovalsManagementScreen extends StatefulWidget {
-  const ApprovalsManagementScreen({Key? key}) : super(key: key);
+  const ApprovalsManagementScreen({super.key});
 
   @override
   State<ApprovalsManagementScreen> createState() =>
@@ -151,6 +150,8 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
     UserApprovalModel approval,
     bool isArabic,
   ) {
+    final noteController = TextEditingController();
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: ExpansionTile(
@@ -187,14 +188,14 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
                 ),
                 const SizedBox(height: 16),
                 if (approval.status == ApprovalStatus.pending) ...[
-                  _buildApprovalNoteField(context),
+                  _buildApprovalNoteField(context, noteController, isArabic),
                   const SizedBox(height: 12),
                   Row(
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () =>
-                              _handleApprove(context, approval, isArabic),
+                          onPressed: () => _handleApprove(
+                              context, approval, noteController.text, isArabic),
                           icon: const Icon(Icons.check),
                           label: Text(isArabic ? 'الموافقة' : 'Approve'),
                           style: ElevatedButton.styleFrom(
@@ -260,9 +261,12 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(fontWeight: FontWeight.bold, width: 150),
+          SizedBox(
+            width: 150,
+            child: Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           Expanded(
             child: Text(
@@ -278,13 +282,17 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
   }
 
   /// Build approval note field
-  Widget _buildApprovalNoteField(BuildContext context) {
-    final controller = TextEditingController();
+  Widget _buildApprovalNoteField(
+    BuildContext context,
+    TextEditingController controller,
+    bool isArabic,
+  ) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: 'ملاحظات الموافقة',
-        hintText: 'أضف ملاحظات اختيارية...',
+        labelText: isArabic ? 'ملاحظات الموافقة' : 'Approval Notes',
+        hintText:
+            isArabic ? 'أضف ملاحظات اختيارية...' : 'Add optional notes...',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -297,9 +305,15 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
   Future<void> _handleApprove(
     BuildContext context,
     UserApprovalModel approval,
+    String approvalNotes,
     bool isArabic,
   ) async {
-    _approvalBloc.add(ApproveUserEvent(userId: approval.userId));
+    _approvalBloc.add(
+      ApproveUserEvent(
+        userId: approval.userId,
+        approvalNotes: approvalNotes.isNotEmpty ? approvalNotes : null,
+      ),
+    );
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

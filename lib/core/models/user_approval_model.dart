@@ -48,6 +48,7 @@ class UserApprovalModel extends Equatable {
     required this.createdAt,
     this.approvedAt,
     this.rejectedAt,
+    this.reviewedBy,
     this.approvalNotes,
     this.rejectionReason,
   });
@@ -61,6 +62,7 @@ class UserApprovalModel extends Equatable {
   final DateTime createdAt;
   final DateTime? approvedAt;
   final DateTime? rejectedAt;
+  final String? reviewedBy;
   final String? approvalNotes;
   final String? rejectionReason;
 
@@ -72,31 +74,32 @@ class UserApprovalModel extends Equatable {
         'role': role,
         'registration_type': registrationType,
         'status': status.name,
-        'created_at': createdAt.toIso8601String(),
-        'approved_at': approvedAt?.toIso8601String(),
-        'rejected_at': rejectedAt?.toIso8601String(),
-        'approval_notes': approvalNotes,
-        'rejection_reason': rejectionReason,
+        'requested_at': createdAt.toIso8601String(),
+        'reviewed_at': approvedAt?.toIso8601String(),
+        'reviewed_by': reviewedBy,
+        'notes': approvalNotes ?? rejectionReason,
       };
 
   /// Create from JSON
   factory UserApprovalModel.fromJson(Map<String, dynamic> json) {
+    final reviewedAt = json['reviewed_at'] != null
+        ? DateTime.parse(json['reviewed_at'] as String)
+        : null;
+    final status = ApprovalStatus.values.byName(json['status'] as String);
+    
     return UserApprovalModel(
       userId: json['user_id'] as String,
       email: json['email'] as String,
       fullName: json['full_name'] as String,
       role: json['role'] as String,
       registrationType: json['registration_type'] as String,
-      status: ApprovalStatus.values.byName(json['status'] as String),
-      createdAt: DateTime.parse(json['created_at'] as String),
-      approvedAt: json['approved_at'] != null
-          ? DateTime.parse(json['approved_at'] as String)
-          : null,
-      rejectedAt: json['rejected_at'] != null
-          ? DateTime.parse(json['rejected_at'] as String)
-          : null,
-      approvalNotes: json['approval_notes'] as String?,
-      rejectionReason: json['rejection_reason'] as String?,
+      status: status,
+      createdAt: DateTime.parse(json['requested_at'] as String),
+      approvedAt: status == ApprovalStatus.approved ? reviewedAt : null,
+      rejectedAt: status == ApprovalStatus.rejected ? reviewedAt : null,
+      reviewedBy: json['reviewed_by'] as String?,
+      approvalNotes: status == ApprovalStatus.approved ? json['notes'] as String? : null,
+      rejectionReason: status == ApprovalStatus.rejected ? json['notes'] as String? : null,
     );
   }
 
@@ -111,6 +114,7 @@ class UserApprovalModel extends Equatable {
     DateTime? createdAt,
     DateTime? approvedAt,
     DateTime? rejectedAt,
+    String? reviewedBy,
     String? approvalNotes,
     String? rejectionReason,
   }) {
@@ -124,6 +128,7 @@ class UserApprovalModel extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       approvedAt: approvedAt ?? this.approvedAt,
       rejectedAt: rejectedAt ?? this.rejectedAt,
+      reviewedBy: reviewedBy ?? this.reviewedBy,
       approvalNotes: approvalNotes ?? this.approvalNotes,
       rejectionReason: rejectionReason ?? this.rejectionReason,
     );
@@ -140,6 +145,7 @@ class UserApprovalModel extends Equatable {
         createdAt,
         approvedAt,
         rejectedAt,
+        reviewedBy,
         approvalNotes,
         rejectionReason,
       ];

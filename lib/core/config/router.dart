@@ -12,6 +12,7 @@ import 'package:mcs/core/constants/app_routes.dart';
 // Admin
 import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/premium_super_admin_dashboard.dart';
 import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart';
 // App shell
 import 'package:mcs/features/app/shells/app_shell.dart';
@@ -318,6 +319,12 @@ class AppRouter {
         create: (context) => sl<AdminBloc>(),
         child: const SuperAdminScreen(),
       ),
+    ),
+
+    /// Premium Super Admin
+    GoRoute(
+      path: AppRoutes.premiumSuperAdminHome,
+      builder: (context, state) => const PremiumSuperAdminDashboard(),
     ),
 
     /// Splash

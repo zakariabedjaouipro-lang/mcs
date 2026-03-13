@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../core/models/user_approval_model.dart';
-import '../../core/usecases/approval_usecase.dart';
-import '../../core/usecases/usecase.dart';
+import 'package:mcs/core/models/user_approval_model.dart';
+import 'package:mcs/core/usecases/approval_usecase.dart';
+import 'package:mcs/core/usecases/usecase.dart';
 
 /// Events for ApprovalBloc
 /// الأحداث لـ ApprovalBloc

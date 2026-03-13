@@ -22,6 +22,7 @@ abstract class AppRoutes {
   static const String employeeHome = '/employee';
   static const String adminHome = '/admin';
   static const String superAdminHome = '/super-admin';
+  static const String premiumSuperAdminHome = '/premium-super-admin';
 
   // Patient
   static const String patients = '/patient/patients';

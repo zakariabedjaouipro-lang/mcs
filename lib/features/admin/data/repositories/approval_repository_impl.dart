@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../../core/errors/failure.dart';
-import '../../core/models/user_approval_model.dart';
-import '../../core/usecases/approval_usecase.dart';
+import 'package:mcs/core/errors/failures.dart';
+import 'package:mcs/core/models/user_approval_model.dart';
+import 'package:mcs/core/usecases/approval_usecase.dart';
 import '../datasources/approval_remote_data_source.dart';
 
 /// Implementation of ApprovalRepository
@@ -93,6 +93,32 @@ class ApprovalRepositoryImpl implements ApprovalRepository {
       return Left(
         ServerFailure(
           message: 'Failed to fetch approvals by status: $e',
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> createApprovalRequest({
+    required String userId,
+    required String email,
+    required String fullName,
+    required String role,
+    required String registrationType,
+  }) async {
+    try {
+      await remoteDataSource.createApprovalRequest(
+        userId: userId,
+        email: email,
+        fullName: fullName,
+        role: role,
+        registrationType: registrationType,
+      );
+      return const Right(null);
+    } catch (e) {
+      return Left(
+        ServerFailure(
+          message: 'Failed to create approval request: $e',
         ),
       );
     }

@@ -1,9 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../core/constants/app_constants.dart';
-import '../../core/constants/db_constants.dart';
-import '../../core/models/user_approval_model.dart';
-import '../../core/services/supabase_service.dart';
+import 'package:mcs/core/constants/db_constants.dart';
+import 'package:mcs/core/models/user_approval_model.dart';
+import 'package:mcs/core/services/supabase_service.dart';
 
 /// Remote data source for approval operations
 /// مصدر البيانات البعيد لعمليات الموافقة
@@ -13,6 +12,15 @@ abstract class ApprovalRemoteDataSource {
 
   /// Get a single approval request
   Future<UserApprovalModel> getApprovalRequest(String userId);
+
+  /// Create a new approval request
+  Future<void> createApprovalRequest({
+    required String userId,
+    required String email,
+    required String fullName,
+    required String role,
+    required String registrationType,
+  });
 
   /// Approve a user
   Future<void> approveUser({
@@ -50,7 +58,10 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
           .from(DbTables.userApprovals)
           .select()
           .eq('status', 'pending')
-          .order('created_at', ascending: false);
+          .order(
+            'created_at',
+            ascending: false,
+          );
 
       return (response as List<dynamic>)
           .map((json) => UserApprovalModel.fromJson(
@@ -92,13 +103,14 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
       // Update approval request record
       await supabaseClient.from(DbTables.userApprovals).update({
         'status': 'approved',
-        'approved_at': DateTime.now().toIso8601String(),
-        'approval_notes': approvalNotes,
+        'reviewed_at': DateTime.now().toIso8601String(),
+        'reviewed_by': supabaseClient.auth.currentUser!.id,
+        'notes': approvalNotes,
       }).eq('user_id', userId);
 
       // Update user metadata to mark as approved
       final user = await supabaseClient.auth.admin.getUserById(userId);
-      final metadata = Map<String, dynamic>.from(user.userMetadata ?? {});
+      final metadata = Map<String, dynamic>.from(user.user?.userMetadata ?? {});
       metadata['approvalStatus'] = 'approved';
 
       await supabaseClient.auth.admin.updateUserById(
@@ -123,13 +135,14 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
       // Update approval request record
       await supabaseClient.from(DbTables.userApprovals).update({
         'status': 'rejected',
-        'rejected_at': DateTime.now().toIso8601String(),
-        'rejection_reason': rejectionReason,
+        'reviewed_at': DateTime.now().toIso8601String(),
+        'reviewed_by': supabaseClient.auth.currentUser!.id,
+        'notes': rejectionReason,
       }).eq('user_id', userId);
 
       // Update user metadata to mark as rejected
       final user = await supabaseClient.auth.admin.getUserById(userId);
-      final metadata = Map<String, dynamic>.from(user.userMetadata ?? {});
+      final metadata = Map<String, dynamic>.from(user.user?.userMetadata ?? {});
       metadata['approvalStatus'] = 'rejected';
 
       await supabaseClient.auth.admin.updateUserById(
@@ -152,7 +165,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
           .from(DbTables.userApprovals)
           .select()
           .eq('status', status)
-          .order('created_at', ascending: false);
+          .order('requested_at', ascending: false);
 
       return (response as List<dynamic>)
           .map((json) => UserApprovalModel.fromJson(
@@ -173,7 +186,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
           .from(DbTables.userApprovals)
           .select()
           .eq('role', role)
-          .order('created_at', ascending: false);
+          .order('requested_at', ascending: false);
 
       return (response as List<dynamic>)
           .map((json) => UserApprovalModel.fromJson(
@@ -184,6 +197,32 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
       throw _mapPostgrestException(e);
     } catch (e) {
       throw Exception('Failed to fetch approvals by role: $e');
+    }
+  }
+
+  @override
+  Future<void> createApprovalRequest({
+    required String userId,
+    required String email,
+    required String fullName,
+    required String role,
+    required String registrationType,
+  }) async {
+    try {
+      await supabaseClient.from(DbTables.userApprovals).insert([
+        {
+          'user_id': userId,
+          'email': email,
+          'full_name': fullName,
+          'role': role,
+          'registration_type': registrationType,
+          'status': 'pending',
+        }
+      ]);
+    } on PostgrestException catch (e) {
+      throw _mapPostgrestException(e);
+    } catch (e) {
+      throw Exception('Failed to create approval request: $e');
     }
   }
 

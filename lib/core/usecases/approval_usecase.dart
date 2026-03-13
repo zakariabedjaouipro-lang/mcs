@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../errors/failure.dart';
-import '../models/user_approval_model.dart';
-import '../usecases/usecase.dart';
+import 'package:mcs/core/errors/failures.dart';
+import 'package:mcs/core/models/user_approval_model.dart';
+import 'package:mcs/core/usecases/usecase.dart';
 
 /// Get all pending approval requests
 /// Use Case لجلب جميع طلبات الموافقة المعلقة
@@ -78,6 +78,15 @@ abstract class ApprovalRepository {
 
   /// Get a single approval request
   Future<Either<Failure, UserApprovalModel>> getApprovalRequest(String userId);
+
+  /// Create a new approval request
+  Future<Either<Failure, void>> createApprovalRequest({
+    required String userId,
+    required String email,
+    required String fullName,
+    required String role,
+    required String registrationType,
+  });
 
   /// Approve a user
   Future<Either<Failure, void>> approveUser({

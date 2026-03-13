@@ -229,7 +229,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
 
     try {
       final authService = sl<AuthService>();
-      await authService.signUpWithEmail(
+      final response = await authService.signUpWithEmail(
         email: _emailController.text.trim(),
         password: _passwordController.text,
         metadata: {
@@ -241,16 +241,25 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         },
       );
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('تم إنشاء الحساب بنجاح. في انتظار الموافقة...'),
-            backgroundColor: PremiumColors.successGreen,
-          ),
-        );
-        // Navigate to approval pending page
-        if (mounted) context.go(AppRoutes.login);
-      }
+      // Create approval request in database
+      await Supabase.instance.client.from('user_approvals').insert({
+        'user_id': response.user!.id,
+        'email': _emailController.text.trim(),
+        'full_name': _nameController.text.trim(),
+        'role': _selectedRole,
+        'registration_type': 'email',
+        'status': 'pending',
+      }).then((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('تم إنشاء الحساب بنجاح. في انتظار الموافقة...'),
+              backgroundColor: PremiumColors.successGreen,
+            ),
+          );
+          if (mounted) context.go(AppRoutes.login);
+        }
+      });
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -272,9 +281,9 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
 
     try {
       final authService = sl<AuthService>();
-      final success = await authService.signInWithGoogle();
+      final authResponse = await authService.signInWithGoogle();
 
-      if (success && mounted) {
+      if (authResponse != null && mounted) {
         // Update user metadata with role and approval status
         await authService.updateUserMetadata({
           'role': _selectedRole,
@@ -282,14 +291,25 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           'registrationType': 'google',
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('تم التسجيل عبر Google. في انتظار الموافقة...'),
-            backgroundColor: PremiumColors.successGreen,
-          ),
-        );
-
-        if (mounted) context.go(AppRoutes.login);
+        // Create approval request in database
+        await Supabase.instance.client.from('user_approvals').insert({
+          'user_id': authResponse.user!.id,
+          'email': authResponse.user!.email ?? '',
+          'full_name': authResponse.user!.userMetadata?['full_name'] ?? '',
+          'role': _selectedRole,
+          'registration_type': 'google',
+          'status': 'pending',
+        }).then((_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('تم التسجيل عبر Google. في انتظار الموافقة...'),
+                backgroundColor: PremiumColors.successGreen,
+              ),
+            );
+            if (mounted) context.go(AppRoutes.login);
+          }
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -315,21 +335,40 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       final success = await authService.signInWithFacebook();
 
       if (success && mounted) {
-        // Update user metadata with role and approval status
-        await authService.updateUserMetadata({
-          'role': _selectedRole,
-          'approvalStatus': 'pending',
-          'registrationType': 'facebook',
-        });
+        // Get current user to get their ID and details
+        final user = authService.currentUser;
+        if (user != null) {
+          // Update user metadata with role and approval status
+          await authService.updateUserMetadata({
+            'role': _selectedRole,
+            'approvalStatus': 'pending',
+            'registrationType': 'facebook',
+          });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('تم التسجيل عبر Facebook. في انتظار الموافقة...'),
-            backgroundColor: PremiumColors.successGreen,
-          ),
-        );
-
-        if (mounted) context.go(AppRoutes.login);
+          // Create approval request in database
+          final fullName = user.userMetadata?['full_name'] ??
+              user.userMetadata?['name'] ??
+              '';
+          await Supabase.instance.client.from('user_approvals').insert({
+            'user_id': user.id,
+            'email': user.email ?? '',
+            'full_name': fullName,
+            'role': _selectedRole,
+            'registration_type': 'facebook',
+            'status': 'pending',
+          }).then((_) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content:
+                      Text('تم التسجيل عبر Facebook. في انتظار الموافقة...'),
+                  backgroundColor: PremiumColors.successGreen,
+                ),
+              );
+              if (mounted) context.go(AppRoutes.login);
+            }
+          });
+        }
       }
     } catch (e) {
       if (mounted) {
