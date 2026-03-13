@@ -4,7 +4,6 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/features/admin/presentation/bloc/approval_bloc.dart';
@@ -28,80 +27,79 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
   late AnimationController _drawerAnimationController;
   bool _isDrawerOpen = true;
   String _selectedMenuItem = 'dashboard';
-  String _searchQuery = '';
 
   final List<MenuItem> _menuItems = [
-    MenuItem(
+    const MenuItem(
       id: 'dashboard',
       label: 'لوحة التحكم',
       labelEn: 'Dashboard',
       icon: Icons.dashboard,
       color: Colors.blue,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'clinics',
       label: 'إدارة العيادات',
       labelEn: 'Clinics',
       icon: Icons.local_hospital,
       color: Colors.teal,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'doctors',
       label: 'إدارة الأطباء',
       labelEn: 'Doctors',
       icon: Icons.medical_services,
       color: Colors.cyan,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'patients',
       label: 'إدارة المرضى',
       labelEn: 'Patients',
       icon: Icons.people,
       color: Colors.green,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'appointments',
       label: 'المواعيد',
       labelEn: 'Appointments',
       icon: Icons.calendar_today,
       color: Colors.purple,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'payments',
       label: 'المدفوعات',
       labelEn: 'Payments',
       icon: Icons.payment,
       color: Colors.orange,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'approvals',
       label: 'الموافقات',
       labelEn: 'Approvals',
       icon: Icons.check_circle,
       color: Colors.amber,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'subscriptions',
       label: 'الاشتراكات',
       labelEn: 'Subscriptions',
       icon: Icons.card_membership,
       color: Colors.indigo,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'analytics',
       label: 'التحليلات والتقارير',
       labelEn: 'Analytics',
       icon: Icons.analytics,
       color: Colors.red,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'permissions',
       label: 'الصلاحيات',
       labelEn: 'Permissions',
       icon: Icons.security,
       color: Colors.deepOrange,
     ),
-    MenuItem(
+    const MenuItem(
       id: 'settings',
       label: 'الإعدادات',
       labelEn: 'Settings',
@@ -177,13 +175,12 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
             end: Alignment.bottomRight,
             colors: [
               Theme.of(context).scaffoldBackgroundColor,
-              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+              Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.95),
             ],
           ),
           border: Border(
             right: BorderSide(
-              color: Colors.grey.withOpacity(0.1),
-              width: 1,
+              color: Colors.grey.withValues(alpha: 0.1),
             ),
           ),
         ),
@@ -207,7 +204,8 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: PremiumColors.primaryBlue.withOpacity(0.3),
+                          color:
+                              PremiumColors.primaryBlue.withValues(alpha: 0.3),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -266,7 +264,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
               decoration: BoxDecoration(
                 border: Border(
                   top: BorderSide(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withValues(alpha: 0.1),
                   ),
                 ),
               ),
@@ -359,11 +357,12 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
-        color: isSelected ? item.color.withOpacity(0.1) : Colors.transparent,
+        color:
+            isSelected ? item.color.withValues(alpha: 0.1) : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         border: isSelected
             ? Border.all(
-                color: item.color.withOpacity(0.3),
+                color: item.color.withValues(alpha: 0.3),
                 width: 1.5,
               )
             : null,
@@ -389,7 +388,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: item.color.withOpacity(0.15),
+                    color: item.color.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -474,8 +473,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
         color: Theme.of(context).scaffoldBackgroundColor,
         border: Border(
           bottom: BorderSide(
-            color: Colors.grey.withOpacity(0.1),
-            width: 1,
+            color: Colors.grey.withValues(alpha: 0.1),
           ),
         ),
       ),
@@ -489,16 +487,14 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withValues(alpha: 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
                 ],
               ),
               child: TextField(
-                onChanged: (value) {
-                  setState(() => _searchQuery = value);
-                },
+                onChanged: (_) {},
                 decoration: InputDecoration(
                   hintText: isArabic ? 'ابحث في النظام...' : 'Search system...',
                   prefixIcon: const Icon(Icons.search, size: 20),
@@ -561,8 +557,8 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
 
   Widget _buildIconButton({
     required IconData icon,
-    String? badge,
     required VoidCallback onTap,
+    String? badge,
   }) {
     return Material(
       color: Colors.transparent,
@@ -654,8 +650,8 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                 Container(
                   width: 40,
                   height: 40,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
                       colors: [
                         PremiumColors.primaryBlue,
                         PremiumColors.successGreen,
@@ -715,7 +711,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
         Text(
           isArabic
               ? 'إليك ملخص نشاط النظام اليوم'
-              : 'Here\'s a summary of today\'s activities',
+              : "Here's a summary of today's activities",
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Colors.grey,
               ),
@@ -807,18 +803,17 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            stat.color.withOpacity(0.1),
-            stat.color.withOpacity(0.05),
+            stat.color.withValues(alpha: 0.1),
+            stat.color.withValues(alpha: 0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: stat.color.withOpacity(0.2),
-          width: 1,
+          color: stat.color.withValues(alpha: 0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: stat.color.withOpacity(0.1),
+            color: stat.color.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -841,7 +836,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: stat.color.withOpacity(0.2),
+                        color: stat.color.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -856,7 +851,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -926,7 +921,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -940,7 +935,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
           height: 1,
           indent: 16,
           endIndent: 16,
-          color: Colors.grey.withOpacity(0.1),
+          color: Colors.grey.withValues(alpha: 0.1),
         ),
         itemBuilder: (context, index) {
           final activity = activities[index];
@@ -951,11 +946,11 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: PremiumColors.primaryBlue.withOpacity(0.1),
+                    color: PremiumColors.primaryBlue.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
-                    activity['icon'] as IconData,
+                    activity['icon']! as IconData,
                     color: PremiumColors.primaryBlue,
                     size: 20,
                   ),
@@ -966,14 +961,14 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        activity['title'] as String,
+                        activity['title']! as String,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w500,
                             ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        activity['time'] as String,
+                        activity['time']! as String,
                         style: Theme.of(context).textTheme.labelSmall,
                       ),
                     ],
@@ -994,28 +989,27 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
-      childAspectRatio: 1,
       children: [
         _buildQuickActionButton(
-          context,
+          context: context,
           icon: Icons.person_add,
           label: isArabic ? 'مريض جديد' : 'New Patient',
           onTap: () {},
         ),
         _buildQuickActionButton(
-          context,
+          context: context,
           icon: Icons.calendar_today,
           label: isArabic ? 'موعد جديد' : 'New Appointment',
           onTap: () {},
         ),
         _buildQuickActionButton(
-          context,
+          context: context,
           icon: Icons.note_add,
           label: isArabic ? 'تقرير جديد' : 'New Report',
           onTap: () {},
         ),
         _buildQuickActionButton(
-          context,
+          context: context,
           icon: Icons.local_hospital,
           label: isArabic ? 'عيادة جديدة' : 'New Clinic',
           onTap: () {},
@@ -1024,8 +1018,8 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
     );
   }
 
-  Widget _buildQuickActionButton(
-    BuildContext context, {
+  Widget _buildQuickActionButton({
+    required BuildContext context,
     required IconData icon,
     required String label,
     required VoidCallback onTap,
@@ -1036,7 +1030,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1086,7 +1080,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: PremiumColors.primaryBlue.withOpacity(0.1),
+              color: PremiumColors.primaryBlue.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -1115,7 +1109,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
   }
 
   void _showApprovalsModal(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => Dialog(
         child: BlocProvider(
@@ -1129,33 +1123,33 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
 
 // Data Classes
 class MenuItem {
-  final String id;
-  final String label;
-  final String labelEn;
-  final IconData icon;
-  final Color color;
-
-  MenuItem({
+  const MenuItem({
     required this.id,
     required this.label,
     required this.labelEn,
     required this.icon,
     required this.color,
   });
+
+  final String id;
+  final String label;
+  final String labelEn;
+  final IconData icon;
+  final Color color;
 }
 
 class StatisticCard {
-  final String title;
-  final String value;
-  final IconData icon;
-  final Color color;
-  final String change;
-
-  StatisticCard({
+  const StatisticCard({
     required this.title,
     required this.value,
     required this.icon,
     required this.color,
     required this.change,
   });
+
+  final String title;
+  final String value;
+  final IconData icon;
+  final Color color;
+  final String change;
 }
