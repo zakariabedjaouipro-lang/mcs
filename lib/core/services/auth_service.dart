@@ -10,6 +10,7 @@ import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/constants/app_constants.dart';
 import 'package:mcs/core/errors/exceptions.dart' as app;
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   AuthService({GoTrueClient? auth}) : _auth = auth ?? SupabaseConfig.auth;
@@ -89,7 +90,30 @@ class AuthService {
   }
 
   /// Sign in with Google.
-  Future<bool> signInWithGoogle() => signInWithOAuth(OAuthProvider.google);
+  Future<AuthResponse?> signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: ['email'],
+      );
+
+      final googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) return null;
+
+      final googleAuth = await googleUser.authentication;
+
+      final response = await _auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: googleAuth.idToken!,
+        accessToken: googleAuth.accessToken,
+      );
+
+      return response;
+    } catch (e, st) {
+      _logError('signInWithGoogle', e, st);
+      throw _mapException(e);
+    }
+  }
 
   /// Sign in with Facebook.
   Future<bool> signInWithFacebook() => signInWithOAuth(OAuthProvider.facebook);

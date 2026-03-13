@@ -56,10 +56,22 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       icon: Icons.medical_services,
     ),
     RoleOption(
+      value: 'clinic_admin',
+      label: 'Admin',
+      description: 'Manage clinic and staff',
+      icon: Icons.business,
+    ),
+    RoleOption(
+      value: 'super_admin',
+      label: 'Super Admin',
+      description: 'Full system administration',
+      icon: Icons.security,
+    ),
+    RoleOption(
       value: 'staff',
       label: 'Staff',
       description: 'Manage clinic operations',
-      icon: Icons.admin_panel_settings,
+      icon: Icons.people_alt,
     ),
   ];
 
@@ -224,17 +236,19 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           'fullName': _nameController.text.trim(),
           'phone': _phoneController.text.trim(),
           'role': _selectedRole,
+          'approvalStatus': 'pending',
+          'registrationType': 'email',
         },
       );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('تم إنشاء الحساب بنجاح'),
+            content: Text('تم إنشاء الحساب بنجاح. في انتظار الموافقة...'),
             backgroundColor: PremiumColors.successGreen,
           ),
         );
-        // Navigate to dashboard or login
+        // Navigate to approval pending page
         if (mounted) context.go(AppRoutes.login);
       }
     } catch (e) {
@@ -242,6 +256,86 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('خطأ: $e'),
+            backgroundColor: PremiumColors.errorRed,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _handleGoogleSignUp() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final authService = sl<AuthService>();
+      final success = await authService.signInWithGoogle();
+
+      if (success && mounted) {
+        // Update user metadata with role and approval status
+        await authService.updateUserMetadata({
+          'role': _selectedRole,
+          'approvalStatus': 'pending',
+          'registrationType': 'google',
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تم التسجيل عبر Google. في انتظار الموافقة...'),
+            backgroundColor: PremiumColors.successGreen,
+          ),
+        );
+
+        if (mounted) context.go(AppRoutes.login);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('خطأ في التسجيل عبر Google: $e'),
+            backgroundColor: PremiumColors.errorRed,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _handleFacebookSignUp() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final authService = sl<AuthService>();
+      final success = await authService.signInWithFacebook();
+
+      if (success && mounted) {
+        // Update user metadata with role and approval status
+        await authService.updateUserMetadata({
+          'role': _selectedRole,
+          'approvalStatus': 'pending',
+          'registrationType': 'facebook',
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تم التسجيل عبر Facebook. في انتظار الموافقة...'),
+            backgroundColor: PremiumColors.successGreen,
+          ),
+        );
+
+        if (mounted) context.go(AppRoutes.login);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('خطأ في التسجيل عبر Facebook: $e'),
             backgroundColor: PremiumColors.errorRed,
           ),
         );
@@ -556,6 +650,54 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
 
           // Password Requirements
           _buildPasswordRequirements(),
+
+          const SizedBox(height: 32),
+
+          // Social Login Section
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Or sign up using',
+                style: PremiumTextStyles.bodySmall.copyWith(
+                  color: PremiumColors.lightText,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _handleGoogleSignUp,
+                      icon: const Icon(Icons.g_mobiledata),
+                      label: const Text('Google'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black87,
+                        side: const BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _handleFacebookSignUp,
+                      icon: const Icon(
+                        Icons.facebook,
+                        color: Color(0xFF1877F2),
+                      ),
+                      label: const Text('Facebook'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black87,
+                        side: const BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
 
           const SizedBox(height: 32),
 

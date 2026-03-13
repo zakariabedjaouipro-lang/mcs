@@ -12,14 +12,21 @@ import 'package:mcs/core/services/notification_service.dart';
 import 'package:mcs/core/services/sms_service.dart';
 import 'package:mcs/core/services/storage_service.dart';
 import 'package:mcs/core/services/supabase_service.dart';
+import 'package:mcs/core/usecases/approval_usecase.dart';
 import 'package:mcs/core/usecases/demo_accounts_usecase.dart';
+import 'package:mcs/features/admin/data/datasources/approval_remote_data_source.dart';
+import 'package:mcs/features/admin/data/repositories/approval_repository_impl.dart';
 import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
+import 'package:mcs/features/admin/presentation/bloc/approval_bloc.dart';
 import 'package:mcs/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mcs/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/register_usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:mcs/features/doctor/data/repositories/doctor_repository_impl.dart';
+import 'package:mcs/features/doctor/domain/repositories/doctor_repository.dart';
+import 'package:mcs/features/doctor/presentation/bloc/doctor_bloc.dart';
 import 'package:mcs/features/localization/data/datasources/localization_local_data_source.dart';
 import 'package:mcs/features/localization/data/repositories/localization_repository.dart'
     as localization_repo;
@@ -95,9 +102,42 @@ Future<void> configureDependencies() async {
     ..registerFactory(
       () => LocalizationBloc(localizationRepository: sl()),
     )
+    // ── Doctor Feature ──────────────────────────────────────
+    ..registerLazySingleton<DoctorRepository>(
+      () => DoctorRepositoryImpl(sl<SupabaseService>()),
+    )
+    ..registerFactory(
+      () => DoctorBloc(sl<DoctorRepository>()),
+    )
     // ── Other BLoCs ──────────────────────────────────────────
     // ✅ Admin BLoC - محدد بشكل واضح
-    ..registerFactory(() => AdminBloc(sl<SupabaseService>()));
+    ..registerFactory(() => AdminBloc(sl<SupabaseService>()))
+    // ── Approval Feature ────────────────────────────────────
+    ..registerLazySingleton<ApprovalRemoteDataSource>(
+      () => ApprovalRemoteDataSourceImpl(
+        supabaseService: sl(),
+        supabaseClient: sl(),
+      ),
+    )
+    ..registerLazySingleton<ApprovalRepository>(
+      () => ApprovalRepositoryImpl(remoteDataSource: sl()),
+    )
+    ..registerLazySingleton(
+      () => GetPendingApprovalsUseCase(sl()),
+    )
+    ..registerLazySingleton(
+      () => ApproveUserUseCase(sl()),
+    )
+    ..registerLazySingleton(
+      () => RejectUserUseCase(sl()),
+    )
+    ..registerFactory(
+      () => ApprovalBloc(
+        getPendingApprovalsUseCase: sl(),
+        approveUserUseCase: sl(),
+        rejectUserUseCase: sl(),
+      ),
+    );
 }
 
 /// Alias for [configureDependencies] for backward compatibility.

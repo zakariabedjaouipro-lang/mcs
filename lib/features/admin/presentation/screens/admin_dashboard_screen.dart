@@ -9,10 +9,16 @@ import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/app_theme.dart';
 import 'package:mcs/core/theme/text_styles.dart';
 import 'package:mcs/features/admin/presentation/bloc/index.dart';
+import 'package:mcs/features/admin/presentation/bloc/approval_bloc.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_clinics_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_currencies_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_stats_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_subscriptions_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/approvals_management_screen.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 
 /// Super Admin Dashboard Screen
 class AdminDashboardScreen extends StatelessWidget {
@@ -43,6 +49,11 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
       title: 'الإحصائيات',
       icon: Icons.dashboard,
       builder: _buildStatsScreen,
+    ),
+    _DashboardTab(
+      title: 'الموافقات',
+      icon: Icons.check_circle,
+      builder: _buildApprovalsScreen,
     ),
     _DashboardTab(
       title: 'العيادات',
@@ -83,6 +94,13 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     return const AdminStatsScreen();
   }
 
+  static Widget _buildApprovalsScreen(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ApprovalBloc>(),
+      child: const ApprovalsManagementScreen(),
+    );
+  }
+
   static Widget _buildClinicsScreen(BuildContext context) {
     return const AdminClinicsScreen();
   }
@@ -107,6 +125,30 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
             appBar: AppBar(
               title: const Text('MCS Admin'),
               elevation: 0,
+              actions: [
+                // زر تبديل اللغة
+                IconButton(
+                  icon: const Icon(Icons.language),
+                  tooltip: 'اللغة',
+                  onPressed: () {
+                    context
+                        .read<LocalizationBloc>()
+                        .add(const ToggleLanguageEvent());
+                  },
+                ),
+                // زر تبديل الثيم
+                IconButton(
+                  icon: Icon(
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Icons.light_mode
+                        : Icons.dark_mode,
+                  ),
+                  tooltip: 'الثيم',
+                  onPressed: () {
+                    context.read<ThemeBloc>().add(const ToggleThemeEvent());
+                  },
+                ),
+              ],
             ),
             body: _tabs[_selectedIndex].builder(context),
             bottomNavigationBar: BottomNavigationBar(

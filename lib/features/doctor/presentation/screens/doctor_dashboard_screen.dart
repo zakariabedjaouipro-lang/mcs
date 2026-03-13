@@ -11,6 +11,10 @@ import 'package:mcs/core/models/appointment_model.dart';
 import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/widgets/loading_widget.dart';
 import 'package:mcs/features/doctor/presentation/bloc/index.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 
 /// Doctor dashboard screen
 class DoctorDashboardScreen extends StatefulWidget {
@@ -66,6 +70,26 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                   duration: Duration(seconds: 2),
                 ),
               );
+            },
+          ),
+          // زر تبديل اللغة
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: 'اللغة',
+            onPressed: () {
+              context.read<LocalizationBloc>().add(const ToggleLanguageEvent());
+            },
+          ),
+          // زر تبديل الثيم
+          IconButton(
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            tooltip: 'الثيم',
+            onPressed: () {
+              context.read<ThemeBloc>().add(const ToggleThemeEvent());
             },
           ),
           PopupMenuButton<String>(

@@ -12,6 +12,7 @@ abstract class AppRoutes {
   static const String otpVerification = '/otp-verification';
   static const String forgotPassword = '/forgot-password';
   static const String changePassword = '/change-password';
+  static const String pendingApproval = '/pending-approval';
 
   // Dashboards
   static const String dashboard = '/dashboard';

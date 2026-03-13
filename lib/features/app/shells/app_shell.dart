@@ -3,11 +3,16 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/extensions.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 
 class AppShellScreen extends StatefulWidget {
   const AppShellScreen({
@@ -134,6 +139,36 @@ class _AppShellScreenState extends State<AppShellScreen> {
         elevation: 0,
         backgroundColor: MedicalColors.primary,
         foregroundColor: Colors.white,
+        actions: [
+          // زر تبديل اللغة
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: 'اللغة / Language',
+            onPressed: () {
+              context.read<LocalizationBloc>().add(
+                    const ToggleLanguageEvent(),
+                  );
+            },
+          ),
+          // زر تبديل الثيم
+          IconButton(
+            icon: Icon(
+              isDark ? Icons.light_mode : Icons.dark_mode,
+            ),
+            tooltip: 'الثيم / Theme',
+            onPressed: () {
+              context.read<ThemeBloc>().add(
+                    const ToggleThemeEvent(),
+                  );
+            },
+          ),
+          // زر تسجيل الخروج
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'تسجيل الخروج / Logout',
+            onPressed: _logout,
+          ),
+        ],
       ),
       body: widget.child,
       bottomNavigationBar: _buildBottomNavigation(context, isDark, items),

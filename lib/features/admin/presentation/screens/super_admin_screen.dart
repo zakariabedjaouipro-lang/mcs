@@ -3,8 +3,13 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mcs/core/constants/app_routes.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
 
 /// Super Admin dashboard screen
 class SuperAdminScreen extends StatefulWidget {
@@ -22,6 +27,28 @@ class _SuperAdminScreenState extends State<SuperAdminScreen> {
         title: const Text('Super Admin'),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          // زر تبديل اللغة
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: 'اللغة',
+            onPressed: () {
+              context.read<LocalizationBloc>().add(const ToggleLanguageEvent());
+            },
+          ),
+          // زر تبديل الثيم
+          IconButton(
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            tooltip: 'الثيم',
+            onPressed: () {
+              context.read<ThemeBloc>().add(const ToggleThemeEvent());
+            },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {

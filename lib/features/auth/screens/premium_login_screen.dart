@@ -32,7 +32,13 @@ final _demoAccounts = [
     'role': 'Admin',
     'email': 'admin@mcs.demo',
     'password': 'Demo123456',
-    'description': 'Admin Account',
+    'description': 'Clinic Admin Account',
+  },
+  {
+    'role': 'Super Admin',
+    'email': 'superadmin@mcs.demo',
+    'password': 'Demo123456',
+    'description': 'Super Admin Account',
   },
   {
     'role': 'Staff',
@@ -361,9 +367,11 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                   onPressed: () async {
                                     try {
                                       setState(() => _isLoading = true);
-                                      final success = await sl<AuthService>()
+
+                                      final response = await sl<AuthService>()
                                           .signInWithGoogle();
-                                      if (success && mounted) {
+
+                                      if (response != null && mounted) {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
@@ -606,6 +614,21 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                 'Tap any account to auto-fill credentials',
                 style: PremiumTextStyles.bodySmall.copyWith(
                   color: PremiumColors.lightText,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: PremiumColors.lightGrey,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '✨ Admin & Super Admin شاشات متاحة الآن!',
+                  style: PremiumTextStyles.bodySmall.copyWith(
+                    color: PremiumColors.darkText,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

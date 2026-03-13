@@ -4,10 +4,13 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/constants/app_routes.dart';
 // Admin
+import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart';
 // App shell
@@ -18,11 +21,13 @@ import 'package:mcs/features/appointment/presentation/screens/appointments_scree
 import 'package:mcs/features/auth/screens/change_password_screen.dart';
 import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
 import 'package:mcs/features/auth/screens/otp_verification_screen.dart';
+import 'package:mcs/features/auth/screens/pending_approval_screen.dart';
 import 'package:mcs/features/auth/screens/premium_login_screen.dart';
 import 'package:mcs/features/auth/screens/premium_register_screen.dart';
 // Dashboard
 import 'package:mcs/features/dashboard/screens/premium_dashboard_screen.dart';
 // Doctor
+import 'package:mcs/features/doctor/presentation/bloc/doctor_bloc.dart';
 import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen.dart';
 // Employee
 import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
@@ -53,17 +58,33 @@ class AppRouter {
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'root');
 
-  static GoRouter get router => _router;
+  static GoRouter get router => _router ??= _createRouter();
 
-  static final GoRouter _router = GoRouter(
-    navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.landing,
-    debugLogDiagnostics: true,
-    redirect: _guard,
-    routes: _routes,
-    errorBuilder: (context, state) =>
-        _ErrorScreen(error: state.error?.toString() ?? 'Page not found'),
-  );
+  static GoRouter? _router;
+
+  static GoRouter _createRouter() => GoRouter(
+        navigatorKey: _rootNavigatorKey,
+        initialLocation: _getInitialRoute(),
+        debugLogDiagnostics: true,
+        redirect: _guard,
+        routes: _routes,
+        errorBuilder: (context, state) =>
+            _ErrorScreen(error: state.error?.toString() ?? 'Page not found'),
+      );
+
+  /// Get initial route based on authentication status
+  /// Mobile: Login or Dashboard, Web: Landing
+  static String _getInitialRoute() {
+    final isAuthenticated = SupabaseConfig.isAuthenticated;
+
+    // If authenticated, go to role-based home
+    if (isAuthenticated) {
+      return _getRoleBasedHomePath();
+    }
+
+    // If not authenticated, go to login
+    return AppRoutes.login;
+  }
 
   /// ─────────────────────────────────────────────────
   /// Route Guard
@@ -74,7 +95,8 @@ class AppRouter {
     final isAuthRoute = state.matchedLocation == AppRoutes.login ||
         state.matchedLocation == AppRoutes.register ||
         state.matchedLocation == AppRoutes.forgotPassword ||
-        state.matchedLocation == AppRoutes.otpVerification;
+        state.matchedLocation == AppRoutes.otpVerification ||
+        state.matchedLocation == AppRoutes.pendingApproval;
 
     final isPublicRoute = state.matchedLocation == AppRoutes.landing ||
         state.matchedLocation == AppRoutes.features ||
@@ -88,8 +110,29 @@ class AppRouter {
       return AppRoutes.login;
     }
 
-    if (isAuthenticated && isAuthRoute) {
+    if (isAuthenticated &&
+        isAuthRoute &&
+        state.matchedLocation != AppRoutes.pendingApproval) {
       return _getRoleBasedHomePath();
+    }
+
+    // Check if user is awaiting approval
+    if (isAuthenticated) {
+      final authUser = SupabaseConfig.client.auth.currentUser;
+      final approvalStatus =
+          authUser?.userMetadata?['approvalStatus'] as String?;
+
+      if (approvalStatus == 'pending') {
+        // If user is already on pending approval screen, allow
+        if (state.matchedLocation == AppRoutes.pendingApproval) {
+          return null;
+        }
+        // Otherwise, redirect to pending approval screen
+        return AppRoutes.pendingApproval;
+      } else if (approvalStatus == 'rejected') {
+        // Rejected users should be logged out and go to login
+        return AppRoutes.login;
+      }
     }
 
     if (isAuthenticated && state.matchedLocation == AppRoutes.dashboard) {
@@ -191,6 +234,12 @@ class AppRouter {
       builder: (context, state) => const ChangePasswordScreen(),
     ),
 
+    /// Pending Approval
+    GoRoute(
+      path: AppRoutes.pendingApproval,
+      builder: (context, state) => const PendingApprovalScreen(),
+    ),
+
     /// Dashboard
     GoRoute(
       path: AppRoutes.dashboard,
@@ -230,7 +279,10 @@ class AppRouter {
     /// Doctor
     GoRoute(
       path: AppRoutes.doctorHome,
-      builder: (context, state) => const DoctorDashboardScreen(isPremium: true),
+      builder: (context, state) => BlocProvider(
+        create: (context) => sl<DoctorBloc>(),
+        child: const DoctorDashboardScreen(isPremium: true),
+      ),
     ),
 
     /// Employee
@@ -253,19 +305,63 @@ class AppRouter {
     /// Admin
     GoRoute(
       path: AppRoutes.adminHome,
-      builder: (context, state) => const AdminDashboardScreen(),
+      builder: (context, state) => BlocProvider(
+        create: (context) => sl<AdminBloc>(),
+        child: const AdminDashboardScreen(),
+      ),
     ),
 
     /// Super Admin
     GoRoute(
       path: AppRoutes.superAdminHome,
-      builder: (context, state) => const SuperAdminScreen(),
+      builder: (context, state) => BlocProvider(
+        create: (context) => sl<AdminBloc>(),
+        child: const SuperAdminScreen(),
+      ),
     ),
 
     /// Splash
     GoRoute(
       path: '/splash',
       builder: (context, state) => const SplashScreen(),
+    ),
+
+    /// ═══════════════════════════════════════════════════════════
+    /// TEST ROUTES (لاختبار الشاشات بسهولة - قم بحذفها بعد الانتهاء)
+    /// ═══════════════════════════════════════════════════════════
+    GoRoute(
+      path: '/test-admin',
+      builder: (context, state) => BlocProvider(
+        create: (context) => sl<AdminBloc>(),
+        child: const AdminDashboardScreen(),
+      ),
+    ),
+
+    GoRoute(
+      path: '/test-super-admin',
+      builder: (context, state) => BlocProvider(
+        create: (context) => sl<AdminBloc>(),
+        child: const SuperAdminScreen(),
+      ),
+    ),
+
+    GoRoute(
+      path: '/test-doctor',
+      builder: (context, state) => BlocProvider(
+        create: (context) => sl<DoctorBloc>(),
+        child: const DoctorDashboardScreen(isPremium: true),
+      ),
+    ),
+
+    GoRoute(
+      path: '/test-patient',
+      builder: (context, state) =>
+          const AppShellScreen(child: PatientHomeScreen(isPremium: true)),
+    ),
+
+    GoRoute(
+      path: '/test-employee',
+      builder: (context, state) => const EmployeeDashboardScreen(),
     ),
   ];
 }
