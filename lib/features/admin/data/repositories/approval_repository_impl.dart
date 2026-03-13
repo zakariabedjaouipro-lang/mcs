@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:mcs/core/errors/failures.dart';
 import 'package:mcs/core/models/user_approval_model.dart';
 import 'package:mcs/core/usecases/approval_usecase.dart';
-import '../datasources/approval_remote_data_source.dart';
+import 'package:mcs/features/admin/data/datasources/approval_remote_data_source.dart';
 
 /// Implementation of ApprovalRepository
 class ApprovalRepositoryImpl implements ApprovalRepository {

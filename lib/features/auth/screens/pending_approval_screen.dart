@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../../../../../core/config/router.dart';
-import '../../../../../core/theme/premium_colors.dart';
 
 /// Screen shown to users awaiting approval
 /// شاشة معروضة للمستخدمين في انتظار الموافقة
 class PendingApprovalScreen extends StatefulWidget {
-  const PendingApprovalScreen({Key? key}) : super(key: key);
+  const PendingApprovalScreen({super.key});
 
   @override
   State<PendingApprovalScreen> createState() => _PendingApprovalScreenState();
@@ -35,7 +33,7 @@ class _PendingApprovalScreenState extends State<PendingApprovalScreen> {
         body: Center(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

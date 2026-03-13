@@ -53,6 +53,29 @@ class UserApprovalModel extends Equatable {
     this.rejectionReason,
   });
 
+  /// Create from JSON
+  factory UserApprovalModel.fromJson(Map<String, dynamic> json) {
+    final reviewedAt = json['reviewed_at'] != null
+        ? DateTime.parse(json['reviewed_at'] as String)
+        : null;
+    final status = ApprovalStatus.values.byName(json['status'] as String);
+    
+    return UserApprovalModel(
+      userId: json['user_id'] as String,
+      email: json['email'] as String,
+      fullName: json['full_name'] as String,
+      role: json['role'] as String,
+      registrationType: json['registration_type'] as String,
+      status: status,
+      createdAt: DateTime.parse(json['requested_at'] as String),
+      approvedAt: status == ApprovalStatus.approved ? reviewedAt : null,
+      rejectedAt: status == ApprovalStatus.rejected ? reviewedAt : null,
+      reviewedBy: json['reviewed_by'] as String?,
+      approvalNotes: status == ApprovalStatus.approved ? json['notes'] as String? : null,
+      rejectionReason: status == ApprovalStatus.rejected ? json['notes'] as String? : null,
+    );
+  }
+
   final String userId;
   final String email;
   final String fullName;
@@ -79,29 +102,6 @@ class UserApprovalModel extends Equatable {
         'reviewed_by': reviewedBy,
         'notes': approvalNotes ?? rejectionReason,
       };
-
-  /// Create from JSON
-  factory UserApprovalModel.fromJson(Map<String, dynamic> json) {
-    final reviewedAt = json['reviewed_at'] != null
-        ? DateTime.parse(json['reviewed_at'] as String)
-        : null;
-    final status = ApprovalStatus.values.byName(json['status'] as String);
-    
-    return UserApprovalModel(
-      userId: json['user_id'] as String,
-      email: json['email'] as String,
-      fullName: json['full_name'] as String,
-      role: json['role'] as String,
-      registrationType: json['registration_type'] as String,
-      status: status,
-      createdAt: DateTime.parse(json['requested_at'] as String),
-      approvedAt: status == ApprovalStatus.approved ? reviewedAt : null,
-      rejectedAt: status == ApprovalStatus.rejected ? reviewedAt : null,
-      reviewedBy: json['reviewed_by'] as String?,
-      approvalNotes: status == ApprovalStatus.approved ? json['notes'] as String? : null,
-      rejectionReason: status == ApprovalStatus.rejected ? json['notes'] as String? : null,
-    );
-  }
 
   /// Copy with for immutability
   UserApprovalModel copyWith({

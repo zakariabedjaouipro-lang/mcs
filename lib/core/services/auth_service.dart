@@ -6,11 +6,11 @@ library;
 
 import 'dart:developer';
 
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/constants/app_constants.dart';
 import 'package:mcs/core/errors/exceptions.dart' as app;
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   AuthService({GoTrueClient? auth}) : _auth = auth ?? SupabaseConfig.auth;
@@ -92,7 +92,7 @@ class AuthService {
   /// Sign in with Google.
   Future<AuthResponse?> signInWithGoogle() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(
+      final googleSignIn = GoogleSignIn(
         scopes: ['email'],
       );
 

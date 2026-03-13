@@ -1,8 +1,7 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:mcs/core/constants/db_constants.dart';
 import 'package:mcs/core/models/user_approval_model.dart';
 import 'package:mcs/core/services/supabase_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Remote data source for approval operations
 /// مصدر البيانات البعيد لعمليات الموافقة
@@ -66,7 +65,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
       return (response as List<dynamic>)
           .map((json) => UserApprovalModel.fromJson(
                 Map<String, dynamic>.from(json as Map),
-              ))
+              ),)
           .toList();
     } on PostgrestException catch (e) {
       throw _mapPostgrestException(e);
@@ -170,7 +169,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
       return (response as List<dynamic>)
           .map((json) => UserApprovalModel.fromJson(
                 Map<String, dynamic>.from(json as Map),
-              ))
+              ),)
           .toList();
     } on PostgrestException catch (e) {
       throw _mapPostgrestException(e);
@@ -191,7 +190,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
       return (response as List<dynamic>)
           .map((json) => UserApprovalModel.fromJson(
                 Map<String, dynamic>.from(json as Map),
-              ))
+              ),)
           .toList();
     } on PostgrestException catch (e) {
       throw _mapPostgrestException(e);

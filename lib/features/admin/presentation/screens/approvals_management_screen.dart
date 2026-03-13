@@ -39,7 +39,7 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
         elevation: 0,
         actions: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: Center(
               child: Text(
                 _selectedStatus?.label ?? (isArabic ? 'جميع الحالات' : 'All'),
@@ -68,7 +68,7 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
                 _buildFilterBar(context, isArabic),
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8),
                     itemCount: state.approvals.length,
                     itemBuilder: (context, index) => _buildApprovalCard(
                       context,
@@ -108,7 +108,7 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
   /// Build filter bar
   Widget _buildFilterBar(BuildContext context, bool isArabic) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Row(
         children: [
           Expanded(
@@ -118,7 +118,7 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
                 children: ApprovalStatus.values.map((status) {
                   final isSelected = _selectedStatus == status;
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: FilterChip(
                       label: Text(isArabic ? status.label : status.labelEn),
                       selected: isSelected,
@@ -153,13 +153,13 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
     final noteController = TextEditingController();
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ExpansionTile(
         title: Text(approval.fullName),
         subtitle: Text(approval.email),
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -195,7 +195,7 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () => _handleApprove(
-                              context, approval, noteController.text, isArabic),
+                              context, approval, noteController.text, isArabic,),
                           icon: const Icon(Icons.check),
                           label: Text(isArabic ? 'الموافقة' : 'Approve'),
                           style: ElevatedButton.styleFrom(
@@ -257,7 +257,7 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
     Color? valueColor,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -371,7 +371,7 @@ class _ApprovalsManagementScreenState extends State<ApprovalsManagementScreen> {
           decoration: InputDecoration(
             hintText:
                 isArabic ? 'اكتب سبب الرفض...' : 'Enter rejection reason...',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
           maxLines: 3,
         ),

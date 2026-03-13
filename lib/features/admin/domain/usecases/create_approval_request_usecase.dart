@@ -5,11 +5,6 @@ import 'package:mcs/core/usecases/approval_usecase.dart';
 import 'package:mcs/core/usecases/usecase.dart';
 
 class CreateApprovalRequestParams {
-  final String userId;
-  final String email;
-  final String fullName;
-  final String role;
-  final String registrationType;
 
   CreateApprovalRequestParams({
     required this.userId,
@@ -18,6 +13,11 @@ class CreateApprovalRequestParams {
     required this.role,
     required this.registrationType,
   });
+  final String userId;
+  final String email;
+  final String fullName;
+  final String role;
+  final String registrationType;
 }
 
 class CreateApprovalRequestUseCase

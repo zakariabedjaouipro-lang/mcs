@@ -1,6 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mcs/core/models/user_approval_model.dart';
 import 'package:mcs/core/usecases/approval_usecase.dart';
 import 'package:mcs/core/usecases/usecase.dart';
