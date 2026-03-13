@@ -27,6 +27,7 @@ abstract class DbTables {
   static const String systemLogs = 'system_logs';
   static const String reports = 'reports';
   static const String bugReports = 'bug_reports';
+  static const String userApprovals = 'user_approvals';
 }
 
 // ── Common Column Names ────────────────────────────────────

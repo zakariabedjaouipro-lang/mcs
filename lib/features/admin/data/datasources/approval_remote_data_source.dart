@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/constants/db_constants.dart';
 import '../../core/models/user_approval_model.dart';
 import '../../core/services/supabase_service.dart';
 
@@ -46,7 +47,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
   Future<List<UserApprovalModel>> getPendingApprovals() async {
     try {
       final response = await supabaseClient
-          .from(DBConstants.userApprovalsTable)
+          .from(DbTables.userApprovals)
           .select()
           .eq('status', 'pending')
           .order('created_at', ascending: false);
@@ -67,7 +68,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
   Future<UserApprovalModel> getApprovalRequest(String userId) async {
     try {
       final response = await supabaseClient
-          .from(DBConstants.userApprovalsTable)
+          .from(DbTables.userApprovals)
           .select()
           .eq('user_id', userId)
           .single();
@@ -89,7 +90,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
   }) async {
     try {
       // Update approval request record
-      await supabaseClient.from(DBConstants.userApprovalsTable).update({
+      await supabaseClient.from(DbTables.userApprovals).update({
         'status': 'approved',
         'approved_at': DateTime.now().toIso8601String(),
         'approval_notes': approvalNotes,
@@ -120,7 +121,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
   }) async {
     try {
       // Update approval request record
-      await supabaseClient.from(DBConstants.userApprovalsTable).update({
+      await supabaseClient.from(DbTables.userApprovals).update({
         'status': 'rejected',
         'rejected_at': DateTime.now().toIso8601String(),
         'rejection_reason': rejectionReason,
@@ -148,7 +149,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
   Future<List<UserApprovalModel>> getApprovalsByStatus(String status) async {
     try {
       final response = await supabaseClient
-          .from(DBConstants.userApprovalsTable)
+          .from(DbTables.userApprovals)
           .select()
           .eq('status', status)
           .order('created_at', ascending: false);
@@ -169,7 +170,7 @@ class ApprovalRemoteDataSourceImpl implements ApprovalRemoteDataSource {
   Future<List<UserApprovalModel>> getApprovalsByRole(String role) async {
     try {
       final response = await supabaseClient
-          .from(DBConstants.userApprovalsTable)
+          .from(DbTables.userApprovals)
           .select()
           .eq('role', role)
           .order('created_at', ascending: false);
