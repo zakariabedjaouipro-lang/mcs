@@ -2,7 +2,7 @@
 
 ### 🎯 المشكلة
 ```
-❌ GET https://rxwtdbvhxqxvckkllgep.supabase.co/rest/v1/countries 404 (Not Found)
+❌ GET https://ivguxjyghfndliptmink.supabase.co/rest/v1/countries 404 (Not Found)
 ```
 حدث هذا عند محاولة الدخول/التسجيل من التطبيق
 

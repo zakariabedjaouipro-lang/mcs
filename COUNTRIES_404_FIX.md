@@ -4,7 +4,7 @@
 
 عند محاولة الدخول أو التسجيل، يظهر الخطأ التالي:
 ```
-GET https://rxwtdbvhxqxvckkllgep.supabase.co/rest/v1/countries?select=%2A&is_supported=eq.true&order=name.asc.nullslast 404 (Not Found)
+GET https://ivguxjyghfndliptmink.supabase.co/rest/v1/countries?select=%2A&is_supported=eq.true&order=name.asc.nullslast 404 (Not Found)
 ```
 
 ### 🔍 السبب الجذري

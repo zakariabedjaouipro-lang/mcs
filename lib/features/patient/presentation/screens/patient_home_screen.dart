@@ -376,7 +376,7 @@ class PatientHomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
+              const Icon(
                 Icons.arrow_forward_ios,
                 size: 16,
                 color: PremiumColors.lightText,

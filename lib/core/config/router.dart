@@ -34,9 +34,9 @@ import 'package:mcs/features/landing/screens/features_screen.dart';
 import 'package:mcs/features/landing/screens/premium_landing_screen.dart'
     as premium_landing;
 import 'package:mcs/features/landing/screens/pricing_screen.dart';
-import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
 // Patient
 import 'package:mcs/features/patient/presentation/screens/patient_home_screen.dart';
+import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
 // Records
 import 'package:mcs/features/records/presentation/screens/records_screen.dart';
 // Settings
