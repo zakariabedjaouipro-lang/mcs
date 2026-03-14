@@ -199,6 +199,6 @@ INSERT INTO countries (name, name_ar, iso2_code, iso3_code, numeric_code, phone_
 ('Yemen', 'اليمن', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'ريال يمني', 'ر.ي', 'Asia', 'Asia', 'Western Asia', "Sana'a", 'صنعاء'),
 ('Oman', 'عمان', 'OM', 'OMN', 512, '+968', 'OMR', 'Omani Rial', 'ريال عماني', 'ر.ع', 'Asia', 'Asia', 'Western Asia', 'Muscat', 'مسقط'),
 ('Bahrain', 'البحرين', 'BH', 'BHR', 48, '+973', 'BHD', 'Bahraini Dinar', 'دينار بحريني', 'د.ب', 'Asia', 'Asia', 'Western Asia', 'Manama', 'المنامة'),
-('Palestin', 'قلسطين', 'PSIL', 'ISR', 376, '+972', 'ILS', 'Palestiny New Shekel', 'شيكل فلسطيني جديد', '₪', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'القدس'),
-('Palestine', 'فلسطين', 'PS', 'PSE', 275, '+970', 'ILS', 'Palestini New Shekel', 'شيكل فلسطيني جديد', '₪', 'Asia', 'Asia', 'Western Asia', 'Ramallah', 'رام الله')
+('Palestin', 'قلسطين', 'PS', 'PSE ', 376, '+972', 'PSE', 'Palestiny New Shekel', 'شيكل فلسطيني جديد', '₪', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'القدس'),
+('Palestine', 'فلسطين', 'PS', 'PSE', 275, '+970', 'PSE', 'Palestini New Shekel', 'شيكل فلسطيني جديد', '₪', 'Asia', 'Asia', 'Western Asia', 'Ramallah', 'رام الله')
 ON CONFLICT (iso2_code) DO NOTHING;
