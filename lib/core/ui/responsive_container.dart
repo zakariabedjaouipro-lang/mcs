@@ -49,7 +49,7 @@ extension ResponsiveExtension on BuildContext {
 
   /// Get responsive text scale
   double get textScale {
-    if (isSmallScreen) return 1.0;
+    if (isSmallScreen) return 1;
     if (isMediumScreen) return 1.1;
     return 1.15;
   }
@@ -58,8 +58,7 @@ extension ResponsiveExtension on BuildContext {
 /// Responsive container widget
 class ResponsiveContainer extends StatelessWidget {
   const ResponsiveContainer({
-    super.key,
-    required this.child,
+    required this.child, super.key,
     this.padding,
     this.margin,
     this.backgroundColor,
@@ -100,8 +99,7 @@ class ResponsiveContainer extends StatelessWidget {
 /// Responsive padding wrapper
 class ResponsivePadding extends StatelessWidget {
   const ResponsivePadding({
-    super.key,
-    required this.child,
+    required this.child, super.key,
     this.all,
     this.horizontal,
     this.vertical,

@@ -16,10 +16,9 @@ import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/config/router.dart';
 import 'package:mcs/core/constants/app_constants.dart';
 import 'package:mcs/core/localization/app_localizations.dart';
-import 'package:mcs/core/ui/responsive_config.dart';
-
 import 'package:mcs/core/screens/splash_screen.dart';
 import 'package:mcs/core/theme/app_theme.dart';
+import 'package:mcs/core/ui/responsive_config.dart';
 import 'package:mcs/features/auth/presentation/bloc/index.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_state.dart';

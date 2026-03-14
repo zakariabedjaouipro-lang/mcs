@@ -37,19 +37,19 @@ class ResponsiveCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final defaultPadding = context.isSmallScreen
-        ? EdgeInsets.all(AppSpacing.lg)
+        ? const EdgeInsets.all(AppSpacing.lg)
         : context.isMediumScreen
-            ? EdgeInsets.all(AppSpacing.xl)
-            : EdgeInsets.all(AppSpacing.xxl);
+            ? const EdgeInsets.all(AppSpacing.xl)
+            : const EdgeInsets.all(AppSpacing.xxl);
 
     final defaultMargin = context.isSmallScreen
-        ? EdgeInsets.symmetric(
-            horizontal: AppSpacing.md, vertical: AppSpacing.sm)
+        ? const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md, vertical: AppSpacing.sm,)
         : context.isMediumScreen
-            ? EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg, vertical: AppSpacing.md)
-            : EdgeInsets.symmetric(
-                horizontal: AppSpacing.xl, vertical: AppSpacing.lg);
+            ? const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg, vertical: AppSpacing.md,)
+            : const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xl, vertical: AppSpacing.lg,);
 
     return Container(
       margin: margin ?? defaultMargin,
@@ -58,7 +58,7 @@ class ResponsiveCard extends StatelessWidget {
         color: backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: borderRadius ?? BorderRadius.circular(AppRadius.lg),
-          side: (border is BorderSide) ? border as BorderSide : BorderSide.none,
+          side: (border is BorderSide) ? border! as BorderSide : BorderSide.none,
         ),
         child: InkWell(
           onTap: onTap,
@@ -131,10 +131,10 @@ class ResponsiveStatCard extends StatelessWidget {
                   icon,
                   size: isSmall ? 20 : 24,
                   color: Colors.grey,
-                )
+                ),
             ],
           ),
-          SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
           // Value
           Text(
             value,
@@ -144,7 +144,7 @@ class ResponsiveStatCard extends StatelessWidget {
             ),
           ),
           if (change != null) ...[
-            SizedBox(height: AppSpacing.sm),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Icon(
@@ -152,7 +152,7 @@ class ResponsiveStatCard extends StatelessWidget {
                   size: 16,
                   color: changeIsPositive ? Colors.green : Colors.red,
                 ),
-                SizedBox(width: AppSpacing.xs),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   change!,
                   style: TextStyle(
@@ -231,7 +231,7 @@ class ResponsiveListCard extends StatelessWidget {
               )
             : null,
         trailing: trailing,
-        contentPadding: EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md,
         ),
@@ -272,7 +272,7 @@ class ResponsiveSectionCard extends StatelessWidget {
         children: [
           // Header
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.lg,
               vertical: AppSpacing.md,
             ),
@@ -300,7 +300,7 @@ class ResponsiveSectionCard extends StatelessWidget {
             ),
           // Content
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.lg,
               vertical: AppSpacing.md,
             ),
@@ -394,7 +394,7 @@ class ResponsiveImageCard extends StatelessWidget {
                     ),
                   ),
                   if (subtitle != null) ...[
-                    SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       subtitle!,
                       maxLines: 1,

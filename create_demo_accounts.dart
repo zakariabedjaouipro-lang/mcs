@@ -46,39 +46,39 @@ Future<void> main() async {
       'email': 'doctor@demo.com',
       'password': 'Demo@123456',
       'role': 'doctor',
-      'description': '👨‍⚕️ حساب الطبيب | Doctor Account'
+      'description': '👨‍⚕️ حساب الطبيب | Doctor Account',
     },
     {
       'email': 'patient@demo.com',
       'password': 'Demo@123456',
       'role': 'patient',
-      'description': '🏥 حساب المريض | Patient Account'
+      'description': '🏥 حساب المريض | Patient Account',
     },
     {
       'email': 'admin@demo.com',
       'password': 'Demo@123456',
       'role': 'clinic_admin',
-      'description': '⚙️ مسؤول العيادة | Clinic Admin'
+      'description': '⚙️ مسؤول العيادة | Clinic Admin',
     },
     {
       'email': 'superadmin@demo.com',
       'password': 'Demo@123456',
       'role': 'super_admin',
-      'description': '👑 المسؤول الأساسي | Super Admin'
+      'description': '👑 المسؤول الأساسي | Super Admin',
     },
     {
       'email': 'staff@demo.com',
       'password': 'Demo@123456',
       'role': 'staff',
-      'description': '👨‍💼 حساب الموظف | Staff Account'
+      'description': '👨‍💼 حساب الموظف | Staff Account',
     },
   ];
 
   print('🚀 جاري إنشاء حسابات التجريب...\n');
   print('Creating demo accounts...\n');
 
-  int successCount = 0;
-  int failureCount = 0;
+  var successCount = 0;
+  var failureCount = 0;
 
   for (final account in demoAccounts) {
     try {
@@ -87,7 +87,7 @@ Future<void> main() async {
       print('Email: ${account['email']}');
 
       final response = await supabase.auth.signUp(
-        email: account['email']!,
+        email: account['email'],
         password: account['password']!,
       );
 

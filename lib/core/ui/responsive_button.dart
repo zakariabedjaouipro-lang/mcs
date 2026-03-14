@@ -7,10 +7,9 @@
 library;
 
 import 'package:flutter/material.dart';
-
 import 'package:mcs/core/ui/responsive_container.dart';
-import 'package:mcs/core/ui/spacing.dart';
 import 'package:mcs/core/ui/responsive_text.dart';
+import 'package:mcs/core/ui/spacing.dart';
 
 /// Responsive elevated button with adaptive sizing
 class ResponsiveElevatedButton extends StatelessWidget {
@@ -66,7 +65,7 @@ class ResponsiveElevatedButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: context.isSmallScreen ? 20 : 24),
-          SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           Text(
             label,
             style: TextStyle(
@@ -159,7 +158,7 @@ class ResponsiveOutlinedButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: context.isSmallScreen ? 20 : 24),
-          SizedBox(width: AppSpacing.md),
+          const SizedBox(width: AppSpacing.md),
           Text(
             label,
             style: TextStyle(
@@ -244,7 +243,7 @@ class ResponsiveTextButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: context.isSmallScreen ? 20 : 24),
-          SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.sm),
           Text(
             label,
             style: TextStyle(
