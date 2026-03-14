@@ -1,76 +1,244 @@
-﻿-- ════════════════════════════════════════════════════════════════════════════════
--- PHASE 1: CREATE TYPE STATEMENTS (ENUMS) - Base Enumeration Types
--- ════════════════════════════════════════════════════════════════════════════════
+-- Migration: Create Enums for MCS Database
+-- Purpose: Define PostgreSQL enum types used throughout the application
+-- Version: v2_P01_001
+-- Created: 2026-03-04
+-- Dependencies: None
 
+-- ══════════════════════════════════════════════════════════════════════════════
 -- User and Auth Enums
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- User role enumeration
+-- Defines different roles in the clinic system
 CREATE TYPE user_role AS ENUM (
-  'super_admin', 'clinic_admin', 'doctor', 'nurse', 'receptionist',
-  'pharmacist', 'lab_technician', 'radiographer', 'patient', 'relative'
+  'super_admin',         -- Platform administrator
+  'clinic_admin',        -- Clinic manager/administrator
+  'doctor',              -- Medical doctor/physician
+  'nurse',               -- Nursing staff
+  'receptionist',        -- Reception/front desk
+  'pharmacist',          -- Pharmacy staff
+  'lab_technician',      -- Laboratory technician
+  'radiographer',        -- X-ray/imaging technician
+  'patient',             -- Patient/client
+  'relative'             -- Family member of patient
 );
 
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Appointment and Medical Enums
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- Appointment status enumeration
+-- Tracks the lifecycle of appointments
 CREATE TYPE appointment_status AS ENUM (
-  'pending', 'confirmed', 'in_progress', 'completed', 'no_show', 'cancelled', 'rescheduled'
+  'pending',             -- Waiting for confirmation
+  'confirmed',           -- Appointment confirmed
+  'in_progress',         -- Currently in consultation
+  'completed',           -- Appointment finished
+  'no_show',             -- Patient didn't show up
+  'cancelled',           -- Cancelled by clinic or patient
+  'rescheduled'          -- Moved to different time
 );
 
+-- Invoice status enumeration
+-- Tracks payment status throughout the lifecycle
 CREATE TYPE invoice_status AS ENUM (
-  'draft', 'issued', 'pending', 'paid', 'overdue', 'cancelled', 'refunded'
+  'draft',               -- Not yet issued
+  'issued',              -- Sent to patient
+  'pending',             -- Awaiting payment
+  'paid',                -- Payment received
+  'overdue',             -- Payment past due date
+  'cancelled',           -- Transaction cancelled
+  'refunded'             -- Partially or fully refunded
 );
 
+-- Subscription type enumeration
+-- Defines different service subscription plans
 CREATE TYPE subscription_type AS ENUM (
-  'free', 'basic', 'professional', 'enterprise', 'custom', 'trial'
+  'free',                -- No subscription
+  'basic',               -- Basic plan
+  'professional',        -- Professional plan
+  'enterprise',          -- Enterprise plan
+  'custom',              -- Custom arrangement
+  'trial'                -- Trial period
 );
 
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Video Session Enums
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- Video session status enumeration
+-- Tracks telemedicine session states
 CREATE TYPE video_session_status AS ENUM (
-  'scheduled', 'active', 'completed', 'cancelled', 'failed', 'no_show'
+  'scheduled',           -- Upcoming video call
+  'active',              -- Currently in progress
+  'completed',           -- Session finished
+  'cancelled',           -- Session was cancelled
+  'no_show'              -- Participant didn't show up
 );
 
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Notification Enums
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- Notification type enumeration
+-- Categorizes different types of notifications
 CREATE TYPE notification_type AS ENUM (
-  'appointment', 'prescription', 'payment', 'message', 'system', 'alert'
+  'appointment',         -- Appointment-related notification
+  'prescription',        -- Prescription-related notification
+  'payment',             -- Payment/invoice notification
+  'message',             -- Direct message from clinic staff
+  'system',              -- System notifications
+  'alert'                -- Critical alerts
 );
 
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Medical and Health Enums
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- Blood pressure status enumeration
+-- Classification based on systolic/diastolic readings
 CREATE TYPE blood_pressure_status AS ENUM (
-  'normal', 'elevated', 'high_stage_1', 'high_stage_2', 'hypertensive_crisis', 'low'
+  'normal',              -- < 120/80 mmHg
+  'elevated',            -- 120-129 / < 80 mmHg
+  'high_stage_1',        -- 130-139 / 80-89 mmHg
+  'high_stage_2',        -- >= 140 / >= 90 mmHg
+  'hypertensive_crisis', -- > 180 / > 120 mmHg
+  'low'                  -- Hypotension
 );
 
+-- Temperature status enumeration
+-- Classification of body temperature readings
 CREATE TYPE temperature_status AS ENUM (
-  'normal', 'low', 'fever', 'high_fever', 'critical'
+  'normal',              -- 36.1 - 37.5°C
+  'low',                 -- < 36.1°C (hypothermia)
+  'fever',               -- 38.0 - 38.9°C
+  'high_fever',          -- >= 39.0°C
+  'critical'             -- >= 40.5°C
 );
 
+-- Lab result type enumeration
+-- Categorizes different medical tests
 CREATE TYPE lab_result_type AS ENUM (
-  'blood_test', 'urine_test', 'culture', 'pathology', 'allergy_test', 'genetic_test', 'covid_test', 'other'
+  'blood_test',          -- Blood work/hematology
+  'urine_test',          -- Urinalysis
+  'culture',             -- Bacterial/fungal culture
+  'pathology',           -- Tissue analysis
+  'allergy_test',        -- Allergy testing
+  'genetic_test',        -- Genetic screening
+  'covid_test',          -- COVID-19 test
+  'other'                -- Miscellaneous tests
 );
 
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Report and Assessment Enums
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- Assessment type enumeration
+-- Categorizes different types of clinical assessments
 CREATE TYPE assessment_type AS ENUM (
-  'autism_ados1', 'autism_ados2', 'autism_cars', 'autism_m_chat', 'autism_aapep',
-  'psychiatric', 'psychological', 'neurological', 'developmental', 'other'
+  'autism_ados1',        -- Autism Diagnostic Observation Schedule Module 1
+  'autism_ados2',        -- Autism Diagnostic Observation Schedule Module 2
+  'autism_cars',         -- Childhood Autism Rating Scale
+  'autism_m_chat',       -- Modified Checklist for Autism in Toddlers
+  'autism_aapep',        -- Adolescent and Adult Psychoeducational Profile
+  'psychiatric',         -- Psychiatric evaluation
+  'psychological',       -- Psychological assessment
+  'neurological',        -- Neurological examination
+  'developmental',       -- Developmental screening
+  'other'                -- Other assessment types
 );
 
+-- Bug report status enumeration
+-- Tracks bug report lifecycle
 CREATE TYPE bug_report_status AS ENUM (
-  'new', 'in_progress', 'resolved', 'closed', 'reopened'
+  'new',                 -- Newly reported
+  'in_progress',         -- Developer is working on it
+  'resolved',            -- Fix implemented
+  'closed',              -- Report closed (with/without fix)
+  'reopened'             -- Previously closed issue reopened
 );
 
+-- Employee type enumeration
+-- Categorizes clinic staff positions
 CREATE TYPE employee_type AS ENUM (
-  'doctor', 'nurse', 'technician', 'administrative', 'manager', 'reception', 'pharmacist', 'intern', 'contractor'
+  'doctor',              -- Medical doctor
+  'nurse',               -- Nursing staff
+  'technician',          -- Medical technician
+  'administrative',      -- Administrative staff
+  'manager',             -- Management staff
+  'reception',           -- Reception/front desk
+  'pharmacist',          -- Pharmacy staff
+  'intern',              -- Intern/trainee
+  'contractor'           -- External contractor
 );
 
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Inventory and Supply Enums
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- Inventory category enumeration
+-- Categorizes medical supplies and equipment
 CREATE TYPE inventory_category AS ENUM (
-  'medication', 'medical_supplies', 'equipment', 'diagnostic_tools', 'surgical_instruments', 'office_supplies', 'cleaning_supplies', 'other'
+  'medication',          -- Pharmaceutical products
+  'medical_supplies',    -- Consumables (bandages, syringes, etc.)
+  'equipment',           -- Reusable medical equipment
+  'diagnostic_tools',    -- Diagnostic devices
+  'surgical_instruments',-- Surgery instruments
+  'office_supplies',     -- Office materials
+  'cleaning_supplies',   -- Disinfectants and cleaning materials
+  'other'                -- Miscellaneous items
 );
 
+-- ══════════════════════════════════════════════════════════════════════════════
 -- System and Audit Enums
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- Audit action type enumeration
+-- Records types of system actions for audit logging
 CREATE TYPE audit_action_type AS ENUM (
-  'create', 'read', 'update', 'delete', 'restore', 'archive', 'login', 'logout', 'export', 'import', 'permission_change', 'config_change'
+  'create',              -- Record created
+  'read',                -- Record accessed/read
+  'update',              -- Record modified
+  'delete',              -- Record deleted
+  'restore',             -- Deleted record restored
+  'archive',             -- Record archived
+  'login',               -- User login
+  'logout',              -- User logout
+  'export',              -- Data exported
+  'import',              -- Data imported
+  'permission_change',   -- Permission/role changed
+  'config_change'        -- Configuration changed
 );
 
+-- Session status enumeration
+-- Tracks user session states
 CREATE TYPE session_status AS ENUM (
-  'active', 'idle', 'suspended', 'expired', 'revoked'
+  'active',              -- User currently logged in
+  'idle',                -- User inactive for period
+  'suspended',           -- Session temporarily suspended
+  'expired',             -- Session time expired
+  'revoked'              -- Session forcibly ended
 );
+
+-- ══════════════════════════════════════════════════════════════════════════════
+-- Comments
+-- ══════════════════════════════════════════════════════════════════════════════
+
+COMMENT ON TYPE user_role IS 'User roles and permissions in the MCS system';
+COMMENT ON TYPE appointment_status IS 'Appointment lifecycle status values';
+COMMENT ON TYPE invoice_status IS 'Invoice and payment status values';
+COMMENT ON TYPE subscription_type IS 'Service subscription plan types';
+COMMENT ON TYPE video_session_status IS 'Telemedicine session status values';
+COMMENT ON TYPE notification_type IS 'Notification category types';
+COMMENT ON TYPE blood_pressure_status IS 'Blood pressure classification levels';
+COMMENT ON TYPE temperature_status IS 'Body temperature classification levels';
+COMMENT ON TYPE lab_result_type IS 'Medical test result types';
+COMMENT ON TYPE assessment_type IS 'Clinical assessment types';
+COMMENT ON TYPE bug_report_status IS 'Bug report lifecycle status';
+COMMENT ON TYPE employee_type IS 'Clinic employee position types';
+COMMENT ON TYPE inventory_category IS 'Medical supply and equipment categories';
+COMMENT ON TYPE audit_action_type IS 'System audit log action types';
+COMMENT ON TYPE session_status IS 'User session status values';
 -- Migration: Create Countries Table
 -- Purpose: Store country reference data for user and clinic locations
 -- Version: v2_P01_002
@@ -2235,98 +2403,104 @@ END;
 $$ LANGUAGE plpgsql;
 -- Migration: Create Clinic Staff Table
 -- Purpose: Junction table linking clinics to staff members
--- Version: v2_P03_004
--- Created: 2026-03-04
--- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_002_create_clinics_table.sql, v2_P03_003_create_employees_table.sql
 
--- ══════════════════════════════════════════════════════════════════════════════
--- Clinic Staff Table
--- ══════════════════════════════════════════════════════════════════════════════
+-- ═════════════════════════════════════════════
+-- TABLE
+-- ═════════════════════════════════════════════
 
--- Create clinic_staff junction table for many-to-many relationship
 CREATE TABLE IF NOT EXISTS clinic_staff (
-  -- Primary Key
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Foreign Keys
   clinic_id UUID NOT NULL REFERENCES clinics(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   employee_id UUID REFERENCES employees(id) ON DELETE SET NULL,
 
-  -- Role Information
-  role VARCHAR(50) NOT NULL DEFAULT 'staff' CHECK (role IN ('admin', 'manager', 'doctor', 'nurse', 'receptionist', 'staff', 'hr', 'accountant', 'lab_technician', 'radiographer', 'pharmacist')),
-  
-  -- Permissions
-  permissions JSONB,  -- JSON object with specific permissions
-  
-  -- Status
+  role VARCHAR(50) NOT NULL DEFAULT 'staff'
+    CHECK (role IN (
+      'admin','manager','doctor','nurse','receptionist',
+      'staff','hr','accountant','lab_technician',
+      'radiographer','pharmacist'
+    )),
+
+  permissions JSONB,
+
   is_active BOOLEAN NOT NULL DEFAULT true,
-  
-  -- Dates
+
   joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   left_at TIMESTAMP WITH TIME ZONE,
-  
-  -- System Fields
+
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
-  -- Constraints
   CONSTRAINT unique_clinic_user UNIQUE (clinic_id, user_id)
 );
 
--- ══════════════════════════════════════════════════════════════════════════════
--- Indexes
--- ══════════════════════════════════════════════════════════════════════════════
+-- ═════════════════════════════════════════════
+-- INDEXES
+-- ═════════════════════════════════════════════
 
--- Create indexes for common queries
-CREATE INDEX idx_clinic_staff_clinic_id ON clinic_staff(clinic_id) WHERE is_active = true;
-CREATE INDEX idx_clinic_staff_user_id ON clinic_staff(user_id);
-CREATE INDEX idx_clinic_staff_employee_id ON clinic_staff(employee_id);
-CREATE INDEX idx_clinic_staff_role ON clinic_staff(role) WHERE is_active = true;
-CREATE INDEX idx_clinic_staff_is_active ON clinic_staff(is_active);
-CREATE INDEX idx_clinic_staff_joined_at ON clinic_staff(joined_at);
-CREATE INDEX idx_clinic_staff_left_at ON clinic_staff(left_at);
+CREATE INDEX IF NOT EXISTS idx_clinic_staff_clinic_id
+ON clinic_staff(clinic_id) WHERE is_active = true;
 
--- ══════════════════════════════════════════════════════════════════════════════
--- Row Level Security (RLS) Policies
--- ══════════════════════════════════════════════════════════════════════════════
+CREATE INDEX IF NOT EXISTS idx_clinic_staff_user_id
+ON clinic_staff(user_id);
 
--- Enable RLS on clinic_staff table
+CREATE INDEX IF NOT EXISTS idx_clinic_staff_employee_id
+ON clinic_staff(employee_id);
+
+CREATE INDEX IF NOT EXISTS idx_clinic_staff_role
+ON clinic_staff(role) WHERE is_active = true;
+
+CREATE INDEX IF NOT EXISTS idx_clinic_staff_is_active
+ON clinic_staff(is_active);
+
+CREATE INDEX IF NOT EXISTS idx_clinic_staff_joined_at
+ON clinic_staff(joined_at);
+
+CREATE INDEX IF NOT EXISTS idx_clinic_staff_left_at
+ON clinic_staff(left_at);
+
+-- ═════════════════════════════════════════════
+-- RLS
+-- ═════════════════════════════════════════════
+
 ALTER TABLE clinic_staff ENABLE ROW LEVEL SECURITY;
 
--- Policy: Users can view their own clinic staff assignments
+DROP POLICY IF EXISTS "Users can view their own staff assignments" ON clinic_staff;
 CREATE POLICY "Users can view their own staff assignments"
-  ON clinic_staff FOR SELECT
-  USING (user_id = auth.uid());
+ON clinic_staff
+FOR SELECT
+USING (user_id = auth.uid());
 
--- Policy: Clinic admins can view all staff in their clinic
+DROP POLICY IF EXISTS "Clinic admins can view all clinic staff" ON clinic_staff;
 CREATE POLICY "Clinic admins can view all clinic staff"
-  ON clinic_staff FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM clinic_staff cs
-      WHERE cs.clinic_id = clinic_staff.clinic_id
-      AND cs.user_id = auth.uid()
-      AND cs.role IN ('admin', 'manager')
-    )
-  );
+ON clinic_staff
+FOR SELECT
+USING (
+  clinic_id IN (
+    SELECT clinic_id
+    FROM clinic_staff
+    WHERE user_id = auth.uid()
+    AND role IN ('admin','manager')
+  )
+);
 
--- Policy: Super admins can manage all clinic staff
+DROP POLICY IF EXISTS "Super admins can manage all clinic staff" ON clinic_staff;
 CREATE POLICY "Super admins can manage all clinic staff"
-  ON clinic_staff FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM users
-      WHERE id = auth.uid()
-      AND role = 'super_admin'
-    )
-  );
+ON clinic_staff
+FOR ALL
+USING (
+  EXISTS (
+    SELECT 1 FROM users
+    WHERE id = auth.uid()
+    AND role = 'super_admin'
+  )
+);
 
--- ══════════════════════════════════════════════════════════════════════════════
--- Triggers
--- ══════════════════════════════════════════════════════════════════════════════
+-- ═════════════════════════════════════════════
+-- TRIGGER FUNCTION
+-- ═════════════════════════════════════════════
 
--- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_clinic_staff_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -2335,79 +2509,89 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Create trigger for automatic timestamp update
-CREATE TRIGGER clinic_staff_update_updated_at
-  BEFORE UPDATE ON clinic_staff
-  FOR EACH ROW
-  EXECUTE FUNCTION update_clinic_staff_updated_at();
+-- ═════════════════════════════════════════════
+-- TRIGGER
+-- ═════════════════════════════════════════════
 
--- ══════════════════════════════════════════════════════════════════════════════
--- Comments
--- ══════════════════════════════════════════════════════════════════════════════
+DROP TRIGGER IF EXISTS clinic_staff_update_updated_at
+ON clinic_staff;
+
+CREATE TRIGGER clinic_staff_update_updated_at
+BEFORE UPDATE ON clinic_staff
+FOR EACH ROW
+EXECUTE FUNCTION update_clinic_staff_updated_at();
+
+-- ═════════════════════════════════════════════
+-- COMMENTS
+-- ═════════════════════════════════════════════
 
 COMMENT ON TABLE clinic_staff IS 'Junction table linking clinics to staff members';
-COMMENT ON COLUMN clinic_staff.id IS 'Primary key (UUID)';
-COMMENT ON COLUMN clinic_staff.clinic_id IS 'Foreign key reference to clinics table';
-COMMENT ON COLUMN clinic_staff.user_id IS 'Foreign key reference to users table';
-COMMENT ON COLUMN clinic_staff.employee_id IS 'Foreign key reference to employees table';
-COMMENT ON COLUMN clinic_staff.role IS 'Staff role in the clinic';
-COMMENT ON COLUMN clinic_staff.permissions IS 'JSON object with specific permissions';
-COMMENT ON COLUMN clinic_staff.joined_at IS 'Date when staff member joined the clinic';
-COMMENT ON COLUMN clinic_staff.left_at IS 'Date when staff member left the clinic';
 
--- ══════════════════════════════════════════════════════════════════════════════
--- Helper Functions
--- ══════════════════════════════════════════════════════════════════════════════
+COMMENT ON COLUMN clinic_staff.clinic_id IS
+'Reference to clinics table';
 
--- Function to get clinic staff count by role
+COMMENT ON COLUMN clinic_staff.user_id IS
+'Reference to users table';
+
+COMMENT ON COLUMN clinic_staff.employee_id IS
+'Reference to employees table';
+
+COMMENT ON COLUMN clinic_staff.permissions IS
+'JSON object containing granular permissions';
+
+-- ═════════════════════════════════════════════
+-- HELPER FUNCTIONS
+-- ═════════════════════════════════════════════
+
 CREATE OR REPLACE FUNCTION get_clinic_staff_count_by_role(clinic_id_param UUID)
-RETURNS TABLE(
-  role VARCHAR(50),
-  count INTEGER
-) AS $$
+RETURNS TABLE(role VARCHAR, count INTEGER)
+LANGUAGE plpgsql
+AS $$
 BEGIN
   RETURN QUERY
-  SELECT 
-    role,
-    COUNT(*) as count
+  SELECT role, COUNT(*)::INTEGER
   FROM clinic_staff
   WHERE clinic_id = clinic_id_param
-    AND is_active = true
+  AND is_active = true
   GROUP BY role
   ORDER BY role;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
--- Function to check if user is clinic admin
 CREATE OR REPLACE FUNCTION is_clinic_admin(user_id_param UUID)
-RETURNS BOOLEAN AS $$
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
 DECLARE
   is_admin BOOLEAN;
 BEGIN
   SELECT EXISTS (
-    SELECT 1 FROM clinic_staff
+    SELECT 1
+    FROM clinic_staff
     WHERE user_id = user_id_param
-    AND role IN ('admin', 'manager')
+    AND role IN ('admin','manager')
     AND is_active = true
-  ) INTO is_admin;
-  
+  )
+  INTO is_admin;
+
   RETURN is_admin;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
--- Function to get user's clinic roles
 CREATE OR REPLACE FUNCTION get_user_clinic_roles(user_id_param UUID)
 RETURNS TABLE(
   clinic_id UUID,
-  clinic_name VARCHAR(255),
-  role VARCHAR(50),
+  clinic_name TEXT,
+  role VARCHAR,
   is_active BOOLEAN
-) AS $$
+)
+LANGUAGE plpgsql
+AS $$
 BEGIN
   RETURN QUERY
-  SELECT 
+  SELECT
     cs.clinic_id,
-    c.name as clinic_name,
+    c.name,
     cs.role,
     cs.is_active
   FROM clinic_staff cs
@@ -2415,7 +2599,7 @@ BEGIN
   WHERE cs.user_id = user_id_param
   ORDER BY cs.joined_at DESC;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 -- Migration: Create Appointments Table
 -- Purpose: Store appointment information
 -- Version: v2_P04_001
@@ -3846,8 +4030,8 @@ CREATE TABLE IF NOT EXISTS reports (
   
   -- Report Parameters
   start_date DATE,
-end_date DATE,
-parameters JSONB,
+  end_date,
+  parameters JSONB,
   
   -- Report Output
   file_url TEXT,
@@ -4366,10 +4550,10 @@ CREATE TABLE IF NOT EXISTS autism_assessments (
 
 -- Create indexes for autism_assessments
 CREATE INDEX idx_autism_assessments_patient_id ON autism_assessments(patient_id);
-CREATE INDEX idx_autism_assessments_doctor_id ON autism_assessments(doctor_id);
-CREATE INDEX idx_autism_assessments_clinic_id ON autism_assessments(clinic_id);
-CREATE INDEX idx_autism_assessments_assessment_date ON autism_assessments(assessment_date);
-CREATE INDEX idx_autism_assessments_diagnosis ON autism_assessments(diagnosis);
+CREATE INDEX idx_autism_assessments_doctor_id ON autism_assessments_doctor_id);
+CREATE INDEX idx_autism_assessments_clinic_id ON autism_assessments_clinic_id);
+CREATE INDEX idx_autism_assessments_assessment_date ON autism_assessments_assessment_date);
+CREATE INDEX idx_autism_assessments_diagnosis ON autism_assessments_diagnosis);
 CREATE INDEX idx_autism_assessments_created_at ON autism_assessments(created_at DESC);
 
 -- Add RLS policies for autism_assessments
