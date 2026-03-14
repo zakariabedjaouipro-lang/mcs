@@ -200,7 +200,7 @@ extension SafeNum on num? {
   int toIntSafe() => this?.toInt() ?? 0;
 
   /// تحويل إلى double بأمان
-  double toDoubleSafe() => this?.toDouble() ?? 0.0;
+  double toDoubleSafe() => this?.toDouble() ?? 0;
 
   /// تنسيق الرقم
   String toStringSafe() => this?.toString() ?? '0';

@@ -63,14 +63,14 @@ class AppRouter {
   static GoRouter? _router;
 
   static GoRouter _createRouter() => GoRouter(
-    navigatorKey: _rootNavigatorKey,
-    initialLocation: _getInitialRoute(),
-    debugLogDiagnostics: true,
-    redirect: _guard,
-    routes: _routes,
-    errorBuilder: (context, state) =>
-        _ErrorScreen(error: state.error?.toString() ?? 'Page not found'),
-  );
+        navigatorKey: _rootNavigatorKey,
+        initialLocation: _getInitialRoute(),
+        debugLogDiagnostics: true,
+        redirect: _guard,
+        routes: _routes,
+        errorBuilder: (context, state) =>
+            _ErrorScreen(error: state.error?.toString() ?? 'Page not found'),
+      );
 
   /// Get initial route based on authentication status
   /// Mobile: Login or Dashboard, Web: Landing
@@ -92,15 +92,14 @@ class AppRouter {
   static String? _guard(BuildContext context, GoRouterState state) {
     final isAuthenticated = SupabaseConfig.isAuthenticated;
 
-    final isAuthRoute =
-        state.matchedLocation == AppRoutes.login ||
+    final isAuthRoute = state.matchedLocation == AppRoutes.login ||
         state.matchedLocation == AppRoutes.register ||
         state.matchedLocation == AppRoutes.forgotPassword ||
         state.matchedLocation == AppRoutes.otpVerification ||
+        state.matchedLocation == AppRoutes.changePassword ||
         state.matchedLocation == AppRoutes.pendingApproval;
 
-    final isPublicRoute =
-        state.matchedLocation == AppRoutes.landing ||
+    final isPublicRoute = state.matchedLocation == AppRoutes.landing ||
         state.matchedLocation == AppRoutes.features ||
         state.matchedLocation == AppRoutes.pricing ||
         state.matchedLocation == AppRoutes.contact ||
@@ -112,28 +111,45 @@ class AppRouter {
       return AppRoutes.login;
     }
 
-    if (isAuthenticated &&
-        isAuthRoute &&
-        state.matchedLocation != AppRoutes.pendingApproval) {
-      return _getRoleBasedHomePath();
+    // ✅ SAFE: Allow user to stay in auth flows without redirects
+    // except when transitioning from pending approval confirmation
+    if (isAuthRoute) {
+      if (isAuthenticated &&
+          state.matchedLocation != AppRoutes.pendingApproval &&
+          state.matchedLocation != AppRoutes.register &&
+          state.matchedLocation != AppRoutes.forgotPassword &&
+          state.matchedLocation != AppRoutes.changePassword &&
+          state.matchedLocation != AppRoutes.otpVerification) {
+        return _getRoleBasedHomePath();
+      }
+      return null; // ✅ Allow auth flow to proceed
     }
 
     // Check if user is awaiting approval
     if (isAuthenticated) {
-      final authUser = SupabaseConfig.client.auth.currentUser;
-      final approvalStatus =
-          authUser?.userMetadata?['approvalStatus'] as String?;
+      try {
+        final authUser = SupabaseConfig.currentUser;
 
-      if (approvalStatus == 'pending') {
-        // If user is already on pending approval screen, allow
-        if (state.matchedLocation == AppRoutes.pendingApproval) {
-          return null;
+        // ✅ SAFE: Check null before accessing metadata
+        if (authUser != null) {
+          final approvalStatus =
+              (authUser.userMetadata?['approvalStatus'] as String?) ?? '';
+
+          if (approvalStatus == 'pending') {
+            // If user is already on pending approval screen, allow
+            if (state.matchedLocation == AppRoutes.pendingApproval) {
+              return null;
+            }
+            // Otherwise, redirect to pending approval screen
+            return AppRoutes.pendingApproval;
+          } else if (approvalStatus == 'rejected') {
+            // Rejected users should be logged out and go to login
+            return AppRoutes.login;
+          }
         }
-        // Otherwise, redirect to pending approval screen
-        return AppRoutes.pendingApproval;
-      } else if (approvalStatus == 'rejected') {
-        // Rejected users should be logged out and go to login
-        return AppRoutes.login;
+      } catch (e) {
+        // ✅ SAFE: If approval check fails, allow user to proceed
+        // to prevent cascade failures
       }
     }
 
@@ -144,16 +160,18 @@ class AppRouter {
     return null;
   }
 
-  /// Get role-based home
+  /// Get role-based home with null safety
   static String _getRoleBasedHomePath() {
     try {
-      final authUser = SupabaseConfig.client.auth.currentUser;
+      final authUser = SupabaseConfig.currentUser;
 
+      // ✅ DEFENSIVE: Safeguard against race conditions
       if (authUser == null) {
         return AppRoutes.patientHome;
       }
 
-      final role = authUser.userMetadata?['role'] as String? ?? 'patient';
+      // ✅ SAFE: Access metadata with fallback
+      final role = (authUser.userMetadata?['role'] as String?) ?? 'patient';
 
       switch (role) {
         case 'super_admin':
@@ -175,7 +193,8 @@ class AppRouter {
         default:
           return AppRoutes.patientHome;
       }
-    } catch (_) {
+    } catch (e) {
+      // ✅ SAFE: Never crash, always fallback to patient
       return AppRoutes.patientHome;
     }
   }

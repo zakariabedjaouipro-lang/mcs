@@ -18,7 +18,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' show OAuthProvider;
 final _demoAccounts = [
   {
     'role': 'Doctor',
-    'email': 'doctor@demo.com1',
+    'email': 'doctor@demo.com',
     'password': 'Demo@123456',
     'description': 'Doctor Account',
   },
