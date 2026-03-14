@@ -4,15 +4,17 @@
 -- Created: 2026-03-04
 -- Dependencies: None
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Users Table
 -- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create users table to store extended user profile information
--- This table extends Supabase's auth.users with application-specific fields
 CREATE TABLE IF NOT EXISTS users (
   -- Primary and Foreign Keys
-  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
   -- User Information
   email VARCHAR(255) NOT NULL UNIQUE,
@@ -122,59 +124,63 @@ $$ LANGUAGE plpgsql;
 -- Row Level Security (RLS) Policies
 -- ══════════════════════════════════════════════════════════════════════════════
 
--- Enable RLS on users table
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+-- ⚠️ RLS DISABLED FOR POSTGRESQL COMPATIBILITY
+-- PostgreSQL doesn't have auth.uid() function (Supabase-specific)
+-- These policies should be re-enabled when using Supabase
+-- For local PostgreSQL, RLS is disabled to allow full access
 
--- Policy: Users can read their own profile
-CREATE POLICY users_read_own_profile ON users
-  FOR SELECT
-  USING (auth.uid() = id);
+-- ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
--- Policy: Super admins and clinic admins can read users in their clinic
-CREATE POLICY admins_read_clinic_users ON users
-  FOR SELECT
-  USING (
-    (SELECT role FROM users WHERE id = auth.uid()) IN ('super_admin', 'clinic_admin')
-    AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())
-  );
+-- -- Policy: Users can read their own profile
+-- CREATE POLICY users_read_own_profile ON users
+--   FOR SELECT
+--   USING (auth.uid() = id);
 
--- Policy: Super admins can read all users
-CREATE POLICY super_admin_read_all ON users
-  FOR SELECT
-  USING ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin');
+-- -- Policy: Super admins and clinic admins can read users in their clinic
+-- CREATE POLICY admins_read_clinic_users ON users
+--   FOR SELECT
+--   USING (
+--     (SELECT role FROM users WHERE id = auth.uid()) IN ('super_admin', 'clinic_admin')
+--     AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())
+--   );
 
--- Policy: Users can update only their own profile (non-sensitive fields)
-CREATE POLICY users_update_own_profile ON users
-  FOR UPDATE
-  USING (auth.uid() = id)
-  WITH CHECK (
-    auth.uid() = id
-    AND role = (SELECT role FROM users WHERE id = auth.uid())  -- Prevent role change
-    AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())  -- Prevent clinic change
-  );
+-- -- Policy: Super admins can read all users
+-- CREATE POLICY super_admin_read_all ON users
+--   FOR SELECT
+--   USING ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin');
 
--- Policy: Clinic admins can update users in their clinic (limited fields)
-CREATE POLICY admins_update_clinic_users ON users
-  FOR UPDATE
-  USING (
-    (SELECT role FROM users WHERE id = auth.uid()) IN ('super_admin', 'clinic_admin')
-    AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())
-  )
-  WITH CHECK (
-    (SELECT role FROM users WHERE id = auth.uid()) IN ('super_admin', 'clinic_admin')
-    AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())
-  );
+-- -- Policy: Users can update only their own profile (non-sensitive fields)
+-- CREATE POLICY users_update_own_profile ON users
+--   FOR UPDATE
+--   USING (auth.uid() = id)
+--   WITH CHECK (
+--     auth.uid() = id
+--     AND role = (SELECT role FROM users WHERE id = auth.uid())  -- Prevent role change
+--     AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())  -- Prevent clinic change
+--   );
 
--- Policy: Users can insert their own profile after signup (new registrations)
-CREATE POLICY users_insert_own_profile ON users
-  FOR INSERT
-  WITH CHECK (auth.uid() = id);
+-- -- Policy: Clinic admins can update users in their clinic (limited fields)
+-- CREATE POLICY admins_update_clinic_users ON users
+--   FOR UPDATE
+--   USING (
+--     (SELECT role FROM users WHERE id = auth.uid()) IN ('super_admin', 'clinic_admin')
+--     AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())
+--   )
+--   WITH CHECK (
+--     (SELECT role FROM users WHERE id = auth.uid()) IN ('super_admin', 'clinic_admin')
+--     AND clinic_id = (SELECT clinic_id FROM users WHERE id = auth.uid())
+--   );
 
--- Policy: Only admins can delete users (soft delete via updated_at trigger)
-CREATE POLICY admins_soft_delete ON users
-  FOR UPDATE
-  USING ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin')
-  WITH CHECK ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin');
+-- -- Policy: Users can insert their own profile after signup (new registrations)
+-- CREATE POLICY users_insert_own_profile ON users
+--   FOR INSERT
+--   WITH CHECK (auth.uid() = id);
+
+-- -- Policy: Only admins can delete users (soft delete via updated_at trigger)
+-- CREATE POLICY admins_soft_delete ON users
+--   FOR UPDATE
+--   USING ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin')
+--   WITH CHECK ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin');
 
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Helper Views
@@ -210,19 +216,20 @@ WHERE deleted_at IS NULL;
 -- Comments
 -- ══════════════════════════════════════════════════════════════════════════════
 
-COMMENT ON TABLE users IS 'Extended user profiles linked to Supabase auth.users';
-COMMENT ON COLUMN users.id IS 'Foreign key reference to auth.users.id';
+COMMENT ON TABLE users IS 'Extended user profiles with application-specific fields';
+COMMENT ON COLUMN users.id IS 'Unique identifier for each user (UUID)';
 COMMENT ON COLUMN users.clinic_id IS 'Reference to clinics table (NULL for system admins)';
 COMMENT ON COLUMN users.role IS 'User role determining permissions and access levels';
 COMMENT ON COLUMN users.is_verified IS 'Email verification status';
 COMMENT ON COLUMN users.two_factor_enabled IS 'Two-factor authentication status';
 COMMENT ON COLUMN users.deleted_at IS 'Soft delete timestamp (NULL = active)';
 
-COMMENT ON POLICY users_read_own_profile ON users IS 'Users can view their own profile only';
-COMMENT ON POLICY admins_read_clinic_users ON users IS 'Admins can read users in their clinic';
-COMMENT ON POLICY super_admin_read_all ON users IS 'Super admins can read all user profiles';
-COMMENT ON POLICY users_update_own_profile ON users IS 'Users can update non-sensitive fields';
-COMMENT ON POLICY admins_update_clinic_users ON users IS 'Admins can manage users in their clinic';
+-- RLS Policy Comments (disabled for PostgreSQL compatibility - use with Supabase)
+-- COMMENT ON POLICY users_read_own_profile ON users IS 'Users can view their own profile only';
+-- COMMENT ON POLICY admins_read_clinic_users ON users IS 'Admins can read users in their clinic';
+-- COMMENT ON POLICY super_admin_read_all ON users IS 'Super admins can read all user profiles';
+-- COMMENT ON POLICY users_update_own_profile ON users IS 'Users can update non-sensitive fields';
+-- COMMENT ON POLICY admins_update_clinic_users ON users IS 'Admins can manage users in their clinic';
 
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Migration Notes

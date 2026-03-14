@@ -4,6 +4,9 @@
 -- Created: 2026-03-04
 -- Dependencies: v2_P02_002_create_clinics_table.sql
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Inventory Table
 -- ══════════════════════════════════════════════════════════════════════════════

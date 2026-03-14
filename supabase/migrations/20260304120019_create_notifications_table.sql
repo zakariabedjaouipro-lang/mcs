@@ -4,6 +4,9 @@
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_004_create_users_table.sql
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ════════════════════════════════════════════════════════════════════
 -- Notifications Table
 -- ════════════════════════════════════════════════════════════════
@@ -209,12 +212,23 @@ CREATE TABLE IF NOT EXISTS autism_assessments (
 );
 
 -- Create indexes for autism_assessments
-CREATE INDEX idx_autism_assessments_patient_id ON autism_assessments(patient_id);
-CREATE INDEX idx_autism_assessments_doctor_id ON autism_assessments_doctor_id);
-CREATE INDEX idx_autism_assessments_clinic_id ON autism_assessments_clinic_id);
-CREATE INDEX idx_autism_assessments_assessment_date ON autism_assessments_assessment_date);
-CREATE INDEX idx_autism_assessments_diagnosis ON autism_assessments_diagnosis);
-CREATE INDEX idx_autism_assessments_created_at ON autism_assessments(created_at DESC);
+CREATE INDEX idx_autism_assessments_patient_id 
+ON autism_assessments(patient_id);
+
+CREATE INDEX idx_autism_assessments_doctor_id 
+ON autism_assessments(doctor_id);
+
+CREATE INDEX idx_autism_assessments_clinic_id 
+ON autism_assessments(clinic_id);
+
+CREATE INDEX idx_autism_assessments_assessment_date 
+ON autism_assessments(assessment_date);
+
+CREATE INDEX idx_autism_assessments_diagnosis 
+ON autism_assessments(diagnosis);
+
+CREATE INDEX idx_autism_assessments_created_at 
+ON autism_assessments(created_at DESC);
 
 -- Add RLS policies for autism_assessments
 ALTER TABLE autism_assessments ENABLE ROW LEVEL SECURITY;

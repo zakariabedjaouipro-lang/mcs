@@ -4,6 +4,9 @@
 -- Created: 2026-03-04
 -- Dependencies: None
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ════════════════════════════════════════════════════════════════
 -- Exchange Rates Table
 -- ══════════════════════════════════════════════════════════════

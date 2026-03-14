@@ -62,8 +62,8 @@ CREATE TABLE IF NOT EXISTS appointments (
 
   -- Constraints
   CONSTRAINT valid_appointment_dates CHECK (
-    appointment_end_date IS NULL OR 
-    appointment_end_date > appointment_date
+    appointment_end_time IS NULL OR 
+    appointment_end_time > appointment_date
   ),
   CONSTRAINT valid_video_call_duration CHECK (
     video_call_duration_seconds IS NULL OR 

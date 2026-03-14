@@ -4,6 +4,9 @@
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_001_create_specialties_table.sql, v2_P02_002_create_clinics_table.sql
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Doctors Table
 -- ══════════════════════════════════════════════════════════════════════════════

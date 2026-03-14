@@ -1,6 +1,9 @@
 -- Migration: Create Clinic Staff Table
 -- Purpose: Junction table linking clinics to staff members
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ═════════════════════════════════════════════
 -- TABLE
 -- ═════════════════════════════════════════════

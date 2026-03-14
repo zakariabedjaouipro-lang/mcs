@@ -3,7 +3,8 @@
 -- Version: v2_P02_001
 -- Created: 2026-03-04
 -- Dependencies: None
-
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Specialties Table
 -- ══════════════════════════════════════════════════════════════════════════════

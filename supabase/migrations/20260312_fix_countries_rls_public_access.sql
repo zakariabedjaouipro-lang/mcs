@@ -4,6 +4,9 @@
 -- Created: 2026-03-12
 -- Status: CRITICAL FIX
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Issue: Users during registration/login get 404 when fetching countries
 -- Fix: Add explicit policy for public access

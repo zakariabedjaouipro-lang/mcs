@@ -4,6 +4,9 @@
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_002_create_countries_table.sql, v2_P01_003_create_regions_table.sql
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Clinics Table
 -- ══════════════════════════════════════════════════════════════════════════════

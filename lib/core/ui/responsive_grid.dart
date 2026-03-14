@@ -191,7 +191,7 @@ class _MasonryDelegate extends MultiChildLayoutDelegate {
   @override
   void performLayout(Size size) {
     final normalizedWidth = size.width / columns;
-    final columnHeights = List.filled(columns, 0.0);
+    final columnHeights = List.filled(columns, 0.01);
 
     for (var i = 0; i < childCount; i++) {
       final shortestColumn =
@@ -201,7 +201,7 @@ class _MasonryDelegate extends MultiChildLayoutDelegate {
         i,
         BoxConstraints(
           maxWidth: normalizedWidth - spacing,
-          maxHeight: double.infinity,
+          maxHeight: double.negativeInfinity,
         ),
       );
 

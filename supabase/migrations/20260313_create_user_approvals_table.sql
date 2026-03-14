@@ -1,3 +1,6 @@
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- Create user_approvals table
 -- جدول طلبات موافقة المستخدمين
 create table if not exists public.user_approvals (

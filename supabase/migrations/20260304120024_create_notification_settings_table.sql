@@ -4,6 +4,9 @@
 -- Created: 2026-03-04
 -- Dependencies: 20260304120001_create_users_table.sql
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Notification Settings Table
 -- ══════════════════════════════════════════════════════════════════════════════

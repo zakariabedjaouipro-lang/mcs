@@ -4,6 +4,9 @@
 -- Created: 2026-03-04
 -- Dependencies: 20260304120015_create_invoices_table.sql
 
+-- Create auth schema for Supabase compatibility
+CREATE SCHEMA IF NOT EXISTS auth;
+
 -- ══════════════════════════════════════════════════════════════════════════════
 -- Invoice Items Table
 -- ══════════════════════════════════════════════════════════════════════════════
