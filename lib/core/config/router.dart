@@ -216,6 +216,7 @@ class AppRouter {
       // ✅ SAFETY: User not loaded yet (race condition)
       // Go back to splash to wait for session initialization
       if (authUser == null) {
+        debugPrint('[GO_ROUTER] User is null - returning to splash');
         return '/splash';
       }
 
@@ -227,6 +228,7 @@ class AppRouter {
       try {
         final appRole = appMetadata['role'];
         if (appRole != null && appRole.toString().isNotEmpty) {
+          debugPrint('[GO_ROUTER] Found role in appMetadata: $appRole');
           return _mapRoleToPath(appRole.toString());
         }
       } catch (_) {
@@ -241,6 +243,7 @@ class AppRouter {
         try {
           final userRole = userMetadata['role'];
           if (userRole != null && userRole.toString().isNotEmpty) {
+            debugPrint('[GO_ROUTER] Found role in userMetadata: $userRole');
             return _mapRoleToPath(userRole.toString());
           }
         } catch (_) {
@@ -252,14 +255,14 @@ class AppRouter {
       // FALLBACK: Role not found in metadata
       // ═════════════════════════════════════════════════════════════════════
       debugPrint(
-        'WARNING: User ${authUser.id} has no role in metadata. '
+        '[GO_ROUTER] WARNING: User ${authUser.id} has no role in metadata. '
         'Returning to splash for role resolution.',
       );
 
       return '/splash';
     } catch (e) {
       // ✅ SAFE: Never crash - return to splash on error
-      debugPrint('ERROR in _getRoleBasedHomePath: $e');
+      debugPrint('[GO_ROUTER] ERROR in _getRoleBasedHomePath: $e');
       return '/splash';
     }
   }

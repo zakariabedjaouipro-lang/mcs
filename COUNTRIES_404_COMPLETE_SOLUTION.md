@@ -6,7 +6,7 @@
 
 ## ❌ المشكلة الأصلية
 ```
-GET https://ivguxjyghfndliptmink.supabase.co/rest/v1/countries?select=%2A&is_supported=eq.true 
+GET https://lwhuwjimlyzjiiyodmfw.supabase.co/rest/v1/countries?select=%2A&is_supported=eq.true 
 → 404 (Not Found)
 ```
 
