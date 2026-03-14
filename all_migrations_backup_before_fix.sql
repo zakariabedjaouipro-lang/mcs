@@ -1774,10 +1774,32 @@ CREATE POLICY "Doctors can view their own profile"
   ON doctors FOR SELECT
   USING (user_id = auth.uid());
 
+-- Policy: Clinic staff can view doctors in their clinic
+CREATE POLICY "Clinic staff can view clinic doctors"
+  ON doctors FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
 -- Policy: Doctors can update their own profile
 CREATE POLICY "Doctors can update their own profile"
   ON doctors FOR UPDATE
   USING (user_id = auth.uid());
+
+-- Policy: Clinic admins can update doctors in their clinic
+CREATE POLICY "Clinic admins can update clinic doctors"
+  ON doctors FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = doctors.clinic_id
+      AND user_id = auth.uid()
+      AND role IN ('admin', 'manager')
+    )
+  );
 
 -- Policy: Super admins can manage all doctors
 CREATE POLICY "Super admins can manage all doctors"
@@ -2006,10 +2028,47 @@ CREATE POLICY "Patients can view their own profile"
   ON patients FOR SELECT
   USING (user_id = auth.uid());
 
+-- Policy: Doctors can view patients they have appointments with
+CREATE POLICY "Doctors can view their patients"
+  ON patients FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM appointments
+      WHERE appointments.patient_id = patients.id
+      AND appointments.doctor_id IN (
+        SELECT id FROM doctors WHERE user_id = auth.uid()
+      )
+    )
+  );
+
+-- Policy: Clinic staff can view patients in their clinic
+CREATE POLICY "Clinic staff can view clinic patients"
+  ON patients FOR SELECT
+  USING (
+    preferred_clinic_id IN (
+      SELECT clinic_id FROM clinic_staff
+      WHERE user_id = auth.uid()
+    )
+  );
+
 -- Policy: Patients can update their own profile
 CREATE POLICY "Patients can update their own profile"
   ON patients FOR UPDATE
   USING (user_id = auth.uid());
+
+-- Policy: Doctors can update patient medical information
+CREATE POLICY "Doctors can update patient medical info"
+  ON patients FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM appointments
+      WHERE appointments.patient_id = patients.id
+      AND appointments.doctor_id IN (
+        SELECT id FROM doctors WHERE user_id = auth.uid()
+      )
+      AND appointments.status = 'completed'
+    )
+  );
 
 -- Policy: Super admins can manage all patients
 CREATE POLICY "Super admins can manage all patients"
@@ -2248,6 +2307,18 @@ CREATE POLICY "Employees can update their own profile"
   ON employees FOR UPDATE
   USING (user_id = auth.uid());
 
+-- Policy: Clinic admins can update employees in their clinic
+CREATE POLICY "Clinic admins can update clinic employees"
+  ON employees FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE clinic_id = employees.clinic_id
+      AND user_id = auth.uid()
+      AND role IN ('admin', 'manager', 'hr')
+    )
+  );
+
 -- Policy: Super admins can manage all employees
 CREATE POLICY "Super admins can manage all employees"
   ON employees FOR ALL
@@ -2467,55 +2538,6 @@ COMMENT ON COLUMN clinic_staff.employee_id IS
 
 COMMENT ON COLUMN clinic_staff.permissions IS
 'JSON object containing granular permissions';
-
--- ═════════════════════════════════════════════
--- DEFERRED RLS POLICIES FOR DOCTORS TABLE
--- (These depend on clinic_staff existing)
--- ═════════════════════════════════════════════
-
--- Policy: Clinic staff can view doctors in their clinic
-CREATE POLICY "Clinic staff can view clinic doctors"
-  ON doctors FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Clinic admins can update doctors in their clinic
-CREATE POLICY "Clinic admins can update clinic doctors"
-  ON doctors FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE clinic_id = doctors.clinic_id
-      AND user_id = auth.uid()
-      AND role IN ('admin', 'manager')
-    )
-  );
-
--- Policy: Clinic staff can view patients in their clinic
-CREATE POLICY "Clinic staff can view clinic patients"
-  ON patients FOR SELECT
-  USING (
-    preferred_clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Clinic admins can update employees in their clinic
-CREATE POLICY "Clinic admins can update clinic employees"
-  ON employees FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE clinic_id = employees.clinic_id
-      AND user_id = auth.uid()
-      AND role IN ('admin', 'manager', 'hr')
-    )
-  );
 
 -- ═════════════════════════════════════════════
 -- HELPER FUNCTIONS
@@ -2741,33 +2763,6 @@ CREATE POLICY "Super admins can manage all appointments"
       SELECT 1 FROM users
       WHERE id = auth.uid()
       AND role = 'super_admin'
-    )
-  );
-
--- DEFERRED RLS POLICIES FOR PATIENTS TABLE
--- (These depend on appointments existing)
-CREATE POLICY "Doctors can view their patients"
-  ON patients FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM appointments
-      WHERE appointments.patient_id = patients.id
-      AND appointments.doctor_id IN (
-        SELECT id FROM doctors WHERE user_id = auth.uid()
-      )
-    )
-  );
-
-CREATE POLICY "Doctors can update patient medical info"
-  ON patients FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM appointments
-      WHERE appointments.patient_id = patients.id
-      AND appointments.doctor_id IN (
-        SELECT id FROM doctors WHERE user_id = auth.uid()
-      )
-      AND appointments.status = 'completed'
     )
   );
 
@@ -4035,7 +4030,7 @@ CREATE TABLE IF NOT EXISTS reports (
   
   -- Report Parameters
   start_date DATE,
-  end_date DATE,
+  end_date,
   parameters JSONB,
   
   -- Report Output
