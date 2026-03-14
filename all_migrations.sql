@@ -1,5 +1,4 @@
-﻿=== 20260304120000_create_enums.sql ===
--- Migration: Create Enums for MCS Database
+﻿-- Migration: Create Enums for MCS Database
 -- Purpose: Define PostgreSQL enum types used throughout the application
 -- Version: v2_P01_001
 -- Created: 2026-03-04
@@ -240,8 +239,562 @@ COMMENT ON TYPE employee_type IS 'Clinic employee position types';
 COMMENT ON TYPE inventory_category IS 'Medical supply and equipment categories';
 COMMENT ON TYPE audit_action_type IS 'System audit log action types';
 COMMENT ON TYPE session_status IS 'User session status values';
+-- Migration: Create Countries Table
+-- Purpose: Store country reference data for user and clinic locations
+-- Version: v2_P01_002
+-- Created: 2026-03-04
+-- Dependencies: None
 
-=== 20260304120001_create_users_table.sql ===
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Countries Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create countries table to store country reference data
+CREATE TABLE IF NOT EXISTS countries (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Country Information
+  name VARCHAR(255) NOT NULL,
+  name_ar VARCHAR(255),
+  iso2_code VARCHAR(2) NOT NULL UNIQUE,  -- 2-letter ISO code (e.g., US, DZ)
+  iso3_code VARCHAR(3) NOT NULL UNIQUE,  -- 3-letter ISO code (e.g., USA, DZA)
+  numeric_code INTEGER UNIQUE,            -- Numeric ISO code (e.g., 840 for US)
+  phone_code VARCHAR(10) NOT NULL,       -- Country calling code (e.g., +1, +213)
+  currency_code VARCHAR(3),               -- Currency code (e.g., USD, DZD)
+  currency_name VARCHAR(50),
+  currency_name_ar VARCHAR(50),
+  currency_symbol VARCHAR(10),
+
+  -- Geographic Information
+  continent VARCHAR(50),
+  region VARCHAR(100),
+  subregion VARCHAR(100),
+  capital VARCHAR(100),
+  capital_ar VARCHAR(100),
+
+  -- Status and Metadata
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_supported BOOLEAN NOT NULL DEFAULT true,  -- Whether app supports this country
+
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_iso2_code CHECK (iso2_code ~ '^[A-Z]{2}$'),
+  CONSTRAINT valid_iso3_code CHECK (iso3_code ~ '^[A-Z]{3}$'),
+  CONSTRAINT valid_phone_code CHECK (phone_code ~ '^\+\d{1,4}$')
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_countries_iso2_code ON countries(iso2_code) WHERE is_active = true;
+CREATE INDEX idx_countries_iso3_code ON countries(iso3_code) WHERE is_active = true;
+CREATE INDEX idx_countries_name ON countries(name) WHERE is_active = true;
+CREATE INDEX idx_countries_is_active ON countries(is_active);
+CREATE INDEX idx_countries_is_supported ON countries(is_supported) WHERE is_supported = true;
+CREATE INDEX idx_countries_continent ON countries(continent) WHERE is_active = true;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on countries table
+ALTER TABLE countries ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view active countries
+CREATE POLICY "Active countries are viewable by everyone"
+  ON countries FOR SELECT
+  USING (is_active = true);
+
+-- Policy: Everyone can view supported countries
+CREATE POLICY "Supported countries are viewable by everyone"
+  ON countries FOR SELECT
+  USING (is_supported = true);
+
+-- Policy: Super admins can manage countries
+-- Note: This policy will be updated after users table is created
+-- For now, allow service role to manage countries
+CREATE POLICY "Service role can manage countries"
+  ON countries FOR ALL
+  USING (auth.role() = 'service_role');
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_countries_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER countries_update_updated_at
+  BEFORE UPDATE ON countries
+  FOR EACH ROW
+  EXECUTE FUNCTION update_countries_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE countries IS 'Country reference data for user and clinic locations';
+COMMENT ON COLUMN countries.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN countries.name IS 'Country name in English';
+COMMENT ON COLUMN countries.name_ar IS 'Country name in Arabic';
+COMMENT ON COLUMN countries.iso2_code IS '2-letter ISO country code (e.g., US, DZ)';
+COMMENT ON COLUMN countries.iso3_code IS '3-letter ISO country code (e.g., USA, DZA)';
+COMMENT ON COLUMN countries.numeric_code IS 'Numeric ISO country code';
+COMMENT ON COLUMN countries.phone_code IS 'Country calling code (e.g., +1, +213)';
+COMMENT ON COLUMN countries.currency_code IS 'Currency code (e.g., USD, DZD)';
+COMMENT ON COLUMN countries.currency_name IS 'Currency name in English';
+COMMENT ON COLUMN countries.currency_name_ar IS 'Currency name in Arabic';
+COMMENT ON COLUMN countries.currency_symbol IS 'Currency symbol (e.g., $, Ø¯Ø¬)';
+COMMENT ON COLUMN countries.continent IS 'Continent name';
+COMMENT ON COLUMN countries.region IS 'Region name';
+COMMENT ON COLUMN countries.subregion IS 'Subregion name';
+COMMENT ON COLUMN countries.capital IS 'Capital city name';
+COMMENT ON COLUMN countries.is_active IS 'Whether the country is active';
+COMMENT ON COLUMN countries.is_supported IS 'Whether the app supports this country';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Seed Data
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Insert common countries
+INSERT INTO countries (name, name_ar, iso2_code, iso3_code, numeric_code, phone_code, currency_code, currency_name, currency_name_ar, currency_symbol, continent, region, subregion, capital, capital_ar) VALUES
+-- Algeria (Primary market)
+('Algeria', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', 'DZ', 'DZA', 12, '+213', 'DZD', 'Algerian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¬Ø²Ø§Ø¦Ø±ÙŠ', 'Ø¯Ø¬', 'Africa', 'Africa', 'Northern Africa', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±'),
+
+-- Other Arab countries
+('Morocco', 'Ø§Ù„Ù…ØºØ±Ø¨', 'MA', 'MAR', 504, '+212', 'MAD', 'Moroccan Dirham', 'Ø¯Ø±Ù‡Ù… Ù…ØºØ±Ø¨ÙŠ', 'DH', 'Africa', 'Africa', 'Northern Africa', 'Rabat', 'Ø§Ù„Ø±Ø¨Ø§Ø·'),
+('Tunisia', 'ØªÙˆÙ†Ø³', 'TN', 'TUN', 788, '+216', 'TND', 'Tunisian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ØªÙˆÙ†Ø³ÙŠ', 'DT', 'Africa', 'Africa', 'Northern Africa', 'Tunis', 'ØªÙˆÙ†Ø³'),
+('Egypt', 'Ù…ØµØ±', 'EG', 'EGY', 818, '+20', 'EGP', 'Egyptian Pound', 'Ø¬Ù†ÙŠÙ‡ Ù…ØµØ±ÙŠ', 'EÂ£', 'Africa', 'Africa', 'Northern Africa', 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©'),
+('Saudi Arabia', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©', 'SA', 'SAU', 682, '+966', 'SAR', 'Saudi Riyal', 'Ø±ÙŠØ§Ù„ Ø³Ø¹ÙˆØ¯ÙŠ', 'Ø±.Ø³', 'Asia', 'Asia', 'Western Asia', 'Riyadh', 'Ø§Ù„Ø±ÙŠØ§Ø¶'),
+('United Arab Emirates', 'Ø§Ù„Ø¥Ù…Ø§Ø±Ø§Øª Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'AE', 'ARE', 784, '+971', 'AED', 'UAE Dirham', 'Ø¯Ø±Ù‡Ù… Ø¥Ù…Ø§Ø±Ø§ØªÙŠ', 'DH', 'Asia', 'Asia', 'Western Asia', 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ'),
+('Qatar', 'Ù‚Ø·Ø±', 'QA', 'QAT', 634, '+974', 'QAR', 'Qatari Riyal', 'Ø±ÙŠØ§Ù„ Ù‚Ø·Ø±ÙŠ', 'Ø±.Ù‚', 'Asia', 'Asia', 'Western Asia', 'Doha', 'Ø§Ù„Ø¯ÙˆØ­Ø©'),
+('Kuwait', 'Ø§Ù„ÙƒÙˆÙŠØª', 'KW', 'KWT', 414, '+965', 'KWD', 'Kuwaiti Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ÙƒÙˆÙŠØªÙŠ', 'Ø¯.Ùƒ', 'Asia', 'Asia', 'Western Asia', 'Kuwait City', 'Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„ÙƒÙˆÙŠØª'),
+
+-- Major countries
+('United States', 'Ø§Ù„ÙˆÙ„Ø§ÙŠØ§Øª Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'US', 'USA', 840, '+1', 'USD', 'US Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ù…Ø±ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Washington, D.C.', 'ÙˆØ§Ø´Ù†Ø·Ù† Ø§Ù„Ø¹Ø§ØµÙ…Ø©'),
+('United Kingdom', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'GB', 'GBR', 826, '+44', 'GBP', 'British Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¥Ø³ØªØ±Ù„ÙŠÙ†ÙŠ', 'Â£', 'Europe', 'Europe', 'Northern Europe', 'London', 'Ù„Ù†Ø¯Ù†'),
+('France', 'ÙØ±Ù†Ø³Ø§', 'FR', 'FRA', 250, '+33', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Paris', 'Ø¨Ø§Ø±ÙŠØ³'),
+('Germany', 'Ø£Ù„Ù…Ø§Ù†ÙŠØ§', 'DE', 'DEU', 276, '+49', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Berlin', 'Ø¨Ø±Ù„ÙŠÙ†'),
+('Canada', 'ÙƒÙ†Ø¯Ø§', 'CA', 'CAN', 124, '+1', 'CAD', 'Canadian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± ÙƒÙ†Ø¯ÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Ottawa', 'Ø£ÙˆØªØ§ÙˆØ§'),
+('Australia', 'Ø£Ø³ØªØ±Ø§Ù„ÙŠØ§', 'AU', 'AUS', 36, '+61', 'AUD', 'Australian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ø³ØªØ±Ø§Ù„ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Canberra', 'ÙƒØ§Ù†Ø¨ÙŠØ±Ø§'),
+('Japan', 'Ø§Ù„ÙŠØ§Ø¨Ø§Ù†', 'JP', 'JPN', 392, '+81', 'JPY', 'Japanese Yen', 'ÙŠÙ† ÙŠØ§Ø¨Ø§Ù†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Tokyo', 'Ø·ÙˆÙƒÙŠÙˆ'),
+('China', 'Ø§Ù„ØµÙŠÙ†', 'CN', 'CHN', 156, '+86', 'CNY', 'Chinese Yuan', 'ÙŠÙˆØ§Ù† ØµÙŠÙ†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Beijing', 'Ø¨ÙƒÙŠÙ†'),
+('India', 'Ø§Ù„Ù‡Ù†Ø¯', 'IN', 'IND', 356, '+91', 'INR', 'Indian Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ù‡Ù†Ø¯ÙŠØ©', 'â‚¹', 'Asia', 'Asia', 'Southern Asia', 'New Delhi', 'Ù†ÙŠÙˆØ¯Ù„Ù‡ÙŠ'),
+('Brazil', 'Ø§Ù„Ø¨Ø±Ø§Ø²ÙŠÙ„', 'BR', 'BRA', 76, '+55', 'BRL', 'Brazilian Real', 'Ø±ÙŠØ§Ù„ Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠ', 'R$', 'South America', 'Americas', 'South America', 'BrasÃ­lia', 'Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠØ§'),
+('Russia', 'Ø±ÙˆØ³ÙŠØ§', 'RU', 'RUS', 643, '+7', 'RUB', 'Russian Ruble', 'Ø±ÙˆØ¨Ù„ Ø±ÙˆØ³ÙŠ', 'â‚½', 'Europe', 'Europe', 'Eastern Europe', 'Moscow', 'Ù…ÙˆØ³ÙƒÙˆ'),
+('Turkey', 'ØªØ±ÙƒÙŠØ§', 'TR', 'TUR', 792, '+90', 'TRY', 'Turkish Lira', 'Ù„ÙŠØ±Ø© ØªØ±ÙƒÙŠØ©', 'â‚º', 'Europe', 'Asia', 'Western Asia', 'Ankara', 'Ø£Ù†Ù‚Ø±Ø©'),
+('Spain', 'Ø¥Ø³Ø¨Ø§Ù†ÙŠØ§', 'ES', 'ESP', 724, '+34', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Madrid', 'Ù…Ø¯Ø±ÙŠØ¯'),
+('Italy', 'Ø¥ÙŠØ·Ø§Ù„ÙŠØ§', 'IT', 'ITA', 380, '+39', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Rome', 'Ø±ÙˆÙ…Ø§'),
+('Netherlands', 'Ù‡ÙˆÙ„Ù†Ø¯Ø§', 'NL', 'NLD', 528, '+31', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Amsterdam', 'Ø£Ù…Ø³ØªØ±Ø¯Ø§Ù…'),
+('Belgium', 'Ø¨Ù„Ø¬ÙŠÙƒØ§', 'BE', 'BEL', 56, '+32', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Brussels', 'Ø¨Ø±ÙˆÙƒØ³Ù„'),
+('Switzerland', 'Ø³ÙˆÙŠØ³Ø±Ø§', 'CH', 'CHE', 756, '+41', 'CHF', 'Swiss Franc', 'ÙØ±Ù†Ùƒ Ø³ÙˆÙŠØ³Ø±ÙŠ', 'CHF', 'Europe', 'Europe', 'Western Europe', 'Bern', 'Ø¨Ø±Ù†'),
+('Sweden', 'Ø§Ù„Ø³ÙˆÙŠØ¯', 'SE', 'SWE', 752, '+46', 'SEK', 'Swedish Krona', 'ÙƒØ±ÙˆÙ†Ø§ Ø³ÙˆÙŠØ¯ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Stockholm', 'Ø³ØªÙˆÙƒÙ‡ÙˆÙ„Ù…'),
+('Norway', 'Ø§Ù„Ù†Ø±ÙˆÙŠØ¬', 'NO', 'NOR', 578, '+47', 'NOK', 'Norwegian Krone', 'ÙƒØ±ÙˆÙ†Ø© Ù†Ø±ÙˆÙŠØ¬ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Oslo', 'Ø£ÙˆØ³Ù„Ùˆ'),
+('Denmark', 'Ø§Ù„Ø¯Ù†Ù…Ø§Ø±Ùƒ', 'DK', 'DNK', 208, '+45', 'DKK', 'Danish Krone', 'ÙƒØ±ÙˆÙ†Ø© Ø¯Ù†Ù…Ø§Ø±ÙƒÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Copenhagen', 'ÙƒÙˆØ¨Ù†Ù‡Ø§ØºÙ†'),
+('Finland', 'ÙÙ†Ù„Ù†Ø¯Ø§', 'FI', 'FIN', 246, '+358', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Helsinki', 'Ù‡Ù„Ø³Ù†ÙƒÙŠ'),
+('Poland', 'Ø¨ÙˆÙ„Ù†Ø¯Ø§', 'PL', 'POL', 616, '+48', 'PLN', 'Polish Zloty', 'Ø²Ù„ÙˆØªÙŠ Ø¨ÙˆÙ„Ù†Ø¯ÙŠ', 'zÅ‚', 'Europe', 'Europe', 'Eastern Europe', 'Warsaw', 'ÙˆØ§Ø±Ø³Ùˆ'),
+('South Korea', 'ÙƒÙˆØ±ÙŠØ§ Ø§Ù„Ø¬Ù†ÙˆØ¨ÙŠØ©', 'KR', 'KOR', 410, '+82', 'KRW', 'South Korean Won', 'ÙˆÙˆÙ† ÙƒÙˆØ±ÙŠ Ø¬Ù†ÙˆØ¨ÙŠ', 'â‚©', 'Asia', 'Asia', 'Eastern Asia', 'Seoul', 'Ø³ÙˆÙ„'),
+('Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©', 'SG', 'SGP', 702, '+65', 'SGD', 'Singapore Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø³Ù†ØºØ§ÙÙˆØ±ÙŠ', '$', 'Asia', 'Asia', 'South-Eastern Asia', 'Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©'),
+('Malaysia', 'Ù…Ø§Ù„ÙŠØ²ÙŠØ§', 'MY', 'MYS', 458, '+60', 'MYR', 'Malaysian Ringgit', 'Ø±ÙŠÙ†ØºÙŠØª Ù…Ø§Ù„ÙŠØ²ÙŠ', 'RM', 'Asia', 'Asia', 'South-Eastern Asia', 'Kuala Lumpur', 'ÙƒÙˆØ§Ù„Ø§Ù„Ù…Ø¨ÙˆØ±'),
+('Indonesia', 'Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ§', 'ID', 'IDN', 360, '+62', 'IDR', 'Indonesian Rupiah', 'Ø±ÙˆØ¨ÙŠØ© Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ©', 'Rp', 'Asia', 'Asia', 'South-Eastern Asia', 'Jakarta', 'Ø¬Ø§ÙƒØ±ØªØ§'),
+('Thailand', 'ØªØ§ÙŠÙ„Ø§Ù†Ø¯', 'TH', 'THA', 764, '+66', 'THB', 'Thai Baht', 'Ø¨Ø§Øª ØªØ§ÙŠÙ„Ù†Ø¯ÙŠ', 'à¸¿', 'Asia', 'Asia', 'South-Eastern Asia', 'Bangkok', 'Ø¨Ø§Ù†ÙƒÙˆÙƒ'),
+('Vietnam', 'ÙÙŠØªÙ†Ø§Ù…', 'VN', 'VNM', 704, '+84', 'VND', 'Vietnamese Dong', 'Ø¯ÙˆÙ†Øº ÙÙŠØªÙ†Ø§Ù…ÙŠ', 'â‚«', 'Asia', 'Asia', 'South-Eastern Asia', 'Hanoi', 'Ù‡Ø§Ù†ÙˆÙŠ'),
+('Philippines', 'Ø§Ù„ÙÙ„Ø¨ÙŠÙ†', 'PH', 'PHL', 608, '+63', 'PHP', 'Philippine Peso', 'Ø¨ÙŠØ²Ùˆ ÙÙ„Ø¨ÙŠÙ†ÙŠ', 'â‚±', 'Asia', 'Asia', 'South-Eastern Asia', 'Manila', 'Ù…Ø§Ù†ÙŠÙ„Ø§'),
+('Pakistan', 'Ø¨Ø§ÙƒØ³ØªØ§Ù†', 'PK', 'PAK', 586, '+92', 'PKR', 'Pakistani Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ø¨Ø§ÙƒØ³ØªØ§Ù†ÙŠØ©', 'â‚¨', 'Asia', 'Asia', 'Southern Asia', 'Islamabad', 'Ø¥Ø³Ù„Ø§Ù… Ø¢Ø¨Ø§Ø¯'),
+('Bangladesh', 'Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´', 'BD', 'BGD', 50, '+880', 'BDT', 'Bangladeshi Taka', 'ØªØ§ÙƒØ§ Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´ÙŠ', 'à§³', 'Asia', 'Asia', 'Southern Asia', 'Dhaka', 'Ø¯ÙƒØ§'),
+('Nigeria', 'Ù†ÙŠØ¬ÙŠØ±ÙŠØ§', 'NG', 'NGA', 566, '+234', 'NGN', 'Nigerian Naira', 'Ù†Ø§ÙŠØ±Ø§ Ù†ÙŠØ¬ÙŠØ±ÙŠ', 'â‚¦', 'Africa', 'Africa', 'Western Africa', 'Abuja', 'Ø£Ø¨ÙˆØ¬Ø§'),
+('South Africa', 'Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠØ§', 'ZA', 'ZAF', 710, '+27', 'ZAR', 'South African Rand', 'Ø±Ø§Ù†Ø¯ Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠ', 'R', 'Africa', 'Africa', 'Southern Africa', 'Pretoria', 'Ø¨Ø±ÙŠØªÙˆØ±ÙŠØ§'),
+('Mexico', 'Ø§Ù„Ù…ÙƒØ³ÙŠÙƒ', 'MX', 'MEX', 484, '+52', 'MXN', 'Mexican Peso', 'Ø¨ÙŠØ²Ùˆ Ù…ÙƒØ³ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Mexico City', 'Ù…Ø¯ÙŠÙ†Ø© Ù…ÙƒØ³ÙŠÙƒÙˆ'),
+('Argentina', 'Ø§Ù„Ø£Ø±Ø¬Ù†ØªÙŠÙ†', 'AR', 'ARG', 32, '+54', 'ARS', 'Argentine Peso', 'Ø¨ÙŠØ²Ùˆ Ø£Ø±Ø¬Ù†ØªÙŠÙ†ÙŠ', '$', 'South America', 'Americas', 'South America', 'Buenos Aires', 'Ø¨ÙˆÙŠÙ†Ø³ Ø¢ÙŠØ±Ø³'),
+('Colombia', 'ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠØ§', 'CO', 'COL', 170, '+57', 'COP', 'Colombian Peso', 'Ø¨ÙŠØ²Ùˆ ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠ', '$', 'South America', 'Americas', 'South America', 'BogotÃ¡', 'Ø¨ÙˆØºÙˆØªØ§'),
+('Chile', 'ØªØ´ÙŠÙ„ÙŠ', 'CL', 'CHL', 152, '+56', 'CLP', 'Chilean Peso', 'Ø¨ÙŠØ²Ùˆ ØªØ´ÙŠÙ„ÙŠ', '$', 'South America', 'Americas', 'South America', 'Santiago', 'Ø³Ø§Ù†ØªÙŠØ§ØºÙˆ'),
+('Peru', 'Ø¨ÙŠØ±Ùˆ', 'PE', 'PER', 604, '+51', 'PEN', 'Peruvian Sol', 'Ø³ÙˆÙ„ Ø¨ÙŠØ±ÙˆÙÙŠ', 'S/.', 'South America', 'Americas', 'South America', 'Lima', 'Ù„ÙŠÙ…Ø§'),
+('Venezuela', 'ÙÙ†Ø²ÙˆÙŠÙ„Ø§', 'VE', 'VEN', 862, '+58', 'VES', 'Venezuelan BolÃ­var', 'Ø¨ÙˆÙ„ÙŠÙØ§Ø± ÙÙ†Ø²ÙˆÙŠÙ„ÙŠ', 'Bs.', 'South America', 'Americas', 'South America', 'Caracas', 'ÙƒØ§Ø±Ø§ÙƒØ§Ø³'),
+('Greece', 'Ø§Ù„ÙŠÙˆÙ†Ø§Ù†', 'GR', 'GRC', 300, '+30', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Athens', 'Ø£Ø«ÙŠÙ†Ø§'),
+('Portugal', 'Ø§Ù„Ø¨Ø±ØªØºØ§Ù„', 'PT', 'PRT', 620, '+351', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Lisbon', 'Ù„ÙŠØ³Ø¨ÙˆÙ†'),
+('Ireland', 'Ø£ÙŠØ±Ù„Ù†Ø¯Ø§', 'IE', 'IRL', 372, '+353', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Dublin', 'Ø¯Ø¨Ù„Ù†'),
+('New Zealand', 'Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯Ø§', 'NZ', 'NZL', 554, '+64', 'NZD', 'New Zealand Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Wellington', 'ÙˆÙŠÙ„ÙŠÙ†ØºØªÙˆÙ†'),
+('South Sudan', 'Ø¬Ù†ÙˆØ¨ Ø§Ù„Ø³ÙˆØ¯Ø§Ù†', 'SS', 'SSD', 728, '+211', 'SSP', 'South Sudanese Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¬Ù†ÙˆØ¨ Ø³ÙˆØ¯Ø§Ù†ÙŠ', 'Â£', 'Africa', 'Africa', 'Northern Africa', 'Juba', 'Ø¬ÙˆØ¨Ø§'),
+('Libya', 'Ù„ÙŠØ¨ÙŠØ§', 'LY', 'LBY', 434, '+218', 'LYD', 'Libyan Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ù„ÙŠØ¨ÙŠ', 'Ù„.Ø¯', 'Africa', 'Africa', 'Northern Africa', 'Tripoli', 'Ø·Ø±Ø§Ø¨Ù„Ø³'),
+('Jordan', 'Ø§Ù„Ø£Ø±Ø¯Ù†', 'JO', 'JOR', 400, '+962', 'JOD', 'Jordanian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø£Ø±Ø¯Ù†ÙŠ', 'Ø¯.Ø£', 'Asia', 'Asia', 'Western Asia', 'Amman', 'Ø¹Ù…Ø§Ù†'),
+('Lebanon', 'Ù„Ø¨Ù†Ø§Ù†', 'LB', 'LBN', 422, '+961', 'LBP', 'Lebanese Pound', 'Ù„ÙŠØ±Ø© Ù„Ø¨Ù†Ø§Ù†ÙŠØ©', 'Ù„.Ù„', 'Asia', 'Asia', 'Western Asia', 'Beirut', 'Ø¨ÙŠØ±ÙˆØª'),
+('Syria', 'Ø³ÙˆØ±ÙŠØ§', 'SY', 'SYR', 760, '+963', 'SYP', 'Syrian Pound', 'Ù„ÙŠØ±Ø© Ø³ÙˆØ±ÙŠØ©', 'Ù„.Ø³', 'Asia', 'Asia', 'Western Asia', 'Damascus', 'Ø¯Ù…Ø´Ù‚'),
+('Iraq', 'Ø§Ù„Ø¹Ø±Ø§Ù‚', 'IQ', 'IRQ', 368, '+964', 'IQD', 'Iraqi Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¹Ø±Ø§Ù‚ÙŠ', 'Ø¹.Ø¯', 'Asia', 'Asia', 'Western Asia', 'Baghdad', 'Ø¨ØºØ¯Ø§Ø¯'),
+('Yemen', 'Ø§Ù„ÙŠÙ…Ù†', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'Ø±ÙŠØ§Ù„ ÙŠÙ…Ù†ÙŠ', 'Ø±.ÙŠ', 'Asia', 'Asia', 'Western Asia', 'Sana''a', 'ØµÙ†Ø¹Ø§Ø¡'),
+('Oman', 'Ø¹Ù…Ø§Ù†', 'OM', 'OMN', 512, '+968', 'OMR', 'Omani Rial', 'Ø±ÙŠØ§Ù„ Ø¹Ù…Ø§Ù†ÙŠ', 'Ø±.Ø¹', 'Asia', 'Asia', 'Western Asia', 'Muscat', 'Ù…Ø³Ù‚Ø·'),
+('Bahrain', 'Ø§Ù„Ø¨Ø­Ø±ÙŠÙ†', 'BH', 'BHR', 48, '+973', 'BHD', 'Bahraini Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¨Ø­Ø±ÙŠÙ†ÙŠ', 'Ø¯.Ø¨', 'Asia', 'Asia', 'Western Asia', 'Manama', 'Ø§Ù„Ù…Ù†Ø§Ù…Ø©'),
+('Palestin', 'Ù‚Ù„Ø³Ø·ÙŠÙ†', 'PS', 'PSE ', 376, '+972', 'PSE', 'Palestiny New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'Ø§Ù„Ù‚Ø¯Ø³'),
+('Palestine', 'ÙÙ„Ø³Ø·ÙŠÙ†', 'PS', 'PSE', 275, '+970', 'PSE', 'Palestini New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Ramallah', 'Ø±Ø§Ù… Ø§Ù„Ù„Ù‡')
+ON CONFLICT (iso2_code) DO NOTHING;
+-- Migration: Create Regions Table
+-- Purpose: Store region/state/province reference data within countries
+-- Version: v2_P01_003
+-- Created: 2026-03-04
+-- Dependencies: v2_P01_002_create_countries_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Regions Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create regions table to store region/state/province reference data
+CREATE TABLE IF NOT EXISTS regions (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  country_id UUID NOT NULL REFERENCES countries(id) ON DELETE CASCADE,
+
+  -- Region Information
+  name VARCHAR(255) NOT NULL,
+  name_ar VARCHAR(255),
+  code VARCHAR(10) NOT NULL,  -- Region code (e.g., ALG for Algiers)
+  iso_code VARCHAR(10),       -- ISO subdivision code if available
+  region_type VARCHAR(50),    -- State, Province, Region, Governorate, etc.
+  capital VARCHAR(100),       -- Capital city of the region
+  capital_ar VARCHAR(100),
+
+  -- Geographic Information
+  latitude DECIMAL(10, 8),
+  longitude DECIMAL(11, 8),
+
+  -- Status and Metadata
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  is_supported BOOLEAN NOT NULL DEFAULT true,  -- Whether app supports this region
+
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_region_code CHECK (code ~ '^[A-Z0-9]{2,10}$'),
+  CONSTRAINT unique_country_region UNIQUE (country_id, code)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_regions_country_id ON regions(country_id) WHERE is_active = true;
+CREATE INDEX idx_regions_code ON regions(code) WHERE is_active = true;
+CREATE INDEX idx_regions_name ON regions(name) WHERE is_active = true;
+CREATE INDEX idx_regions_is_active ON regions(is_active);
+CREATE INDEX idx_regions_is_supported ON regions(is_supported) WHERE is_supported = true;
+CREATE INDEX idx_regions_country_code ON regions(country_id, code) WHERE is_active = true;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on regions table
+ALTER TABLE regions ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view active regions
+CREATE POLICY "Active regions are viewable by everyone"
+  ON regions FOR SELECT
+  USING (is_active = true);
+
+-- Policy: Everyone can view supported regions
+CREATE POLICY "Supported regions are viewable by everyone"
+  ON regions FOR SELECT
+  USING (is_supported = true);
+
+-- Policy: Super admins can manage regions
+-- Note: This policy will be updated after users table is created
+-- For now, allow service role to manage regions
+CREATE POLICY "Service role can manage regions"
+  ON regions FOR ALL
+  USING (auth.role() = 'service_role');
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_regions_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER regions_update_updated_at
+  BEFORE UPDATE ON regions
+  FOR EACH ROW
+  EXECUTE FUNCTION update_regions_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE regions IS 'Region/state/province reference data within countries';
+COMMENT ON COLUMN regions.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN regions.country_id IS 'Foreign key reference to countries table';
+COMMENT ON COLUMN regions.name IS 'Region name in English';
+COMMENT ON COLUMN regions.name_ar IS 'Region name in Arabic';
+COMMENT ON COLUMN regions.code IS 'Region code (e.g., ALG for Algiers)';
+COMMENT ON COLUMN regions.iso_code IS 'ISO subdivision code if available';
+COMMENT ON COLUMN regions.region_type IS 'Type of region (State, Province, Region, Governorate, etc.)';
+COMMENT ON COLUMN regions.capital IS 'Capital city of the region';
+COMMENT ON COLUMN regions.capital_ar IS 'Capital city name in Arabic';
+COMMENT ON COLUMN regions.latitude IS 'Geographic latitude';
+COMMENT ON COLUMN regions.longitude IS 'Geographic longitude';
+COMMENT ON COLUMN regions.is_active IS 'Whether the region is active';
+COMMENT ON COLUMN regions.is_supported IS 'Whether the app supports this region';
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Seed Data
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Insert Algerian regions (wilayas) - Primary market
+INSERT INTO regions (country_id, name, name_ar, code, iso_code, region_type, capital, capital_ar, is_active, is_supported) VALUES
+-- Get Algeria country ID
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Adrar', 'Ø£Ø¯Ø±Ø§Ø±', '01', 'DZ-01', 'Wilaya', 'Adrar', 'Ø£Ø¯Ø±Ø§Ø±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Chlef', 'Ø§Ù„Ø´Ù„Ù', '02', 'DZ-02', 'Wilaya', 'Chlef', 'Ø§Ù„Ø´Ù„Ù', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Laghouat', 'Ø§Ù„Ø£ØºÙˆØ§Ø·', '03', 'DZ-03', 'Wilaya', 'Laghouat', 'Ø§Ù„Ø£ØºÙˆØ§Ø·', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Oum El Bouaghi', 'Ø£Ù… Ø§Ù„Ø¨ÙˆØ§Ù‚ÙŠ', '04', 'DZ-04', 'Wilaya', 'Oum El Bouaghi', 'Ø£Ù… Ø§Ù„Ø¨ÙˆØ§Ù‚ÙŠ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Batna', 'Ø¨Ø§ØªÙ†Ø©', '05', 'DZ-05', 'Wilaya', 'Batna', 'Ø¨Ø§ØªÙ†Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'BÃ©jaÃ¯a', 'Ø¨Ø¬Ø§ÙŠØ©', '06', 'DZ-06', 'Wilaya', 'BÃ©jaÃ¯a', 'Ø¨Ø¬Ø§ÙŠØ©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Biskra', 'Ø¨Ø³ÙƒØ±Ø©', '07', 'DZ-07', 'Wilaya', 'Biskra', 'Ø¨Ø³ÙƒØ±Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'BÃ©char', 'Ø¨Ø´Ø§Ø±', '08', 'DZ-08', 'Wilaya', 'BÃ©char', 'Ø¨Ø´Ø§Ø±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Blida', 'Ø§Ù„Ø¨Ù„ÙŠØ¯Ø©', '09', 'DZ-09', 'Wilaya', 'Blida', 'Ø§Ù„Ø¨Ù„ÙŠØ¯Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Bouira', 'Ø§Ù„Ø¨ÙˆÙŠØ±Ø©', '10', 'DZ-10', 'Wilaya', 'Bouira', 'Ø§Ù„Ø¨ÙˆÙŠØ±Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tamanrasset', 'ØªÙ…Ù†Ø±Ø§Ø³Øª', '11', 'DZ-11', 'Wilaya', 'Tamanrasset', 'ØªÙ…Ù†Ø±Ø§Ø³Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'TÃ©bessa', 'ØªØ¨Ø³Ø©', '12', 'DZ-12', 'Wilaya', 'TÃ©bessa', 'ØªØ¨Ø³Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tlemcen', 'ØªÙ„Ù…Ø³Ø§Ù†', '13', 'DZ-13', 'Wilaya', 'Tlemcen', 'ØªÙ„Ù…Ø³Ø§Ù†', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tiaret', 'ØªÙŠØ§Ø±Øª', '14', 'DZ-14', 'Wilaya', 'Tiaret', 'ØªÙŠØ§Ø±Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tizi Ouzou', 'ØªÙŠØ²ÙŠ ÙˆØ²Ùˆ', '15', 'DZ-15', 'Wilaya', 'Tizi Ouzou', 'ØªÙŠØ²ÙŠ ÙˆØ²Ùˆ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', '16', 'DZ-16', 'Wilaya', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Djelfa', 'Ø§Ù„Ø¬Ù„ÙØ©', '17', 'DZ-17', 'Wilaya', 'Djelfa', 'Ø§Ù„Ø¬Ù„ÙØ©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Jijel', 'Ø¬ÙŠØ¬Ù„', '18', 'DZ-18', 'Wilaya', 'Jijel', 'Ø¬ÙŠØ¬Ù„', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'SÃ©tif', 'Ø³Ø·ÙŠÙ', '19', 'DZ-19', 'Wilaya', 'SÃ©tif', 'Ø³Ø·ÙŠÙ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'SaÃ¯da', 'Ø³Ø¹ÙŠØ¯Ø©', '20', 'DZ-20', 'Wilaya', 'SaÃ¯da', 'Ø³Ø¹ÙŠØ¯Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Skikda', 'Ø³ÙƒÙŠÙƒØ¯Ø©', '21', 'DZ-21', 'Wilaya', 'Skikda', 'Ø³ÙƒÙŠÙƒØ¯Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Sidi Bel AbbÃ¨s', 'Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³', '22', 'DZ-22', 'Wilaya', 'Sidi Bel AbbÃ¨s', 'Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Annaba', 'Ø¹Ù†Ø§Ø¨Ø©', '23', 'DZ-23', 'Wilaya', 'Annaba', 'Ø¹Ù†Ø§Ø¨Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Guelma', 'Ù‚Ø§Ù„Ù…Ø©', '24', 'DZ-24', 'Wilaya', 'Guelma', 'Ù‚Ø§Ù„Ù…Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Constantine', 'Ù‚Ø³Ù†Ø·ÙŠÙ†Ø©', '25', 'DZ-25', 'Wilaya', 'Constantine', 'Ù‚Ø³Ù†Ø·ÙŠÙ†Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'MÃ©dÃ©a', 'Ø§Ù„Ù…Ø¯ÙŠØ©', '26', 'DZ-26', 'Wilaya', 'MÃ©dÃ©a', 'Ø§Ù„Ù…Ø¯ÙŠØ©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Mostaganem', 'Ù…Ø³ØªØºØ§Ù†Ù…', '27', 'DZ-27', 'Wilaya', 'Mostaganem', 'Ù…Ø³ØªØºØ§Ù†Ù…', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'M''Sila', 'Ø§Ù„Ù…Ø³ÙŠÙ„Ø©', '28', 'DZ-28', 'Wilaya', 'M''Sila', 'Ø§Ù„Ù…Ø³ÙŠÙ„Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Mascara', 'Ù…Ø¹Ø³ÙƒØ±', '29', 'DZ-29', 'Wilaya', 'Mascara', 'Ù…Ø¹Ø³ÙƒØ±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Ouargla', 'ÙˆØ±Ù‚Ù„Ø©', '30', 'DZ-30', 'Wilaya', 'Ouargla', 'ÙˆØ±Ù‚Ù„Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Oran', 'ÙˆÙ‡Ø±Ø§Ù†', '31', 'DZ-31', 'Wilaya', 'Oran', 'ÙˆÙ‡Ø±Ø§Ù†', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El Bayadh', 'Ø§Ù„Ø¨ÙŠØ¶', '32', 'DZ-32', 'Wilaya', 'El Bayadh', 'Ø§Ù„Ø¨ÙŠØ¶', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Illizi', 'Ø¥Ù„ÙŠØ²ÙŠ', '33', 'DZ-33', 'Wilaya', 'Illizi', 'Ø¥Ù„ÙŠØ²ÙŠ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Bordj Bou Arreridj', 'Ø¨Ø±Ø¬ Ø¨ÙˆØ¹Ø±ÙŠØ±ÙŠØ¬', '34', 'DZ-34', 'Wilaya', 'Bordj Bou Arreridj', 'Ø¨Ø±Ø¬ Ø¨ÙˆØ¹Ø±ÙŠØ±ÙŠØ¬', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'BoumerdÃ¨s', 'Ø¨ÙˆÙ…Ø±Ø¯Ø§Ø³', '35', 'DZ-35', 'Wilaya', 'BoumerdÃ¨s', 'Ø¨ÙˆÙ…Ø±Ø¯Ø§Ø³', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El Tarf', 'Ø§Ù„Ø·Ø§Ø±Ù', '36', 'DZ-36', 'Wilaya', 'El Tarf', 'Ø§Ù„Ø·Ø§Ø±Ù', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tindouf', 'ØªÙ†Ø¯ÙˆÙ', '37', 'DZ-37', 'Wilaya', 'Tindouf', 'ØªÙ†Ø¯ÙˆÙ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tissemsilt', 'ØªÙŠØ³Ù…Ø³ÙŠÙ„Øª', '38', 'DZ-38', 'Wilaya', 'Tissemsilt', 'ØªÙŠØ³Ù…Ø³ÙŠÙ„Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El Oued', 'Ø§Ù„ÙˆØ§Ø¯ÙŠ', '39', 'DZ-39', 'Wilaya', 'El Oued', 'Ø§Ù„ÙˆØ§Ø¯ÙŠ', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Khenchela', 'Ø®Ù†Ø´Ù„Ø©', '40', 'DZ-40', 'Wilaya', 'Khenchela', 'Ø®Ù†Ø´Ù„Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Souk Ahras', 'Ø³ÙˆÙ‚ Ø£Ù‡Ø±Ø§Ø³', '41', 'DZ-41', 'Wilaya', 'Souk Ahras', 'Ø³ÙˆÙ‚ Ø£Ù‡Ø±Ø§Ø³', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Tipaza', 'ØªÙŠØ¨Ø§Ø²Ø©', '42', 'DZ-42', 'Wilaya', 'Tipaza', 'ØªÙŠØ¨Ø§Ø²Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Mila', 'Ù…ÙŠÙ„Ø©', '43', 'DZ-43', 'Wilaya', 'Mila', 'Ù…ÙŠÙ„Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'AÃ¯n Defla', 'Ø¹ÙŠÙ† Ø§Ù„Ø¯ÙÙ„Ù‰', '44', 'DZ-44', 'Wilaya', 'AÃ¯n Defla', 'Ø¹ÙŠÙ† Ø§Ù„Ø¯ÙÙ„Ù‰', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'NaÃ¢ma', 'Ø§Ù„Ù†Ø¹Ø§Ù…Ø©', '45', 'DZ-45', 'Wilaya', 'NaÃ¢ma', 'Ø§Ù„Ù†Ø¹Ø§Ù…Ø©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'AÃ¯n TÃ©mouchent', 'Ø¹ÙŠÙ† ØªÙ…ÙˆØ´Ù†Øª', '46', 'DZ-46', 'Wilaya', 'AÃ¯n TÃ©mouchent', 'Ø¹ÙŠÙ† ØªÙ…ÙˆØ´Ù†Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'GhardaÃ¯a', 'ØºØ±Ø¯Ø§ÙŠØ©', '47', 'DZ-47', 'Wilaya', 'GhardaÃ¯a', 'ØºØ±Ø¯Ø§ÙŠØ©', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Relizane', 'ØºÙ„ÙŠØ²Ø§Ù†', '48', 'DZ-48', 'Wilaya', 'Relizane', 'ØºÙ„ÙŠØ²Ø§Ù†', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Timimoun', 'ØªÙŠÙ…ÙŠÙ…ÙˆÙ†', '49', 'DZ-49', 'Wilaya', 'Timimoun', 'ØªÙŠÙ…ÙŠÙ…ÙˆÙ†', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Bordj Badji Mokhtar', 'Ø¨Ø±Ø¬ Ø¨Ø§Ø¬ÙŠ Ù…Ø®ØªØ§Ø±', '50', 'DZ-50', 'Wilaya', 'Bordj Badji Mokhtar', 'Ø¨Ø±Ø¬ Ø¨Ø§Ø¬ÙŠ Ù…Ø®ØªØ§Ø±', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Ouled Djellal', 'Ø£ÙˆÙ„Ø§Ø¯ Ø¬Ù„Ø§Ù„', '51', 'DZ-51', 'Wilaya', 'Ouled Djellal', 'Ø£ÙˆÙ„Ø§Ø¯ Ø¬Ù„Ø§Ù„', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'BÃ©ni AbbÃ¨s', 'Ø¨Ù†ÙŠ Ø¹Ø¨Ø§Ø³', '52', 'DZ-52', 'Wilaya', 'BÃ©ni AbbÃ¨s', 'Ø¨Ù†ÙŠ Ø¹Ø¨Ø§Ø³', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'In Salah', 'Ø¹ÙŠÙ† ØµØ§Ù„Ø­', '53', 'DZ-53', 'Wilaya', 'In Salah', 'Ø¹ÙŠÙ† ØµØ§Ù„Ø­', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'In Guezzam', 'Ø¹ÙŠÙ† Ù‚Ø²Ø§Ù…', '54', 'DZ-54', 'Wilaya', 'In Guezzam', 'Ø¹ÙŠÙ† Ù‚Ø²Ø§Ù…', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Touggourt', 'ØªÙ‚Ø±Øª', '55', 'DZ-55', 'Wilaya', 'Touggourt', 'ØªÙ‚Ø±Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'Djanet', 'Ø¬Ø§Ù†Øª', '56', 'DZ-56', 'Wilaya', 'Djanet', 'Ø¬Ø§Ù†Øª', true, true
+),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El M''Ghair', 'Ø§Ù„Ù…ØºÙŠØ±', '57', 'DZ-57', 'Wilaya', 'El M''Ghair', 'Ø§Ù„Ù…ØºÙŠØ±', true, true),
+(
+  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
+  'El Meniaa', 'Ø§Ù„Ù…Ù†ÙŠØ¹Ø©', '58', 'DZ-58', 'Wilaya', 'El Meniaa', 'Ø§Ù„Ù…Ù†ÙŠØ¹Ø©', true, true
+);
 -- Migration: Create Users Table and Related Structures
 -- Purpose: Define the users table with RLS policies and relationships to auth.users
 -- Version: v2_P01_004
@@ -502,606 +1055,6 @@ COMMENT ON POLICY admins_update_clinic_users ON users IS 'Admins can manage user
      CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users
      FOR EACH ROW EXECUTE FUNCTION handle_new_user();
 */
-
-=== 20260304120002_create_countries_table.sql ===
--- Migration: Create Countries Table
--- Purpose: Store country reference data for user and clinic locations
--- Version: v2_P01_002
--- Created: 2026-03-04
--- Dependencies: None
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Countries Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Create countries table to store country reference data
-CREATE TABLE IF NOT EXISTS countries (
-  -- Primary Key
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-  -- Country Information
-  name VARCHAR(255) NOT NULL,
-  name_ar VARCHAR(255),
-  iso2_code VARCHAR(2) NOT NULL UNIQUE,  -- 2-letter ISO code (e.g., US, DZ)
-  iso3_code VARCHAR(3) NOT NULL UNIQUE,  -- 3-letter ISO code (e.g., USA, DZA)
-  numeric_code INTEGER UNIQUE,            -- Numeric ISO code (e.g., 840 for US)
-  phone_code VARCHAR(10) NOT NULL,       -- Country calling code (e.g., +1, +213)
-  currency_code VARCHAR(3),               -- Currency code (e.g., USD, DZD)
-  currency_name VARCHAR(50),
-  currency_name_ar VARCHAR(50),
-  currency_symbol VARCHAR(10),
-
-  -- Geographic Information
-  continent VARCHAR(50),
-  region VARCHAR(100),
-  subregion VARCHAR(100),
-  capital VARCHAR(100),
-  capital_ar VARCHAR(100),
-
-  -- Status and Metadata
-  is_active BOOLEAN NOT NULL DEFAULT true,
-  is_supported BOOLEAN NOT NULL DEFAULT true,  -- Whether app supports this country
-
-  -- System Fields
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-
-  -- Constraints
-  CONSTRAINT valid_iso2_code CHECK (iso2_code ~ '^[A-Z]{2}$'),
-  CONSTRAINT valid_iso3_code CHECK (iso3_code ~ '^[A-Z]{3}$'),
-  CONSTRAINT valid_phone_code CHECK (phone_code ~ '^\+\d{1,4}$')
-);
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Create indexes for common queries
-CREATE INDEX idx_countries_iso2_code ON countries(iso2_code) WHERE is_active = true;
-CREATE INDEX idx_countries_iso3_code ON countries(iso3_code) WHERE is_active = true;
-CREATE INDEX idx_countries_name ON countries(name) WHERE is_active = true;
-CREATE INDEX idx_countries_is_active ON countries(is_active);
-CREATE INDEX idx_countries_is_supported ON countries(is_supported) WHERE is_supported = true;
-CREATE INDEX idx_countries_continent ON countries(continent) WHERE is_active = true;
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Enable RLS on countries table
-ALTER TABLE countries ENABLE ROW LEVEL SECURITY;
-
--- Policy: Everyone can view active countries
-CREATE POLICY "Active countries are viewable by everyone"
-  ON countries FOR SELECT
-  USING (is_active = true);
-
--- Policy: Everyone can view supported countries
-CREATE POLICY "Supported countries are viewable by everyone"
-  ON countries FOR SELECT
-  USING (is_supported = true);
-
--- Policy: Super admins can manage countries
--- Note: This policy will be updated after users table is created
--- For now, allow service role to manage countries
-CREATE POLICY "Service role can manage countries"
-  ON countries FOR ALL
-  USING (auth.role() = 'service_role');
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Create function to update 'updated_at' timestamp
-CREATE OR REPLACE FUNCTION update_countries_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Create trigger for automatic timestamp update
-CREATE TRIGGER countries_update_updated_at
-  BEFORE UPDATE ON countries
-  FOR EACH ROW
-  EXECUTE FUNCTION update_countries_updated_at();
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
-COMMENT ON TABLE countries IS 'Country reference data for user and clinic locations';
-COMMENT ON COLUMN countries.id IS 'Primary key (UUID)';
-COMMENT ON COLUMN countries.name IS 'Country name in English';
-COMMENT ON COLUMN countries.name_ar IS 'Country name in Arabic';
-COMMENT ON COLUMN countries.iso2_code IS '2-letter ISO country code (e.g., US, DZ)';
-COMMENT ON COLUMN countries.iso3_code IS '3-letter ISO country code (e.g., USA, DZA)';
-COMMENT ON COLUMN countries.numeric_code IS 'Numeric ISO country code';
-COMMENT ON COLUMN countries.phone_code IS 'Country calling code (e.g., +1, +213)';
-COMMENT ON COLUMN countries.currency_code IS 'Currency code (e.g., USD, DZD)';
-COMMENT ON COLUMN countries.currency_name IS 'Currency name in English';
-COMMENT ON COLUMN countries.currency_name_ar IS 'Currency name in Arabic';
-COMMENT ON COLUMN countries.currency_symbol IS 'Currency symbol (e.g., $, Ø¯Ø¬)';
-COMMENT ON COLUMN countries.continent IS 'Continent name';
-COMMENT ON COLUMN countries.region IS 'Region name';
-COMMENT ON COLUMN countries.subregion IS 'Subregion name';
-COMMENT ON COLUMN countries.capital IS 'Capital city name';
-COMMENT ON COLUMN countries.is_active IS 'Whether the country is active';
-COMMENT ON COLUMN countries.is_supported IS 'Whether the app supports this country';
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Seed Data
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Insert common countries
-INSERT INTO countries (name, name_ar, iso2_code, iso3_code, numeric_code, phone_code, currency_code, currency_name, currency_name_ar, currency_symbol, continent, region, subregion, capital, capital_ar) VALUES
--- Algeria (Primary market)
-('Algeria', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', 'DZ', 'DZA', 12, '+213', 'DZD', 'Algerian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¬Ø²Ø§Ø¦Ø±ÙŠ', 'Ø¯Ø¬', 'Africa', 'Africa', 'Northern Africa', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±'),
-
--- Other Arab countries
-('Morocco', 'Ø§Ù„Ù…ØºØ±Ø¨', 'MA', 'MAR', 504, '+212', 'MAD', 'Moroccan Dirham', 'Ø¯Ø±Ù‡Ù… Ù…ØºØ±Ø¨ÙŠ', 'DH', 'Africa', 'Africa', 'Northern Africa', 'Rabat', 'Ø§Ù„Ø±Ø¨Ø§Ø·'),
-('Tunisia', 'ØªÙˆÙ†Ø³', 'TN', 'TUN', 788, '+216', 'TND', 'Tunisian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ØªÙˆÙ†Ø³ÙŠ', 'DT', 'Africa', 'Africa', 'Northern Africa', 'Tunis', 'ØªÙˆÙ†Ø³'),
-('Egypt', 'Ù…ØµØ±', 'EG', 'EGY', 818, '+20', 'EGP', 'Egyptian Pound', 'Ø¬Ù†ÙŠÙ‡ Ù…ØµØ±ÙŠ', 'EÂ£', 'Africa', 'Africa', 'Northern Africa', 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©'),
-('Saudi Arabia', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©', 'SA', 'SAU', 682, '+966', 'SAR', 'Saudi Riyal', 'Ø±ÙŠØ§Ù„ Ø³Ø¹ÙˆØ¯ÙŠ', 'Ø±.Ø³', 'Asia', 'Asia', 'Western Asia', 'Riyadh', 'Ø§Ù„Ø±ÙŠØ§Ø¶'),
-('United Arab Emirates', 'Ø§Ù„Ø¥Ù…Ø§Ø±Ø§Øª Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'AE', 'ARE', 784, '+971', 'AED', 'UAE Dirham', 'Ø¯Ø±Ù‡Ù… Ø¥Ù…Ø§Ø±Ø§ØªÙŠ', 'DH', 'Asia', 'Asia', 'Western Asia', 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ'),
-('Qatar', 'Ù‚Ø·Ø±', 'QA', 'QAT', 634, '+974', 'QAR', 'Qatari Riyal', 'Ø±ÙŠØ§Ù„ Ù‚Ø·Ø±ÙŠ', 'Ø±.Ù‚', 'Asia', 'Asia', 'Western Asia', 'Doha', 'Ø§Ù„Ø¯ÙˆØ­Ø©'),
-('Kuwait', 'Ø§Ù„ÙƒÙˆÙŠØª', 'KW', 'KWT', 414, '+965', 'KWD', 'Kuwaiti Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ÙƒÙˆÙŠØªÙŠ', 'Ø¯.Ùƒ', 'Asia', 'Asia', 'Western Asia', 'Kuwait City', 'Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„ÙƒÙˆÙŠØª'),
-
--- Major countries
-('United States', 'Ø§Ù„ÙˆÙ„Ø§ÙŠØ§Øª Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'US', 'USA', 840, '+1', 'USD', 'US Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ù…Ø±ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Washington, D.C.', 'ÙˆØ§Ø´Ù†Ø·Ù† Ø§Ù„Ø¹Ø§ØµÙ…Ø©'),
-('United Kingdom', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'GB', 'GBR', 826, '+44', 'GBP', 'British Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¥Ø³ØªØ±Ù„ÙŠÙ†ÙŠ', 'Â£', 'Europe', 'Europe', 'Northern Europe', 'London', 'Ù„Ù†Ø¯Ù†'),
-('France', 'ÙØ±Ù†Ø³Ø§', 'FR', 'FRA', 250, '+33', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Paris', 'Ø¨Ø§Ø±ÙŠØ³'),
-('Germany', 'Ø£Ù„Ù…Ø§Ù†ÙŠØ§', 'DE', 'DEU', 276, '+49', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Berlin', 'Ø¨Ø±Ù„ÙŠÙ†'),
-('Canada', 'ÙƒÙ†Ø¯Ø§', 'CA', 'CAN', 124, '+1', 'CAD', 'Canadian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± ÙƒÙ†Ø¯ÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Ottawa', 'Ø£ÙˆØªØ§ÙˆØ§'),
-('Australia', 'Ø£Ø³ØªØ±Ø§Ù„ÙŠØ§', 'AU', 'AUS', 36, '+61', 'AUD', 'Australian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ø³ØªØ±Ø§Ù„ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Canberra', 'ÙƒØ§Ù†Ø¨ÙŠØ±Ø§'),
-('Japan', 'Ø§Ù„ÙŠØ§Ø¨Ø§Ù†', 'JP', 'JPN', 392, '+81', 'JPY', 'Japanese Yen', 'ÙŠÙ† ÙŠØ§Ø¨Ø§Ù†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Tokyo', 'Ø·ÙˆÙƒÙŠÙˆ'),
-('China', 'Ø§Ù„ØµÙŠÙ†', 'CN', 'CHN', 156, '+86', 'CNY', 'Chinese Yuan', 'ÙŠÙˆØ§Ù† ØµÙŠÙ†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Beijing', 'Ø¨ÙƒÙŠÙ†'),
-('India', 'Ø§Ù„Ù‡Ù†Ø¯', 'IN', 'IND', 356, '+91', 'INR', 'Indian Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ù‡Ù†Ø¯ÙŠØ©', 'â‚¹', 'Asia', 'Asia', 'Southern Asia', 'New Delhi', 'Ù†ÙŠÙˆØ¯Ù„Ù‡ÙŠ'),
-('Brazil', 'Ø§Ù„Ø¨Ø±Ø§Ø²ÙŠÙ„', 'BR', 'BRA', 76, '+55', 'BRL', 'Brazilian Real', 'Ø±ÙŠØ§Ù„ Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠ', 'R$', 'South America', 'Americas', 'South America', 'BrasÃ­lia', 'Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠØ§'),
-('Russia', 'Ø±ÙˆØ³ÙŠØ§', 'RU', 'RUS', 643, '+7', 'RUB', 'Russian Ruble', 'Ø±ÙˆØ¨Ù„ Ø±ÙˆØ³ÙŠ', 'â‚½', 'Europe', 'Europe', 'Eastern Europe', 'Moscow', 'Ù…ÙˆØ³ÙƒÙˆ'),
-('Turkey', 'ØªØ±ÙƒÙŠØ§', 'TR', 'TUR', 792, '+90', 'TRY', 'Turkish Lira', 'Ù„ÙŠØ±Ø© ØªØ±ÙƒÙŠØ©', 'â‚º', 'Europe', 'Asia', 'Western Asia', 'Ankara', 'Ø£Ù†Ù‚Ø±Ø©'),
-('Spain', 'Ø¥Ø³Ø¨Ø§Ù†ÙŠØ§', 'ES', 'ESP', 724, '+34', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Madrid', 'Ù…Ø¯Ø±ÙŠØ¯'),
-('Italy', 'Ø¥ÙŠØ·Ø§Ù„ÙŠØ§', 'IT', 'ITA', 380, '+39', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Rome', 'Ø±ÙˆÙ…Ø§'),
-('Netherlands', 'Ù‡ÙˆÙ„Ù†Ø¯Ø§', 'NL', 'NLD', 528, '+31', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Amsterdam', 'Ø£Ù…Ø³ØªØ±Ø¯Ø§Ù…'),
-('Belgium', 'Ø¨Ù„Ø¬ÙŠÙƒØ§', 'BE', 'BEL', 56, '+32', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Brussels', 'Ø¨Ø±ÙˆÙƒØ³Ù„'),
-('Switzerland', 'Ø³ÙˆÙŠØ³Ø±Ø§', 'CH', 'CHE', 756, '+41', 'CHF', 'Swiss Franc', 'ÙØ±Ù†Ùƒ Ø³ÙˆÙŠØ³Ø±ÙŠ', 'CHF', 'Europe', 'Europe', 'Western Europe', 'Bern', 'Ø¨Ø±Ù†'),
-('Sweden', 'Ø§Ù„Ø³ÙˆÙŠØ¯', 'SE', 'SWE', 752, '+46', 'SEK', 'Swedish Krona', 'ÙƒØ±ÙˆÙ†Ø§ Ø³ÙˆÙŠØ¯ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Stockholm', 'Ø³ØªÙˆÙƒÙ‡ÙˆÙ„Ù…'),
-('Norway', 'Ø§Ù„Ù†Ø±ÙˆÙŠØ¬', 'NO', 'NOR', 578, '+47', 'NOK', 'Norwegian Krone', 'ÙƒØ±ÙˆÙ†Ø© Ù†Ø±ÙˆÙŠØ¬ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Oslo', 'Ø£ÙˆØ³Ù„Ùˆ'),
-('Denmark', 'Ø§Ù„Ø¯Ù†Ù…Ø§Ø±Ùƒ', 'DK', 'DNK', 208, '+45', 'DKK', 'Danish Krone', 'ÙƒØ±ÙˆÙ†Ø© Ø¯Ù†Ù…Ø§Ø±ÙƒÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Copenhagen', 'ÙƒÙˆØ¨Ù†Ù‡Ø§ØºÙ†'),
-('Finland', 'ÙÙ†Ù„Ù†Ø¯Ø§', 'FI', 'FIN', 246, '+358', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Helsinki', 'Ù‡Ù„Ø³Ù†ÙƒÙŠ'),
-('Poland', 'Ø¨ÙˆÙ„Ù†Ø¯Ø§', 'PL', 'POL', 616, '+48', 'PLN', 'Polish Zloty', 'Ø²Ù„ÙˆØªÙŠ Ø¨ÙˆÙ„Ù†Ø¯ÙŠ', 'zÅ‚', 'Europe', 'Europe', 'Eastern Europe', 'Warsaw', 'ÙˆØ§Ø±Ø³Ùˆ'),
-('South Korea', 'ÙƒÙˆØ±ÙŠØ§ Ø§Ù„Ø¬Ù†ÙˆØ¨ÙŠØ©', 'KR', 'KOR', 410, '+82', 'KRW', 'South Korean Won', 'ÙˆÙˆÙ† ÙƒÙˆØ±ÙŠ Ø¬Ù†ÙˆØ¨ÙŠ', 'â‚©', 'Asia', 'Asia', 'Eastern Asia', 'Seoul', 'Ø³ÙˆÙ„'),
-('Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©', 'SG', 'SGP', 702, '+65', 'SGD', 'Singapore Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø³Ù†ØºØ§ÙÙˆØ±ÙŠ', '$', 'Asia', 'Asia', 'South-Eastern Asia', 'Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©'),
-('Malaysia', 'Ù…Ø§Ù„ÙŠØ²ÙŠØ§', 'MY', 'MYS', 458, '+60', 'MYR', 'Malaysian Ringgit', 'Ø±ÙŠÙ†ØºÙŠØª Ù…Ø§Ù„ÙŠØ²ÙŠ', 'RM', 'Asia', 'Asia', 'South-Eastern Asia', 'Kuala Lumpur', 'ÙƒÙˆØ§Ù„Ø§Ù„Ù…Ø¨ÙˆØ±'),
-('Indonesia', 'Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ§', 'ID', 'IDN', 360, '+62', 'IDR', 'Indonesian Rupiah', 'Ø±ÙˆØ¨ÙŠØ© Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ©', 'Rp', 'Asia', 'Asia', 'South-Eastern Asia', 'Jakarta', 'Ø¬Ø§ÙƒØ±ØªØ§'),
-('Thailand', 'ØªØ§ÙŠÙ„Ø§Ù†Ø¯', 'TH', 'THA', 764, '+66', 'THB', 'Thai Baht', 'Ø¨Ø§Øª ØªØ§ÙŠÙ„Ù†Ø¯ÙŠ', 'à¸¿', 'Asia', 'Asia', 'South-Eastern Asia', 'Bangkok', 'Ø¨Ø§Ù†ÙƒÙˆÙƒ'),
-('Vietnam', 'ÙÙŠØªÙ†Ø§Ù…', 'VN', 'VNM', 704, '+84', 'VND', 'Vietnamese Dong', 'Ø¯ÙˆÙ†Øº ÙÙŠØªÙ†Ø§Ù…ÙŠ', 'â‚«', 'Asia', 'Asia', 'South-Eastern Asia', 'Hanoi', 'Ù‡Ø§Ù†ÙˆÙŠ'),
-('Philippines', 'Ø§Ù„ÙÙ„Ø¨ÙŠÙ†', 'PH', 'PHL', 608, '+63', 'PHP', 'Philippine Peso', 'Ø¨ÙŠØ²Ùˆ ÙÙ„Ø¨ÙŠÙ†ÙŠ', 'â‚±', 'Asia', 'Asia', 'South-Eastern Asia', 'Manila', 'Ù…Ø§Ù†ÙŠÙ„Ø§'),
-('Pakistan', 'Ø¨Ø§ÙƒØ³ØªØ§Ù†', 'PK', 'PAK', 586, '+92', 'PKR', 'Pakistani Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ø¨Ø§ÙƒØ³ØªØ§Ù†ÙŠØ©', 'â‚¨', 'Asia', 'Asia', 'Southern Asia', 'Islamabad', 'Ø¥Ø³Ù„Ø§Ù… Ø¢Ø¨Ø§Ø¯'),
-('Bangladesh', 'Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´', 'BD', 'BGD', 50, '+880', 'BDT', 'Bangladeshi Taka', 'ØªØ§ÙƒØ§ Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´ÙŠ', 'à§³', 'Asia', 'Asia', 'Southern Asia', 'Dhaka', 'Ø¯ÙƒØ§'),
-('Nigeria', 'Ù†ÙŠØ¬ÙŠØ±ÙŠØ§', 'NG', 'NGA', 566, '+234', 'NGN', 'Nigerian Naira', 'Ù†Ø§ÙŠØ±Ø§ Ù†ÙŠØ¬ÙŠØ±ÙŠ', 'â‚¦', 'Africa', 'Africa', 'Western Africa', 'Abuja', 'Ø£Ø¨ÙˆØ¬Ø§'),
-('South Africa', 'Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠØ§', 'ZA', 'ZAF', 710, '+27', 'ZAR', 'South African Rand', 'Ø±Ø§Ù†Ø¯ Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠ', 'R', 'Africa', 'Africa', 'Southern Africa', 'Pretoria', 'Ø¨Ø±ÙŠØªÙˆØ±ÙŠØ§'),
-('Mexico', 'Ø§Ù„Ù…ÙƒØ³ÙŠÙƒ', 'MX', 'MEX', 484, '+52', 'MXN', 'Mexican Peso', 'Ø¨ÙŠØ²Ùˆ Ù…ÙƒØ³ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Mexico City', 'Ù…Ø¯ÙŠÙ†Ø© Ù…ÙƒØ³ÙŠÙƒÙˆ'),
-('Argentina', 'Ø§Ù„Ø£Ø±Ø¬Ù†ØªÙŠÙ†', 'AR', 'ARG', 32, '+54', 'ARS', 'Argentine Peso', 'Ø¨ÙŠØ²Ùˆ Ø£Ø±Ø¬Ù†ØªÙŠÙ†ÙŠ', '$', 'South America', 'Americas', 'South America', 'Buenos Aires', 'Ø¨ÙˆÙŠÙ†Ø³ Ø¢ÙŠØ±Ø³'),
-('Colombia', 'ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠØ§', 'CO', 'COL', 170, '+57', 'COP', 'Colombian Peso', 'Ø¨ÙŠØ²Ùˆ ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠ', '$', 'South America', 'Americas', 'South America', 'BogotÃ¡', 'Ø¨ÙˆØºÙˆØªØ§'),
-('Chile', 'ØªØ´ÙŠÙ„ÙŠ', 'CL', 'CHL', 152, '+56', 'CLP', 'Chilean Peso', 'Ø¨ÙŠØ²Ùˆ ØªØ´ÙŠÙ„ÙŠ', '$', 'South America', 'Americas', 'South America', 'Santiago', 'Ø³Ø§Ù†ØªÙŠØ§ØºÙˆ'),
-('Peru', 'Ø¨ÙŠØ±Ùˆ', 'PE', 'PER', 604, '+51', 'PEN', 'Peruvian Sol', 'Ø³ÙˆÙ„ Ø¨ÙŠØ±ÙˆÙÙŠ', 'S/.', 'South America', 'Americas', 'South America', 'Lima', 'Ù„ÙŠÙ…Ø§'),
-('Venezuela', 'ÙÙ†Ø²ÙˆÙŠÙ„Ø§', 'VE', 'VEN', 862, '+58', 'VES', 'Venezuelan BolÃ­var', 'Ø¨ÙˆÙ„ÙŠÙØ§Ø± ÙÙ†Ø²ÙˆÙŠÙ„ÙŠ', 'Bs.', 'South America', 'Americas', 'South America', 'Caracas', 'ÙƒØ§Ø±Ø§ÙƒØ§Ø³'),
-('Greece', 'Ø§Ù„ÙŠÙˆÙ†Ø§Ù†', 'GR', 'GRC', 300, '+30', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Athens', 'Ø£Ø«ÙŠÙ†Ø§'),
-('Portugal', 'Ø§Ù„Ø¨Ø±ØªØºØ§Ù„', 'PT', 'PRT', 620, '+351', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Lisbon', 'Ù„ÙŠØ³Ø¨ÙˆÙ†'),
-('Ireland', 'Ø£ÙŠØ±Ù„Ù†Ø¯Ø§', 'IE', 'IRL', 372, '+353', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Dublin', 'Ø¯Ø¨Ù„Ù†'),
-('New Zealand', 'Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯Ø§', 'NZ', 'NZL', 554, '+64', 'NZD', 'New Zealand Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Wellington', 'ÙˆÙŠÙ„ÙŠÙ†ØºØªÙˆÙ†'),
-('South Sudan', 'Ø¬Ù†ÙˆØ¨ Ø§Ù„Ø³ÙˆØ¯Ø§Ù†', 'SS', 'SSD', 728, '+211', 'SSP', 'South Sudanese Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¬Ù†ÙˆØ¨ Ø³ÙˆØ¯Ø§Ù†ÙŠ', 'Â£', 'Africa', 'Africa', 'Northern Africa', 'Juba', 'Ø¬ÙˆØ¨Ø§'),
-('Libya', 'Ù„ÙŠØ¨ÙŠØ§', 'LY', 'LBY', 434, '+218', 'LYD', 'Libyan Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ù„ÙŠØ¨ÙŠ', 'Ù„.Ø¯', 'Africa', 'Africa', 'Northern Africa', 'Tripoli', 'Ø·Ø±Ø§Ø¨Ù„Ø³'),
-('Jordan', 'Ø§Ù„Ø£Ø±Ø¯Ù†', 'JO', 'JOR', 400, '+962', 'JOD', 'Jordanian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø£Ø±Ø¯Ù†ÙŠ', 'Ø¯.Ø£', 'Asia', 'Asia', 'Western Asia', 'Amman', 'Ø¹Ù…Ø§Ù†'),
-('Lebanon', 'Ù„Ø¨Ù†Ø§Ù†', 'LB', 'LBN', 422, '+961', 'LBP', 'Lebanese Pound', 'Ù„ÙŠØ±Ø© Ù„Ø¨Ù†Ø§Ù†ÙŠØ©', 'Ù„.Ù„', 'Asia', 'Asia', 'Western Asia', 'Beirut', 'Ø¨ÙŠØ±ÙˆØª'),
-('Syria', 'Ø³ÙˆØ±ÙŠØ§', 'SY', 'SYR', 760, '+963', 'SYP', 'Syrian Pound', 'Ù„ÙŠØ±Ø© Ø³ÙˆØ±ÙŠØ©', 'Ù„.Ø³', 'Asia', 'Asia', 'Western Asia', 'Damascus', 'Ø¯Ù…Ø´Ù‚'),
-('Iraq', 'Ø§Ù„Ø¹Ø±Ø§Ù‚', 'IQ', 'IRQ', 368, '+964', 'IQD', 'Iraqi Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¹Ø±Ø§Ù‚ÙŠ', 'Ø¹.Ø¯', 'Asia', 'Asia', 'Western Asia', 'Baghdad', 'Ø¨ØºØ¯Ø§Ø¯'),
-('Yemen', 'Ø§Ù„ÙŠÙ…Ù†', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'Ø±ÙŠØ§Ù„ ÙŠÙ…Ù†ÙŠ', 'Ø±.ÙŠ', 'Asia', 'Asia', 'Western Asia', "Sana'a", 'ØµÙ†Ø¹Ø§Ø¡'),
-('Oman', 'Ø¹Ù…Ø§Ù†', 'OM', 'OMN', 512, '+968', 'OMR', 'Omani Rial', 'Ø±ÙŠØ§Ù„ Ø¹Ù…Ø§Ù†ÙŠ', 'Ø±.Ø¹', 'Asia', 'Asia', 'Western Asia', 'Muscat', 'Ù…Ø³Ù‚Ø·'),
-('Bahrain', 'Ø§Ù„Ø¨Ø­Ø±ÙŠÙ†', 'BH', 'BHR', 48, '+973', 'BHD', 'Bahraini Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¨Ø­Ø±ÙŠÙ†ÙŠ', 'Ø¯.Ø¨', 'Asia', 'Asia', 'Western Asia', 'Manama', 'Ø§Ù„Ù…Ù†Ø§Ù…Ø©'),
-('Palestin', 'Ù‚Ù„Ø³Ø·ÙŠÙ†', 'IL', 'ISR', 376, '+972', 'ILS', 'Palestiny New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'Ø§Ù„Ù‚Ø¯Ø³'),
-('Palestine', 'ÙÙ„Ø³Ø·ÙŠÙ†', 'PS', 'PSE', 275, '+970', 'ILS', 'Palestini New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Ramallah', 'Ø±Ø§Ù… Ø§Ù„Ù„Ù‡')
-ON CONFLICT (iso2_code) DO NOTHING;
-
-=== 20260304120003_create_regions_table.sql ===
--- Migration: Create Regions Table
--- Purpose: Store region/state/province reference data within countries
--- Version: v2_P01_003
--- Created: 2026-03-04
--- Dependencies: v2_P01_002_create_countries_table.sql
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Regions Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Create regions table to store region/state/province reference data
-CREATE TABLE IF NOT EXISTS regions (
-  -- Primary Key
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-  -- Foreign Key
-  country_id UUID NOT NULL REFERENCES countries(id) ON DELETE CASCADE,
-
-  -- Region Information
-  name VARCHAR(255) NOT NULL,
-  name_ar VARCHAR(255),
-  code VARCHAR(10) NOT NULL,  -- Region code (e.g., ALG for Algiers)
-  iso_code VARCHAR(10),       -- ISO subdivision code if available
-  region_type VARCHAR(50),    -- State, Province, Region, Governorate, etc.
-  capital VARCHAR(100),       -- Capital city of the region
-  capital_ar VARCHAR(100),
-
-  -- Geographic Information
-  latitude DECIMAL(10, 8),
-  longitude DECIMAL(11, 8),
-
-  -- Status and Metadata
-  is_active BOOLEAN NOT NULL DEFAULT true,
-  is_supported BOOLEAN NOT NULL DEFAULT true,  -- Whether app supports this region
-
-  -- System Fields
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-
-  -- Constraints
-  CONSTRAINT valid_region_code CHECK (code ~ '^[A-Z0-9]{2,10}$'),
-  CONSTRAINT unique_country_region UNIQUE (country_id, code)
-);
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Create indexes for common queries
-CREATE INDEX idx_regions_country_id ON regions(country_id) WHERE is_active = true;
-CREATE INDEX idx_regions_code ON regions(code) WHERE is_active = true;
-CREATE INDEX idx_regions_name ON regions(name) WHERE is_active = true;
-CREATE INDEX idx_regions_is_active ON regions(is_active);
-CREATE INDEX idx_regions_is_supported ON regions(is_supported) WHERE is_supported = true;
-CREATE INDEX idx_regions_country_code ON regions(country_id, code) WHERE is_active = true;
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Enable RLS on regions table
-ALTER TABLE regions ENABLE ROW LEVEL SECURITY;
-
--- Policy: Everyone can view active regions
-CREATE POLICY "Active regions are viewable by everyone"
-  ON regions FOR SELECT
-  USING (is_active = true);
-
--- Policy: Everyone can view supported regions
-CREATE POLICY "Supported regions are viewable by everyone"
-  ON regions FOR SELECT
-  USING (is_supported = true);
-
--- Policy: Super admins can manage regions
--- Note: This policy will be updated after users table is created
--- For now, allow service role to manage regions
-CREATE POLICY "Service role can manage regions"
-  ON regions FOR ALL
-  USING (auth.role() = 'service_role');
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Create function to update 'updated_at' timestamp
-CREATE OR REPLACE FUNCTION update_regions_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Create trigger for automatic timestamp update
-CREATE TRIGGER regions_update_updated_at
-  BEFORE UPDATE ON regions
-  FOR EACH ROW
-  EXECUTE FUNCTION update_regions_updated_at();
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
-COMMENT ON TABLE regions IS 'Region/state/province reference data within countries';
-COMMENT ON COLUMN regions.id IS 'Primary key (UUID)';
-COMMENT ON COLUMN regions.country_id IS 'Foreign key reference to countries table';
-COMMENT ON COLUMN regions.name IS 'Region name in English';
-COMMENT ON COLUMN regions.name_ar IS 'Region name in Arabic';
-COMMENT ON COLUMN regions.code IS 'Region code (e.g., ALG for Algiers)';
-COMMENT ON COLUMN regions.iso_code IS 'ISO subdivision code if available';
-COMMENT ON COLUMN regions.region_type IS 'Type of region (State, Province, Region, Governorate, etc.)';
-COMMENT ON COLUMN regions.capital IS 'Capital city of the region';
-COMMENT ON COLUMN regions.capital_ar IS 'Capital city name in Arabic';
-COMMENT ON COLUMN regions.latitude IS 'Geographic latitude';
-COMMENT ON COLUMN regions.longitude IS 'Geographic longitude';
-COMMENT ON COLUMN regions.is_active IS 'Whether the region is active';
-COMMENT ON COLUMN regions.is_supported IS 'Whether the app supports this region';
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Seed Data
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Insert Algerian regions (wilayas) - Primary market
-INSERT INTO regions (country_id, name, name_ar, code, iso_code, region_type, capital, capital_ar, is_active, is_supported) VALUES
--- Get Algeria country ID
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Adrar', 'Ø£Ø¯Ø±Ø§Ø±', '01', 'DZ-01', 'Wilaya', 'Adrar', 'Ø£Ø¯Ø±Ø§Ø±', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Chlef', 'Ø§Ù„Ø´Ù„Ù', '02', 'DZ-02', 'Wilaya', 'Chlef', 'Ø§Ù„Ø´Ù„Ù', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Laghouat', 'Ø§Ù„Ø£ØºÙˆØ§Ø·', '03', 'DZ-03', 'Wilaya', 'Laghouat', 'Ø§Ù„Ø£ØºÙˆØ§Ø·', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Oum El Bouaghi', 'Ø£Ù… Ø§Ù„Ø¨ÙˆØ§Ù‚ÙŠ', '04', 'DZ-04', 'Wilaya', 'Oum El Bouaghi', 'Ø£Ù… Ø§Ù„Ø¨ÙˆØ§Ù‚ÙŠ', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Batna', 'Ø¨Ø§ØªÙ†Ø©', '05', 'DZ-05', 'Wilaya', 'Batna', 'Ø¨Ø§ØªÙ†Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'BÃ©jaÃ¯a', 'Ø¨Ø¬Ø§ÙŠØ©', '06', 'DZ-06', 'Wilaya', 'BÃ©jaÃ¯a', 'Ø¨Ø¬Ø§ÙŠØ©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Biskra', 'Ø¨Ø³ÙƒØ±Ø©', '07', 'DZ-07', 'Wilaya', 'Biskra', 'Ø¨Ø³ÙƒØ±Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'BÃ©char', 'Ø¨Ø´Ø§Ø±', '08', 'DZ-08', 'Wilaya', 'BÃ©char', 'Ø¨Ø´Ø§Ø±', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Blida', 'Ø§Ù„Ø¨Ù„ÙŠØ¯Ø©', '09', 'DZ-09', 'Wilaya', 'Blida', 'Ø§Ù„Ø¨Ù„ÙŠØ¯Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Bouira', 'Ø§Ù„Ø¨ÙˆÙŠØ±Ø©', '10', 'DZ-10', 'Wilaya', 'Bouira', 'Ø§Ù„Ø¨ÙˆÙŠØ±Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tamanrasset', 'ØªÙ…Ù†Ø±Ø§Ø³Øª', '11', 'DZ-11', 'Wilaya', 'Tamanrasset', 'ØªÙ…Ù†Ø±Ø§Ø³Øª', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'TÃ©bessa', 'ØªØ¨Ø³Ø©', '12', 'DZ-12', 'Wilaya', 'TÃ©bessa', 'ØªØ¨Ø³Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tlemcen', 'ØªÙ„Ù…Ø³Ø§Ù†', '13', 'DZ-13', 'Wilaya', 'Tlemcen', 'ØªÙ„Ù…Ø³Ø§Ù†', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tiaret', 'ØªÙŠØ§Ø±Øª', '14', 'DZ-14', 'Wilaya', 'Tiaret', 'ØªÙŠØ§Ø±Øª', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tizi Ouzou', 'ØªÙŠØ²ÙŠ ÙˆØ²Ùˆ', '15', 'DZ-15', 'Wilaya', 'Tizi Ouzou', 'ØªÙŠØ²ÙŠ ÙˆØ²Ùˆ', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', '16', 'DZ-16', 'Wilaya', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Djelfa', 'Ø§Ù„Ø¬Ù„ÙØ©', '17', 'DZ-17', 'Wilaya', 'Djelfa', 'Ø§Ù„Ø¬Ù„ÙØ©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Jijel', 'Ø¬ÙŠØ¬Ù„', '18', 'DZ-18', 'Wilaya', 'Jijel', 'Ø¬ÙŠØ¬Ù„', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'SÃ©tif', 'Ø³Ø·ÙŠÙ', '19', 'DZ-19', 'Wilaya', 'SÃ©tif', 'Ø³Ø·ÙŠÙ', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'SaÃ¯da', 'Ø³Ø¹ÙŠØ¯Ø©', '20', 'DZ-20', 'Wilaya', 'SaÃ¯da', 'Ø³Ø¹ÙŠØ¯Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Skikda', 'Ø³ÙƒÙŠÙƒØ¯Ø©', '21', 'DZ-21', 'Wilaya', 'Skikda', 'Ø³ÙƒÙŠÙƒØ¯Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Sidi Bel AbbÃ¨s', 'Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³', '22', 'DZ-22', 'Wilaya', 'Sidi Bel AbbÃ¨s', 'Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Annaba', 'Ø¹Ù†Ø§Ø¨Ø©', '23', 'DZ-23', 'Wilaya', 'Annaba', 'Ø¹Ù†Ø§Ø¨Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Guelma', 'Ù‚Ø§Ù„Ù…Ø©', '24', 'DZ-24', 'Wilaya', 'Guelma', 'Ù‚Ø§Ù„Ù…Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Constantine', 'Ù‚Ø³Ù†Ø·ÙŠÙ†Ø©', '25', 'DZ-25', 'Wilaya', 'Constantine', 'Ù‚Ø³Ù†Ø·ÙŠÙ†Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'MÃ©dÃ©a', 'Ø§Ù„Ù…Ø¯ÙŠØ©', '26', 'DZ-26', 'Wilaya', 'MÃ©dÃ©a', 'Ø§Ù„Ù…Ø¯ÙŠØ©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Mostaganem', 'Ù…Ø³ØªØºØ§Ù†Ù…', '27', 'DZ-27', 'Wilaya', 'Mostaganem', 'Ù…Ø³ØªØºØ§Ù†Ù…', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  "M'Sila", 'Ø§Ù„Ù…Ø³ÙŠÙ„Ø©', '28', 'DZ-28', 'Wilaya', "M'Sila", 'Ø§Ù„Ù…Ø³ÙŠÙ„Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Mascara', 'Ù…Ø¹Ø³ÙƒØ±', '29', 'DZ-29', 'Wilaya', 'Mascara', 'Ù…Ø¹Ø³ÙƒØ±', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Ouargla', 'ÙˆØ±Ù‚Ù„Ø©', '30', 'DZ-30', 'Wilaya', 'Ouargla', 'ÙˆØ±Ù‚Ù„Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Oran', 'ÙˆÙ‡Ø±Ø§Ù†', '31', 'DZ-31', 'Wilaya', 'Oran', 'ÙˆÙ‡Ø±Ø§Ù†', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El Bayadh', 'Ø§Ù„Ø¨ÙŠØ¶', '32', 'DZ-32', 'Wilaya', 'El Bayadh', 'Ø§Ù„Ø¨ÙŠØ¶', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Illizi', 'Ø¥Ù„ÙŠØ²ÙŠ', '33', 'DZ-33', 'Wilaya', 'Illizi', 'Ø¥Ù„ÙŠØ²ÙŠ', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Bordj Bou Arreridj', 'Ø¨Ø±Ø¬ Ø¨ÙˆØ¹Ø±ÙŠØ±ÙŠØ¬', '34', 'DZ-34', 'Wilaya', 'Bordj Bou Arreridj', 'Ø¨Ø±Ø¬ Ø¨ÙˆØ¹Ø±ÙŠØ±ÙŠØ¬', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'BoumerdÃ¨s', 'Ø¨ÙˆÙ…Ø±Ø¯Ø§Ø³', '35', 'DZ-35', 'Wilaya', 'BoumerdÃ¨s', 'Ø¨ÙˆÙ…Ø±Ø¯Ø§Ø³', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El Tarf', 'Ø§Ù„Ø·Ø§Ø±Ù', '36', 'DZ-36', 'Wilaya', 'El Tarf', 'Ø§Ù„Ø·Ø§Ø±Ù', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tindouf', 'ØªÙ†Ø¯ÙˆÙ', '37', 'DZ-37', 'Wilaya', 'Tindouf', 'ØªÙ†Ø¯ÙˆÙ', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tissemsilt', 'ØªÙŠØ³Ù…Ø³ÙŠÙ„Øª', '38', 'DZ-38', 'Wilaya', 'Tissemsilt', 'ØªÙŠØ³Ù…Ø³ÙŠÙ„Øª', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El Oued', 'Ø§Ù„ÙˆØ§Ø¯ÙŠ', '39', 'DZ-39', 'Wilaya', 'El Oued', 'Ø§Ù„ÙˆØ§Ø¯ÙŠ', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Khenchela', 'Ø®Ù†Ø´Ù„Ø©', '40', 'DZ-40', 'Wilaya', 'Khenchela', 'Ø®Ù†Ø´Ù„Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Souk Ahras', 'Ø³ÙˆÙ‚ Ø£Ù‡Ø±Ø§Ø³', '41', 'DZ-41', 'Wilaya', 'Souk Ahras', 'Ø³ÙˆÙ‚ Ø£Ù‡Ø±Ø§Ø³', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tipaza', 'ØªÙŠØ¨Ø§Ø²Ø©', '42', 'DZ-42', 'Wilaya', 'Tipaza', 'ØªÙŠØ¨Ø§Ø²Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Mila', 'Ù…ÙŠÙ„Ø©', '43', 'DZ-43', 'Wilaya', 'Mila', 'Ù…ÙŠÙ„Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'AÃ¯n Defla', 'Ø¹ÙŠÙ† Ø§Ù„Ø¯ÙÙ„Ù‰', '44', 'DZ-44', 'Wilaya', 'AÃ¯n Defla', 'Ø¹ÙŠÙ† Ø§Ù„Ø¯ÙÙ„Ù‰', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'NaÃ¢ma', 'Ø§Ù„Ù†Ø¹Ø§Ù…Ø©', '45', 'DZ-45', 'Wilaya', 'NaÃ¢ma', 'Ø§Ù„Ù†Ø¹Ø§Ù…Ø©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'AÃ¯n TÃ©mouchent', 'Ø¹ÙŠÙ† ØªÙ…ÙˆØ´Ù†Øª', '46', 'DZ-46', 'Wilaya', 'AÃ¯n TÃ©mouchent', 'Ø¹ÙŠÙ† ØªÙ…ÙˆØ´Ù†Øª', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'GhardaÃ¯a', 'ØºØ±Ø¯Ø§ÙŠØ©', '47', 'DZ-47', 'Wilaya', 'GhardaÃ¯a', 'ØºØ±Ø¯Ø§ÙŠØ©', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Relizane', 'ØºÙ„ÙŠØ²Ø§Ù†', '48', 'DZ-48', 'Wilaya', 'Relizane', 'ØºÙ„ÙŠØ²Ø§Ù†', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Timimoun', 'ØªÙŠÙ…ÙŠÙ…ÙˆÙ†', '49', 'DZ-49', 'Wilaya', 'Timimoun', 'ØªÙŠÙ…ÙŠÙ…ÙˆÙ†', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Bordj Badji Mokhtar', 'Ø¨Ø±Ø¬ Ø¨Ø§Ø¬ÙŠ Ù…Ø®ØªØ§Ø±', '50', 'DZ-50', 'Wilaya', 'Bordj Badji Mokhtar', 'Ø¨Ø±Ø¬ Ø¨Ø§Ø¬ÙŠ Ù…Ø®ØªØ§Ø±', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Ouled Djellal', 'Ø£ÙˆÙ„Ø§Ø¯ Ø¬Ù„Ø§Ù„', '51', 'DZ-51', 'Wilaya', 'Ouled Djellal', 'Ø£ÙˆÙ„Ø§Ø¯ Ø¬Ù„Ø§Ù„', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'BÃ©ni AbbÃ¨s', 'Ø¨Ù†ÙŠ Ø¹Ø¨Ø§Ø³', '52', 'DZ-52', 'Wilaya', 'BÃ©ni AbbÃ¨s', 'Ø¨Ù†ÙŠ Ø¹Ø¨Ø§Ø³', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'In Salah', 'Ø¹ÙŠÙ† ØµØ§Ù„Ø­', '53', 'DZ-53', 'Wilaya', 'In Salah', 'Ø¹ÙŠÙ† ØµØ§Ù„Ø­', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'In Guezzam', 'Ø¹ÙŠÙ† Ù‚Ø²Ø§Ù…', '54', 'DZ-54', 'Wilaya', 'In Guezzam', 'Ø¹ÙŠÙ† Ù‚Ø²Ø§Ù…', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Touggourt', 'ØªÙ‚Ø±Øª', '55', 'DZ-55', 'Wilaya', 'Touggourt', 'ØªÙ‚Ø±Øª', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Djanet', 'Ø¬Ø§Ù†Øª', '56', 'DZ-56', 'Wilaya', 'Djanet', 'Ø¬Ø§Ù†Øª', true, true
-),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El M\'Ghair', 'Ø§Ù„Ù…ØºÙŠØ±', '57', 'DZ-57', 'Wilaya', 'El M\'Ghair', 'Ø§Ù„Ù…ØºÙŠØ±', true, true),
-(
-  (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El Meniaa', 'Ø§Ù„Ù…Ù†ÙŠØ¹Ø©', '58', 'DZ-58', 'Wilaya', 'El Meniaa', 'Ø§Ù„Ù…Ù†ÙŠØ¹Ø©', true, true
-);
-
--- Insert a few regions from other countries for testing
-INSERT INTO regions (country_id, name, name_ar, code, region_type, capital, capital_ar, is_active, is_supported) VALUES
--- United States (California, New York, Texas)
-((SELECT id FROM countries WHERE iso2_code = 'US'), 'California', 'ÙƒØ§Ù„ÙŠÙÙˆØ±Ù†ÙŠØ§', 'CA', 'State', 'Sacramento', 'Ø³Ø§ÙƒØ±Ø§Ù…Ù†ØªÙˆ', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'US'), 'New York', 'Ù†ÙŠÙˆÙŠÙˆØ±Ùƒ', 'NY', 'State', 'Albany', 'Ø£Ù„Ø¨Ø§Ù†ÙŠ', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'US'), 'Texas', 'ØªÙƒØ³Ø§Ø³', 'TX', 'State', 'Austin', 'Ø£ÙˆØ³ØªÙ†', true, true),
-
--- France (ÃŽle-de-France, Provence-Alpes-CÃ´te d'Azur)
-((SELECT id FROM countries WHERE iso2_code = 'FR'), 'ÃŽle-de-France', 'Ø¥ÙŠÙ„ Ø¯Ùˆ ÙØ±Ø§Ù†Ø³', 'IDF', 'Region', 'Paris', 'Ø¨Ø§Ø±ÙŠØ³', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'FR'), 'Provence-Alpes-CÃ´te d\'Azur', 'Ø¨Ø±ÙˆÙØ§Ù†Ø³ Ø£Ù„Ø¨ ÙƒÙˆØª Ø¯Ø§Ø²ÙˆØ±', 'PACA', 'Region', 'Marseille', 'Ù…Ø§Ø±Ø³ÙŠÙ„ÙŠØ§', true, true),
-
--- Saudi Arabia (Riyadh, Mecca, Medina)
-((SELECT id FROM countries WHERE iso2_code = 'SA'), 'Riyadh Province', 'Ù…Ù†Ø·Ù‚Ø© Ø§Ù„Ø±ÙŠØ§Ø¶', 'RI', 'Province', 'Riyadh', 'Ø§Ù„Ø±ÙŠØ§Ø¶', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'SA'), 'Mecca Province', 'Ù…Ù†Ø·Ù‚Ø© Ù…ÙƒØ© Ø§Ù„Ù…ÙƒØ±Ù…Ø©', 'MK', 'Province', 'Mecca', 'Ù…ÙƒØ© Ø§Ù„Ù…ÙƒØ±Ù…Ø©', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'SA'), 'Medina Province', 'Ù…Ù†Ø·Ù‚Ø© Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„Ù…Ù†ÙˆØ±Ø©', 'MD', 'Province', 'Medina', 'Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„Ù…Ù†ÙˆØ±Ø©', true, true),
-
--- United Arab Emirates (Abu Dhabi, Dubai, Sharjah)
-((SELECT id FROM countries WHERE iso2_code = 'AE'), 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ', 'AZ', 'Emirate', 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'AE'), 'Dubai', 'Ø¯Ø¨ÙŠ', 'DU', 'Emirate', 'Dubai', 'Ø¯Ø¨ÙŠ', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'AE'), 'Sharjah', 'Ø§Ù„Ø´Ø§Ø±Ù‚Ø©', 'SH', 'Emirate', 'Sharjah', 'Ø§Ù„Ø´Ø§Ø±Ù‚Ø©', true, true),
-
--- Egypt (Cairo, Alexandria, Giza)
-((SELECT id FROM countries WHERE iso2_code = 'EG'), 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©', 'C', 'Governorate', 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'EG'), 'Alexandria', 'Ø§Ù„Ø¥Ø³ÙƒÙ†Ø¯Ø±ÙŠØ©', 'ALX', 'Governorate', 'Alexandria', 'Ø§Ù„Ø¥Ø³ÙƒÙ†Ø¯Ø±ÙŠØ©', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'EG'), 'Giza', 'Ø§Ù„Ø¬ÙŠØ²Ø©', 'GZ', 'Governorate', 'Giza', 'Ø§Ù„Ø¬ÙŠØ²Ø©', true, true),
-
--- Morocco (Casablanca, Rabat, Marrakech)
-((SELECT id FROM countries WHERE iso2_code = 'MA'), 'Casablanca-Settat', 'Ø§Ù„Ø¯Ø§Ø± Ø§Ù„Ø¨ÙŠØ¶Ø§Ø¡-Ø³Ø·Ø§Øª', 'CAS', 'Region', 'Casablanca', 'Ø§Ù„Ø¯Ø§Ø± Ø§Ù„Ø¨ÙŠØ¶Ø§Ø¡', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'MA'), 'Rabat-SalÃ©-KÃ©nitra', 'Ø§Ù„Ø±Ø¨Ø§Ø·-Ø³Ù„Ø§-Ø§Ù„Ù‚Ù†ÙŠØ·Ø±Ø©', 'RAB', 'Region', 'Rabat', 'Ø§Ù„Ø±Ø¨Ø§Ø·', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'MA'), 'Marrakech-Safi', 'Ù…Ø±Ø§ÙƒØ´-Ø¢Ø³ÙÙŠ', 'MAR', 'Region', 'Marrakech', 'Ù…Ø±Ø§ÙƒØ´', true, true),
-
--- Tunisia (Tunis, Sfax, Sousse)
-((SELECT id FROM countries WHERE iso2_code = 'TN'), 'Tunis', 'ØªÙˆÙ†Ø³', 'TN', 'Governorate', 'Tunis', 'ØªÙˆÙ†Ø³', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'TN'), 'Sfax', 'ØµÙØ§Ù‚Ø³', 'SF', 'Governorate', 'Sfax', 'ØµÙØ§Ù‚Ø³', true, true),
-((SELECT id FROM countries WHERE iso2_code = 'TN'), 'Sousse', 'Ø³ÙˆØ³Ø©', 'SU', 'Governorate', 'Sousse', 'Ø³ÙˆØ³Ø©', true, true)
-
-ON CONFLICT (country_id, code) DO NOTHING;
-
-=== 20260304120004_create_specialties_table.sql ===
 -- Migration: Create Specialties Table
 -- Purpose: Store medical specialty reference data for doctors
 -- Version: v2_P02_001
@@ -1295,8 +1248,6 @@ INSERT INTO specialties (name_en, name_ar, description_en, description_ar, icon_
 
 -- Create unique index on English names
 CREATE UNIQUE INDEX idx_specialties_name_en_unique ON specialties(name_en) WHERE is_active = true;
-
-=== 20260304120005_create_clinics_table.sql ===
 -- Migration: Create Clinics Table
 -- Purpose: Store medical clinic information
 -- Version: v2_P02_002
@@ -1344,6 +1295,8 @@ CREATE TABLE IF NOT EXISTS clinics (
   subscription_start_date TIMESTAMP WITH TIME ZONE,
   subscription_end_date TIMESTAMP WITH TIME ZONE,
   is_trial BOOLEAN DEFAULT true,
+  
+
   
   -- Status
   is_active BOOLEAN NOT NULL DEFAULT true,
@@ -1399,27 +1352,12 @@ CREATE POLICY "Active verified clinics are viewable by everyone"
 -- Policy: Clinic owners can view their own clinic
 CREATE POLICY "Clinic owners can view their clinic"
   ON clinics FOR SELECT
-  USING (
-    created_by = auth.uid()
-    OR EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE clinic_id = clinics.id
-      AND user_id = auth.uid()
-    )
-  );
+  USING (created_by = auth.uid());
 
 -- Policy: Clinic owners can update their clinic
 CREATE POLICY "Clinic owners can update their clinic"
   ON clinics FOR UPDATE
-  USING (
-    created_by = auth.uid()
-    OR EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE clinic_id = clinics.id
-      AND user_id = auth.uid()
-      AND role IN ('admin', 'manager')
-    )
-  );
+  USING (created_by = auth.uid());
 
 -- Policy: Clinic owners can delete their clinic
 CREATE POLICY "Clinic owners can delete their clinic"
@@ -1483,7 +1421,7 @@ COMMENT ON COLUMN clinics.is_featured IS 'Whether this clinic is featured';
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 -- Function to check if clinic subscription is expired
-CREATE OR REPLACE FUNCTION is_subscription_expired(clinic_id UUID)
+CREATE OR REPLACE FUNCTION is_clinic_subscription_expired(clinic_id UUID)
 RETURNS BOOLEAN AS $$
 DECLARE
   end_date TIMESTAMP WITH TIME ZONE;
@@ -1497,7 +1435,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Function to get days remaining in subscription
-CREATE OR REPLACE FUNCTION get_subscription_days_remaining(clinic_id UUID)
+CREATE OR REPLACE FUNCTION get_clinic_subscription_days_remaining(clinic_id UUID)
 RETURNS INTEGER AS $$
 DECLARE
   end_date TIMESTAMP WITH TIME ZONE;
@@ -1515,17 +1453,15 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Function to check if subscription is expiring soon (within 7 days)
-CREATE OR REPLACE FUNCTION is_subscription_expiring_soon(clinic_id UUID)
+CREATE OR REPLACE FUNCTION is_clinic_subscription_expiring_soon(clinic_id UUID)
 RETURNS BOOLEAN AS $$
 DECLARE
   days_remaining INTEGER;
 BEGIN
-  days_remaining := get_subscription_days_remaining(clinic_id);
+  days_remaining := get_clinic_subscription_days_remaining(clinic_id);
   RETURN days_remaining <= 7 AND days_remaining >= 0;
 END;
 $$ LANGUAGE plpgsql;
-
-=== 20260304120006_create_subscriptions_table.sql ===
 -- Migration: Create Subscriptions Table
 -- Purpose: Store clinic subscription information
 -- Version: v2_P02_003
@@ -1662,6 +1598,10 @@ COMMENT ON COLUMN subscriptions.is_expired IS 'Whether the subscription has expi
 -- Helper Functions
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
+-- Drop any conflicting functions from clinics migration
+DROP FUNCTION IF EXISTS is_subscription_expired(UUID) CASCADE;
+DROP FUNCTION IF EXISTS get_subscription_days_remaining(UUID) CASCADE;
+
 -- Function to calculate subscription end date
 CREATE OR REPLACE FUNCTION get_subscription_end_date(subscription_id UUID)
 RETURNS TIMESTAMP WITH TIME ZONE AS $$
@@ -1732,8 +1672,6 @@ BEGIN
   RETURN expired_count;
 END;
 $$ LANGUAGE plpgsql;
-
-=== 20260304120007_create_doctors_table.sql ===
 -- Migration: Create Doctors Table
 -- Purpose: Store doctor information and profiles
 -- Version: v2_P03_001
@@ -1810,14 +1748,14 @@ CREATE TABLE IF NOT EXISTS doctors (
 
 -- Create indexes for common queries
 CREATE INDEX idx_doctors_user_id ON doctors(user_id);
-CREATE INDEX idx_doctors_clinic_id ON doctors(clinic_id) WHERE is_active = true;
-CREATE INDEX idx_doctors_specialty_id ON doctors(specialty_id) WHERE is_active = true;
-CREATE INDEX idx_doctors_is_available ON doctors(is_available) WHERE is_active = true;
+CREATE INDEX idx_doctors_clinic_id ON doctors(clinic_id) WHERE is_available = true;
+CREATE INDEX idx_doctors_specialty_id ON doctors(specialty_id) WHERE is_available = true;
+CREATE INDEX idx_doctors_is_available ON doctors(is_available);
 CREATE INDEX idx_doctors_is_verified ON doctors(is_verified);
-CREATE INDEX idx_doctors_rating ON doctors(rating DESC) WHERE is_active = true;
+CREATE INDEX idx_doctors_rating ON doctors(rating DESC) WHERE is_available = true;
 CREATE INDEX idx_doctors_created_at ON doctors(created_at DESC);
 CREATE INDEX idx_doctors_license_number ON doctors(license_number);
-CREATE INDEX idx_doctors_is_accepting_new_patients ON doctors(is_accepting_new_patients) WHERE is_active = true;
+CREATE INDEX idx_doctors_is_accepting_new_patients ON doctors(is_accepting_new_patients) WHERE is_available = true;
 
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 -- Row Level Security (RLS) Policies
@@ -1992,8 +1930,6 @@ BEGIN
   WHERE id = doctor_id;
 END;
 $$ LANGUAGE plpgsql;
-
-=== 20260304120008_create_patients_table.sql ===
 -- Migration: Create Patients Table
 -- Purpose: Store patient-specific medical information
 -- Version: v2_P03_002
@@ -2251,8 +2187,6 @@ BEGIN
   RETURN allergy_count > 0;
 END;
 $$ LANGUAGE plpgsql;
-
-=== 20260304120009_create_employees_table.sql ===
 -- Migration: Create Employees Table
 -- Purpose: Store employee information and employment details
 -- Version: v2_P03_003
@@ -2467,8 +2401,6 @@ BEGIN
   RETURN TRIM(full_name);
 END;
 $$ LANGUAGE plpgsql;
-
-=== 20260304120010_create_clinic_staff_table.sql ===
 -- Migration: Create Clinic Staff Table
 -- Purpose: Junction table linking clinics to staff members
 -- Version: v2_P03_004
@@ -2652,8 +2584,6 @@ BEGIN
   ORDER BY cs.joined_at DESC;
 END;
 $$ LANGUAGE plpgsql;
-
-=== 20260304120011_create_appointments_table.sql ===
 -- Migration: Create Appointments Table
 -- Purpose: Store appointment information
 -- Version: v2_P04_001
@@ -2884,8 +2814,6 @@ COMMENT ON COLUMN appointments.appointment_type IS 'Type of appointment: consult
 COMMENT ON COLUMN appointments.video_call_enabled IS 'Whether video call is enabled for this appointment';
 COMMENT ON COLUMN appointments.video_call_room_id IS 'Room ID for video call';
 COMMENT ON COLUMN appointments.follow_up_required IS 'Whether a follow-up appointment is needed';
-
-=== 20260304120012_create_prescriptions_table.sql ===
 -- Migration: Create Prescriptions Table
 -- Purpose: Store prescription information
 -- Version: v2_P04_002
@@ -3099,8 +3027,6 @@ COMMENT ON COLUMN prescription_items.duration IS 'How long to take the medicatio
 COMMENT ON COLUMN prescription_items.route IS 'Administration route: oral, injection, topical, inhalation, other';
 COMMENT ON COLUMN prescription_items.refills_allowed IS 'Number of refills allowed for this medication';
 COMMENT ON COLUMN prescription_items.refills_remaining IS 'Number of refills remaining';
-
-=== 20260304120013_create_lab_results_table.sql ===
 -- Migration: Create Lab Results Table
 -- Purpose: Store laboratory test results
 -- Version: v2_P04_003
@@ -3375,8 +3301,6 @@ COMMENT ON COLUMN vital_signs.blood_pressure_diastolic IS 'Diastolic blood press
 COMMENT ON COLUMN vital_signs.respiratory_rate IS 'Respiratory rate in breaths per minute';
 COMMENT ON COLUMN vital_signs.oxygen_saturation IS 'Oxygen saturation percentage';
 COMMENT ON COLUMN vital_signs.blood_glucose IS 'Blood glucose level in mg/dL';
-
-=== 20260304120014_create_video_sessions_table.sql ===
 -- Migration: Create Video Sessions Table
 -- Purpose: Store video call session information
 -- Version: v2_P04_004
@@ -3398,8 +3322,7 @@ CREATE TABLE IF NOT EXISTS video_sessions (
   doctor_id UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
   clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
 
-  -- WebRTC Information
-  channel_name VARCHAR(255) NOT NULL,
+  -- WebRTC Information\n  channel_name VARCHAR(255) NOT NULL,
   room_id VARCHAR(255) UNIQUE NOT NULL,
   token TEXT,
 
@@ -3581,7 +3504,6 @@ COMMENT ON COLUMN video_sessions.status IS 'Session status: scheduled, in_progre
 COMMENT ON COLUMN video_sessions.duration_seconds IS 'Actual duration of the video call in seconds';
 COMMENT ON COLUMN video_sessions.quality_rating IS 'User rating of video call quality (1-5)';
 
-=== 20260304120015_create_invoices_table.sql ===
 -- Migration: Create Invoices Table
 -- Purpose: Store invoice information for services rendered
 -- Version: v2_P05_001
@@ -3822,8 +3744,6 @@ COMMENT ON COLUMN invoice_items.quantity IS 'Quantity of items';
 COMMENT ON COLUMN invoice_items.unit_price IS 'Price per unit';
 COMMENT ON COLUMN invoice_items.discount_amount IS 'Discount amount';
 COMMENT ON COLUMN invoice_items.total_price IS 'Total price (quantity Ã— unit_price - discount)';
-
-=== 20260304120016_create_inventory_table.sql ===
 -- Migration: Create Inventory Table
 -- Purpose: Store clinic inventory and stock management
 -- Version: v2_P05_002
@@ -4164,8 +4084,6 @@ COMMENT ON COLUMN reports.parameters IS 'JSON object containing report parameter
 COMMENT ON COLUMN reports.file_format IS 'Output file format: pdf, xlsx, csv, json';
 COMMENT ON COLUMN reports.status IS 'Report generation status: pending, generating, completed, failed';
 COMMENT ON COLUMN reports.record_count IS 'Number of records in the report';
-
-=== 20260304120017_create_subscription_codes_table.sql ===
 -- Migration: Create Subscription Codes Table
 -- Purpose: Store subscription codes for clinic activation
 -- Version: v2_P06_001
@@ -4254,8 +4172,6 @@ COMMENT ON COLUMN subscription_codes.price_usd IS 'Price in US Dollars';
 COMMENT ON COLUMN subscription_codes.price_eur IS 'Price in Euros';
 COMMENT ON COLUMN subscription_codes.price_dzd IS 'Price in Algerian Dinars';
 COMMENT ON COLUMN subscription_codes.duration_days IS 'Duration in days';
-
-=== 20260304120018_create_exchange_rates_table.sql ===
 -- Migration: Create Exchange Rates Table
 -- Purpose: Store currency exchange rates
 -- Version: v2_P06_002
@@ -4308,10 +4224,33 @@ INSERT INTO exchange_rates (id, from_currency, to_currency, rate, effective_date
   ('550e8400-e29b-41d4-a716-446655440004', 'EUR', 'USD', 1.09, '2026-03-04'),
   ('550e8400-e29b-41d4-a716-446655440005', 'EUR', 'EUR', 1.0, '2026-03-04'),
   ('550e8400-e29b-41d4-a716-446655440006', 'EUR', 'DZD', 146.2, '2026-03-04'),
-  ('550e8400-e29b-41d4-a716-4466554407', 'DZD', 'USD', 0.0074, '2026-03-04'),
-  ('550e8400-e29b-41d4-a716-4466554408', 'DZD', 'EUR', 0.0068, '2026-03-04'),
-  ('550e8400-e29b-41d4-a716-4466554409', 'DZD', 'DZD', 1.0, '2026-03-04')
+  ('550e8400-e29b-41d4-a716-446655440007', 'DZD', 'USD', 0.0074, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-446655440008', 'DZD', 'EUR', 0.0068, '2026-03-04'),
+  ('550e8400-e29b-41d4-a716-446655440009', 'DZD', 'DZD', 1.0, '2026-03-04')
 ON CONFLICT (from_currency, to_currency, effective_date) DO NOTHING;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on exchange_rates table
+ALTER TABLE exchange_rates ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view active exchange rates
+CREATE POLICY "Active exchange rates are viewable by everyone"
+  ON exchange_rates FOR SELECT
+  USING (is_active = true);
+
+-- Policy: Super admins can manage exchange rates
+CREATE POLICY "Super admins can manage exchange rates"
+  ON exchange_rates FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
 
 -- Trigger to update updated_at
 CREATE OR REPLACE FUNCTION update_exchange_rates_updated_at()
@@ -4383,8 +4322,6 @@ BEGIN
   ORDER BY to_currency;
 END;
 $$ LANGUAGE plpgsql;
-
-=== 20260304120019_create_notifications_table.sql ===
 -- Migration: Create Notifications Table
 -- Purpose: Store user notifications
 -- Version: v2_P07_001
@@ -4761,8 +4698,929 @@ COMMENT ON COLUMN bug_reports.category IS 'Bug category: ui, functionality, perf
 COMMENT ON COLUMN bug_reports.severity IS 'Bug severity: low, medium, high, critical';
 COMMENT ON COLUMN bug_reports.status IS 'Bug status: open, in_progress, resolved, closed, reopened';
 COMMENT ON COLUMN bug_reports.device_info IS 'JSON object containing device and browser information';
+-- Migration: Create Prescription Items Table
+-- Purpose: Store individual medication items in prescriptions
+-- Version: v2_P04_003
+-- Created: 2026-03-04
+-- Dependencies: 20260304120012_create_prescriptions_table.sql
 
-=== 20260304120021_update_all_rls_policies.sql ===
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Prescription Items Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create prescription_items table to store individual medication items
+CREATE TABLE IF NOT EXISTS prescription_items (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  prescription_id UUID NOT NULL REFERENCES prescriptions(id) ON DELETE CASCADE,
+
+  -- Medication Information
+  medication_name VARCHAR(255) NOT NULL,
+  medication_name_ar VARCHAR(255),
+  generic_name VARCHAR(255),
+  brand_name VARCHAR(255),
+  
+  -- Dosage Information
+  dosage VARCHAR(100) NOT NULL,
+  dosage_unit VARCHAR(50) NOT NULL, -- mg, ml, tablets, etc.
+  frequency VARCHAR(100) NOT NULL, -- Once daily, twice daily, etc.
+  route VARCHAR(50) NOT NULL, -- Oral, IV, IM, etc.
+  
+  -- Duration
+  duration_days INTEGER NOT NULL,
+  total_quantity DECIMAL(10, 2) NOT NULL,
+  
+  -- Instructions
+  instructions TEXT,
+  instructions_ar TEXT,
+  special_instructions TEXT,
+  special_instructions_ar TEXT,
+  
+  -- Safety Information
+  side_effects TEXT,
+  contraindications TEXT,
+  warnings TEXT,
+  
+  -- Pricing
+  unit_price DECIMAL(10, 2) DEFAULT 0.00,
+  total_price DECIMAL(10, 2) DEFAULT 0.00,
+  currency VARCHAR(3) DEFAULT 'USD',
+  
+  -- Dispensing
+  is_dispensed BOOLEAN NOT NULL DEFAULT false,
+  dispensed_at TIMESTAMP WITH TIME ZONE,
+  dispensed_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  
+  -- Status
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_duration CHECK (duration_days > 0),
+  CONSTRAINT valid_quantity CHECK (total_quantity > 0),
+  CONSTRAINT valid_prices CHECK (unit_price >= 0 AND total_price >= 0)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_prescription_items_prescription_id ON prescription_items(prescription_id);
+CREATE INDEX idx_prescription_items_medication_name ON prescription_items(medication_name) WHERE is_active = true;
+CREATE INDEX idx_prescription_items_is_dispensed ON prescription_items(is_dispensed);
+CREATE INDEX idx_prescription_items_is_active ON prescription_items(is_active);
+CREATE INDEX idx_prescription_items_created_at ON prescription_items(created_at DESC);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on prescription_items table
+ALTER TABLE prescription_items ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own prescription items
+CREATE POLICY "Patients can view their own prescription items"
+  ON prescription_items FOR SELECT
+  USING (
+    prescription_id IN (
+      SELECT id FROM prescriptions
+      WHERE patient_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors can view prescription items for their patients
+CREATE POLICY "Doctors can view prescription items for their patients"
+  ON prescription_items FOR SELECT
+  USING (
+    prescription_id IN (
+      SELECT id FROM prescriptions
+      WHERE doctor_id IN (
+        SELECT id FROM doctors WHERE user_id = auth.uid()
+      )
+    )
+  );
+
+-- Policy: Clinic staff can view clinic prescription items
+CREATE POLICY "Clinic staff can view clinic prescription items"
+  ON prescription_items FOR SELECT
+  USING (
+    prescription_id IN (
+      SELECT id FROM prescriptions
+      WHERE clinic_id IN (
+        SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
+      )
+    )
+  );
+
+-- Policy: Doctors can create prescription items
+CREATE POLICY "Doctors can create prescription items"
+  ON prescription_items FOR INSERT
+  WITH CHECK (
+    prescription_id IN (
+      SELECT id FROM prescriptions
+      WHERE doctor_id IN (
+        SELECT id FROM doctors WHERE user_id = auth.uid()
+      )
+    )
+  );
+
+-- Policy: Doctors can update prescription items
+CREATE POLICY "Doctors can update prescription items"
+  ON prescription_items FOR UPDATE
+  USING (
+    prescription_id IN (
+      SELECT id FROM prescriptions
+      WHERE doctor_id IN (
+        SELECT id FROM doctors WHERE user_id = auth.uid()
+      )
+    )
+  );
+
+-- Policy: Super admins can manage all prescription items
+CREATE POLICY "Super admins can manage all prescription items"
+  ON prescription_items FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_prescription_items_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER prescription_items_update_updated_at
+  BEFORE UPDATE ON prescription_items
+  FOR EACH ROW
+  EXECUTE FUNCTION update_prescription_items_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE prescription_items IS 'Individual medication items in prescriptions';
+COMMENT ON COLUMN prescription_items.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN prescription_items.prescription_id IS 'Reference to prescription';
+COMMENT ON COLUMN prescription_items.medication_name IS 'Medication name';
+COMMENT ON COLUMN prescription_items.dosage IS 'Dosage amount';
+COMMENT ON COLUMN prescription_items.dosage_unit IS 'Dosage unit (mg, ml, tablets, etc.)';
+COMMENT ON COLUMN prescription_items.frequency IS 'Frequency of administration';
+COMMENT ON COLUMN prescription_items.route IS 'Route of administration';
+COMMENT ON COLUMN prescription_items.duration_days IS 'Duration in days';
+COMMENT ON COLUMN prescription_items.total_quantity IS 'Total quantity to dispense';
+COMMENT ON COLUMN prescription_items.instructions IS 'Instructions for use';
+COMMENT ON COLUMN prescription_items.is_dispensed IS 'Whether the medication has been dispensed';
+-- Migration: Create Vital Signs Table
+-- Purpose: Store patient vital signs measurements
+-- Version: v2_P04_005
+-- Created: 2026-03-04
+-- Dependencies: 20260304120008_create_patients_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Vital Signs Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create vital_signs table to store patient vital signs
+CREATE TABLE IF NOT EXISTS vital_signs (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+  appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
+  doctor_id UUID REFERENCES doctors(id) ON DELETE SET NULL,
+  clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+
+  -- Vital Signs
+  -- Blood Pressure
+  systolic_bp INTEGER, -- mmHg
+  diastolic_bp INTEGER, -- mmHg
+  bp_position VARCHAR(50), -- Sitting, standing, lying
+  bp_arm VARCHAR(50), -- Left, right
+  
+  -- Heart Rate
+  heart_rate INTEGER, -- beats per minute
+  heart_rate_rhythm VARCHAR(50), -- Regular, irregular
+  heart_rate_location VARCHAR(50), -- Apex, radial, etc.
+  
+  -- Respiratory Rate
+  respiratory_rate INTEGER, -- breaths per minute
+  respiratory_pattern VARCHAR(50), -- Regular, irregular, labored
+  
+  -- Temperature
+  temperature DECIMAL(5, 2), -- Celsius
+  temperature_method VARCHAR(50), -- Oral, rectal, axillary, tympanic
+  temperature_unit VARCHAR(10) DEFAULT 'C',
+  
+  -- Oxygen Saturation
+  oxygen_saturation DECIMAL(5, 2), -- SpO2 percentage
+  oxygen_supplement BOOLEAN DEFAULT false,
+  oxygen_flow_rate DECIMAL(5, 2), -- L/min
+  oxygen_method VARCHAR(50), -- Nasal cannula, mask, etc.
+  
+  -- Weight
+  weight DECIMAL(10, 2), -- kg
+  weight_unit VARCHAR(10) DEFAULT 'kg',
+  
+  -- Height
+  height DECIMAL(10, 2), -- cm
+  height_unit VARCHAR(10) DEFAULT 'cm',
+  
+  -- Body Mass Index
+  bmi DECIMAL(5, 2),
+  
+  -- Pain Assessment
+  pain_score INTEGER CHECK (pain_score >= 0 AND pain_score <= 10),
+  pain_scale VARCHAR(50), -- Numeric, FLACC, Wong-Baker, etc.
+  pain_location TEXT,
+  pain_description TEXT,
+  
+  -- Additional Measurements
+  blood_glucose DECIMAL(5, 2), -- mg/dL
+  blood_glucose_unit VARCHAR(10) DEFAULT 'mg/dL',
+  blood_glucose_timing VARCHAR(50), -- Fasting, pre-meal, post-meal
+  
+  -- Consciousness
+  consciousness_level VARCHAR(50), -- Alert, drowsy, confused, unconscious
+  glasgow_coma_scale INTEGER CHECK (glasgow_coma_scale >= 3 AND glasgow_coma_scale <= 15),
+  
+  -- Notes
+  notes TEXT,
+  notes_ar TEXT,
+  
+  -- Abnormal Flags
+  is_abnormal BOOLEAN NOT NULL DEFAULT false,
+  abnormal_findings TEXT,
+  
+  -- System Fields
+  measured_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  measured_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_bp CHECK (
+    (systolic_bp IS NULL AND diastolic_bp IS NULL) OR
+    (systolic_bp IS NOT NULL AND diastolic_bp IS NOT NULL AND systolic_bp > diastolic_bp)
+  ),
+  CONSTRAINT valid_heart_rate CHECK (heart_rate IS NULL OR heart_rate > 0),
+  CONSTRAINT valid_respiratory_rate CHECK (respiratory_rate IS NULL OR respiratory_rate > 0),
+  CONSTRAINT valid_temperature CHECK (temperature IS NULL OR temperature > 0),
+  CONSTRAINT valid_oxygen_saturation CHECK (oxygen_saturation IS NULL OR (oxygen_saturation >= 0 AND oxygen_saturation <= 100)),
+  CONSTRAINT valid_weight CHECK (weight IS NULL OR weight > 0),
+  CONSTRAINT valid_height CHECK (height IS NULL OR height > 0)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_vital_signs_patient_id ON vital_signs(patient_id);
+CREATE INDEX idx_vital_signs_appointment_id ON vital_signs(appointment_id);
+CREATE INDEX idx_vital_signs_doctor_id ON vital_signs(doctor_id);
+CREATE INDEX idx_vital_signs_clinic_id ON vital_signs(clinic_id);
+CREATE INDEX idx_vital_signs_measured_at ON vital_signs(measured_at DESC);
+CREATE INDEX idx_vital_signs_measured_by ON vital_signs(measured_by);
+CREATE INDEX idx_vital_signs_is_abnormal ON vital_signs(is_abnormal);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on vital_signs table
+ALTER TABLE vital_signs ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own vital signs
+CREATE POLICY "Patients can view their own vital signs"
+  ON vital_signs FOR SELECT
+  USING (patient_id IN (
+    SELECT id FROM patients WHERE user_id = auth.uid()
+  ));
+
+-- Policy: Doctors can view vital signs for their patients
+CREATE POLICY "Doctors can view vital signs for their patients"
+  ON vital_signs FOR SELECT
+  USING (
+    doctor_id IN (
+      SELECT id FROM doctors WHERE user_id = auth.uid()
+    ) OR
+    clinic_id IN (
+      SELECT clinic_id FROM doctors WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can view clinic vital signs
+CREATE POLICY "Clinic staff can view clinic vital signs"
+  ON vital_signs FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Doctors and nurses can create vital signs
+CREATE POLICY "Doctors and nurses can create vital signs"
+  ON vital_signs FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE user_id = auth.uid()
+      AND role IN ('doctor', 'nurse')
+    )
+  );
+
+-- Policy: Doctors and nurses can update vital signs
+CREATE POLICY "Doctors and nurses can update vital signs"
+  ON vital_signs FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM clinic_staff
+      WHERE user_id = auth.uid()
+      AND role IN ('doctor', 'nurse')
+    )
+  );
+
+-- Policy: Super admins can manage all vital signs
+CREATE POLICY "Super admins can manage all vital signs"
+  ON vital_signs FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_vital_signs_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER vital_signs_update_updated_at
+  BEFORE UPDATE ON vital_signs
+  FOR EACH ROW
+  EXECUTE FUNCTION update_vital_signs_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE vital_signs IS 'Patient vital signs measurements';
+COMMENT ON COLUMN vital_signs.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN vital_signs.systolic_bp IS 'Systolic blood pressure (mmHg)';
+COMMENT ON COLUMN vital_signs.diastolic_bp IS 'Diastolic blood pressure (mmHg)';
+COMMENT ON COLUMN vital_signs.heart_rate IS 'Heart rate (beats per minute)';
+COMMENT ON COLUMN vital_signs.respiratory_rate IS 'Respiratory rate (breaths per minute)';
+COMMENT ON COLUMN vital_signs.temperature IS 'Body temperature (Celsius)';
+COMMENT ON COLUMN vital_signs.oxygen_saturation IS 'Oxygen saturation (SpO2 %)';
+COMMENT ON COLUMN vital_signs.weight IS 'Weight (kg)';
+COMMENT ON COLUMN vital_signs.height IS 'Height (cm)';
+COMMENT ON COLUMN vital_signs.bmi IS 'Body Mass Index';
+COMMENT ON COLUMN vital_signs.pain_score IS 'Pain score (0-10)';
+COMMENT ON COLUMN vital_signs.blood_glucose IS 'Blood glucose (mg/dL)';
+COMMENT ON COLUMN vital_signs.glasgow_coma_scale IS 'Glasgow Coma Scale (3-15)';
+COMMENT ON COLUMN vital_signs.is_abnormal IS 'Whether vital signs are abnormal';
+-- Migration: Create Invoice Items Table
+-- Purpose: Store individual line items in invoices
+-- Version: v2_P05_002
+-- Created: 2026-03-04
+-- Dependencies: 20260304120015_create_invoices_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Invoice Items Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create invoice_items table to store individual line items in invoices
+CREATE TABLE IF NOT EXISTS invoice_items (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  invoice_id UUID NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+  appointment_id UUID REFERENCES appointments(id) ON DELETE SET NULL,
+
+  -- Item Information
+  item_type VARCHAR(50) NOT NULL CHECK (item_type IN ('consultation', 'procedure', 'medication', 'lab_test', 'imaging', 'service', 'other')),
+  item_code VARCHAR(50),
+  item_name VARCHAR(255) NOT NULL,
+  item_name_ar VARCHAR(255),
+  description TEXT,
+  description_ar TEXT,
+
+  -- Quantity and Pricing
+  quantity DECIMAL(10, 2) NOT NULL DEFAULT 1.0,
+  unit_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  discount_percent DECIMAL(5, 2) DEFAULT 0.00,
+  discount_amount DECIMAL(10, 2) DEFAULT 0.00,
+  tax_percent DECIMAL(5, 2) DEFAULT 0.00,
+  tax_amount DECIMAL(10, 2) DEFAULT 0.00,
+  subtotal DECIMAL(10, 2) NOT NULL,
+  total DECIMAL(10, 2) NOT NULL,
+
+  -- Currency
+  currency VARCHAR(3) DEFAULT 'USD',
+
+  -- Service Details
+  service_date TIMESTAMP WITH TIME ZONE,
+  performed_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  doctor_id UUID REFERENCES doctors(id) ON DELETE SET NULL,
+
+  -- Inventory Reference
+  inventory_item_id UUID REFERENCES inventory(id) ON DELETE SET NULL,
+  batch_number VARCHAR(50),
+  expiry_date DATE,
+
+  -- Status
+  is_billed BOOLEAN NOT NULL DEFAULT false,
+  is_paid BOOLEAN NOT NULL DEFAULT false,
+  is_refunded BOOLEAN NOT NULL DEFAULT false,
+  refund_amount DECIMAL(10, 2) DEFAULT 0.00,
+  refund_reason TEXT,
+
+  -- Notes
+  notes TEXT,
+  notes_ar TEXT,
+
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_quantity CHECK (quantity > 0),
+  CONSTRAINT valid_unit_price CHECK (unit_price >= 0),
+  CONSTRAINT valid_discount CHECK (discount_percent >= 0 AND discount_percent <= 100),
+  CONSTRAINT valid_tax CHECK (tax_percent >= 0 AND tax_percent <= 100),
+  CONSTRAINT valid_subtotal CHECK (subtotal >= 0),
+  CONSTRAINT valid_total CHECK (total >= 0)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_invoice_items_invoice_id ON invoice_items(invoice_id);
+CREATE INDEX idx_invoice_items_appointment_id ON invoice_items(appointment_id);
+CREATE INDEX idx_invoice_items_item_type ON invoice_items(item_type);
+CREATE INDEX idx_invoice_items_item_code ON invoice_items(item_code);
+CREATE INDEX idx_invoice_items_performed_by ON invoice_items(performed_by);
+CREATE INDEX idx_invoice_items_doctor_id ON invoice_items(doctor_id);
+CREATE INDEX idx_invoice_items_inventory_item_id ON invoice_items(inventory_item_id);
+CREATE INDEX idx_invoice_items_is_billed ON invoice_items(is_billed);
+CREATE INDEX idx_invoice_items_is_paid ON invoice_items(is_paid);
+CREATE INDEX idx_invoice_items_is_refunded ON invoice_items(is_refunded);
+CREATE INDEX idx_invoice_items_created_at ON invoice_items(created_at DESC);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on invoice_items table
+ALTER TABLE invoice_items ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Patients can view their own invoice items
+CREATE POLICY "Patients can view their own invoice items"
+  ON invoice_items FOR SELECT
+  USING (
+    invoice_id IN (
+      SELECT id FROM invoices
+      WHERE patient_id IN (
+        SELECT id FROM patients WHERE user_id = auth.uid()
+      )
+    )
+  );
+
+-- Policy: Clinic staff can view clinic invoice items
+CREATE POLICY "Clinic staff can view clinic invoice items"
+  ON invoice_items FOR SELECT
+  USING (
+    invoice_id IN (
+      SELECT id FROM invoices
+      WHERE clinic_id IN (
+        SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
+      )
+    )
+  );
+
+-- Policy: Clinic staff can create invoice items
+CREATE POLICY "Clinic staff can create invoice items"
+  ON invoice_items FOR INSERT
+  WITH CHECK (
+    invoice_id IN (
+      SELECT id FROM invoices
+      WHERE clinic_id IN (
+        SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
+        AND role IN ('admin', 'manager', 'receptionist', 'technician')
+      )
+    )
+  );
+
+-- Policy: Clinic staff can update invoice items
+CREATE POLICY "Clinic staff can update invoice items"
+  ON invoice_items FOR UPDATE
+  USING (
+    invoice_id IN (
+      SELECT id FROM invoices
+      WHERE clinic_id IN (
+        SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
+        AND role IN ('admin', 'manager', 'receptionist', 'technician')
+      )
+    )
+  );
+
+-- Policy: Super admins can manage all invoice items
+CREATE POLICY "Super admins can manage all invoice items"
+  ON invoice_items FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_invoice_items_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER invoice_items_update_updated_at
+  BEFORE UPDATE ON invoice_items
+  FOR EACH ROW
+  EXECUTE FUNCTION update_invoice_items_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE invoice_items IS 'Individual line items in invoices';
+COMMENT ON COLUMN invoice_items.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN invoice_items.invoice_id IS 'Reference to invoice';
+COMMENT ON COLUMN invoice_items.appointment_id IS 'Reference to appointment';
+COMMENT ON COLUMN invoice_items.item_type IS 'Type of item (consultation, procedure, medication, etc.)';
+COMMENT ON COLUMN invoice_items.item_name IS 'Name of the item';
+COMMENT ON COLUMN invoice_items.quantity IS 'Quantity';
+COMMENT ON COLUMN invoice_items.unit_price IS 'Price per unit';
+COMMENT ON COLUMN invoice_items.discount_percent IS 'Discount percentage';
+COMMENT ON COLUMN invoice_items.tax_percent IS 'Tax percentage';
+COMMENT ON COLUMN invoice_items.subtotal IS 'Subtotal before tax and discount';
+COMMENT ON COLUMN invoice_items.total IS 'Total after tax and discount';
+COMMENT ON COLUMN invoice_items.is_billed IS 'Whether the item has been billed';
+COMMENT ON COLUMN invoice_items.is_paid IS 'Whether the item has been paid';
+COMMENT ON COLUMN invoice_items.is_refunded IS 'Whether the item has been refunded';
+-- Migration: Create Inventory Transactions Table
+-- Purpose: Track inventory stock movements
+-- Version: v2_P05_004
+-- Created: 2026-03-04
+-- Dependencies: 20260304120016_create_inventory_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Inventory Transactions Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create inventory_transactions table to track inventory stock movements
+CREATE TABLE IF NOT EXISTS inventory_transactions (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Keys
+  inventory_item_id UUID NOT NULL REFERENCES inventory(id) ON DELETE CASCADE,
+  clinic_id UUID NOT NULL REFERENCES clinics(id) ON DELETE CASCADE,
+  related_invoice_item_id UUID REFERENCES invoice_items(id) ON DELETE SET NULL,
+  related_prescription_item_id UUID REFERENCES prescription_items(id) ON DELETE SET NULL,
+
+  -- Transaction Information
+  transaction_type VARCHAR(50) NOT NULL CHECK (transaction_type IN ('purchase', 'sale', 'return', 'adjustment', 'transfer', 'expiry', 'damage', 'loss')),
+  
+  -- Quantity Changes
+  quantity_before DECIMAL(10, 2) NOT NULL,
+  quantity_change DECIMAL(10, 2) NOT NULL,
+  quantity_after DECIMAL(10, 2) NOT NULL,
+  
+  -- Cost and Value
+  unit_cost DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  total_cost DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  currency VARCHAR(3) DEFAULT 'USD',
+  
+  -- Batch Information
+  batch_number VARCHAR(50),
+  lot_number VARCHAR(50),
+  serial_number VARCHAR(100),
+  expiry_date DATE,
+  manufacturing_date DATE,
+  
+  -- Supplier Information
+  supplier_id UUID,
+  supplier_name VARCHAR(255),
+  supplier_contact VARCHAR(255),
+  
+  -- Transfer Information (for transfer transactions)
+  from_clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  to_clinic_id UUID REFERENCES clinics(id) ON DELETE SET NULL,
+  transfer_reference VARCHAR(100),
+  
+  -- Reason and Notes
+  reason VARCHAR(255),
+  notes TEXT,
+  notes_ar TEXT,
+  
+  -- Reference Information
+  reference_number VARCHAR(100),
+  reference_type VARCHAR(50), -- PO, SO, ADJUSTMENT, etc.
+  
+  -- Approval
+  requires_approval BOOLEAN DEFAULT false,
+  approved_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  approved_at TIMESTAMP WITH TIME ZONE,
+  approval_notes TEXT,
+  
+  -- System Fields
+  transaction_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+
+  -- Constraints
+  CONSTRAINT valid_quantity_change CHECK (quantity_change != 0),
+  CONSTRAINT valid_quantity_after CHECK (quantity_after >= 0),
+  CONSTRAINT valid_unit_cost CHECK (unit_cost >= 0),
+  CONSTRAINT valid_total_cost CHECK (total_cost >= 0)
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_inventory_transactions_inventory_item_id ON inventory_transactions(inventory_item_id);
+CREATE INDEX idx_inventory_transactions_clinic_id ON inventory_transactions(clinic_id);
+CREATE INDEX idx_inventory_transactions_related_invoice_item_id ON inventory_transactions(related_invoice_item_id);
+CREATE INDEX idx_inventory_transactions_related_prescription_item_id ON inventory_transactions(related_prescription_item_id);
+CREATE INDEX idx_inventory_transactions_transaction_type ON inventory_transactions(transaction_type);
+CREATE INDEX idx_inventory_transactions_batch_number ON inventory_transactions(batch_number);
+CREATE INDEX idx_inventory_transactions_expiry_date ON inventory_transactions(expiry_date);
+CREATE INDEX idx_inventory_transactions_supplier_id ON inventory_transactions(supplier_id);
+CREATE INDEX idx_inventory_transactions_from_clinic_id ON inventory_transactions(from_clinic_id);
+CREATE INDEX idx_inventory_transactions_to_clinic_id ON inventory_transactions(to_clinic_id);
+CREATE INDEX idx_inventory_transactions_reference_number ON inventory_transactions(reference_number);
+CREATE INDEX idx_inventory_transactions_transaction_date ON inventory_transactions(transaction_date DESC);
+CREATE INDEX idx_inventory_transactions_created_by ON inventory_transactions(created_by);
+CREATE INDEX idx_inventory_transactions_approved_by ON inventory_transactions(approved_by);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on inventory_transactions table
+ALTER TABLE inventory_transactions ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Clinic staff can view clinic inventory transactions
+CREATE POLICY "Clinic staff can view clinic inventory transactions"
+  ON inventory_transactions FOR SELECT
+  USING (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
+    )
+  );
+
+-- Policy: Clinic staff can create inventory transactions
+CREATE POLICY "Clinic staff can create inventory transactions"
+  ON inventory_transactions FOR INSERT
+  WITH CHECK (
+    clinic_id IN (
+      SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
+      AND role IN ('admin', 'manager', 'technician', 'nurse')
+    )
+  );
+
+-- Policy: Super admins can manage all inventory transactions
+CREATE POLICY "Super admins can manage all inventory transactions"
+  ON inventory_transactions FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE inventory_transactions IS 'Inventory stock movements tracking';
+COMMENT ON COLUMN inventory_transactions.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN inventory_transactions.inventory_item_id IS 'Reference to inventory item';
+COMMENT ON COLUMN inventory_transactions.clinic_id IS 'Reference to clinic';
+COMMENT ON COLUMN inventory_transactions.transaction_type IS 'Type of transaction (purchase, sale, return, etc.)';
+COMMENT ON COLUMN inventory_transactions.quantity_before IS 'Quantity before transaction';
+COMMENT ON COLUMN inventory_transactions.quantity_change IS 'Quantity change (positive for additions, negative for deductions)';
+COMMENT ON COLUMN inventory_transactions.quantity_after IS 'Quantity after transaction';
+COMMENT ON COLUMN inventory_transactions.unit_cost IS 'Cost per unit';
+COMMENT ON COLUMN inventory_transactions.total_cost IS 'Total cost';
+COMMENT ON COLUMN inventory_transactions.batch_number IS 'Batch number';
+COMMENT ON COLUMN inventory_transactions.expiry_date IS 'Expiry date';
+COMMENT ON COLUMN inventory_transactions.supplier_name IS 'Supplier name';
+COMMENT ON COLUMN inventory_transactions.transaction_date IS 'Date of transaction';
+COMMENT ON COLUMN inventory_transactions.created_by IS 'User who created the transaction';
+-- Migration: Create Notification Settings Table
+-- Purpose: Store user notification preferences
+-- Version: v2_P07_002
+-- Created: 2026-03-04
+-- Dependencies: 20260304120001_create_users_table.sql
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Notification Settings Table
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create notification_settings table to store user notification preferences
+CREATE TABLE IF NOT EXISTS notification_settings (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+
+  -- Email Notifications
+  email_appointments BOOLEAN NOT NULL DEFAULT true,
+  email_prescriptions BOOLEAN NOT NULL DEFAULT true,
+  email_lab_results BOOLEAN NOT NULL DEFAULT true,
+  email_invoices BOOLEAN NOT NULL DEFAULT true,
+  email_promotions BOOLEAN NOT NULL DEFAULT false,
+  email_system_updates BOOLEAN NOT NULL DEFAULT true,
+
+  -- Push Notifications
+  push_appointments BOOLEAN NOT NULL DEFAULT true,
+  push_prescriptions BOOLEAN NOT NULL DEFAULT true,
+  push_lab_results BOOLEAN NOT NULL DEFAULT true,
+  push_invoices BOOLEAN NOT NULL DEFAULT true,
+  push_promotions BOOLEAN NOT NULL DEFAULT false,
+  push_system_updates BOOLEAN NOT NULL DEFAULT true,
+
+  -- SMS Notifications
+  sms_appointments BOOLEAN NOT NULL DEFAULT true,
+  sms_prescriptions BOOLEAN NOT NULL DEFAULT false,
+  sms_lab_results BOOLEAN NOT NULL DEFAULT false,
+  sms_invoices BOOLEAN NOT NULL DEFAULT false,
+  sms_promotions BOOLEAN NOT NULL DEFAULT false,
+  sms_system_updates BOOLEAN NOT NULL DEFAULT false,
+
+  -- In-App Notifications
+  inapp_appointments BOOLEAN NOT NULL DEFAULT true,
+  inapp_prescriptions BOOLEAN NOT NULL DEFAULT true,
+  inapp_lab_results BOOLEAN NOT NULL DEFAULT true,
+  inapp_invoices BOOLEAN NOT NULL DEFAULT true,
+  inapp_promotions BOOLEAN NOT NULL DEFAULT true,
+  inapp_system_updates BOOLEAN NOT NULL DEFAULT true,
+
+  -- Notification Timing
+  quiet_hours_enabled BOOLEAN NOT NULL DEFAULT false,
+  quiet_hours_start TIME,
+  quiet_hours_end TIME,
+  timezone VARCHAR(50) DEFAULT 'UTC',
+
+  -- Notification Frequency
+  daily_summary BOOLEAN NOT NULL DEFAULT false,
+  weekly_summary BOOLEAN NOT NULL DEFAULT false,
+  monthly_summary BOOLEAN NOT NULL DEFAULT false,
+
+  -- Device Settings
+  device_token VARCHAR(500),
+  platform VARCHAR(50), -- ios, android, web, windows, macos
+  app_version VARCHAR(50),
+  last_active_at TIMESTAMP WITH TIME ZONE,
+
+  -- System Fields
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+
+  -- Constraints
+  CONSTRAINT valid_quiet_hours CHECK (
+    NOT quiet_hours_enabled OR
+    (quiet_hours_start IS NOT NULL AND quiet_hours_end IS NOT NULL)
+  )
+);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Indexes
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create indexes for common queries
+CREATE INDEX idx_notification_settings_user_id ON notification_settings(user_id);
+CREATE INDEX idx_notification_settings_device_token ON notification_settings(device_token);
+CREATE INDEX idx_notification_settings_platform ON notification_settings(platform);
+CREATE INDEX idx_notification_settings_created_at ON notification_settings(created_at DESC);
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Row Level Security (RLS) Policies
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Enable RLS on notification_settings table
+ALTER TABLE notification_settings ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can view their own notification settings
+CREATE POLICY "Users can view their own notification settings"
+  ON notification_settings FOR SELECT
+  USING (user_id = auth.uid());
+
+-- Policy: Users can create their own notification settings
+CREATE POLICY "Users can create their own notification settings"
+  ON notification_settings FOR INSERT
+  WITH CHECK (user_id = auth.uid());
+
+-- Policy: Users can update their own notification settings
+CREATE POLICY "Users can update their own notification settings"
+  ON notification_settings FOR UPDATE
+  USING (user_id = auth.uid());
+
+-- Policy: Super admins can manage all notification settings
+CREATE POLICY "Super admins can manage all notification settings"
+  ON notification_settings FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
+    )
+  );
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Triggers
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Create function to update 'updated_at' timestamp
+CREATE OR REPLACE FUNCTION update_notification_settings_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for automatic timestamp update
+CREATE TRIGGER notification_settings_update_updated_at
+  BEFORE UPDATE ON notification_settings
+  FOR EACH ROW
+  EXECUTE FUNCTION update_notification_settings_updated_at();
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Comments
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+COMMENT ON TABLE notification_settings IS 'User notification preferences';
+COMMENT ON COLUMN notification_settings.id IS 'Primary key (UUID)';
+COMMENT ON COLUMN notification_settings.user_id IS 'Reference to user';
+COMMENT ON COLUMN notification_settings.email_appointments IS 'Email notifications for appointments';
+COMMENT ON COLUMN notification_settings.push_appointments IS 'Push notifications for appointments';
+COMMENT ON COLUMN notification_settings.sms_appointments IS 'SMS notifications for appointments';
+COMMENT ON COLUMN notification_settings.inapp_appointments IS 'In-app notifications for appointments';
+COMMENT ON COLUMN notification_settings.quiet_hours_enabled IS 'Whether quiet hours are enabled';
+COMMENT ON COLUMN notification_settings.quiet_hours_start IS 'Quiet hours start time';
+COMMENT ON COLUMN notification_settings.quiet_hours_end IS 'Quiet hours end time';
+COMMENT ON COLUMN notification_settings.device_token IS 'FCM device token';
+COMMENT ON COLUMN notification_settings.platform IS 'Device platform';
 -- Migration: Update All RLS Policies to Use Users Table
 -- Purpose: Update all table policies to properly check user roles from users table
 -- Version: v2_rls_update
@@ -5214,210 +6072,125 @@ CREATE POLICY "Super admins can manage exchange rates"
 CREATE POLICY "Everyone can view active exchange rates"
   ON exchange_rates FOR SELECT
   USING (is_active = true);
-
-=== v2_P01_002_create_countries_table.sql ===
--- Migration: Create Countries Table
--- Purpose: Store country reference data for user and clinic locations
--- Version: v2_P01_002
--- Created: 2026-03-04
--- Dependencies: None
+-- Migration: Fix Countries Table Public Access
+-- Purpose: Fix RLS policies to allow public/unauthenticated access to countries
+-- Version: v2_P01_002_fix
+-- Created: 2026-03-12
+-- Status: CRITICAL FIX
 
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Countries Table
+-- Issue: Users during registration/login get 404 when fetching countries
+-- Fix: Add explicit policy for public access
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
--- Create countries table to store country reference data
-CREATE TABLE IF NOT EXISTS countries (
-  -- Primary Key
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-  -- Country Information
-  name VARCHAR(255) NOT NULL,
-  name_ar VARCHAR(255),
-  iso2_code VARCHAR(2) NOT NULL UNIQUE,  -- 2-letter ISO code (e.g., US, DZ)
-  iso3_code VARCHAR(3) NOT NULL UNIQUE,  -- 3-letter ISO code (e.g., USA, DZA)
-  numeric_code INTEGER UNIQUE,            -- Numeric ISO code (e.g., 840 for US)
-  phone_code VARCHAR(10) NOT NULL,       -- Country calling code (e.g., +1, +213)
-  currency_code VARCHAR(3),               -- Currency code (e.g., USD, DZD)
-  currency_name VARCHAR(50),
-  currency_name_ar VARCHAR(50),
-  currency_symbol VARCHAR(10),
-
-  -- Geographic Information
-  continent VARCHAR(50),
-  region VARCHAR(100),
-  subregion VARCHAR(100),
-  capital VARCHAR(100),
-  capital_ar VARCHAR(100),
-
-  -- Status and Metadata
-  is_active BOOLEAN NOT NULL DEFAULT true,
-  is_supported BOOLEAN NOT NULL DEFAULT true,  -- Whether app supports this country
-
-  -- System Fields
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-
-  -- Constraints
-  CONSTRAINT valid_iso2_code CHECK (iso2_code ~ '^[A-Z]{2}$'),
-  CONSTRAINT valid_iso3_code CHECK (iso3_code ~ '^[A-Z]{3}$'),
-  CONSTRAINT valid_phone_code CHECK (phone_code ~ '^\+\d{1,4}$')
-);
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Active countries are viewable by everyone" ON countries;
+DROP POLICY IF EXISTS "Supported countries are viewable by everyone" ON countries;
+DROP POLICY IF EXISTS "Service role can manage countries" ON countries;
+DROP POLICY IF EXISTS "Public can read countries" ON countries;
 
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Indexes
+-- New RLS Policies - Allows public access
 -- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
--- Create indexes for common queries
-CREATE INDEX idx_countries_iso2_code ON countries(iso2_code) WHERE is_active = true;
-CREATE INDEX idx_countries_iso3_code ON countries(iso3_code) WHERE is_active = true;
-CREATE INDEX idx_countries_name ON countries(name) WHERE is_active = true;
-CREATE INDEX idx_countries_is_active ON countries(is_active);
-CREATE INDEX idx_countries_is_supported ON countries(is_supported) WHERE is_supported = true;
-CREATE INDEX idx_countries_continent ON countries(continent) WHERE is_active = true;
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Enable RLS on countries table
-ALTER TABLE countries ENABLE ROW LEVEL SECURITY;
-
--- Policy: Everyone can view active countries
-CREATE POLICY "Active countries are viewable by everyone"
-  ON countries FOR SELECT
-  USING (is_active = true);
-
--- Policy: Everyone can view supported countries
-CREATE POLICY "Supported countries are viewable by everyone"
+-- Policy 1: Everyone (authenticated or not) can view all supported countries
+CREATE POLICY "Public read access to supported countries"
   ON countries FOR SELECT
   USING (is_supported = true);
 
--- Policy: Super admins can manage countries
-CREATE POLICY "Super admins can manage countries"
+-- Policy 2: Everyone (authenticated or not) can view all active countries  
+CREATE POLICY "Public read access to active countries"
+  ON countries FOR SELECT
+  USING (is_active = true);
+
+-- Policy 3: Super admins can manage countries (via service role)
+CREATE POLICY "Service role can manage countries"
   ON countries FOR ALL
-  USING (
-    EXISTS (
-      SELECT 1 FROM users
-      WHERE id = auth.uid()
-      AND role = 'super_admin'
-    )
+  USING (auth.role() = 'service_role');
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Ensure table has correct structure
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- Verify is_supported column has correct data
+UPDATE countries SET is_supported = true WHERE is_supported IS NULL;
+UPDATE countries SET is_active = true WHERE is_active IS NULL;
+
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Verify data exists
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+-- This query should return at least the core countries
+-- SELECT COUNT(*) as total, COUNT(CASE WHEN is_supported THEN 1 END) as supported
+-- FROM countries;
+-- Create user_approvals table
+-- Ø¬Ø¯ÙˆÙ„ Ø·Ù„Ø¨Ø§Øª Ù…ÙˆØ§ÙÙ‚Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†
+create table if not exists public.user_approvals (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  email text not null,
+  full_name text not null,
+  role text not null,
+  registration_type text not null check (registration_type in ('email', 'google', 'facebook')),
+  status text not null check (status in ('pending', 'approved', 'rejected')) default 'pending',
+  created_at timestamptz default now(),
+  approved_at timestamptz,
+  rejected_at timestamptz,
+  approval_notes text,
+  rejection_reason text,
+  unique(user_id)
+);
+
+-- Enable RLS
+alter table public.user_approvals enable row level security;
+
+-- Create indexes
+create index if not exists idx_user_approvals_user_id on public.user_approvals(user_id);
+create index if not exists idx_user_approvals_status on public.user_approvals(status);
+create index if not exists idx_user_approvals_created_at on public.user_approvals(created_at desc);
+
+-- RLS Policies
+
+-- Policy 1: Users can read their own approval record
+create policy "Users can read own approval"
+  on public.user_approvals
+  for select
+  using (auth.uid() = user_id);
+
+-- Policy 2: Super admins can read all records
+create policy "Super admin can read all approvals"
+  on public.user_approvals
+  for select
+  using (
+    (select raw_user_meta_data->>'role' from auth.users where id = auth.uid()) = 'super_admin'
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Policy 3: Super admins can update records
+create policy "Super admin can update approval status"
+  on public.user_approvals
+  for update
+  using (
+    (select raw_user_meta_data->>'role' from auth.users where id = auth.uid()) = 'super_admin'
+  )
+  with check (
+    (select raw_user_meta_data->>'role' from auth.users where id = auth.uid()) = 'super_admin'
+  );
 
--- Create function to update 'updated_at' timestamp
-CREATE OR REPLACE FUNCTION update_countries_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+-- Policy 4: Clinic admins can read approvals for their clinic (if clinic_id is available)
+create policy "Clinic admin can read pending approvals"
+  on public.user_approvals
+  for select
+  using (
+    (select raw_user_meta_data->>'role' from auth.users where id = auth.uid()) = 'clinic_admin'
+    and status = 'pending'
+  );
 
--- Create trigger for automatic timestamp update
-CREATE TRIGGER countries_update_updated_at
-  BEFORE UPDATE ON countries
-  FOR EACH ROW
-  EXECUTE FUNCTION update_countries_updated_at();
+-- Policy 5: System can insert on signup
+create policy "Enable insert on user approvals for authenticated users"
+  on public.user_approvals
+  for insert
+  with check (true);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
-COMMENT ON TABLE countries IS 'Country reference data for user and clinic locations';
-COMMENT ON COLUMN countries.id IS 'Primary key (UUID)';
-COMMENT ON COLUMN countries.name IS 'Country name in English';
-COMMENT ON COLUMN countries.name_ar IS 'Country name in Arabic';
-COMMENT ON COLUMN countries.iso2_code IS '2-letter ISO country code (e.g., US, DZ)';
-COMMENT ON COLUMN countries.iso3_code IS '3-letter ISO country code (e.g., USA, DZA)';
-COMMENT ON COLUMN countries.numeric_code IS 'Numeric ISO country code';
-COMMENT ON COLUMN countries.phone_code IS 'Country calling code (e.g., +1, +213)';
-COMMENT ON COLUMN countries.currency_code IS 'Currency code (e.g., USD, DZD)';
-COMMENT ON COLUMN countries.currency_name IS 'Currency name in English';
-COMMENT ON COLUMN countries.currency_name_ar IS 'Currency name in Arabic';
-COMMENT ON COLUMN countries.currency_symbol IS 'Currency symbol (e.g., $, Ø¯Ø¬)';
-COMMENT ON COLUMN countries.continent IS 'Continent name';
-COMMENT ON COLUMN countries.region IS 'Region name';
-COMMENT ON COLUMN countries.subregion IS 'Subregion name';
-COMMENT ON COLUMN countries.capital IS 'Capital city name';
-COMMENT ON COLUMN countries.is_active IS 'Whether the country is active';
-COMMENT ON COLUMN countries.is_supported IS 'Whether the app supports this country';
-
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
--- Seed Data
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
--- Insert common countries
-INSERT INTO countries (name, name_ar, iso2_code, iso3_code, numeric_code, phone_code, currency_code, currency_name, currency_name_ar, currency_symbol, continent, region, subregion, capital, capital_ar) VALUES
--- Algeria (Primary market)
-('Algeria', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', 'DZ', 'DZA', 12, '+213', 'DZD', 'Algerian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¬Ø²Ø§Ø¦Ø±ÙŠ', 'Ø¯Ø¬', 'Africa', 'Africa', 'Northern Africa', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±'),
-
--- Other Arab countries
-('Morocco', 'Ø§Ù„Ù…ØºØ±Ø¨', 'MA', 'MAR', 504, '+212', 'MAD', 'Moroccan Dirham', 'Ø¯Ø±Ù‡Ù… Ù…ØºØ±Ø¨ÙŠ', 'DH', 'Africa', 'Africa', 'Northern Africa', 'Rabat', 'Ø§Ù„Ø±Ø¨Ø§Ø·'),
-('Tunisia', 'ØªÙˆÙ†Ø³', 'TN', 'TUN', 788, '+216', 'TND', 'Tunisian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ØªÙˆÙ†Ø³ÙŠ', 'DT', 'Africa', 'Africa', 'Northern Africa', 'Tunis', 'ØªÙˆÙ†Ø³'),
-('Egypt', 'Ù…ØµØ±', 'EG', 'EGY', 818, '+20', 'EGP', 'Egyptian Pound', 'Ø¬Ù†ÙŠÙ‡ Ù…ØµØ±ÙŠ', 'EÂ£', 'Africa', 'Africa', 'Northern Africa', 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©'),
-('Saudi Arabia', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©', 'SA', 'SAU', 682, '+966', 'SAR', 'Saudi Riyal', 'Ø±ÙŠØ§Ù„ Ø³Ø¹ÙˆØ¯ÙŠ', 'Ø±.Ø³', 'Asia', 'Asia', 'Western Asia', 'Riyadh', 'Ø§Ù„Ø±ÙŠØ§Ø¶'),
-('United Arab Emirates', 'Ø§Ù„Ø¥Ù…Ø§Ø±Ø§Øª Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'AE', 'ARE', 784, '+971', 'AED', 'UAE Dirham', 'Ø¯Ø±Ù‡Ù… Ø¥Ù…Ø§Ø±Ø§ØªÙŠ', 'DH', 'Asia', 'Asia', 'Western Asia', 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ'),
-('Qatar', 'Ù‚Ø·Ø±', 'QA', 'QAT', 634, '+974', 'QAR', 'Qatari Riyal', 'Ø±ÙŠØ§Ù„ Ù‚Ø·Ø±ÙŠ', 'Ø±.Ù‚', 'Asia', 'Asia', 'Western Asia', 'Doha', 'Ø§Ù„Ø¯ÙˆØ­Ø©'),
-('Kuwait', 'Ø§Ù„ÙƒÙˆÙŠØª', 'KW', 'KWT', 414, '+965', 'KWD', 'Kuwaiti Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ÙƒÙˆÙŠØªÙŠ', 'Ø¯.Ùƒ', 'Asia', 'Asia', 'Western Asia', 'Kuwait City', 'Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„ÙƒÙˆÙŠØª'),
-
--- Major countries
-('United States', 'Ø§Ù„ÙˆÙ„Ø§ÙŠØ§Øª Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'US', 'USA', 840, '+1', 'USD', 'US Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ù…Ø±ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Washington, D.C.', 'ÙˆØ§Ø´Ù†Ø·Ù† Ø§Ù„Ø¹Ø§ØµÙ…Ø©'),
-('United Kingdom', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'GB', 'GBR', 826, '+44', 'GBP', 'British Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¥Ø³ØªØ±Ù„ÙŠÙ†ÙŠ', 'Â£', 'Europe', 'Europe', 'Northern Europe', 'London', 'Ù„Ù†Ø¯Ù†'),
-('France', 'ÙØ±Ù†Ø³Ø§', 'FR', 'FRA', 250, '+33', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Paris', 'Ø¨Ø§Ø±ÙŠØ³'),
-('Germany', 'Ø£Ù„Ù…Ø§Ù†ÙŠØ§', 'DE', 'DEU', 276, '+49', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Berlin', 'Ø¨Ø±Ù„ÙŠÙ†'),
-('Canada', 'ÙƒÙ†Ø¯Ø§', 'CA', 'CAN', 124, '+1', 'CAD', 'Canadian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± ÙƒÙ†Ø¯ÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Ottawa', 'Ø£ÙˆØªØ§ÙˆØ§'),
-('Australia', 'Ø£Ø³ØªØ±Ø§Ù„ÙŠØ§', 'AU', 'AUS', 36, '+61', 'AUD', 'Australian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ø³ØªØ±Ø§Ù„ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Canberra', 'ÙƒØ§Ù†Ø¨ÙŠØ±Ø§'),
-('Japan', 'Ø§Ù„ÙŠØ§Ø¨Ø§Ù†', 'JP', 'JPN', 392, '+81', 'JPY', 'Japanese Yen', 'ÙŠÙ† ÙŠØ§Ø¨Ø§Ù†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Tokyo', 'Ø·ÙˆÙƒÙŠÙˆ'),
-('China', 'Ø§Ù„ØµÙŠÙ†', 'CN', 'CHN', 156, '+86', 'CNY', 'Chinese Yuan', 'ÙŠÙˆØ§Ù† ØµÙŠÙ†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Beijing', 'Ø¨ÙƒÙŠÙ†'),
-('India', 'Ø§Ù„Ù‡Ù†Ø¯', 'IN', 'IND', 356, '+91', 'INR', 'Indian Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ù‡Ù†Ø¯ÙŠØ©', 'â‚¹', 'Asia', 'Asia', 'Southern Asia', 'New Delhi', 'Ù†ÙŠÙˆØ¯Ù„Ù‡ÙŠ'),
-('Brazil', 'Ø§Ù„Ø¨Ø±Ø§Ø²ÙŠÙ„', 'BR', 'BRA', 76, '+55', 'BRL', 'Brazilian Real', 'Ø±ÙŠØ§Ù„ Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠ', 'R$', 'South America', 'Americas', 'South America', 'BrasÃ­lia', 'Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠØ§'),
-('Russia', 'Ø±ÙˆØ³ÙŠØ§', 'RU', 'RUS', 643, '+7', 'RUB', 'Russian Ruble', 'Ø±ÙˆØ¨Ù„ Ø±ÙˆØ³ÙŠ', 'â‚½', 'Europe', 'Europe', 'Eastern Europe', 'Moscow', 'Ù…ÙˆØ³ÙƒÙˆ'),
-('Turkey', 'ØªØ±ÙƒÙŠØ§', 'TR', 'TUR', 792, '+90', 'TRY', 'Turkish Lira', 'Ù„ÙŠØ±Ø© ØªØ±ÙƒÙŠØ©', 'â‚º', 'Europe', 'Asia', 'Western Asia', 'Ankara', 'Ø£Ù†Ù‚Ø±Ø©'),
-('Spain', 'Ø¥Ø³Ø¨Ø§Ù†ÙŠØ§', 'ES', 'ESP', 724, '+34', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Madrid', 'Ù…Ø¯Ø±ÙŠØ¯'),
-('Italy', 'Ø¥ÙŠØ·Ø§Ù„ÙŠØ§', 'IT', 'ITA', 380, '+39', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Rome', 'Ø±ÙˆÙ…Ø§'),
-('Netherlands', 'Ù‡ÙˆÙ„Ù†Ø¯Ø§', 'NL', 'NLD', 528, '+31', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Amsterdam', 'Ø£Ù…Ø³ØªØ±Ø¯Ø§Ù…'),
-('Belgium', 'Ø¨Ù„Ø¬ÙŠÙƒØ§', 'BE', 'BEL', 56, '+32', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Brussels', 'Ø¨Ø±ÙˆÙƒØ³Ù„'),
-('Switzerland', 'Ø³ÙˆÙŠØ³Ø±Ø§', 'CH', 'CHE', 756, '+41', 'CHF', 'Swiss Franc', 'ÙØ±Ù†Ùƒ Ø³ÙˆÙŠØ³Ø±ÙŠ', 'CHF', 'Europe', 'Europe', 'Western Europe', 'Bern', 'Ø¨Ø±Ù†'),
-('Sweden', 'Ø§Ù„Ø³ÙˆÙŠØ¯', 'SE', 'SWE', 752, '+46', 'SEK', 'Swedish Krona', 'ÙƒØ±ÙˆÙ†Ø§ Ø³ÙˆÙŠØ¯ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Stockholm', 'Ø³ØªÙˆÙƒÙ‡ÙˆÙ„Ù…'),
-('Norway', 'Ø§Ù„Ù†Ø±ÙˆÙŠØ¬', 'NO', 'NOR', 578, '+47', 'NOK', 'Norwegian Krone', 'ÙƒØ±ÙˆÙ†Ø© Ù†Ø±ÙˆÙŠØ¬ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Oslo', 'Ø£ÙˆØ³Ù„Ùˆ'),
-('Denmark', 'Ø§Ù„Ø¯Ù†Ù…Ø§Ø±Ùƒ', 'DK', 'DNK', 208, '+45', 'DKK', 'Danish Krone', 'ÙƒØ±ÙˆÙ†Ø© Ø¯Ù†Ù…Ø§Ø±ÙƒÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Copenhagen', 'ÙƒÙˆØ¨Ù†Ù‡Ø§ØºÙ†'),
-('Finland', 'ÙÙ†Ù„Ù†Ø¯Ø§', 'FI', 'FIN', 246, '+358', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Helsinki', 'Ù‡Ù„Ø³Ù†ÙƒÙŠ'),
-('Poland', 'Ø¨ÙˆÙ„Ù†Ø¯Ø§', 'PL', 'POL', 616, '+48', 'PLN', 'Polish Zloty', 'Ø²Ù„ÙˆØªÙŠ Ø¨ÙˆÙ„Ù†Ø¯ÙŠ', 'zÅ‚', 'Europe', 'Europe', 'Eastern Europe', 'Warsaw', 'ÙˆØ§Ø±Ø³Ùˆ'),
-('South Korea', 'ÙƒÙˆØ±ÙŠØ§ Ø§Ù„Ø¬Ù†ÙˆØ¨ÙŠØ©', 'KR', 'KOR', 410, '+82', 'KRW', 'South Korean Won', 'ÙˆÙˆÙ† ÙƒÙˆØ±ÙŠ Ø¬Ù†ÙˆØ¨ÙŠ', 'â‚©', 'Asia', 'Asia', 'Eastern Asia', 'Seoul', 'Ø³ÙˆÙ„'),
-('Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©', 'SG', 'SGP', 702, '+65', 'SGD', 'Singapore Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø³Ù†ØºØ§ÙÙˆØ±ÙŠ', '$', 'Asia', 'Asia', 'South-Eastern Asia', 'Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©'),
-('Malaysia', 'Ù…Ø§Ù„ÙŠØ²ÙŠØ§', 'MY', 'MYS', 458, '+60', 'MYR', 'Malaysian Ringgit', 'Ø±ÙŠÙ†ØºÙŠØª Ù…Ø§Ù„ÙŠØ²ÙŠ', 'RM', 'Asia', 'Asia', 'South-Eastern Asia', 'Kuala Lumpur', 'ÙƒÙˆØ§Ù„Ø§Ù„Ù…Ø¨ÙˆØ±'),
-('Indonesia', 'Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ§', 'ID', 'IDN', 360, '+62', 'IDR', 'Indonesian Rupiah', 'Ø±ÙˆØ¨ÙŠØ© Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ©', 'Rp', 'Asia', 'Asia', 'South-Eastern Asia', 'Jakarta', 'Ø¬Ø§ÙƒØ±ØªØ§'),
-('Thailand', 'ØªØ§ÙŠÙ„Ø§Ù†Ø¯', 'TH', 'THA', 764, '+66', 'THB', 'Thai Baht', 'Ø¨Ø§Øª ØªØ§ÙŠÙ„Ù†Ø¯ÙŠ', 'à¸¿', 'Asia', 'Asia', 'South-Eastern Asia', 'Bangkok', 'Ø¨Ø§Ù†ÙƒÙˆÙƒ'),
-('Vietnam', 'ÙÙŠØªÙ†Ø§Ù…', 'VN', 'VNM', 704, '+84', 'VND', 'Vietnamese Dong', 'Ø¯ÙˆÙ†Øº ÙÙŠØªÙ†Ø§Ù…ÙŠ', 'â‚«', 'Asia', 'Asia', 'South-Eastern Asia', 'Hanoi', 'Ù‡Ø§Ù†ÙˆÙŠ'),
-('Philippines', 'Ø§Ù„ÙÙ„Ø¨ÙŠÙ†', 'PH', 'PHL', 608, '+63', 'PHP', 'Philippine Peso', 'Ø¨ÙŠØ²Ùˆ ÙÙ„Ø¨ÙŠÙ†ÙŠ', 'â‚±', 'Asia', 'Asia', 'South-Eastern Asia', 'Manila', 'Ù…Ø§Ù†ÙŠÙ„Ø§'),
-('Pakistan', 'Ø¨Ø§ÙƒØ³ØªØ§Ù†', 'PK', 'PAK', 586, '+92', 'PKR', 'Pakistani Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ø¨Ø§ÙƒØ³ØªØ§Ù†ÙŠØ©', 'â‚¨', 'Asia', 'Asia', 'Southern Asia', 'Islamabad', 'Ø¥Ø³Ù„Ø§Ù… Ø¢Ø¨Ø§Ø¯'),
-('Bangladesh', 'Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´', 'BD', 'BGD', 50, '+880', 'BDT', 'Bangladeshi Taka', 'ØªØ§ÙƒØ§ Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´ÙŠ', 'à§³', 'Asia', 'Asia', 'Southern Asia', 'Dhaka', 'Ø¯ÙƒØ§'),
-('Nigeria', 'Ù†ÙŠØ¬ÙŠØ±ÙŠØ§', 'NG', 'NGA', 566, '+234', 'NGN', 'Nigerian Naira', 'Ù†Ø§ÙŠØ±Ø§ Ù†ÙŠØ¬ÙŠØ±ÙŠ', 'â‚¦', 'Africa', 'Africa', 'Western Africa', 'Abuja', 'Ø£Ø¨ÙˆØ¬Ø§'),
-('South Africa', 'Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠØ§', 'ZA', 'ZAF', 710, '+27', 'ZAR', 'South African Rand', 'Ø±Ø§Ù†Ø¯ Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠ', 'R', 'Africa', 'Africa', 'Southern Africa', 'Pretoria', 'Ø¨Ø±ÙŠØªÙˆØ±ÙŠØ§'),
-('Mexico', 'Ø§Ù„Ù…ÙƒØ³ÙŠÙƒ', 'MX', 'MEX', 484, '+52', 'MXN', 'Mexican Peso', 'Ø¨ÙŠØ²Ùˆ Ù…ÙƒØ³ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Mexico City', 'Ù…Ø¯ÙŠÙ†Ø© Ù…ÙƒØ³ÙŠÙƒÙˆ'),
-('Argentina', 'Ø§Ù„Ø£Ø±Ø¬Ù†ØªÙŠÙ†', 'AR', 'ARG', 32, '+54', 'ARS', 'Argentine Peso', 'Ø¨ÙŠØ²Ùˆ Ø£Ø±Ø¬Ù†ØªÙŠÙ†ÙŠ', '$', 'South America', 'Americas', 'South America', 'Buenos Aires', 'Ø¨ÙˆÙŠÙ†Ø³ Ø¢ÙŠØ±Ø³'),
-('Colombia', 'ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠØ§', 'CO', 'COL', 170, '+57', 'COP', 'Colombian Peso', 'Ø¨ÙŠØ²Ùˆ ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠ', '$', 'South America', 'Americas', 'South America', 'BogotÃ¡', 'Ø¨ÙˆØºÙˆØªØ§'),
-('Chile', 'ØªØ´ÙŠÙ„ÙŠ', 'CL', 'CHL', 152, '+56', 'CLP', 'Chilean Peso', 'Ø¨ÙŠØ²Ùˆ ØªØ´ÙŠÙ„ÙŠ', '$', 'South America', 'Americas', 'South America', 'Santiago', 'Ø³Ø§Ù†ØªÙŠØ§ØºÙˆ'),
-('Peru', 'Ø¨ÙŠØ±Ùˆ', 'PE', 'PER', 604, '+51', 'PEN', 'Peruvian Sol', 'Ø³ÙˆÙ„ Ø¨ÙŠØ±ÙˆÙÙŠ', 'S/.', 'South America', 'Americas', 'South America', 'Lima', 'Ù„ÙŠÙ…Ø§'),
-('Venezuela', 'ÙÙ†Ø²ÙˆÙŠÙ„Ø§', 'VE', 'VEN', 862, '+58', 'VES', 'Venezuelan BolÃ­var', 'Ø¨ÙˆÙ„ÙŠÙØ§Ø± ÙÙ†Ø²ÙˆÙŠÙ„ÙŠ', 'Bs.', 'South America', 'Americas', 'South America', 'Caracas', 'ÙƒØ§Ø±Ø§ÙƒØ§Ø³'),
-('Greece', 'Ø§Ù„ÙŠÙˆÙ†Ø§Ù†', 'GR', 'GRC', 300, '+30', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Athens', 'Ø£Ø«ÙŠÙ†Ø§'),
-('Portugal', 'Ø§Ù„Ø¨Ø±ØªØºØ§Ù„', 'PT', 'PRT', 620, '+351', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Lisbon', 'Ù„ÙŠØ³Ø¨ÙˆÙ†'),
-('Ireland', 'Ø£ÙŠØ±Ù„Ù†Ø¯Ø§', 'IE', 'IRL', 372, '+353', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Dublin', 'Ø¯Ø¨Ù„Ù†'),
-('New Zealand', 'Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯Ø§', 'NZ', 'NZL', 554, '+64', 'NZD', 'New Zealand Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Wellington', 'ÙˆÙŠÙ„ÙŠÙ†ØºØªÙˆÙ†'),
-('South Sudan', 'Ø¬Ù†ÙˆØ¨ Ø§Ù„Ø³ÙˆØ¯Ø§Ù†', 'SS', 'SSD', 728, '+211', 'SSP', 'South Sudanese Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¬Ù†ÙˆØ¨ Ø³ÙˆØ¯Ø§Ù†ÙŠ', 'Â£', 'Africa', 'Africa', 'Northern Africa', 'Juba', 'Ø¬ÙˆØ¨Ø§'),
-('Libya', 'Ù„ÙŠØ¨ÙŠØ§', 'LY', 'LBY', 434, '+218', 'LYD', 'Libyan Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ù„ÙŠØ¨ÙŠ', 'Ù„.Ø¯', 'Africa', 'Africa', 'Northern Africa', 'Tripoli', 'Ø·Ø±Ø§Ø¨Ù„Ø³'),
-('Jordan', 'Ø§Ù„Ø£Ø±Ø¯Ù†', 'JO', 'JOR', 400, '+962', 'JOD', 'Jordanian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø£Ø±Ø¯Ù†ÙŠ', 'Ø¯.Ø£', 'Asia', 'Asia', 'Western Asia', 'Amman', 'Ø¹Ù…Ø§Ù†'),
-('Lebanon', 'Ù„Ø¨Ù†Ø§Ù†', 'LB', 'LBN', 422, '+961', 'LBP', 'Lebanese Pound', 'Ù„ÙŠØ±Ø© Ù„Ø¨Ù†Ø§Ù†ÙŠØ©', 'Ù„.Ù„', 'Asia', 'Asia', 'Western Asia', 'Beirut', 'Ø¨ÙŠØ±ÙˆØª'),
-('Syria', 'Ø³ÙˆØ±ÙŠØ§', 'SY', 'SYR', 760, '+963', 'SYP', 'Syrian Pound', 'Ù„ÙŠØ±Ø© Ø³ÙˆØ±ÙŠØ©', 'Ù„.Ø³', 'Asia', 'Asia', 'Western Asia', 'Damascus', 'Ø¯Ù…Ø´Ù‚'),
-('Iraq', 'Ø§Ù„Ø¹Ø±Ø§Ù‚', 'IQ', 'IRQ', 368, '+964', 'IQD', 'Iraqi Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¹Ø±Ø§Ù‚ÙŠ', 'Ø¹.Ø¯', 'Asia', 'Asia', 'Western Asia', 'Baghdad', 'Ø¨ØºØ¯Ø§Ø¯'),
-('Yemen', 'Ø§Ù„ÙŠÙ…Ù†', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'Ø±ÙŠØ§Ù„ ÙŠÙ…Ù†ÙŠ', 'Ø±.ÙŠ', 'Asia', 'Asia', 'Western Asia', "Sana'a", 'ØµÙ†Ø¹Ø§Ø¡'),
-('Oman', 'Ø¹Ù…Ø§Ù†', 'OM', 'OMN', 512, '+968', 'OMR', 'Omani Rial', 'Ø±ÙŠØ§Ù„ Ø¹Ù…Ø§Ù†ÙŠ', 'Ø±.Ø¹', 'Asia', 'Asia', 'Western Asia', 'Muscat', 'Ù…Ø³Ù‚Ø·'),
-('Bahrain', 'Ø§Ù„Ø¨Ø­Ø±ÙŠÙ†', 'BH', 'BHR', 48, '+973', 'BHD', 'Bahraini Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¨Ø­Ø±ÙŠÙ†ÙŠ', 'Ø¯.Ø¨', 'Asia', 'Asia', 'Western Asia', 'Manama', 'Ø§Ù„Ù…Ù†Ø§Ù…Ø©'),
-('Palestin', 'Ù‚Ù„Ø³Ø·ÙŠÙ†', 'PSIL', 'ISR', 376, '+972', 'ILS', 'Palestiny New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'Ø§Ù„Ù‚Ø¯Ø³'),
-('Palestine', 'ÙÙ„Ø³Ø·ÙŠÙ†', 'PS', 'PSE', 275, '+970', 'ILS', 'Palestini New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Ramallah', 'Ø±Ø§Ù… Ø§Ù„Ù„Ù‡')
-ON CONFLICT (iso2_code) DO NOTHING;
-
+-- Grant permissions
+grant select on public.user_approvals to authenticated;
+grant select, update on public.user_approvals to authenticated;
