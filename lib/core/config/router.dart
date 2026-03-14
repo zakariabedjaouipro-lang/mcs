@@ -64,7 +64,7 @@ class AppRouter {
 
   static GoRouter _createRouter() => GoRouter(
         navigatorKey: _rootNavigatorKey,
-        initialLocation: _getInitialRoute(),
+        initialLocation: '/splash',
         debugLogDiagnostics: true,
         redirect: _guard,
         routes: _routes,
@@ -72,131 +72,214 @@ class AppRouter {
             _ErrorScreen(error: state.error?.toString() ?? 'Page not found'),
       );
 
-  /// Get initial route based on authentication status
-  /// Mobile: Login or Dashboard, Web: Landing
-  static String _getInitialRoute() {
-    final isAuthenticated = SupabaseConfig.isAuthenticated;
-
-    // If authenticated, go to role-based home
-    if (isAuthenticated) {
-      return _getRoleBasedHomePath();
-    }
-
-    // If not authenticated, go to login
-    return AppRoutes.login;
-  }
-
-  /// ─────────────────────────────────────────────────
-  /// Route Guard
-  /// ─────────────────────────────────────────────────
+  /// ═══════════════════════════════════════════════════════════════════════════
+  /// ADVANCED ROUTE GUARD - منطق الحماية المتقدم للمسارات
+  /// ═══════════════════════════════════════════════════════════════════════════
+  ///
+  /// Handles:
+  /// 1. Authentication checks (unauthenticated → /login)
+  /// 2. Public routes (no restrictions)
+  /// 3. Auth-in-progress routes (login, register, etc.)
+  /// 4. Role-based routing (each role → its specific dashboard)
+  /// 5. Approval status checks (pending → /pending-approval)
+  /// 6. Race condition prevention (waits for splash screen)
+  /// 7. No fallback to /patient for non-patient users
   static String? _guard(BuildContext context, GoRouterState state) {
     final isAuthenticated = SupabaseConfig.isAuthenticated;
+    final currentPath = state.matchedLocation;
 
-    final isAuthRoute = state.matchedLocation == AppRoutes.login ||
-        state.matchedLocation == AppRoutes.register ||
-        state.matchedLocation == AppRoutes.forgotPassword ||
-        state.matchedLocation == AppRoutes.otpVerification ||
-        state.matchedLocation == AppRoutes.changePassword ||
-        state.matchedLocation == AppRoutes.pendingApproval;
+    // ✅ ALLOW public routes without any checks
+    const publicRoutes = [
+      AppRoutes.landing,
+      AppRoutes.features,
+      AppRoutes.pricing,
+      AppRoutes.contact,
+      AppRoutes.download,
+    ];
 
-    final isPublicRoute = state.matchedLocation == AppRoutes.landing ||
-        state.matchedLocation == AppRoutes.features ||
-        state.matchedLocation == AppRoutes.pricing ||
-        state.matchedLocation == AppRoutes.contact ||
-        state.matchedLocation == AppRoutes.download;
+    if (publicRoutes.contains(currentPath)) {
+      return null;
+    }
 
-    if (isPublicRoute) return null;
+    // ✅ ALLOW splash screen without any checks
+    if (currentPath == '/splash') {
+      return null;
+    }
 
-    if (!isAuthenticated && !isAuthRoute) {
+    // ═══════════════════════════════════════════════════════════════════════
+    // UNAUTHENTICATED USERS
+    // ═══════════════════════════════════════════════════════════════════════
+
+    const authRoutes = [
+      AppRoutes.login,
+      AppRoutes.register,
+      AppRoutes.otpVerification,
+      AppRoutes.forgotPassword,
+      AppRoutes.changePassword,
+      AppRoutes.pendingApproval,
+    ];
+
+    if (!isAuthenticated) {
+      // Not logged in - allow auth flows
+      if (authRoutes.contains(currentPath)) {
+        return null;
+      }
+      // Not logged in + trying to access protected route → /login
       return AppRoutes.login;
     }
 
-    // ✅ SAFE: Allow user to stay in auth flows without redirects
-    // except when transitioning from pending approval confirmation
-    if (isAuthRoute) {
-      if (isAuthenticated &&
-          state.matchedLocation != AppRoutes.pendingApproval &&
-          state.matchedLocation != AppRoutes.register &&
-          state.matchedLocation != AppRoutes.forgotPassword &&
-          state.matchedLocation != AppRoutes.changePassword &&
-          state.matchedLocation != AppRoutes.otpVerification) {
-        return _getRoleBasedHomePath();
-      }
-      return null; // ✅ Allow auth flow to proceed
+    // ═══════════════════════════════════════════════════════════════════════
+    // AUTHENTICATED USERS
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // ✅ Allow auth-in-progress routes to complete without redirect
+    // (except pending approval which needs its own handling)
+    if ((currentPath == AppRoutes.register ||
+            currentPath == AppRoutes.otpVerification ||
+            currentPath == AppRoutes.forgotPassword ||
+            currentPath == AppRoutes.changePassword) &&
+        isAuthenticated) {
+      // Allow these flows to complete if user is authenticated
+      return null;
     }
 
-    // Check if user is awaiting approval
-    if (isAuthenticated) {
-      try {
-        final authUser = SupabaseConfig.currentUser;
+    // ✅ If already on pending approval, allow it
+    if (currentPath == AppRoutes.pendingApproval) {
+      return null;
+    }
 
-        // ✅ SAFE: Check null before accessing metadata
-        if (authUser != null) {
-          final approvalStatus =
-              (authUser.userMetadata?['approvalStatus'] as String?) ?? '';
+    // ═══════════════════════════════════════════════════════════════════════
+    // APPROVAL STATUS CHECK
+    // ═══════════════════════════════════════════════════════════════════════
 
-          if (approvalStatus == 'pending') {
-            // If user is already on pending approval screen, allow
-            if (state.matchedLocation == AppRoutes.pendingApproval) {
-              return null;
-            }
-            // Otherwise, redirect to pending approval screen
+    try {
+      final authUser = SupabaseConfig.currentUser;
+
+      if (authUser != null) {
+        // Check approval status from metadata
+        final approvalStatus =
+            (authUser.userMetadata?['approvalStatus'] as String?) ?? '';
+
+        if (approvalStatus == 'pending') {
+          // User is pending approval - redirect to pending screen
+          if (currentPath != AppRoutes.pendingApproval) {
             return AppRoutes.pendingApproval;
-          } else if (approvalStatus == 'rejected') {
-            // Rejected users should be logged out and go to login
+          }
+        } else if (approvalStatus == 'rejected') {
+          // User was rejected - force logout and go to login
+          if (currentPath != AppRoutes.login) {
             return AppRoutes.login;
           }
         }
-      } catch (e) {
-        // ✅ SAFE: If approval check fails, allow user to proceed
-        // to prevent cascade failures
       }
+    } catch (e) {
+      // Error checking approval - allow to proceed to prevent blockade
+      debugPrint('Error checking approval status: $e');
     }
 
-    if (isAuthenticated && state.matchedLocation == AppRoutes.dashboard) {
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROLE-BASED ROUTING
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // If user tries to access /dashboard, redirect to role-based home
+    if (currentPath == AppRoutes.dashboard) {
       return _getRoleBasedHomePath();
     }
 
+    if (currentPath == AppRoutes.login) {
+      // Authenticated user on login screen → redirect to role home
+      return _getRoleBasedHomePath();
+    }
+
+    // ✅ All checks passed - allow to proceed
     return null;
   }
 
-  /// Get role-based home with null safety
+  /// ═════════════════════════════════════════════════════════════════════════
+  /// GET ROLE-BASED HOME PATH - تحديد المسار بناءً على الدور
+  /// ═════════════════════════════════════════════════════════════════════════
+  ///
+  /// Safely determines home path for authenticated user based on role.
+  /// Does NOT fallback to /patient for non-patient users.
+  ///
+  /// Mapping:
+  /// - super_admin → /super-admin
+  /// - clinic_admin → /admin
+  /// - doctor → /doctor
+  /// - nurse/receptionist/pharmacist/lab_technician/radiographer → /employee
+  /// - patient → /patient
+  /// - unknown → /splash (to re-fetch role)
   static String _getRoleBasedHomePath() {
     try {
       final authUser = SupabaseConfig.currentUser;
 
-      // ✅ DEFENSIVE: Safeguard against race conditions
+      // ✅ SAFETY: User not loaded yet (race condition)
+      // Go back to splash to wait for session initialization
       if (authUser == null) {
-        return AppRoutes.patientHome;
+        return '/splash';
       }
 
-      // ✅ SAFE: Access metadata with fallback
-      final role = (authUser.userMetadata?['role'] as String?) ?? 'patient';
+      // ═════════════════════════════════════════════════════════════════════
+      // PRIORITY 1: Try appMetadata['role'] (set by admin)
+      // ═════════════════════════════════════════════════════════════════════
+      final appMetadata = authUser.appMetadata;
 
-      switch (role) {
-        case 'super_admin':
-          return AppRoutes.superAdminHome;
-
-        case 'clinic_admin':
-          return AppRoutes.adminHome;
-
-        case 'doctor':
-          return AppRoutes.doctorHome;
-
-        case 'nurse':
-        case 'receptionist':
-        case 'pharmacist':
-        case 'lab_technician':
-        case 'radiographer':
-          return AppRoutes.employeeHome;
-
-        default:
-          return AppRoutes.patientHome;
+      try {
+        final appRole = appMetadata['role'];
+        if (appRole != null && appRole.toString().isNotEmpty) {
+          return _mapRoleToPath(appRole.toString());
+        }
+      } catch (_) {
+        // Continue to next priority if access fails
       }
+
+      // ═════════════════════════════════════════════════════════════════════
+      // PRIORITY 2: Try userMetadata['role']
+      // ═════════════════════════════════════════════════════════════════════
+      final userMetadata = authUser.userMetadata;
+      if (userMetadata != null) {
+        try {
+          final userRole = userMetadata['role'];
+          if (userRole != null && userRole.toString().isNotEmpty) {
+            return _mapRoleToPath(userRole.toString());
+          }
+        } catch (_) {
+          // Continue to fallback if userMetadata access fails
+        }
+      }
+
+      // ═════════════════════════════════════════════════════════════════════
+      // FALLBACK: Role not found in metadata
+      // ═════════════════════════════════════════════════════════════════════
+      debugPrint(
+        'WARNING: User ${authUser.id} has no role in metadata. '
+        'Returning to splash for role resolution.',
+      );
+
+      return '/splash';
     } catch (e) {
-      // ✅ SAFE: Never crash, always fallback to patient
-      return AppRoutes.patientHome;
+      // ✅ SAFE: Never crash - return to splash on error
+      debugPrint('ERROR in _getRoleBasedHomePath: $e');
+      return '/splash';
     }
+  }
+
+  /// Map role string to route path
+  /// Returns splash if role is unknown to prevent incorrect routing
+  static String _mapRoleToPath(String role) {
+    return switch (role.toLowerCase()) {
+      'super_admin' => AppRoutes.superAdminHome,
+      'clinic_admin' || 'admin' => AppRoutes.adminHome,
+      'doctor' => AppRoutes.doctorHome,
+      'nurse' ||
+      'receptionist' ||
+      'pharmacist' ||
+      'lab_technician' ||
+      'radiographer' =>
+        AppRoutes.employeeHome,
+      'patient' => AppRoutes.patientHome,
+      _ => '/splash', // Unknown role - go back to splash for resolution
+    };
   }
 
   /// ─────────────────────────────────────────────────
