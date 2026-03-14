@@ -1,12 +1,12 @@
-﻿-- Migration: Create Enums for MCS Database
+-- Migration: Create Enums for MCS Database
 -- Purpose: Define PostgreSQL enum types used throughout the application
 -- Version: v2_P01_001
 -- Created: 2026-03-04
 -- Dependencies: None
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- User and Auth Enums
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- User role enumeration
 -- Defines different roles in the clinic system
@@ -23,9 +23,9 @@ CREATE TYPE user_role AS ENUM (
   'relative'             -- Family member of patient
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Appointment and Medical Enums
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Appointment status enumeration
 -- Tracks the lifecycle of appointments
@@ -62,9 +62,9 @@ CREATE TYPE subscription_type AS ENUM (
   'trial'                -- Trial period
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Video Session Enums
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Video session status enumeration
 -- Tracks telemedicine session states
@@ -76,9 +76,9 @@ CREATE TYPE video_session_status AS ENUM (
   'no_show'              -- Participant didn't show up
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Notification Enums
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Notification type enumeration
 -- Categorizes different types of notifications
@@ -91,9 +91,9 @@ CREATE TYPE notification_type AS ENUM (
   'alert'                -- Critical alerts
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Medical and Health Enums
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Blood pressure status enumeration
 -- Classification based on systolic/diastolic readings
@@ -109,11 +109,11 @@ CREATE TYPE blood_pressure_status AS ENUM (
 -- Temperature status enumeration
 -- Classification of body temperature readings
 CREATE TYPE temperature_status AS ENUM (
-  'normal',              -- 36.1 - 37.5Â°C
-  'low',                 -- < 36.1Â°C (hypothermia)
-  'fever',               -- 38.0 - 38.9Â°C
-  'high_fever',          -- >= 39.0Â°C
-  'critical'             -- >= 40.5Â°C
+  'normal',              -- 36.1 - 37.5°C
+  'low',                 -- < 36.1°C (hypothermia)
+  'fever',               -- 38.0 - 38.9°C
+  'high_fever',          -- >= 39.0°C
+  'critical'             -- >= 40.5°C
 );
 
 -- Lab result type enumeration
@@ -129,9 +129,9 @@ CREATE TYPE lab_result_type AS ENUM (
   'other'                -- Miscellaneous tests
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Report and Assessment Enums
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Assessment type enumeration
 -- Categorizes different types of clinical assessments
@@ -172,9 +172,9 @@ CREATE TYPE employee_type AS ENUM (
   'contractor'           -- External contractor
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Inventory and Supply Enums
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Inventory category enumeration
 -- Categorizes medical supplies and equipment
@@ -189,9 +189,9 @@ CREATE TYPE inventory_category AS ENUM (
   'other'                -- Miscellaneous items
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- System and Audit Enums
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Audit action type enumeration
 -- Records types of system actions for audit logging
@@ -220,9 +220,9 @@ CREATE TYPE session_status AS ENUM (
   'revoked'              -- Session forcibly ended
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TYPE user_role IS 'User roles and permissions in the MCS system';
 COMMENT ON TYPE appointment_status IS 'Appointment lifecycle status values';
@@ -245,9 +245,9 @@ COMMENT ON TYPE session_status IS 'User session status values';
 -- Created: 2026-03-04
 -- Dependencies: None
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Countries Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create countries table to store country reference data
 CREATE TABLE IF NOT EXISTS countries (
@@ -287,9 +287,9 @@ CREATE TABLE IF NOT EXISTS countries (
   CONSTRAINT valid_phone_code CHECK (phone_code ~ '^\+\d{1,4}$')
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_countries_iso2_code ON countries(iso2_code) WHERE is_active = true;
@@ -299,9 +299,9 @@ CREATE INDEX idx_countries_is_active ON countries(is_active);
 CREATE INDEX idx_countries_is_supported ON countries(is_supported) WHERE is_supported = true;
 CREATE INDEX idx_countries_continent ON countries(continent) WHERE is_active = true;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on countries table
 ALTER TABLE countries ENABLE ROW LEVEL SECURITY;
@@ -323,9 +323,9 @@ CREATE POLICY "Service role can manage countries"
   ON countries FOR ALL
   USING (auth.role() = 'service_role');
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_countries_updated_at()
@@ -342,9 +342,9 @@ CREATE TRIGGER countries_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_countries_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE countries IS 'Country reference data for user and clinic locations';
 COMMENT ON COLUMN countries.id IS 'Primary key (UUID)';
@@ -357,7 +357,7 @@ COMMENT ON COLUMN countries.phone_code IS 'Country calling code (e.g., +1, +213)
 COMMENT ON COLUMN countries.currency_code IS 'Currency code (e.g., USD, DZD)';
 COMMENT ON COLUMN countries.currency_name IS 'Currency name in English';
 COMMENT ON COLUMN countries.currency_name_ar IS 'Currency name in Arabic';
-COMMENT ON COLUMN countries.currency_symbol IS 'Currency symbol (e.g., $, Ø¯Ø¬)';
+COMMENT ON COLUMN countries.currency_symbol IS 'Currency symbol (e.g., $, دج)';
 COMMENT ON COLUMN countries.continent IS 'Continent name';
 COMMENT ON COLUMN countries.region IS 'Region name';
 COMMENT ON COLUMN countries.subregion IS 'Subregion name';
@@ -365,79 +365,79 @@ COMMENT ON COLUMN countries.capital IS 'Capital city name';
 COMMENT ON COLUMN countries.is_active IS 'Whether the country is active';
 COMMENT ON COLUMN countries.is_supported IS 'Whether the app supports this country';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Seed Data
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Insert common countries
 INSERT INTO countries (name, name_ar, iso2_code, iso3_code, numeric_code, phone_code, currency_code, currency_name, currency_name_ar, currency_symbol, continent, region, subregion, capital, capital_ar) VALUES
 -- Algeria (Primary market)
-('Algeria', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', 'DZ', 'DZA', 12, '+213', 'DZD', 'Algerian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¬Ø²Ø§Ø¦Ø±ÙŠ', 'Ø¯Ø¬', 'Africa', 'Africa', 'Northern Africa', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±'),
+('Algeria', 'الجزائر', 'DZ', 'DZA', 12, '+213', 'DZD', 'Algerian Dinar', 'دينار جزائري', 'دج', 'Africa', 'Africa', 'Northern Africa', 'Algiers', 'الجزائر'),
 
 -- Other Arab countries
-('Morocco', 'Ø§Ù„Ù…ØºØ±Ø¨', 'MA', 'MAR', 504, '+212', 'MAD', 'Moroccan Dirham', 'Ø¯Ø±Ù‡Ù… Ù…ØºØ±Ø¨ÙŠ', 'DH', 'Africa', 'Africa', 'Northern Africa', 'Rabat', 'Ø§Ù„Ø±Ø¨Ø§Ø·'),
-('Tunisia', 'ØªÙˆÙ†Ø³', 'TN', 'TUN', 788, '+216', 'TND', 'Tunisian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ØªÙˆÙ†Ø³ÙŠ', 'DT', 'Africa', 'Africa', 'Northern Africa', 'Tunis', 'ØªÙˆÙ†Ø³'),
-('Egypt', 'Ù…ØµØ±', 'EG', 'EGY', 818, '+20', 'EGP', 'Egyptian Pound', 'Ø¬Ù†ÙŠÙ‡ Ù…ØµØ±ÙŠ', 'EÂ£', 'Africa', 'Africa', 'Northern Africa', 'Cairo', 'Ø§Ù„Ù‚Ø§Ù‡Ø±Ø©'),
-('Saudi Arabia', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©', 'SA', 'SAU', 682, '+966', 'SAR', 'Saudi Riyal', 'Ø±ÙŠØ§Ù„ Ø³Ø¹ÙˆØ¯ÙŠ', 'Ø±.Ø³', 'Asia', 'Asia', 'Western Asia', 'Riyadh', 'Ø§Ù„Ø±ÙŠØ§Ø¶'),
-('United Arab Emirates', 'Ø§Ù„Ø¥Ù…Ø§Ø±Ø§Øª Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'AE', 'ARE', 784, '+971', 'AED', 'UAE Dirham', 'Ø¯Ø±Ù‡Ù… Ø¥Ù…Ø§Ø±Ø§ØªÙŠ', 'DH', 'Asia', 'Asia', 'Western Asia', 'Abu Dhabi', 'Ø£Ø¨Ùˆ Ø¸Ø¨ÙŠ'),
-('Qatar', 'Ù‚Ø·Ø±', 'QA', 'QAT', 634, '+974', 'QAR', 'Qatari Riyal', 'Ø±ÙŠØ§Ù„ Ù‚Ø·Ø±ÙŠ', 'Ø±.Ù‚', 'Asia', 'Asia', 'Western Asia', 'Doha', 'Ø§Ù„Ø¯ÙˆØ­Ø©'),
-('Kuwait', 'Ø§Ù„ÙƒÙˆÙŠØª', 'KW', 'KWT', 414, '+965', 'KWD', 'Kuwaiti Dinar', 'Ø¯ÙŠÙ†Ø§Ø± ÙƒÙˆÙŠØªÙŠ', 'Ø¯.Ùƒ', 'Asia', 'Asia', 'Western Asia', 'Kuwait City', 'Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„ÙƒÙˆÙŠØª'),
+('Morocco', 'المغرب', 'MA', 'MAR', 504, '+212', 'MAD', 'Moroccan Dirham', 'درهم مغربي', 'DH', 'Africa', 'Africa', 'Northern Africa', 'Rabat', 'الرباط'),
+('Tunisia', 'تونس', 'TN', 'TUN', 788, '+216', 'TND', 'Tunisian Dinar', 'دينار تونسي', 'DT', 'Africa', 'Africa', 'Northern Africa', 'Tunis', 'تونس'),
+('Egypt', 'مصر', 'EG', 'EGY', 818, '+20', 'EGP', 'Egyptian Pound', 'جنيه مصري', 'E£', 'Africa', 'Africa', 'Northern Africa', 'Cairo', 'القاهرة'),
+('Saudi Arabia', 'المملكة العربية السعودية', 'SA', 'SAU', 682, '+966', 'SAR', 'Saudi Riyal', 'ريال سعودي', 'ر.س', 'Asia', 'Asia', 'Western Asia', 'Riyadh', 'الرياض'),
+('United Arab Emirates', 'الإمارات العربية المتحدة', 'AE', 'ARE', 784, '+971', 'AED', 'UAE Dirham', 'درهم إماراتي', 'DH', 'Asia', 'Asia', 'Western Asia', 'Abu Dhabi', 'أبو ظبي'),
+('Qatar', 'قطر', 'QA', 'QAT', 634, '+974', 'QAR', 'Qatari Riyal', 'ريال قطري', 'ر.ق', 'Asia', 'Asia', 'Western Asia', 'Doha', 'الدوحة'),
+('Kuwait', 'الكويت', 'KW', 'KWT', 414, '+965', 'KWD', 'Kuwaiti Dinar', 'دينار كويتي', 'د.ك', 'Asia', 'Asia', 'Western Asia', 'Kuwait City', 'مدينة الكويت'),
 
 -- Major countries
-('United States', 'Ø§Ù„ÙˆÙ„Ø§ÙŠØ§Øª Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'US', 'USA', 840, '+1', 'USD', 'US Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ù…Ø±ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Washington, D.C.', 'ÙˆØ§Ø´Ù†Ø·Ù† Ø§Ù„Ø¹Ø§ØµÙ…Ø©'),
-('United Kingdom', 'Ø§Ù„Ù…Ù…Ù„ÙƒØ© Ø§Ù„Ù…ØªØ­Ø¯Ø©', 'GB', 'GBR', 826, '+44', 'GBP', 'British Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¥Ø³ØªØ±Ù„ÙŠÙ†ÙŠ', 'Â£', 'Europe', 'Europe', 'Northern Europe', 'London', 'Ù„Ù†Ø¯Ù†'),
-('France', 'ÙØ±Ù†Ø³Ø§', 'FR', 'FRA', 250, '+33', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Paris', 'Ø¨Ø§Ø±ÙŠØ³'),
-('Germany', 'Ø£Ù„Ù…Ø§Ù†ÙŠØ§', 'DE', 'DEU', 276, '+49', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Berlin', 'Ø¨Ø±Ù„ÙŠÙ†'),
-('Canada', 'ÙƒÙ†Ø¯Ø§', 'CA', 'CAN', 124, '+1', 'CAD', 'Canadian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± ÙƒÙ†Ø¯ÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Ottawa', 'Ø£ÙˆØªØ§ÙˆØ§'),
-('Australia', 'Ø£Ø³ØªØ±Ø§Ù„ÙŠØ§', 'AU', 'AUS', 36, '+61', 'AUD', 'Australian Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø£Ø³ØªØ±Ø§Ù„ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Canberra', 'ÙƒØ§Ù†Ø¨ÙŠØ±Ø§'),
-('Japan', 'Ø§Ù„ÙŠØ§Ø¨Ø§Ù†', 'JP', 'JPN', 392, '+81', 'JPY', 'Japanese Yen', 'ÙŠÙ† ÙŠØ§Ø¨Ø§Ù†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Tokyo', 'Ø·ÙˆÙƒÙŠÙˆ'),
-('China', 'Ø§Ù„ØµÙŠÙ†', 'CN', 'CHN', 156, '+86', 'CNY', 'Chinese Yuan', 'ÙŠÙˆØ§Ù† ØµÙŠÙ†ÙŠ', 'Â¥', 'Asia', 'Asia', 'Eastern Asia', 'Beijing', 'Ø¨ÙƒÙŠÙ†'),
-('India', 'Ø§Ù„Ù‡Ù†Ø¯', 'IN', 'IND', 356, '+91', 'INR', 'Indian Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ù‡Ù†Ø¯ÙŠØ©', 'â‚¹', 'Asia', 'Asia', 'Southern Asia', 'New Delhi', 'Ù†ÙŠÙˆØ¯Ù„Ù‡ÙŠ'),
-('Brazil', 'Ø§Ù„Ø¨Ø±Ø§Ø²ÙŠÙ„', 'BR', 'BRA', 76, '+55', 'BRL', 'Brazilian Real', 'Ø±ÙŠØ§Ù„ Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠ', 'R$', 'South America', 'Americas', 'South America', 'BrasÃ­lia', 'Ø¨Ø±Ø§Ø²ÙŠÙ„ÙŠØ§'),
-('Russia', 'Ø±ÙˆØ³ÙŠØ§', 'RU', 'RUS', 643, '+7', 'RUB', 'Russian Ruble', 'Ø±ÙˆØ¨Ù„ Ø±ÙˆØ³ÙŠ', 'â‚½', 'Europe', 'Europe', 'Eastern Europe', 'Moscow', 'Ù…ÙˆØ³ÙƒÙˆ'),
-('Turkey', 'ØªØ±ÙƒÙŠØ§', 'TR', 'TUR', 792, '+90', 'TRY', 'Turkish Lira', 'Ù„ÙŠØ±Ø© ØªØ±ÙƒÙŠØ©', 'â‚º', 'Europe', 'Asia', 'Western Asia', 'Ankara', 'Ø£Ù†Ù‚Ø±Ø©'),
-('Spain', 'Ø¥Ø³Ø¨Ø§Ù†ÙŠØ§', 'ES', 'ESP', 724, '+34', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Madrid', 'Ù…Ø¯Ø±ÙŠØ¯'),
-('Italy', 'Ø¥ÙŠØ·Ø§Ù„ÙŠØ§', 'IT', 'ITA', 380, '+39', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Rome', 'Ø±ÙˆÙ…Ø§'),
-('Netherlands', 'Ù‡ÙˆÙ„Ù†Ø¯Ø§', 'NL', 'NLD', 528, '+31', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Amsterdam', 'Ø£Ù…Ø³ØªØ±Ø¯Ø§Ù…'),
-('Belgium', 'Ø¨Ù„Ø¬ÙŠÙƒØ§', 'BE', 'BEL', 56, '+32', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Western Europe', 'Brussels', 'Ø¨Ø±ÙˆÙƒØ³Ù„'),
-('Switzerland', 'Ø³ÙˆÙŠØ³Ø±Ø§', 'CH', 'CHE', 756, '+41', 'CHF', 'Swiss Franc', 'ÙØ±Ù†Ùƒ Ø³ÙˆÙŠØ³Ø±ÙŠ', 'CHF', 'Europe', 'Europe', 'Western Europe', 'Bern', 'Ø¨Ø±Ù†'),
-('Sweden', 'Ø§Ù„Ø³ÙˆÙŠØ¯', 'SE', 'SWE', 752, '+46', 'SEK', 'Swedish Krona', 'ÙƒØ±ÙˆÙ†Ø§ Ø³ÙˆÙŠØ¯ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Stockholm', 'Ø³ØªÙˆÙƒÙ‡ÙˆÙ„Ù…'),
-('Norway', 'Ø§Ù„Ù†Ø±ÙˆÙŠØ¬', 'NO', 'NOR', 578, '+47', 'NOK', 'Norwegian Krone', 'ÙƒØ±ÙˆÙ†Ø© Ù†Ø±ÙˆÙŠØ¬ÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Oslo', 'Ø£ÙˆØ³Ù„Ùˆ'),
-('Denmark', 'Ø§Ù„Ø¯Ù†Ù…Ø§Ø±Ùƒ', 'DK', 'DNK', 208, '+45', 'DKK', 'Danish Krone', 'ÙƒØ±ÙˆÙ†Ø© Ø¯Ù†Ù…Ø§Ø±ÙƒÙŠØ©', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Copenhagen', 'ÙƒÙˆØ¨Ù†Ù‡Ø§ØºÙ†'),
-('Finland', 'ÙÙ†Ù„Ù†Ø¯Ø§', 'FI', 'FIN', 246, '+358', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Helsinki', 'Ù‡Ù„Ø³Ù†ÙƒÙŠ'),
-('Poland', 'Ø¨ÙˆÙ„Ù†Ø¯Ø§', 'PL', 'POL', 616, '+48', 'PLN', 'Polish Zloty', 'Ø²Ù„ÙˆØªÙŠ Ø¨ÙˆÙ„Ù†Ø¯ÙŠ', 'zÅ‚', 'Europe', 'Europe', 'Eastern Europe', 'Warsaw', 'ÙˆØ§Ø±Ø³Ùˆ'),
-('South Korea', 'ÙƒÙˆØ±ÙŠØ§ Ø§Ù„Ø¬Ù†ÙˆØ¨ÙŠØ©', 'KR', 'KOR', 410, '+82', 'KRW', 'South Korean Won', 'ÙˆÙˆÙ† ÙƒÙˆØ±ÙŠ Ø¬Ù†ÙˆØ¨ÙŠ', 'â‚©', 'Asia', 'Asia', 'Eastern Asia', 'Seoul', 'Ø³ÙˆÙ„'),
-('Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©', 'SG', 'SGP', 702, '+65', 'SGD', 'Singapore Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ø³Ù†ØºØ§ÙÙˆØ±ÙŠ', '$', 'Asia', 'Asia', 'South-Eastern Asia', 'Singapore', 'Ø³Ù†ØºØ§ÙÙˆØ±Ø©'),
-('Malaysia', 'Ù…Ø§Ù„ÙŠØ²ÙŠØ§', 'MY', 'MYS', 458, '+60', 'MYR', 'Malaysian Ringgit', 'Ø±ÙŠÙ†ØºÙŠØª Ù…Ø§Ù„ÙŠØ²ÙŠ', 'RM', 'Asia', 'Asia', 'South-Eastern Asia', 'Kuala Lumpur', 'ÙƒÙˆØ§Ù„Ø§Ù„Ù…Ø¨ÙˆØ±'),
-('Indonesia', 'Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ§', 'ID', 'IDN', 360, '+62', 'IDR', 'Indonesian Rupiah', 'Ø±ÙˆØ¨ÙŠØ© Ø¥Ù†Ø¯ÙˆÙ†ÙŠØ³ÙŠØ©', 'Rp', 'Asia', 'Asia', 'South-Eastern Asia', 'Jakarta', 'Ø¬Ø§ÙƒØ±ØªØ§'),
-('Thailand', 'ØªØ§ÙŠÙ„Ø§Ù†Ø¯', 'TH', 'THA', 764, '+66', 'THB', 'Thai Baht', 'Ø¨Ø§Øª ØªØ§ÙŠÙ„Ù†Ø¯ÙŠ', 'à¸¿', 'Asia', 'Asia', 'South-Eastern Asia', 'Bangkok', 'Ø¨Ø§Ù†ÙƒÙˆÙƒ'),
-('Vietnam', 'ÙÙŠØªÙ†Ø§Ù…', 'VN', 'VNM', 704, '+84', 'VND', 'Vietnamese Dong', 'Ø¯ÙˆÙ†Øº ÙÙŠØªÙ†Ø§Ù…ÙŠ', 'â‚«', 'Asia', 'Asia', 'South-Eastern Asia', 'Hanoi', 'Ù‡Ø§Ù†ÙˆÙŠ'),
-('Philippines', 'Ø§Ù„ÙÙ„Ø¨ÙŠÙ†', 'PH', 'PHL', 608, '+63', 'PHP', 'Philippine Peso', 'Ø¨ÙŠØ²Ùˆ ÙÙ„Ø¨ÙŠÙ†ÙŠ', 'â‚±', 'Asia', 'Asia', 'South-Eastern Asia', 'Manila', 'Ù…Ø§Ù†ÙŠÙ„Ø§'),
-('Pakistan', 'Ø¨Ø§ÙƒØ³ØªØ§Ù†', 'PK', 'PAK', 586, '+92', 'PKR', 'Pakistani Rupee', 'Ø±ÙˆØ¨ÙŠØ© Ø¨Ø§ÙƒØ³ØªØ§Ù†ÙŠØ©', 'â‚¨', 'Asia', 'Asia', 'Southern Asia', 'Islamabad', 'Ø¥Ø³Ù„Ø§Ù… Ø¢Ø¨Ø§Ø¯'),
-('Bangladesh', 'Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´', 'BD', 'BGD', 50, '+880', 'BDT', 'Bangladeshi Taka', 'ØªØ§ÙƒØ§ Ø¨Ù†ØºÙ„Ø§Ø¯ÙŠØ´ÙŠ', 'à§³', 'Asia', 'Asia', 'Southern Asia', 'Dhaka', 'Ø¯ÙƒØ§'),
-('Nigeria', 'Ù†ÙŠØ¬ÙŠØ±ÙŠØ§', 'NG', 'NGA', 566, '+234', 'NGN', 'Nigerian Naira', 'Ù†Ø§ÙŠØ±Ø§ Ù†ÙŠØ¬ÙŠØ±ÙŠ', 'â‚¦', 'Africa', 'Africa', 'Western Africa', 'Abuja', 'Ø£Ø¨ÙˆØ¬Ø§'),
-('South Africa', 'Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠØ§', 'ZA', 'ZAF', 710, '+27', 'ZAR', 'South African Rand', 'Ø±Ø§Ù†Ø¯ Ø¬Ù†ÙˆØ¨ Ø£ÙØ±ÙŠÙ‚ÙŠ', 'R', 'Africa', 'Africa', 'Southern Africa', 'Pretoria', 'Ø¨Ø±ÙŠØªÙˆØ±ÙŠØ§'),
-('Mexico', 'Ø§Ù„Ù…ÙƒØ³ÙŠÙƒ', 'MX', 'MEX', 484, '+52', 'MXN', 'Mexican Peso', 'Ø¨ÙŠØ²Ùˆ Ù…ÙƒØ³ÙŠÙƒÙŠ', '$', 'North America', 'Americas', 'Northern America', 'Mexico City', 'Ù…Ø¯ÙŠÙ†Ø© Ù…ÙƒØ³ÙŠÙƒÙˆ'),
-('Argentina', 'Ø§Ù„Ø£Ø±Ø¬Ù†ØªÙŠÙ†', 'AR', 'ARG', 32, '+54', 'ARS', 'Argentine Peso', 'Ø¨ÙŠØ²Ùˆ Ø£Ø±Ø¬Ù†ØªÙŠÙ†ÙŠ', '$', 'South America', 'Americas', 'South America', 'Buenos Aires', 'Ø¨ÙˆÙŠÙ†Ø³ Ø¢ÙŠØ±Ø³'),
-('Colombia', 'ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠØ§', 'CO', 'COL', 170, '+57', 'COP', 'Colombian Peso', 'Ø¨ÙŠØ²Ùˆ ÙƒÙˆÙ„ÙˆÙ…Ø¨ÙŠ', '$', 'South America', 'Americas', 'South America', 'BogotÃ¡', 'Ø¨ÙˆØºÙˆØªØ§'),
-('Chile', 'ØªØ´ÙŠÙ„ÙŠ', 'CL', 'CHL', 152, '+56', 'CLP', 'Chilean Peso', 'Ø¨ÙŠØ²Ùˆ ØªØ´ÙŠÙ„ÙŠ', '$', 'South America', 'Americas', 'South America', 'Santiago', 'Ø³Ø§Ù†ØªÙŠØ§ØºÙˆ'),
-('Peru', 'Ø¨ÙŠØ±Ùˆ', 'PE', 'PER', 604, '+51', 'PEN', 'Peruvian Sol', 'Ø³ÙˆÙ„ Ø¨ÙŠØ±ÙˆÙÙŠ', 'S/.', 'South America', 'Americas', 'South America', 'Lima', 'Ù„ÙŠÙ…Ø§'),
-('Venezuela', 'ÙÙ†Ø²ÙˆÙŠÙ„Ø§', 'VE', 'VEN', 862, '+58', 'VES', 'Venezuelan BolÃ­var', 'Ø¨ÙˆÙ„ÙŠÙØ§Ø± ÙÙ†Ø²ÙˆÙŠÙ„ÙŠ', 'Bs.', 'South America', 'Americas', 'South America', 'Caracas', 'ÙƒØ§Ø±Ø§ÙƒØ§Ø³'),
-('Greece', 'Ø§Ù„ÙŠÙˆÙ†Ø§Ù†', 'GR', 'GRC', 300, '+30', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Athens', 'Ø£Ø«ÙŠÙ†Ø§'),
-('Portugal', 'Ø§Ù„Ø¨Ø±ØªØºØ§Ù„', 'PT', 'PRT', 620, '+351', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Southern Europe', 'Lisbon', 'Ù„ÙŠØ³Ø¨ÙˆÙ†'),
-('Ireland', 'Ø£ÙŠØ±Ù„Ù†Ø¯Ø§', 'IE', 'IRL', 372, '+353', 'EUR', 'Euro', 'ÙŠÙˆØ±Ùˆ', 'â‚¬', 'Europe', 'Europe', 'Northern Europe', 'Dublin', 'Ø¯Ø¨Ù„Ù†'),
-('New Zealand', 'Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯Ø§', 'NZ', 'NZL', 554, '+64', 'NZD', 'New Zealand Dollar', 'Ø¯ÙˆÙ„Ø§Ø± Ù†ÙŠÙˆØ²ÙŠÙ„Ù†Ø¯ÙŠ', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Wellington', 'ÙˆÙŠÙ„ÙŠÙ†ØºØªÙˆÙ†'),
-('South Sudan', 'Ø¬Ù†ÙˆØ¨ Ø§Ù„Ø³ÙˆØ¯Ø§Ù†', 'SS', 'SSD', 728, '+211', 'SSP', 'South Sudanese Pound', 'Ø¬Ù†ÙŠÙ‡ Ø¬Ù†ÙˆØ¨ Ø³ÙˆØ¯Ø§Ù†ÙŠ', 'Â£', 'Africa', 'Africa', 'Northern Africa', 'Juba', 'Ø¬ÙˆØ¨Ø§'),
-('Libya', 'Ù„ÙŠØ¨ÙŠØ§', 'LY', 'LBY', 434, '+218', 'LYD', 'Libyan Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ù„ÙŠØ¨ÙŠ', 'Ù„.Ø¯', 'Africa', 'Africa', 'Northern Africa', 'Tripoli', 'Ø·Ø±Ø§Ø¨Ù„Ø³'),
-('Jordan', 'Ø§Ù„Ø£Ø±Ø¯Ù†', 'JO', 'JOR', 400, '+962', 'JOD', 'Jordanian Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø£Ø±Ø¯Ù†ÙŠ', 'Ø¯.Ø£', 'Asia', 'Asia', 'Western Asia', 'Amman', 'Ø¹Ù…Ø§Ù†'),
-('Lebanon', 'Ù„Ø¨Ù†Ø§Ù†', 'LB', 'LBN', 422, '+961', 'LBP', 'Lebanese Pound', 'Ù„ÙŠØ±Ø© Ù„Ø¨Ù†Ø§Ù†ÙŠØ©', 'Ù„.Ù„', 'Asia', 'Asia', 'Western Asia', 'Beirut', 'Ø¨ÙŠØ±ÙˆØª'),
-('Syria', 'Ø³ÙˆØ±ÙŠØ§', 'SY', 'SYR', 760, '+963', 'SYP', 'Syrian Pound', 'Ù„ÙŠØ±Ø© Ø³ÙˆØ±ÙŠØ©', 'Ù„.Ø³', 'Asia', 'Asia', 'Western Asia', 'Damascus', 'Ø¯Ù…Ø´Ù‚'),
-('Iraq', 'Ø§Ù„Ø¹Ø±Ø§Ù‚', 'IQ', 'IRQ', 368, '+964', 'IQD', 'Iraqi Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¹Ø±Ø§Ù‚ÙŠ', 'Ø¹.Ø¯', 'Asia', 'Asia', 'Western Asia', 'Baghdad', 'Ø¨ØºØ¯Ø§Ø¯'),
-('Yemen', 'Ø§Ù„ÙŠÙ…Ù†', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'Ø±ÙŠØ§Ù„ ÙŠÙ…Ù†ÙŠ', 'Ø±.ÙŠ', 'Asia', 'Asia', 'Western Asia', 'Sana''a', 'ØµÙ†Ø¹Ø§Ø¡'),
-('Oman', 'Ø¹Ù…Ø§Ù†', 'OM', 'OMN', 512, '+968', 'OMR', 'Omani Rial', 'Ø±ÙŠØ§Ù„ Ø¹Ù…Ø§Ù†ÙŠ', 'Ø±.Ø¹', 'Asia', 'Asia', 'Western Asia', 'Muscat', 'Ù…Ø³Ù‚Ø·'),
-('Bahrain', 'Ø§Ù„Ø¨Ø­Ø±ÙŠÙ†', 'BH', 'BHR', 48, '+973', 'BHD', 'Bahraini Dinar', 'Ø¯ÙŠÙ†Ø§Ø± Ø¨Ø­Ø±ÙŠÙ†ÙŠ', 'Ø¯.Ø¨', 'Asia', 'Asia', 'Western Asia', 'Manama', 'Ø§Ù„Ù…Ù†Ø§Ù…Ø©'),
-('Palestin', 'Ù‚Ù„Ø³Ø·ÙŠÙ†', 'PS', 'PSE ', 376, '+972', 'PSE', 'Palestiny New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'Ø§Ù„Ù‚Ø¯Ø³'),
-('Palestine', 'ÙÙ„Ø³Ø·ÙŠÙ†', 'PS', 'PSE', 275, '+970', 'PSE', 'Palestini New Shekel', 'Ø´ÙŠÙƒÙ„ ÙÙ„Ø³Ø·ÙŠÙ†ÙŠ Ø¬Ø¯ÙŠØ¯', 'â‚ª', 'Asia', 'Asia', 'Western Asia', 'Ramallah', 'Ø±Ø§Ù… Ø§Ù„Ù„Ù‡')
+('United States', 'الولايات المتحدة', 'US', 'USA', 840, '+1', 'USD', 'US Dollar', 'دولار أمريكي', '$', 'North America', 'Americas', 'Northern America', 'Washington, D.C.', 'واشنطن العاصمة'),
+('United Kingdom', 'المملكة المتحدة', 'GB', 'GBR', 826, '+44', 'GBP', 'British Pound', 'جنيه إسترليني', '£', 'Europe', 'Europe', 'Northern Europe', 'London', 'لندن'),
+('France', 'فرنسا', 'FR', 'FRA', 250, '+33', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Western Europe', 'Paris', 'باريس'),
+('Germany', 'ألمانيا', 'DE', 'DEU', 276, '+49', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Western Europe', 'Berlin', 'برلين'),
+('Canada', 'كندا', 'CA', 'CAN', 124, '+1', 'CAD', 'Canadian Dollar', 'دولار كندي', '$', 'North America', 'Americas', 'Northern America', 'Ottawa', 'أوتاوا'),
+('Australia', 'أستراليا', 'AU', 'AUS', 36, '+61', 'AUD', 'Australian Dollar', 'دولار أسترالي', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Canberra', 'كانبيرا'),
+('Japan', 'اليابان', 'JP', 'JPN', 392, '+81', 'JPY', 'Japanese Yen', 'ين ياباني', '¥', 'Asia', 'Asia', 'Eastern Asia', 'Tokyo', 'طوكيو'),
+('China', 'الصين', 'CN', 'CHN', 156, '+86', 'CNY', 'Chinese Yuan', 'يوان صيني', '¥', 'Asia', 'Asia', 'Eastern Asia', 'Beijing', 'بكين'),
+('India', 'الهند', 'IN', 'IND', 356, '+91', 'INR', 'Indian Rupee', 'روبية هندية', '₹', 'Asia', 'Asia', 'Southern Asia', 'New Delhi', 'نيودلهي'),
+('Brazil', 'البرازيل', 'BR', 'BRA', 76, '+55', 'BRL', 'Brazilian Real', 'ريال برازيلي', 'R$', 'South America', 'Americas', 'South America', 'Brasília', 'برازيليا'),
+('Russia', 'روسيا', 'RU', 'RUS', 643, '+7', 'RUB', 'Russian Ruble', 'روبل روسي', '₽', 'Europe', 'Europe', 'Eastern Europe', 'Moscow', 'موسكو'),
+('Turkey', 'تركيا', 'TR', 'TUR', 792, '+90', 'TRY', 'Turkish Lira', 'ليرة تركية', '₺', 'Europe', 'Asia', 'Western Asia', 'Ankara', 'أنقرة'),
+('Spain', 'إسبانيا', 'ES', 'ESP', 724, '+34', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Southern Europe', 'Madrid', 'مدريد'),
+('Italy', 'إيطاليا', 'IT', 'ITA', 380, '+39', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Southern Europe', 'Rome', 'روما'),
+('Netherlands', 'هولندا', 'NL', 'NLD', 528, '+31', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Western Europe', 'Amsterdam', 'أمستردام'),
+('Belgium', 'بلجيكا', 'BE', 'BEL', 56, '+32', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Western Europe', 'Brussels', 'بروكسل'),
+('Switzerland', 'سويسرا', 'CH', 'CHE', 756, '+41', 'CHF', 'Swiss Franc', 'فرنك سويسري', 'CHF', 'Europe', 'Europe', 'Western Europe', 'Bern', 'برن'),
+('Sweden', 'السويد', 'SE', 'SWE', 752, '+46', 'SEK', 'Swedish Krona', 'كرونا سويدية', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Stockholm', 'ستوكهولم'),
+('Norway', 'النرويج', 'NO', 'NOR', 578, '+47', 'NOK', 'Norwegian Krone', 'كرونة نرويجية', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Oslo', 'أوسلو'),
+('Denmark', 'الدنمارك', 'DK', 'DNK', 208, '+45', 'DKK', 'Danish Krone', 'كرونة دنماركية', 'kr', 'Europe', 'Europe', 'Northern Europe', 'Copenhagen', 'كوبنهاغن'),
+('Finland', 'فنلندا', 'FI', 'FIN', 246, '+358', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Northern Europe', 'Helsinki', 'هلسنكي'),
+('Poland', 'بولندا', 'PL', 'POL', 616, '+48', 'PLN', 'Polish Zloty', 'زلوتي بولندي', 'zł', 'Europe', 'Europe', 'Eastern Europe', 'Warsaw', 'وارسو'),
+('South Korea', 'كوريا الجنوبية', 'KR', 'KOR', 410, '+82', 'KRW', 'South Korean Won', 'وون كوري جنوبي', '₩', 'Asia', 'Asia', 'Eastern Asia', 'Seoul', 'سول'),
+('Singapore', 'سنغافورة', 'SG', 'SGP', 702, '+65', 'SGD', 'Singapore Dollar', 'دولار سنغافوري', '$', 'Asia', 'Asia', 'South-Eastern Asia', 'Singapore', 'سنغافورة'),
+('Malaysia', 'ماليزيا', 'MY', 'MYS', 458, '+60', 'MYR', 'Malaysian Ringgit', 'رينغيت ماليزي', 'RM', 'Asia', 'Asia', 'South-Eastern Asia', 'Kuala Lumpur', 'كوالالمبور'),
+('Indonesia', 'إندونيسيا', 'ID', 'IDN', 360, '+62', 'IDR', 'Indonesian Rupiah', 'روبية إندونيسية', 'Rp', 'Asia', 'Asia', 'South-Eastern Asia', 'Jakarta', 'جاكرتا'),
+('Thailand', 'تايلاند', 'TH', 'THA', 764, '+66', 'THB', 'Thai Baht', 'بات تايلندي', '฿', 'Asia', 'Asia', 'South-Eastern Asia', 'Bangkok', 'بانكوك'),
+('Vietnam', 'فيتنام', 'VN', 'VNM', 704, '+84', 'VND', 'Vietnamese Dong', 'دونغ فيتنامي', '₫', 'Asia', 'Asia', 'South-Eastern Asia', 'Hanoi', 'هانوي'),
+('Philippines', 'الفلبين', 'PH', 'PHL', 608, '+63', 'PHP', 'Philippine Peso', 'بيزو فلبيني', '₱', 'Asia', 'Asia', 'South-Eastern Asia', 'Manila', 'مانيلا'),
+('Pakistan', 'باكستان', 'PK', 'PAK', 586, '+92', 'PKR', 'Pakistani Rupee', 'روبية باكستانية', '₨', 'Asia', 'Asia', 'Southern Asia', 'Islamabad', 'إسلام آباد'),
+('Bangladesh', 'بنغلاديش', 'BD', 'BGD', 50, '+880', 'BDT', 'Bangladeshi Taka', 'تاكا بنغلاديشي', '৳', 'Asia', 'Asia', 'Southern Asia', 'Dhaka', 'دكا'),
+('Nigeria', 'نيجيريا', 'NG', 'NGA', 566, '+234', 'NGN', 'Nigerian Naira', 'نايرا نيجيري', '₦', 'Africa', 'Africa', 'Western Africa', 'Abuja', 'أبوجا'),
+('South Africa', 'جنوب أفريقيا', 'ZA', 'ZAF', 710, '+27', 'ZAR', 'South African Rand', 'راند جنوب أفريقي', 'R', 'Africa', 'Africa', 'Southern Africa', 'Pretoria', 'بريتوريا'),
+('Mexico', 'المكسيك', 'MX', 'MEX', 484, '+52', 'MXN', 'Mexican Peso', 'بيزو مكسيكي', '$', 'North America', 'Americas', 'Northern America', 'Mexico City', 'مدينة مكسيكو'),
+('Argentina', 'الأرجنتين', 'AR', 'ARG', 32, '+54', 'ARS', 'Argentine Peso', 'بيزو أرجنتيني', '$', 'South America', 'Americas', 'South America', 'Buenos Aires', 'بوينس آيرس'),
+('Colombia', 'كولومبيا', 'CO', 'COL', 170, '+57', 'COP', 'Colombian Peso', 'بيزو كولومبي', '$', 'South America', 'Americas', 'South America', 'Bogotá', 'بوغوتا'),
+('Chile', 'تشيلي', 'CL', 'CHL', 152, '+56', 'CLP', 'Chilean Peso', 'بيزو تشيلي', '$', 'South America', 'Americas', 'South America', 'Santiago', 'سانتياغو'),
+('Peru', 'بيرو', 'PE', 'PER', 604, '+51', 'PEN', 'Peruvian Sol', 'سول بيروفي', 'S/.', 'South America', 'Americas', 'South America', 'Lima', 'ليما'),
+('Venezuela', 'فنزويلا', 'VE', 'VEN', 862, '+58', 'VES', 'Venezuelan Bolívar', 'بوليفار فنزويلي', 'Bs.', 'South America', 'Americas', 'South America', 'Caracas', 'كاراكاس'),
+('Greece', 'اليونان', 'GR', 'GRC', 300, '+30', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Southern Europe', 'Athens', 'أثينا'),
+('Portugal', 'البرتغال', 'PT', 'PRT', 620, '+351', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Southern Europe', 'Lisbon', 'ليسبون'),
+('Ireland', 'أيرلندا', 'IE', 'IRL', 372, '+353', 'EUR', 'Euro', 'يورو', '€', 'Europe', 'Europe', 'Northern Europe', 'Dublin', 'دبلن'),
+('New Zealand', 'نيوزيلندا', 'NZ', 'NZL', 554, '+64', 'NZD', 'New Zealand Dollar', 'دولار نيوزيلندي', '$', 'Oceania', 'Oceania', 'Australia and New Zealand', 'Wellington', 'ويلينغتون'),
+('South Sudan', 'جنوب السودان', 'SS', 'SSD', 728, '+211', 'SSP', 'South Sudanese Pound', 'جنيه جنوب سوداني', '£', 'Africa', 'Africa', 'Northern Africa', 'Juba', 'جوبا'),
+('Libya', 'ليبيا', 'LY', 'LBY', 434, '+218', 'LYD', 'Libyan Dinar', 'دينار ليبي', 'ل.د', 'Africa', 'Africa', 'Northern Africa', 'Tripoli', 'طرابلس'),
+('Jordan', 'الأردن', 'JO', 'JOR', 400, '+962', 'JOD', 'Jordanian Dinar', 'دينار أردني', 'د.أ', 'Asia', 'Asia', 'Western Asia', 'Amman', 'عمان'),
+('Lebanon', 'لبنان', 'LB', 'LBN', 422, '+961', 'LBP', 'Lebanese Pound', 'ليرة لبنانية', 'ل.ل', 'Asia', 'Asia', 'Western Asia', 'Beirut', 'بيروت'),
+('Syria', 'سوريا', 'SY', 'SYR', 760, '+963', 'SYP', 'Syrian Pound', 'ليرة سورية', 'ل.س', 'Asia', 'Asia', 'Western Asia', 'Damascus', 'دمشق'),
+('Iraq', 'العراق', 'IQ', 'IRQ', 368, '+964', 'IQD', 'Iraqi Dinar', 'دينار عراقي', 'ع.د', 'Asia', 'Asia', 'Western Asia', 'Baghdad', 'بغداد'),
+('Yemen', 'اليمن', 'YE', 'YEM', 887, '+967', 'YER', 'Yemeni Rial', 'ريال يمني', 'ر.ي', 'Asia', 'Asia', 'Western Asia', 'Sana''a', 'صنعاء'),
+('Oman', 'عمان', 'OM', 'OMN', 512, '+968', 'OMR', 'Omani Rial', 'ريال عماني', 'ر.ع', 'Asia', 'Asia', 'Western Asia', 'Muscat', 'مسقط'),
+('Bahrain', 'البحرين', 'BH', 'BHR', 48, '+973', 'BHD', 'Bahraini Dinar', 'دينار بحريني', 'د.ب', 'Asia', 'Asia', 'Western Asia', 'Manama', 'المنامة'),
+('Palestin', 'قلسطين', 'PS', 'PSE ', 376, '+972', 'PSE', 'Palestiny New Shekel', 'شيكل فلسطيني جديد', '₪', 'Asia', 'Asia', 'Western Asia', 'Jerusalem', 'القدس'),
+('Palestine', 'فلسطين', 'PS', 'PSE', 275, '+970', 'PSE', 'Palestini New Shekel', 'شيكل فلسطيني جديد', '₪', 'Asia', 'Asia', 'Western Asia', 'Ramallah', 'رام الله')
 ON CONFLICT (iso2_code) DO NOTHING;
 -- Migration: Create Regions Table
 -- Purpose: Store region/state/province reference data within countries
@@ -445,9 +445,9 @@ ON CONFLICT (iso2_code) DO NOTHING;
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_002_create_countries_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Regions Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create regions table to store region/state/province reference data
 CREATE TABLE IF NOT EXISTS regions (
@@ -483,9 +483,9 @@ CREATE TABLE IF NOT EXISTS regions (
   CONSTRAINT unique_country_region UNIQUE (country_id, code)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_regions_country_id ON regions(country_id) WHERE is_active = true;
@@ -495,9 +495,9 @@ CREATE INDEX idx_regions_is_active ON regions(is_active);
 CREATE INDEX idx_regions_is_supported ON regions(is_supported) WHERE is_supported = true;
 CREATE INDEX idx_regions_country_code ON regions(country_id, code) WHERE is_active = true;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on regions table
 ALTER TABLE regions ENABLE ROW LEVEL SECURITY;
@@ -519,9 +519,9 @@ CREATE POLICY "Service role can manage regions"
   ON regions FOR ALL
   USING (auth.role() = 'service_role');
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_regions_updated_at()
@@ -538,9 +538,9 @@ CREATE TRIGGER regions_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_regions_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE regions IS 'Region/state/province reference data within countries';
 COMMENT ON COLUMN regions.id IS 'Primary key (UUID)';
@@ -557,243 +557,243 @@ COMMENT ON COLUMN regions.longitude IS 'Geographic longitude';
 COMMENT ON COLUMN regions.is_active IS 'Whether the region is active';
 COMMENT ON COLUMN regions.is_supported IS 'Whether the app supports this region';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Seed Data
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Insert Algerian regions (wilayas) - Primary market
 INSERT INTO regions (country_id, name, name_ar, code, iso_code, region_type, capital, capital_ar, is_active, is_supported) VALUES
 -- Get Algeria country ID
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Adrar', 'Ø£Ø¯Ø±Ø§Ø±', '01', 'DZ-01', 'Wilaya', 'Adrar', 'Ø£Ø¯Ø±Ø§Ø±', true, true
+  'Adrar', 'أدرار', '01', 'DZ-01', 'Wilaya', 'Adrar', 'أدرار', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Chlef', 'Ø§Ù„Ø´Ù„Ù', '02', 'DZ-02', 'Wilaya', 'Chlef', 'Ø§Ù„Ø´Ù„Ù', true, true
+  'Chlef', 'الشلف', '02', 'DZ-02', 'Wilaya', 'Chlef', 'الشلف', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Laghouat', 'Ø§Ù„Ø£ØºÙˆØ§Ø·', '03', 'DZ-03', 'Wilaya', 'Laghouat', 'Ø§Ù„Ø£ØºÙˆØ§Ø·', true, true
+  'Laghouat', 'الأغواط', '03', 'DZ-03', 'Wilaya', 'Laghouat', 'الأغواط', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Oum El Bouaghi', 'Ø£Ù… Ø§Ù„Ø¨ÙˆØ§Ù‚ÙŠ', '04', 'DZ-04', 'Wilaya', 'Oum El Bouaghi', 'Ø£Ù… Ø§Ù„Ø¨ÙˆØ§Ù‚ÙŠ', true, true
+  'Oum El Bouaghi', 'أم البواقي', '04', 'DZ-04', 'Wilaya', 'Oum El Bouaghi', 'أم البواقي', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Batna', 'Ø¨Ø§ØªÙ†Ø©', '05', 'DZ-05', 'Wilaya', 'Batna', 'Ø¨Ø§ØªÙ†Ø©', true, true
+  'Batna', 'باتنة', '05', 'DZ-05', 'Wilaya', 'Batna', 'باتنة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'BÃ©jaÃ¯a', 'Ø¨Ø¬Ø§ÙŠØ©', '06', 'DZ-06', 'Wilaya', 'BÃ©jaÃ¯a', 'Ø¨Ø¬Ø§ÙŠØ©', true, true
+  'Béjaïa', 'بجاية', '06', 'DZ-06', 'Wilaya', 'Béjaïa', 'بجاية', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Biskra', 'Ø¨Ø³ÙƒØ±Ø©', '07', 'DZ-07', 'Wilaya', 'Biskra', 'Ø¨Ø³ÙƒØ±Ø©', true, true
+  'Biskra', 'بسكرة', '07', 'DZ-07', 'Wilaya', 'Biskra', 'بسكرة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'BÃ©char', 'Ø¨Ø´Ø§Ø±', '08', 'DZ-08', 'Wilaya', 'BÃ©char', 'Ø¨Ø´Ø§Ø±', true, true
+  'Béchar', 'بشار', '08', 'DZ-08', 'Wilaya', 'Béchar', 'بشار', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Blida', 'Ø§Ù„Ø¨Ù„ÙŠØ¯Ø©', '09', 'DZ-09', 'Wilaya', 'Blida', 'Ø§Ù„Ø¨Ù„ÙŠØ¯Ø©', true, true
+  'Blida', 'البليدة', '09', 'DZ-09', 'Wilaya', 'Blida', 'البليدة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Bouira', 'Ø§Ù„Ø¨ÙˆÙŠØ±Ø©', '10', 'DZ-10', 'Wilaya', 'Bouira', 'Ø§Ù„Ø¨ÙˆÙŠØ±Ø©', true, true
+  'Bouira', 'البويرة', '10', 'DZ-10', 'Wilaya', 'Bouira', 'البويرة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tamanrasset', 'ØªÙ…Ù†Ø±Ø§Ø³Øª', '11', 'DZ-11', 'Wilaya', 'Tamanrasset', 'ØªÙ…Ù†Ø±Ø§Ø³Øª', true, true
+  'Tamanrasset', 'تمنراست', '11', 'DZ-11', 'Wilaya', 'Tamanrasset', 'تمنراست', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'TÃ©bessa', 'ØªØ¨Ø³Ø©', '12', 'DZ-12', 'Wilaya', 'TÃ©bessa', 'ØªØ¨Ø³Ø©', true, true
+  'Tébessa', 'تبسة', '12', 'DZ-12', 'Wilaya', 'Tébessa', 'تبسة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tlemcen', 'ØªÙ„Ù…Ø³Ø§Ù†', '13', 'DZ-13', 'Wilaya', 'Tlemcen', 'ØªÙ„Ù…Ø³Ø§Ù†', true, true
+  'Tlemcen', 'تلمسان', '13', 'DZ-13', 'Wilaya', 'Tlemcen', 'تلمسان', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tiaret', 'ØªÙŠØ§Ø±Øª', '14', 'DZ-14', 'Wilaya', 'Tiaret', 'ØªÙŠØ§Ø±Øª', true, true
+  'Tiaret', 'تيارت', '14', 'DZ-14', 'Wilaya', 'Tiaret', 'تيارت', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tizi Ouzou', 'ØªÙŠØ²ÙŠ ÙˆØ²Ùˆ', '15', 'DZ-15', 'Wilaya', 'Tizi Ouzou', 'ØªÙŠØ²ÙŠ ÙˆØ²Ùˆ', true, true
+  'Tizi Ouzou', 'تيزي وزو', '15', 'DZ-15', 'Wilaya', 'Tizi Ouzou', 'تيزي وزو', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', '16', 'DZ-16', 'Wilaya', 'Algiers', 'Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±', true, true
+  'Algiers', 'الجزائر', '16', 'DZ-16', 'Wilaya', 'Algiers', 'الجزائر', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Djelfa', 'Ø§Ù„Ø¬Ù„ÙØ©', '17', 'DZ-17', 'Wilaya', 'Djelfa', 'Ø§Ù„Ø¬Ù„ÙØ©', true, true
+  'Djelfa', 'الجلفة', '17', 'DZ-17', 'Wilaya', 'Djelfa', 'الجلفة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Jijel', 'Ø¬ÙŠØ¬Ù„', '18', 'DZ-18', 'Wilaya', 'Jijel', 'Ø¬ÙŠØ¬Ù„', true, true
+  'Jijel', 'جيجل', '18', 'DZ-18', 'Wilaya', 'Jijel', 'جيجل', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'SÃ©tif', 'Ø³Ø·ÙŠÙ', '19', 'DZ-19', 'Wilaya', 'SÃ©tif', 'Ø³Ø·ÙŠÙ', true, true
+  'Sétif', 'سطيف', '19', 'DZ-19', 'Wilaya', 'Sétif', 'سطيف', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'SaÃ¯da', 'Ø³Ø¹ÙŠØ¯Ø©', '20', 'DZ-20', 'Wilaya', 'SaÃ¯da', 'Ø³Ø¹ÙŠØ¯Ø©', true, true
+  'Saïda', 'سعيدة', '20', 'DZ-20', 'Wilaya', 'Saïda', 'سعيدة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Skikda', 'Ø³ÙƒÙŠÙƒØ¯Ø©', '21', 'DZ-21', 'Wilaya', 'Skikda', 'Ø³ÙƒÙŠÙƒØ¯Ø©', true, true
+  'Skikda', 'سكيكدة', '21', 'DZ-21', 'Wilaya', 'Skikda', 'سكيكدة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Sidi Bel AbbÃ¨s', 'Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³', '22', 'DZ-22', 'Wilaya', 'Sidi Bel AbbÃ¨s', 'Ø³ÙŠØ¯ÙŠ Ø¨Ù„Ø¹Ø¨Ø§Ø³', true, true
+  'Sidi Bel Abbès', 'سيدي بلعباس', '22', 'DZ-22', 'Wilaya', 'Sidi Bel Abbès', 'سيدي بلعباس', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Annaba', 'Ø¹Ù†Ø§Ø¨Ø©', '23', 'DZ-23', 'Wilaya', 'Annaba', 'Ø¹Ù†Ø§Ø¨Ø©', true, true
+  'Annaba', 'عنابة', '23', 'DZ-23', 'Wilaya', 'Annaba', 'عنابة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Guelma', 'Ù‚Ø§Ù„Ù…Ø©', '24', 'DZ-24', 'Wilaya', 'Guelma', 'Ù‚Ø§Ù„Ù…Ø©', true, true
+  'Guelma', 'قالمة', '24', 'DZ-24', 'Wilaya', 'Guelma', 'قالمة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Constantine', 'Ù‚Ø³Ù†Ø·ÙŠÙ†Ø©', '25', 'DZ-25', 'Wilaya', 'Constantine', 'Ù‚Ø³Ù†Ø·ÙŠÙ†Ø©', true, true
+  'Constantine', 'قسنطينة', '25', 'DZ-25', 'Wilaya', 'Constantine', 'قسنطينة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'MÃ©dÃ©a', 'Ø§Ù„Ù…Ø¯ÙŠØ©', '26', 'DZ-26', 'Wilaya', 'MÃ©dÃ©a', 'Ø§Ù„Ù…Ø¯ÙŠØ©', true, true
+  'Médéa', 'المدية', '26', 'DZ-26', 'Wilaya', 'Médéa', 'المدية', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Mostaganem', 'Ù…Ø³ØªØºØ§Ù†Ù…', '27', 'DZ-27', 'Wilaya', 'Mostaganem', 'Ù…Ø³ØªØºØ§Ù†Ù…', true, true
+  'Mostaganem', 'مستغانم', '27', 'DZ-27', 'Wilaya', 'Mostaganem', 'مستغانم', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'M''Sila', 'Ø§Ù„Ù…Ø³ÙŠÙ„Ø©', '28', 'DZ-28', 'Wilaya', 'M''Sila', 'Ø§Ù„Ù…Ø³ÙŠÙ„Ø©', true, true
+  'M''Sila', 'المسيلة', '28', 'DZ-28', 'Wilaya', 'M''Sila', 'المسيلة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Mascara', 'Ù…Ø¹Ø³ÙƒØ±', '29', 'DZ-29', 'Wilaya', 'Mascara', 'Ù…Ø¹Ø³ÙƒØ±', true, true
+  'Mascara', 'معسكر', '29', 'DZ-29', 'Wilaya', 'Mascara', 'معسكر', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Ouargla', 'ÙˆØ±Ù‚Ù„Ø©', '30', 'DZ-30', 'Wilaya', 'Ouargla', 'ÙˆØ±Ù‚Ù„Ø©', true, true
+  'Ouargla', 'ورقلة', '30', 'DZ-30', 'Wilaya', 'Ouargla', 'ورقلة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Oran', 'ÙˆÙ‡Ø±Ø§Ù†', '31', 'DZ-31', 'Wilaya', 'Oran', 'ÙˆÙ‡Ø±Ø§Ù†', true, true
+  'Oran', 'وهران', '31', 'DZ-31', 'Wilaya', 'Oran', 'وهران', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El Bayadh', 'Ø§Ù„Ø¨ÙŠØ¶', '32', 'DZ-32', 'Wilaya', 'El Bayadh', 'Ø§Ù„Ø¨ÙŠØ¶', true, true
+  'El Bayadh', 'البيض', '32', 'DZ-32', 'Wilaya', 'El Bayadh', 'البيض', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Illizi', 'Ø¥Ù„ÙŠØ²ÙŠ', '33', 'DZ-33', 'Wilaya', 'Illizi', 'Ø¥Ù„ÙŠØ²ÙŠ', true, true
+  'Illizi', 'إليزي', '33', 'DZ-33', 'Wilaya', 'Illizi', 'إليزي', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Bordj Bou Arreridj', 'Ø¨Ø±Ø¬ Ø¨ÙˆØ¹Ø±ÙŠØ±ÙŠØ¬', '34', 'DZ-34', 'Wilaya', 'Bordj Bou Arreridj', 'Ø¨Ø±Ø¬ Ø¨ÙˆØ¹Ø±ÙŠØ±ÙŠØ¬', true, true
+  'Bordj Bou Arreridj', 'برج بوعريريج', '34', 'DZ-34', 'Wilaya', 'Bordj Bou Arreridj', 'برج بوعريريج', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'BoumerdÃ¨s', 'Ø¨ÙˆÙ…Ø±Ø¯Ø§Ø³', '35', 'DZ-35', 'Wilaya', 'BoumerdÃ¨s', 'Ø¨ÙˆÙ…Ø±Ø¯Ø§Ø³', true, true
+  'Boumerdès', 'بومرداس', '35', 'DZ-35', 'Wilaya', 'Boumerdès', 'بومرداس', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El Tarf', 'Ø§Ù„Ø·Ø§Ø±Ù', '36', 'DZ-36', 'Wilaya', 'El Tarf', 'Ø§Ù„Ø·Ø§Ø±Ù', true, true
+  'El Tarf', 'الطارف', '36', 'DZ-36', 'Wilaya', 'El Tarf', 'الطارف', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tindouf', 'ØªÙ†Ø¯ÙˆÙ', '37', 'DZ-37', 'Wilaya', 'Tindouf', 'ØªÙ†Ø¯ÙˆÙ', true, true
+  'Tindouf', 'تندوف', '37', 'DZ-37', 'Wilaya', 'Tindouf', 'تندوف', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tissemsilt', 'ØªÙŠØ³Ù…Ø³ÙŠÙ„Øª', '38', 'DZ-38', 'Wilaya', 'Tissemsilt', 'ØªÙŠØ³Ù…Ø³ÙŠÙ„Øª', true, true
+  'Tissemsilt', 'تيسمسيلت', '38', 'DZ-38', 'Wilaya', 'Tissemsilt', 'تيسمسيلت', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El Oued', 'Ø§Ù„ÙˆØ§Ø¯ÙŠ', '39', 'DZ-39', 'Wilaya', 'El Oued', 'Ø§Ù„ÙˆØ§Ø¯ÙŠ', true, true
+  'El Oued', 'الوادي', '39', 'DZ-39', 'Wilaya', 'El Oued', 'الوادي', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Khenchela', 'Ø®Ù†Ø´Ù„Ø©', '40', 'DZ-40', 'Wilaya', 'Khenchela', 'Ø®Ù†Ø´Ù„Ø©', true, true
+  'Khenchela', 'خنشلة', '40', 'DZ-40', 'Wilaya', 'Khenchela', 'خنشلة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Souk Ahras', 'Ø³ÙˆÙ‚ Ø£Ù‡Ø±Ø§Ø³', '41', 'DZ-41', 'Wilaya', 'Souk Ahras', 'Ø³ÙˆÙ‚ Ø£Ù‡Ø±Ø§Ø³', true, true
+  'Souk Ahras', 'سوق أهراس', '41', 'DZ-41', 'Wilaya', 'Souk Ahras', 'سوق أهراس', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Tipaza', 'ØªÙŠØ¨Ø§Ø²Ø©', '42', 'DZ-42', 'Wilaya', 'Tipaza', 'ØªÙŠØ¨Ø§Ø²Ø©', true, true
+  'Tipaza', 'تيبازة', '42', 'DZ-42', 'Wilaya', 'Tipaza', 'تيبازة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Mila', 'Ù…ÙŠÙ„Ø©', '43', 'DZ-43', 'Wilaya', 'Mila', 'Ù…ÙŠÙ„Ø©', true, true
+  'Mila', 'ميلة', '43', 'DZ-43', 'Wilaya', 'Mila', 'ميلة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'AÃ¯n Defla', 'Ø¹ÙŠÙ† Ø§Ù„Ø¯ÙÙ„Ù‰', '44', 'DZ-44', 'Wilaya', 'AÃ¯n Defla', 'Ø¹ÙŠÙ† Ø§Ù„Ø¯ÙÙ„Ù‰', true, true
+  'Aïn Defla', 'عين الدفلى', '44', 'DZ-44', 'Wilaya', 'Aïn Defla', 'عين الدفلى', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'NaÃ¢ma', 'Ø§Ù„Ù†Ø¹Ø§Ù…Ø©', '45', 'DZ-45', 'Wilaya', 'NaÃ¢ma', 'Ø§Ù„Ù†Ø¹Ø§Ù…Ø©', true, true
+  'Naâma', 'النعامة', '45', 'DZ-45', 'Wilaya', 'Naâma', 'النعامة', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'AÃ¯n TÃ©mouchent', 'Ø¹ÙŠÙ† ØªÙ…ÙˆØ´Ù†Øª', '46', 'DZ-46', 'Wilaya', 'AÃ¯n TÃ©mouchent', 'Ø¹ÙŠÙ† ØªÙ…ÙˆØ´Ù†Øª', true, true
+  'Aïn Témouchent', 'عين تموشنت', '46', 'DZ-46', 'Wilaya', 'Aïn Témouchent', 'عين تموشنت', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'GhardaÃ¯a', 'ØºØ±Ø¯Ø§ÙŠØ©', '47', 'DZ-47', 'Wilaya', 'GhardaÃ¯a', 'ØºØ±Ø¯Ø§ÙŠØ©', true, true
+  'Ghardaïa', 'غرداية', '47', 'DZ-47', 'Wilaya', 'Ghardaïa', 'غرداية', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Relizane', 'ØºÙ„ÙŠØ²Ø§Ù†', '48', 'DZ-48', 'Wilaya', 'Relizane', 'ØºÙ„ÙŠØ²Ø§Ù†', true, true
+  'Relizane', 'غليزان', '48', 'DZ-48', 'Wilaya', 'Relizane', 'غليزان', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Timimoun', 'ØªÙŠÙ…ÙŠÙ…ÙˆÙ†', '49', 'DZ-49', 'Wilaya', 'Timimoun', 'ØªÙŠÙ…ÙŠÙ…ÙˆÙ†', true, true
+  'Timimoun', 'تيميمون', '49', 'DZ-49', 'Wilaya', 'Timimoun', 'تيميمون', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Bordj Badji Mokhtar', 'Ø¨Ø±Ø¬ Ø¨Ø§Ø¬ÙŠ Ù…Ø®ØªØ§Ø±', '50', 'DZ-50', 'Wilaya', 'Bordj Badji Mokhtar', 'Ø¨Ø±Ø¬ Ø¨Ø§Ø¬ÙŠ Ù…Ø®ØªØ§Ø±', true, true
+  'Bordj Badji Mokhtar', 'برج باجي مختار', '50', 'DZ-50', 'Wilaya', 'Bordj Badji Mokhtar', 'برج باجي مختار', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Ouled Djellal', 'Ø£ÙˆÙ„Ø§Ø¯ Ø¬Ù„Ø§Ù„', '51', 'DZ-51', 'Wilaya', 'Ouled Djellal', 'Ø£ÙˆÙ„Ø§Ø¯ Ø¬Ù„Ø§Ù„', true, true
+  'Ouled Djellal', 'أولاد جلال', '51', 'DZ-51', 'Wilaya', 'Ouled Djellal', 'أولاد جلال', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'BÃ©ni AbbÃ¨s', 'Ø¨Ù†ÙŠ Ø¹Ø¨Ø§Ø³', '52', 'DZ-52', 'Wilaya', 'BÃ©ni AbbÃ¨s', 'Ø¨Ù†ÙŠ Ø¹Ø¨Ø§Ø³', true, true
+  'Béni Abbès', 'بني عباس', '52', 'DZ-52', 'Wilaya', 'Béni Abbès', 'بني عباس', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'In Salah', 'Ø¹ÙŠÙ† ØµØ§Ù„Ø­', '53', 'DZ-53', 'Wilaya', 'In Salah', 'Ø¹ÙŠÙ† ØµØ§Ù„Ø­', true, true
+  'In Salah', 'عين صالح', '53', 'DZ-53', 'Wilaya', 'In Salah', 'عين صالح', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'In Guezzam', 'Ø¹ÙŠÙ† Ù‚Ø²Ø§Ù…', '54', 'DZ-54', 'Wilaya', 'In Guezzam', 'Ø¹ÙŠÙ† Ù‚Ø²Ø§Ù…', true, true
+  'In Guezzam', 'عين قزام', '54', 'DZ-54', 'Wilaya', 'In Guezzam', 'عين قزام', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Touggourt', 'ØªÙ‚Ø±Øª', '55', 'DZ-55', 'Wilaya', 'Touggourt', 'ØªÙ‚Ø±Øª', true, true
+  'Touggourt', 'تقرت', '55', 'DZ-55', 'Wilaya', 'Touggourt', 'تقرت', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'Djanet', 'Ø¬Ø§Ù†Øª', '56', 'DZ-56', 'Wilaya', 'Djanet', 'Ø¬Ø§Ù†Øª', true, true
+  'Djanet', 'جانت', '56', 'DZ-56', 'Wilaya', 'Djanet', 'جانت', true, true
 ),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El M''Ghair', 'Ø§Ù„Ù…ØºÙŠØ±', '57', 'DZ-57', 'Wilaya', 'El M''Ghair', 'Ø§Ù„Ù…ØºÙŠØ±', true, true),
+  'El M''Ghair', 'المغير', '57', 'DZ-57', 'Wilaya', 'El M''Ghair', 'المغير', true, true),
 (
   (SELECT id FROM countries WHERE iso2_code = 'DZ'),
-  'El Meniaa', 'Ø§Ù„Ù…Ù†ÙŠØ¹Ø©', '58', 'DZ-58', 'Wilaya', 'El Meniaa', 'Ø§Ù„Ù…Ù†ÙŠØ¹Ø©', true, true
+  'El Meniaa', 'المنيعة', '58', 'DZ-58', 'Wilaya', 'El Meniaa', 'المنيعة', true, true
 );
 -- Migration: Create Users Table and Related Structures
 -- Purpose: Define the users table with RLS policies and relationships to auth.users
@@ -801,9 +801,9 @@ INSERT INTO regions (country_id, name, name_ar, code, iso_code, region_type, cap
 -- Created: 2026-03-04
 -- Dependencies: None
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Users Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create users table to store extended user profile information
 -- This table extends Supabase's auth.users with application-specific fields
@@ -883,9 +883,9 @@ CREATE INDEX idx_users_subscription_type ON users(subscription_type) WHERE delet
 CREATE INDEX idx_users_country_id ON users(country_id) WHERE deleted_at IS NULL;
 CREATE INDEX idx_users_region_id ON users(region_id) WHERE deleted_at IS NULL;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Updated At Trigger
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -902,9 +902,9 @@ CREATE TRIGGER users_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Last Activity Trigger
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update last_activity_at on any table update
 CREATE OR REPLACE FUNCTION update_user_last_activity()
@@ -915,9 +915,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on users table
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
@@ -973,9 +973,9 @@ CREATE POLICY admins_soft_delete ON users
   USING ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin')
   WITH CHECK ((SELECT role FROM users WHERE id = auth.uid()) = 'super_admin');
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Helper Views
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- View: Active users only (excluding soft-deleted)
 CREATE VIEW active_users AS
@@ -1003,9 +1003,9 @@ SELECT
 FROM users
 WHERE deleted_at IS NULL;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE users IS 'Extended user profiles linked to Supabase auth.users';
 COMMENT ON COLUMN users.id IS 'Foreign key reference to auth.users.id';
@@ -1021,9 +1021,9 @@ COMMENT ON POLICY super_admin_read_all ON users IS 'Super admins can read all us
 COMMENT ON POLICY users_update_own_profile ON users IS 'Users can update non-sensitive fields';
 COMMENT ON POLICY admins_update_clinic_users ON users IS 'Admins can manage users in their clinic';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Migration Notes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 /*
   IMPORTANT SETUP NOTES:
@@ -1061,9 +1061,9 @@ COMMENT ON POLICY admins_update_clinic_users ON users IS 'Admins can manage user
 -- Created: 2026-03-04
 -- Dependencies: None
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Specialties Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create specialties table to store medical specialty reference data
 CREATE TABLE IF NOT EXISTS specialties (
@@ -1095,9 +1095,9 @@ CREATE TABLE IF NOT EXISTS specialties (
   CONSTRAINT valid_display_order CHECK (display_order >= 0)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_specialties_name_en ON specialties(name_en) WHERE is_active = true;
@@ -1108,9 +1108,9 @@ CREATE INDEX idx_specialties_display_order ON specialties(display_order) WHERE i
 CREATE INDEX idx_specialties_is_popular ON specialties(is_popular) WHERE is_popular = true;
 CREATE INDEX idx_specialties_is_active ON specialties(is_active);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on specialties table
 ALTER TABLE specialties ENABLE ROW LEVEL SECURITY;
@@ -1131,9 +1131,9 @@ CREATE POLICY "Super admins can manage specialties"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_specialties_updated_at()
@@ -1150,9 +1150,9 @@ CREATE TRIGGER specialties_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_specialties_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE specialties IS 'Medical specialty reference data for doctors';
 COMMENT ON COLUMN specialties.id IS 'Primary key (UUID)';
@@ -1166,85 +1166,85 @@ COMMENT ON COLUMN specialties.category IS 'Specialty category (Medical, Surgical
 COMMENT ON COLUMN specialties.is_active IS 'Whether the specialty is active';
 COMMENT ON COLUMN specialties.is_popular IS 'Whether this is a popular specialty';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Seed Data
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Insert medical specialties
 INSERT INTO specialties (name_en, name_ar, description_en, description_ar, icon_name, display_order, category, is_active, is_popular) VALUES
 -- Popular specialties (shown first)
-('General Practice', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø¹Ø§Ù…', 'Comprehensive healthcare for individuals and families', 'Ø±Ø¹Ø§ÙŠØ© ØµØ­ÙŠØ© Ø´Ø§Ù…Ù„Ø© Ù„Ù„Ø£ÙØ±Ø§Ø¯ ÙˆØ§Ù„Ø¹Ø§Ø¦Ù„Ø§Øª', 'medical_services', 1, 'Medical', true, true),
-('Pediatrics', 'Ø·Ø¨ Ø§Ù„Ø£Ø·ÙØ§Ù„', 'Medical care for infants, children, and adolescents', 'Ø±Ø¹Ø§ÙŠØ© Ø·Ø¨ÙŠØ© Ù„Ù„Ø±Ø¶Ø¹ ÙˆØ§Ù„Ø£Ø·ÙØ§Ù„ ÙˆØ§Ù„Ù…Ø±Ø§Ù‡Ù‚ÙŠÙ†', 'child_care', 2, 'Medical', true, true),
-('Internal Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø¨Ø§Ø·Ù†ÙŠ', 'Diagnosis and treatment of adult diseases', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¨Ø§Ù„ØºÙŠÙ†', 'medical_services', 3, 'Medical', true, true),
-('Cardiology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù‚Ù„Ø¨', 'Diagnosis and treatment of heart diseases', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù‚Ù„Ø¨', 'cardiology', 4, 'Medical', true, true),
-('Dermatology', 'Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¬Ù„Ø¯ÙŠØ©', 'Treatment of skin, hair, and nail conditions', 'Ø¹Ù„Ø§Ø¬ Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¬Ù„Ø¯ ÙˆØ§Ù„Ø´Ø¹Ø± ÙˆØ§Ù„Ø£Ø¸Ø§ÙØ±', 'dermatology', 5, 'Medical', true, true),
-('Neurology', 'Ø§Ù„Ø£Ø¹ØµØ§Ø¨', 'Diagnosis and treatment of nervous system disorders', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ø¹ØµØ¨ÙŠ', 'neurology', 6, 'Medical', true, true),
-('Orthopedics', 'Ø§Ù„Ø¹Ø¸Ø§Ù…', 'Treatment of musculoskeletal system disorders', 'Ø¹Ù„Ø§Ø¬ Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ø¹Ø¶Ù„ÙŠ Ø§Ù„Ù‡ÙŠÙƒÙ„ÙŠ', 'orthopedics', 7, 'Medical', true, true),
-('Ophthalmology', 'Ø·Ø¨ Ø§Ù„Ø¹ÙŠÙˆÙ†', 'Eye care and surgery', 'Ø±Ø¹Ø§ÙŠØ© Ø§Ù„Ø¹ÙŠÙˆÙ† ÙˆØ§Ù„Ø¬Ø±Ø§Ø­Ø©', 'ophthalmology', 8, 'Medical', true, true),
-('Obstetrics and Gynecology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù†Ø³Ø§Ø¡ ÙˆØ§Ù„ØªÙˆÙ„ÙŠØ¯', 'Women''s reproductive health and childbirth', 'Ø§Ù„ØµØ­Ø© Ø§Ù„Ø¥Ù†Ø¬Ø§Ø¨ÙŠØ© Ù„Ù„Ù†Ø³Ø§Ø¡ ÙˆØ§Ù„ÙˆÙ„Ø§Ø¯Ø©', 'pregnant_woman', 9, 'Medical', true, true),
-('Psychiatry', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ù†ÙØ³ÙŠ', 'Mental health and behavioral disorders', 'Ø§Ù„ØµØ­Ø© Ø§Ù„Ù†ÙØ³ÙŠØ© ÙˆØ§Ù„Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø³Ù„ÙˆÙƒÙŠØ©', 'psychology', 10, 'Medical', true, true),
+('General Practice', 'الطب العام', 'Comprehensive healthcare for individuals and families', 'رعاية صحية شاملة للأفراد والعائلات', 'medical_services', 1, 'Medical', true, true),
+('Pediatrics', 'طب الأطفال', 'Medical care for infants, children, and adolescents', 'رعاية طبية للرضع والأطفال والمراهقين', 'child_care', 2, 'Medical', true, true),
+('Internal Medicine', 'الطب الباطني', 'Diagnosis and treatment of adult diseases', 'تشخيص وعلاج أمراض البالغين', 'medical_services', 3, 'Medical', true, true),
+('Cardiology', 'أمراض القلب', 'Diagnosis and treatment of heart diseases', 'تشخيص وعلاج أمراض القلب', 'cardiology', 4, 'Medical', true, true),
+('Dermatology', 'الأمراض الجلدية', 'Treatment of skin, hair, and nail conditions', 'علاج أمراض الجلد والشعر والأظافر', 'dermatology', 5, 'Medical', true, true),
+('Neurology', 'الأعصاب', 'Diagnosis and treatment of nervous system disorders', 'تشخيص وعلاج اضطرابات الجهاز العصبي', 'neurology', 6, 'Medical', true, true),
+('Orthopedics', 'العظام', 'Treatment of musculoskeletal system disorders', 'علاج اضطرابات الجهاز العضلي الهيكلي', 'orthopedics', 7, 'Medical', true, true),
+('Ophthalmology', 'طب العيون', 'Eye care and surgery', 'رعاية العيون والجراحة', 'ophthalmology', 8, 'Medical', true, true),
+('Obstetrics and Gynecology', 'أمراض النساء والتوليد', 'Women''s reproductive health and childbirth', 'الصحة الإنجابية للنساء والولادة', 'pregnant_woman', 9, 'Medical', true, true),
+('Psychiatry', 'الطب النفسي', 'Mental health and behavioral disorders', 'الصحة النفسية والاضطرابات السلوكية', 'psychology', 10, 'Medical', true, true),
 
 -- Medical specialties
-('Endocrinology', 'Ø§Ù„ØºØ¯Ø¯ Ø§Ù„ØµÙ…Ø§Ø¡', 'Hormonal disorders and diabetes', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ù‡Ø±Ù…ÙˆÙ†ÙŠØ© ÙˆØ§Ù„Ø³ÙƒØ±ÙŠ', 'medical_services', 11, 'Medical', true, false),
-('Gastroenterology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ù‡Ø¶Ù…ÙŠ', 'Digestive system disorders', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ù‡Ø¶Ù…ÙŠ', 'medical_services', 12, 'Medical', true, false),
-('Nephrology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„ÙƒÙ„Ù‰', 'Kidney diseases and dialysis', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„ÙƒÙ„Ù‰ ÙˆØºØ³ÙŠÙ„ Ø§Ù„ÙƒÙ„Ù‰', 'medical_services', 13, 'Medical', true, false),
-('Pulmonology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø±Ø¦Ø©', 'Respiratory system diseases', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„ØªÙ†ÙØ³ÙŠ', 'medical_services', 14, 'Medical', true, false),
-('Rheumatology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø±ÙˆÙ…Ø§ØªÙŠØ²Ù…', 'Autoimmune and rheumatic diseases', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù…Ù†Ø§Ø¹Ø© Ø§Ù„Ø°Ø§ØªÙŠØ© ÙˆØ§Ù„Ø±ÙˆÙ…Ø§ØªÙŠØ²Ù…', 'medical_services', 15, 'Medical', true, false),
-('Hematology', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¯Ù…', 'Blood disorders and cancers', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø¯Ù… ÙˆØ§Ù„Ø³Ø±Ø·Ø§Ù†Ø§Øª', 'medical_services', 16, 'Medical', true, false),
-('Oncology', 'Ø§Ù„Ø£ÙˆØ±Ø§Ù…', 'Cancer diagnosis and treatment', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø§Ù„Ø³Ø±Ø·Ø§Ù†', 'medical_services', 17, 'Medical', true, false),
-('Infectious Diseases', 'Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù…Ø¹Ø¯ÙŠØ©', 'Infections and tropical diseases', 'Ø§Ù„Ø¹Ø¯ÙˆÙ‰ ÙˆØ§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø§Ø³ØªÙˆØ§Ø¦ÙŠØ©', 'medical_services', 18, 'Medical', true, false),
-('Geriatrics', 'Ø·Ø¨ Ø§Ù„Ù…Ø³Ù†ÙŠÙ†', 'Healthcare for elderly patients', 'Ø±Ø¹Ø§ÙŠØ© ØµØ­ÙŠØ© Ù„Ù„Ù…Ø³Ù†ÙŠÙ†', 'medical_services', 19, 'Medical', true, false),
-('Allergy and Immunology', 'Ø§Ù„Ø­Ø³Ø§Ø³ÙŠØ© ÙˆØ§Ù„Ù…Ù†Ø§Ø¹Ø©', 'Allergies and immune system disorders', 'Ø§Ù„Ø­Ø³Ø§Ø³ÙŠØ© ÙˆØ§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ù…Ù†Ø§Ø¹ÙŠ', 'medical_services', 20, 'Medical', true, false),
+('Endocrinology', 'الغدد الصماء', 'Hormonal disorders and diabetes', 'اضطرابات هرمونية والسكري', 'medical_services', 11, 'Medical', true, false),
+('Gastroenterology', 'أمراض الجهاز الهضمي', 'Digestive system disorders', 'اضطرابات الجهاز الهضمي', 'medical_services', 12, 'Medical', true, false),
+('Nephrology', 'أمراض الكلى', 'Kidney diseases and dialysis', 'أمراض الكلى وغسيل الكلى', 'medical_services', 13, 'Medical', true, false),
+('Pulmonology', 'أمراض الرئة', 'Respiratory system diseases', 'أمراض الجهاز التنفسي', 'medical_services', 14, 'Medical', true, false),
+('Rheumatology', 'أمراض الروماتيزم', 'Autoimmune and rheumatic diseases', 'أمراض المناعة الذاتية والروماتيزم', 'medical_services', 15, 'Medical', true, false),
+('Hematology', 'أمراض الدم', 'Blood disorders and cancers', 'أمراض الدم والسرطانات', 'medical_services', 16, 'Medical', true, false),
+('Oncology', 'الأورام', 'Cancer diagnosis and treatment', 'تشخيص وعلاج السرطان', 'medical_services', 17, 'Medical', true, false),
+('Infectious Diseases', 'الأمراض المعدية', 'Infections and tropical diseases', 'العدوى والأمراض الاستوائية', 'medical_services', 18, 'Medical', true, false),
+('Geriatrics', 'طب المسنين', 'Healthcare for elderly patients', 'رعاية صحية للمسنين', 'medical_services', 19, 'Medical', true, false),
+('Allergy and Immunology', 'الحساسية والمناعة', 'Allergies and immune system disorders', 'الحساسية واضطرابات الجهاز المناعي', 'medical_services', 20, 'Medical', true, false),
 
 -- Surgical specialties
-('General Surgery', 'Ø§Ù„Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø¹Ø§Ù…Ø©', 'Common surgical procedures', 'Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø§Ù„Ø¬Ø±Ø§Ø­ÙŠØ© Ø§Ù„Ø´Ø§Ø¦Ø¹Ø©', 'surgery', 21, 'Surgical', true, false),
-('Neurosurgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ù…Ø® ÙˆØ§Ù„Ø£Ø¹ØµØ§Ø¨', 'Brain and nervous system surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø¯Ù…Ø§Øº ÙˆØ§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„Ø¹ØµØ¨ÙŠ', 'neurosurgery', 22, 'Surgical', true, false),
-('Cardiothoracic Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ù‚Ù„Ø¨ ÙˆØ§Ù„ØµØ¯Ø±', 'Heart and chest surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ù‚Ù„Ø¨ ÙˆØ§Ù„ØµØ¯Ø±', 'cardiology', 23, 'Surgical', true, false),
-('Vascular Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø£ÙˆØ¹ÙŠØ© Ø§Ù„Ø¯Ù…ÙˆÙŠØ©', 'Blood vessel surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø£ÙˆØ¹ÙŠØ© Ø§Ù„Ø¯Ù…ÙˆÙŠØ©', 'vascular_surgery', 24, 'Surgical', true, false),
-('Plastic Surgery', 'Ø§Ù„Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ØªØ¬Ù…ÙŠÙ„ÙŠØ©', 'Reconstructive and cosmetic surgery', 'Ø§Ù„Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ØªØ±Ù…ÙŠÙ…ÙŠØ© ÙˆØ§Ù„ØªØ¬Ù…ÙŠÙ„ÙŠØ©', 'plastic_surgery', 25, 'Surgical', true, false),
-('Pediatric Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ø£Ø·ÙØ§Ù„', 'Surgery for infants and children', 'Ø¬Ø±Ø§Ø­Ø© Ù„Ù„Ø±Ø¶Ø¹ ÙˆØ§Ù„Ø£Ø·ÙØ§Ù„', 'surgery', 26, 'Surgical', true, false),
-('Urology', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„Ù…Ø³Ø§Ù„Ùƒ Ø§Ù„Ø¨ÙˆÙ„ÙŠØ©', 'Urinary tract and male reproductive system', 'Ø§Ù„Ù…Ø³Ø§Ù„Ùƒ Ø§Ù„Ø¨ÙˆÙ„ÙŠØ© ÙˆØ§Ù„Ø¬Ù‡Ø§Ø² Ø§Ù„ØªÙ†Ø§Ø³Ù„ÙŠ Ø§Ù„Ø°ÙƒØ±ÙŠ', 'medical_services', 27, 'Surgical', true, false),
-('Oral and Maxillofacial Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ÙÙ… ÙˆØ§Ù„ÙˆØ¬Ù‡ ÙˆØ§Ù„ÙÙƒÙŠÙ†', 'Mouth, face, and jaw surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ÙÙ… ÙˆØ§Ù„ÙˆØ¬Ù‡ ÙˆØ§Ù„ÙÙƒÙŠÙ†', 'surgery', 28, 'Surgical', true, false),
+('General Surgery', 'الجراحة العامة', 'Common surgical procedures', 'الإجراءات الجراحية الشائعة', 'surgery', 21, 'Surgical', true, false),
+('Neurosurgery', 'جراحة المخ والأعصاب', 'Brain and nervous system surgery', 'جراحة الدماغ والجهاز العصبي', 'neurosurgery', 22, 'Surgical', true, false),
+('Cardiothoracic Surgery', 'جراحة القلب والصدر', 'Heart and chest surgery', 'جراحة القلب والصدر', 'cardiology', 23, 'Surgical', true, false),
+('Vascular Surgery', 'جراحة الأوعية الدموية', 'Blood vessel surgery', 'جراحة الأوعية الدموية', 'vascular_surgery', 24, 'Surgical', true, false),
+('Plastic Surgery', 'الجراحة التجميلية', 'Reconstructive and cosmetic surgery', 'الجراحة الترميمية والتجميلية', 'plastic_surgery', 25, 'Surgical', true, false),
+('Pediatric Surgery', 'جراحة الأطفال', 'Surgery for infants and children', 'جراحة للرضع والأطفال', 'surgery', 26, 'Surgical', true, false),
+('Urology', 'جراحة المسالك البولية', 'Urinary tract and male reproductive system', 'المسالك البولية والجهاز التناسلي الذكري', 'medical_services', 27, 'Surgical', true, false),
+('Oral and Maxillofacial Surgery', 'جراحة الفم والوجه والفكين', 'Mouth, face, and jaw surgery', 'جراحة الفم والوجه والفكين', 'surgery', 28, 'Surgical', true, false),
 
 -- Diagnostic specialties
-('Radiology', 'Ø§Ù„Ø£Ø´Ø¹Ø©', 'Medical imaging and diagnosis', 'Ø§Ù„ØªØµÙˆÙŠØ± Ø§Ù„Ø·Ø¨ÙŠ ÙˆØ§Ù„ØªØ´Ø®ÙŠØµ', 'radiology', 29, 'Diagnostic', true, false),
-('Pathology', 'Ø¹Ù„Ù… Ø§Ù„Ø£Ù…Ø±Ø§Ø¶', 'Disease diagnosis through laboratory analysis', 'ØªØ´Ø®ÙŠØµ Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ù…Ù† Ø®Ù„Ø§Ù„ Ø§Ù„ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ù…Ø®Ø¨Ø±ÙŠ', 'medical_services', 30, 'Diagnostic', true, false),
-('Clinical Pathology', 'Ø¹Ù„Ù… Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø³Ø±ÙŠØ±ÙŠ', 'Laboratory medicine and diagnostics', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ù…Ø®Ø¨Ø±ÙŠ ÙˆØ§Ù„ØªØ´Ø®ÙŠØµ', 'medical_services', 31, 'Diagnostic', true, false),
-('Anatomic Pathology', 'Ø¹Ù„Ù… Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„ØªØ´Ø±ÙŠØ­ÙŠ', 'Tissue and cell analysis', 'ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ø£Ù†Ø³Ø¬Ø© ÙˆØ§Ù„Ø®Ù„Ø§ÙŠØ§', 'medical_services', 32, 'Diagnostic', true, false),
-('Nuclear Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ù†ÙˆÙˆÙŠ', 'Radioactive substances for diagnosis and treatment', 'Ø§Ù„Ù…ÙˆØ§Ø¯ Ø§Ù„Ù…Ø´Ø¹Ø© Ù„Ù„ØªØ´Ø®ÙŠØµ ÙˆØ§Ù„Ø¹Ù„Ø§Ø¬', 'medical_services', 33, 'Diagnostic', true, false),
+('Radiology', 'الأشعة', 'Medical imaging and diagnosis', 'التصوير الطبي والتشخيص', 'radiology', 29, 'Diagnostic', true, false),
+('Pathology', 'علم الأمراض', 'Disease diagnosis through laboratory analysis', 'تشخيص الأمراض من خلال التحليل المخبري', 'medical_services', 30, 'Diagnostic', true, false),
+('Clinical Pathology', 'علم الأمراض السريري', 'Laboratory medicine and diagnostics', 'الطب المخبري والتشخيص', 'medical_services', 31, 'Diagnostic', true, false),
+('Anatomic Pathology', 'علم الأمراض التشريحي', 'Tissue and cell analysis', 'تحليل الأنسجة والخلايا', 'medical_services', 32, 'Diagnostic', true, false),
+('Nuclear Medicine', 'الطب النووي', 'Radioactive substances for diagnosis and treatment', 'المواد المشعة للتشخيص والعلاج', 'medical_services', 33, 'Diagnostic', true, false),
 
 -- Other specialties
-('Anesthesiology', 'Ø§Ù„ØªØ®Ø¯ÙŠØ±', 'Anesthesia and pain management', 'Ø§Ù„ØªØ®Ø¯ÙŠØ± ÙˆØ¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø£Ù„Ù…', 'anesthesiology', 34, 'Medical', true, false),
-('Emergency Medicine', 'Ø·Ø¨ Ø§Ù„Ø·ÙˆØ§Ø±Ø¦', 'Immediate medical care for acute conditions', 'Ø±Ø¹Ø§ÙŠØ© Ø·Ø¨ÙŠØ© ÙÙˆØ±ÙŠØ© Ù„Ù„Ø­Ø§Ù„Ø§Øª Ø§Ù„Ø­Ø§Ø¯Ø©', 'emergency_medical_services', 35, 'Medical', true, false),
-('Family Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø¹Ø§Ø¦Ù„ÙŠ', 'Comprehensive healthcare for families', 'Ø±Ø¹Ø§ÙŠØ© ØµØ­ÙŠØ© Ø´Ø§Ù…Ù„Ø© Ù„Ù„Ø¹Ø§Ø¦Ù„Ø§Øª', 'family_restroom', 36, 'Medical', true, false),
-('Preventive Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„ÙˆÙ‚Ø§Ø¦ÙŠ', 'Disease prevention and health promotion', 'Ø§Ù„ÙˆÙ‚Ø§ÙŠØ© Ù…Ù† Ø§Ù„Ø£Ù…Ø±Ø§Ø¶ ÙˆØªØ¹Ø²ÙŠØ² Ø§Ù„ØµØ­Ø©', 'medical_services', 37, 'Medical', true, false),
-('Sports Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø±ÙŠØ§Ø¶ÙŠ', 'Sports injuries and performance', 'Ø¥ØµØ§Ø¨Ø§Øª Ø§Ù„Ø±ÙŠØ§Ø¶Ø§Øª ÙˆØ§Ù„Ø£Ø¯Ø§Ø¡', 'sports', 38, 'Medical', true, false),
-('Occupational Medicine', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ù…Ù‡Ù†ÙŠ', 'Workplace health and safety', 'Ø§Ù„ØµØ­Ø© ÙˆØ§Ù„Ø³Ù„Ø§Ù…Ø© ÙÙŠ Ù…ÙƒØ§Ù† Ø§Ù„Ø¹Ù…Ù„', 'medical_services', 39, 'Medical', true, false),
-('Physical Medicine and Rehabilitation', 'Ø§Ù„Ø·Ø¨ Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠ ÙˆØ§Ù„ØªØ£Ù‡ÙŠÙ„', 'Physical therapy and rehabilitation', 'Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠ ÙˆØ§Ù„ØªØ£Ù‡ÙŠÙ„', 'medical_services', 40, 'Medical', true, false),
-('Medical Genetics', 'Ø§Ù„Ø·Ø¨ Ø§Ù„ÙˆØ±Ø§Ø«ÙŠ', 'Genetic disorders and counseling', 'Ø§Ù„Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„ÙˆØ±Ø§Ø«ÙŠØ© ÙˆØ§Ù„Ø§Ø³ØªØ´Ø§Ø±Ø©', 'medical_services', 41, 'Medical', true, false),
-('Palliative Care', 'Ø§Ù„Ø±Ø¹Ø§ÙŠØ© Ø§Ù„ØªÙ„Ø·ÙŠÙÙŠØ©', 'Symptom relief for serious illnesses', 'ØªØ®ÙÙŠÙ Ø§Ù„Ø£Ø¹Ø±Ø§Ø¶ Ù„Ù„Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ø®Ø·ÙŠØ±Ø©', 'medical_services', 42, 'Medical', true, false),
-('Sleep Medicine', 'Ø·Ø¨ Ø§Ù„Ù†ÙˆÙ…', 'Sleep disorders and breathing problems', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ù†ÙˆÙ… ÙˆÙ…Ø´Ø§ÙƒÙ„ Ø§Ù„ØªÙ†ÙØ³', 'medical_services', 43, 'Medical', true, false),
+('Anesthesiology', 'التخدير', 'Anesthesia and pain management', 'التخدير وإدارة الألم', 'anesthesiology', 34, 'Medical', true, false),
+('Emergency Medicine', 'طب الطوارئ', 'Immediate medical care for acute conditions', 'رعاية طبية فورية للحالات الحادة', 'emergency_medical_services', 35, 'Medical', true, false),
+('Family Medicine', 'الطب العائلي', 'Comprehensive healthcare for families', 'رعاية صحية شاملة للعائلات', 'family_restroom', 36, 'Medical', true, false),
+('Preventive Medicine', 'الطب الوقائي', 'Disease prevention and health promotion', 'الوقاية من الأمراض وتعزيز الصحة', 'medical_services', 37, 'Medical', true, false),
+('Sports Medicine', 'الطب الرياضي', 'Sports injuries and performance', 'إصابات الرياضات والأداء', 'sports', 38, 'Medical', true, false),
+('Occupational Medicine', 'الطب المهني', 'Workplace health and safety', 'الصحة والسلامة في مكان العمل', 'medical_services', 39, 'Medical', true, false),
+('Physical Medicine and Rehabilitation', 'الطب الطبيعي والتأهيل', 'Physical therapy and rehabilitation', 'العلاج الطبيعي والتأهيل', 'medical_services', 40, 'Medical', true, false),
+('Medical Genetics', 'الطب الوراثي', 'Genetic disorders and counseling', 'الاضطرابات الوراثية والاستشارة', 'medical_services', 41, 'Medical', true, false),
+('Palliative Care', 'الرعاية التلطيفية', 'Symptom relief for serious illnesses', 'تخفيف الأعراض للأمراض الخطيرة', 'medical_services', 42, 'Medical', true, false),
+('Sleep Medicine', 'طب النوم', 'Sleep disorders and breathing problems', 'اضطرابات النوم ومشاكل التنفس', 'medical_services', 43, 'Medical', true, false),
 
 -- Dental specialties (if applicable)
-('Dentistry', 'Ø·Ø¨ Ø§Ù„Ø£Ø³Ù†Ø§Ù†', 'Oral health and dental care', 'Ø§Ù„ØµØ­Ø© Ø§Ù„ÙÙ…ÙˆÙŠØ© ÙˆØ±Ø¹Ø§ÙŠØ© Ø§Ù„Ø£Ø³Ù†Ø§Ù†', 'medical_services', 44, 'Medical', true, false),
-('Oral Surgery', 'Ø¬Ø±Ø§Ø­Ø© Ø§Ù„ÙÙ…', 'Surgical procedures in the mouth', 'Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª Ø§Ù„Ø¬Ø±Ø§Ø­ÙŠØ© ÙÙŠ Ø§Ù„ÙÙ…', 'surgery', 45, 'Surgical', true, false),
-('Orthodontics', 'ØªÙ‚ÙˆÙŠÙ… Ø§Ù„Ø£Ø³Ù†Ø§Ù†', 'Teeth and jaw alignment', 'Ù…Ø­Ø§Ø°Ø§Ø© Ø§Ù„Ø£Ø³Ù†Ø§Ù† ÙˆØ§Ù„ÙÙƒ', 'medical_services', 46, 'Medical', true, false),
-('Periodontics', 'Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù„Ø«Ø©', 'Gum disease treatment', 'Ø¹Ù„Ø§Ø¬ Ø£Ù…Ø±Ø§Ø¶ Ø§Ù„Ù„Ø«Ø©', 'medical_services', 47, 'Medical', true, false),
-('Endodontics', 'Ø¹Ù„Ø§Ø¬ Ù‚Ù†Ø§Ø© Ø§Ù„Ø¬Ø°Ø±', 'Root canal therapy', 'Ø¹Ù„Ø§Ø¬ Ù‚Ù†Ø§Ø© Ø§Ù„Ø¬Ø°Ø±', 'medical_services', 48, 'Medical', true, false),
+('Dentistry', 'طب الأسنان', 'Oral health and dental care', 'الصحة الفموية ورعاية الأسنان', 'medical_services', 44, 'Medical', true, false),
+('Oral Surgery', 'جراحة الفم', 'Surgical procedures in the mouth', 'الإجراءات الجراحية في الفم', 'surgery', 45, 'Surgical', true, false),
+('Orthodontics', 'تقويم الأسنان', 'Teeth and jaw alignment', 'محاذاة الأسنان والفك', 'medical_services', 46, 'Medical', true, false),
+('Periodontics', 'أمراض اللثة', 'Gum disease treatment', 'علاج أمراض اللثة', 'medical_services', 47, 'Medical', true, false),
+('Endodontics', 'علاج قناة الجذر', 'Root canal therapy', 'علاج قناة الجذر', 'medical_services', 48, 'Medical', true, false),
 
 -- Mental Health specialties
-('Clinical Psychology', 'Ø¹Ù„Ù… Ø§Ù„Ù†ÙØ³ Ø§Ù„Ø³Ø±ÙŠØ±ÙŠ', 'Diagnosis and treatment of mental disorders', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø§Ù„Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ù†ÙØ³ÙŠØ©', 'psychology', 49, 'Medical', true, false),
-('Counseling Psychology', 'Ø¹Ù„Ù… Ø§Ù„Ù†ÙØ³ Ø§Ù„Ø¥Ø±Ø´Ø§Ø¯ÙŠ', 'Mental health counseling', 'Ø§Ù„Ø¥Ø±Ø´Ø§Ø¯ Ø§Ù„Ù†ÙØ³ÙŠ', 'psychology', 50, 'Medical', true, false),
-('Child and Adolescent Psychiatry', 'Ø·Ø¨ Ù†ÙØ³ Ø§Ù„Ø£Ø·ÙØ§Ù„ ÙˆØ§Ù„Ù…Ø±Ø§Ù‡Ù‚ÙŠÙ†', 'Mental health for children and teens', 'Ø§Ù„ØµØ­Ø© Ø§Ù„Ù†ÙØ³ÙŠØ© Ù„Ù„Ø£Ø·ÙØ§Ù„ ÙˆØ§Ù„Ù…Ø±Ø§Ù‡Ù‚ÙŠÙ†', 'psychology', 51, 'Medical', true, false),
-('Addiction Psychiatry', 'Ø·Ø¨ Ø§Ù„Ø¥Ø¯Ù…Ø§Ù†', 'Substance abuse treatment', 'Ø¹Ù„Ø§Ø¬ Ø¥Ø³Ø§Ø¡Ø© Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù…ÙˆØ§Ø¯', 'psychology', 52, 'Medical', true, false),
+('Clinical Psychology', 'علم النفس السريري', 'Diagnosis and treatment of mental disorders', 'تشخيص وعلاج الاضطرابات النفسية', 'psychology', 49, 'Medical', true, false),
+('Counseling Psychology', 'علم النفس الإرشادي', 'Mental health counseling', 'الإرشاد النفسي', 'psychology', 50, 'Medical', true, false),
+('Child and Adolescent Psychiatry', 'طب نفس الأطفال والمراهقين', 'Mental health for children and teens', 'الصحة النفسية للأطفال والمراهقين', 'psychology', 51, 'Medical', true, false),
+('Addiction Psychiatry', 'طب الإدمان', 'Substance abuse treatment', 'علاج إساءة استخدام المواد', 'psychology', 52, 'Medical', true, false),
 
 -- Specialized care
-('Autism Spectrum Disorder', 'Ø§Ø¶Ø·Ø±Ø§Ø¨ Ø·ÙŠÙ Ø§Ù„ØªÙˆØ­Ø¯', 'Autism diagnosis and treatment', 'ØªØ´Ø®ÙŠØµ ÙˆØ¹Ù„Ø§Ø¬ Ø§Ù„ØªÙˆØ­Ø¯', 'medical_services', 53, 'Medical', true, false),
-('Developmental Pediatrics', 'Ø·Ø¨ Ø§Ù„Ù†Ù…Ùˆ ÙˆØ§Ù„ØªØ·ÙˆØ±', 'Child development and delays', 'Ù†Ù…Ùˆ Ø§Ù„Ø·ÙÙ„ ÙˆØ§Ù„ØªØ£Ø®ÙŠØ±Ø§Øª', 'child_care', 54, 'Medical', true, false),
-('Neurodevelopmental Disorders', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ù†Ù…Ùˆ Ø§Ù„Ø¹ØµØ¨ÙŠ', 'ADHD, learning disabilities, etc.', 'Ø§Ø¶Ø·Ø±Ø§Ø¨ Ù†Ù‚Øµ Ø§Ù„Ø§Ù†ØªØ¨Ø§Ù‡ØŒ ØµØ¹ÙˆØ¨Ø§Øª Ø§Ù„ØªØ¹Ù„Ù…ØŒ Ø¥Ù„Ø®', 'medical_services', 55, 'Medical', true, false),
-('Epilepsy', 'Ø§Ù„ØµØ±Ø¹', 'Seizure disorders', 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ù†ÙˆØ¨Ø§Øª', 'neurology', 56, 'Medical', true, false),
-('Stroke Medicine', 'Ø·Ø¨ Ø§Ù„Ø³ÙƒØªØ© Ø§Ù„Ø¯Ù…Ø§ØºÙŠØ©', 'Stroke prevention and treatment', 'Ø§Ù„ÙˆÙ‚Ø§ÙŠØ© Ù…Ù† Ø§Ù„Ø³ÙƒØªØ© Ø§Ù„Ø¯Ù…Ø§ØºÙŠØ© ÙˆØ¹Ù„Ø§Ø¬Ù‡Ø§', 'neurology', 57, 'Medical', true, false),
-('Pain Management', 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø£Ù„Ù…', 'Chronic pain treatment', 'Ø¹Ù„Ø§Ø¬ Ø§Ù„Ø£Ù„Ù… Ø§Ù„Ù…Ø²Ù…Ù†', 'medical_services', 58, 'Medical', true, false);
+('Autism Spectrum Disorder', 'اضطراب طيف التوحد', 'Autism diagnosis and treatment', 'تشخيص وعلاج التوحد', 'medical_services', 53, 'Medical', true, false),
+('Developmental Pediatrics', 'طب النمو والتطور', 'Child development and delays', 'نمو الطفل والتأخيرات', 'child_care', 54, 'Medical', true, false),
+('Neurodevelopmental Disorders', 'اضطرابات النمو العصبي', 'ADHD, learning disabilities, etc.', 'اضطراب نقص الانتباه، صعوبات التعلم، إلخ', 'medical_services', 55, 'Medical', true, false),
+('Epilepsy', 'الصرع', 'Seizure disorders', 'اضطرابات النوبات', 'neurology', 56, 'Medical', true, false),
+('Stroke Medicine', 'طب السكتة الدماغية', 'Stroke prevention and treatment', 'الوقاية من السكتة الدماغية وعلاجها', 'neurology', 57, 'Medical', true, false),
+('Pain Management', 'إدارة الألم', 'Chronic pain treatment', 'علاج الألم المزمن', 'medical_services', 58, 'Medical', true, false);
 
 -- Create unique index on English names
 CREATE UNIQUE INDEX idx_specialties_name_en_unique ON specialties(name_en) WHERE is_active = true;
@@ -1254,9 +1254,9 @@ CREATE UNIQUE INDEX idx_specialties_name_en_unique ON specialties(name_en) WHERE
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_002_create_countries_table.sql, v2_P01_003_create_regions_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Clinics Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create clinics table to store medical clinic information
 CREATE TABLE IF NOT EXISTS clinics (
@@ -1321,9 +1321,9 @@ CREATE TABLE IF NOT EXISTS clinics (
   CONSTRAINT valid_email CHECK (email IS NULL OR email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$')
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_clinics_region_id ON clinics(region_id) WHERE is_active = true;
@@ -1337,9 +1337,9 @@ CREATE INDEX idx_clinics_name ON clinics(name) WHERE is_active = true;
 CREATE INDEX idx_clinics_city ON clinics(city) WHERE is_active = true;
 CREATE INDEX idx_clinics_subscription_type ON clinics(subscription_type) WHERE is_active = true;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on clinics table
 ALTER TABLE clinics ENABLE ROW LEVEL SECURITY;
@@ -1375,9 +1375,9 @@ CREATE POLICY "Super admins can manage all clinics"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_clinics_updated_at()
@@ -1394,9 +1394,9 @@ CREATE TRIGGER clinics_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_clinics_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE clinics IS 'Medical clinic information';
 COMMENT ON COLUMN clinics.id IS 'Primary key (UUID)';
@@ -1416,9 +1416,9 @@ COMMENT ON COLUMN clinics.is_active IS 'Whether the clinic is active';
 COMMENT ON COLUMN clinics.is_verified IS 'Whether the clinic has been verified';
 COMMENT ON COLUMN clinics.is_featured IS 'Whether this clinic is featured';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Helper Functions
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Function to check if clinic subscription is expired
 CREATE OR REPLACE FUNCTION is_clinic_subscription_expired(clinic_id UUID)
@@ -1468,9 +1468,9 @@ $$ LANGUAGE plpgsql;
 -- Created: 2026-03-04
 -- Dependencies: None
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Subscriptions Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create subscriptions table to store clinic subscription information
 CREATE TABLE IF NOT EXISTS subscriptions (
@@ -1516,9 +1516,9 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   CONSTRAINT valid_price_dzd CHECK (price_dzd >= 0)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_subscriptions_code ON subscriptions(code);
@@ -1530,9 +1530,9 @@ CREATE INDEX idx_subscriptions_is_expired ON subscriptions(is_expired);
 CREATE INDEX idx_subscriptions_created_at ON subscriptions(created_at DESC);
 CREATE INDEX idx_subscriptions_used_at ON subscriptions(used_at);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on subscriptions table
 ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
@@ -1557,9 +1557,9 @@ CREATE POLICY "Clinic admins can view their clinic subscriptions"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_subscriptions_updated_at()
@@ -1576,9 +1576,9 @@ CREATE TRIGGER subscriptions_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_subscriptions_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE subscriptions IS 'Clinic subscription information';
 COMMENT ON COLUMN subscriptions.id IS 'Primary key (UUID)';
@@ -1594,9 +1594,9 @@ COMMENT ON COLUMN subscriptions.used_at IS 'Timestamp when the subscription was 
 COMMENT ON COLUMN subscriptions.is_active IS 'Whether the subscription is active';
 COMMENT ON COLUMN subscriptions.is_expired IS 'Whether the subscription has expired';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Helper Functions
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Drop any conflicting functions from clinics migration
 DROP FUNCTION IF EXISTS is_subscription_expired(UUID) CASCADE;
@@ -1678,9 +1678,9 @@ $$ LANGUAGE plpgsql;
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_001_create_specialties_table.sql, v2_P02_002_create_clinics_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Doctors Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create doctors table to store doctor information and profiles
 CREATE TABLE IF NOT EXISTS doctors (
@@ -1742,9 +1742,9 @@ CREATE TABLE IF NOT EXISTS doctors (
   CONSTRAINT valid_consultation_duration CHECK (consultation_duration_minutes > 0)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_doctors_user_id ON doctors(user_id);
@@ -1757,9 +1757,9 @@ CREATE INDEX idx_doctors_created_at ON doctors(created_at DESC);
 CREATE INDEX idx_doctors_license_number ON doctors(license_number);
 CREATE INDEX idx_doctors_is_accepting_new_patients ON doctors(is_accepting_new_patients) WHERE is_available = true;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on doctors table
 ALTER TABLE doctors ENABLE ROW LEVEL SECURITY;
@@ -1812,9 +1812,9 @@ CREATE POLICY "Super admins can manage all doctors"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_doctors_updated_at()
@@ -1831,9 +1831,9 @@ CREATE TRIGGER doctors_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_doctors_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE doctors IS 'Doctors information and profiles';
 COMMENT ON COLUMN doctors.id IS 'Primary key (UUID)';
@@ -1847,9 +1847,9 @@ COMMENT ON COLUMN doctors.working_hours IS 'JSON object containing working hours
 COMMENT ON COLUMN doctors.max_patients_per_day IS 'Maximum number of patients the doctor can see per day';
 COMMENT ON COLUMN doctors.consultation_duration_minutes IS 'Duration of consultation in minutes';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Helper Functions
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Function to get doctor's full name
 CREATE OR REPLACE FUNCTION get_doctor_full_name(doctor_id UUID)
@@ -1936,9 +1936,9 @@ $$ LANGUAGE plpgsql;
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_002_create_clinics_table.sql, v2_P03_001_create_doctors_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Patients Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create patients table to store patient-specific medical information
 CREATE TABLE IF NOT EXISTS patients (
@@ -2002,9 +2002,9 @@ CREATE TABLE IF NOT EXISTS patients (
   CONSTRAINT valid_bmi CHECK (bmi IS NULL OR (bmi > 0 AND bmi < 100))
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_patients_user_id ON patients(user_id);
@@ -2016,9 +2016,9 @@ CREATE INDEX idx_patients_blood_type ON patients(blood_type);
 CREATE INDEX idx_patients_gender ON patients(gender);
 CREATE INDEX idx_patients_created_at ON patients(created_at DESC);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on patients table
 ALTER TABLE patients ENABLE ROW LEVEL SECURITY;
@@ -2081,9 +2081,9 @@ CREATE POLICY "Super admins can manage all patients"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_patients_updated_at()
@@ -2100,9 +2100,9 @@ CREATE TRIGGER patients_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_patients_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- BMI Calculation Trigger
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to calculate BMI
 CREATE OR REPLACE FUNCTION calculate_patient_bmi()
@@ -2121,9 +2121,9 @@ CREATE TRIGGER calculate_patient_bmi
   FOR EACH ROW
   EXECUTE FUNCTION calculate_patient_bmi();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE patients IS 'Patient-specific medical information';
 COMMENT ON COLUMN patients.id IS 'Primary key (UUID)';
@@ -2136,9 +2136,9 @@ COMMENT ON COLUMN patients.allergies IS 'Array of known allergies';
 COMMENT ON COLUMN patients.bmi IS 'Body Mass Index calculated from height and weight';
 COMMENT ON COLUMN patients.smoking_status IS 'Patient smoking habits (never, former, current)';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Helper Functions
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Function to get patient's age
 CREATE OR REPLACE FUNCTION get_patient_age(patient_id UUID)
@@ -2193,9 +2193,9 @@ $$ LANGUAGE plpgsql;
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_002_create_clinics_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Employees Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create employees table to store employee information and employment details
 CREATE TABLE IF NOT EXISTS employees (
@@ -2256,9 +2256,9 @@ CREATE TABLE IF NOT EXISTS employees (
   CONSTRAINT valid_salary CHECK (salary IS NULL OR salary >= 0)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_employees_user_id ON employees(user_id);
@@ -2271,9 +2271,9 @@ CREATE INDEX idx_employees_hire_date ON employees(hire_date);
 CREATE INDEX idx_employees_created_at ON employees(created_at DESC);
 CREATE INDEX idx_employees_employment_type ON employees(employment_type);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on employees table
 ALTER TABLE employees ENABLE ROW LEVEL SECURITY;
@@ -2330,9 +2330,9 @@ CREATE POLICY "Super admins can manage all employees"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_employees_updated_at()
@@ -2349,9 +2349,9 @@ CREATE TRIGGER employees_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_employees_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE employees IS 'Employee information and employment details';
 COMMENT ON COLUMN employees.id IS 'Primary key (UUID)';
@@ -2364,9 +2364,9 @@ COMMENT ON COLUMN employees.performance_rating IS 'Performance rating out of 5.0
 COMMENT ON COLUMN employees.certifications IS 'JSON array of professional certifications';
 COMMENT ON COLUMN employees.education IS 'JSON array of educational qualifications';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Helper Functions
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Function to calculate years of service
 CREATE OR REPLACE FUNCTION get_years_of_service(employee_id UUID)
@@ -2407,9 +2407,9 @@ $$ LANGUAGE plpgsql;
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_004_create_users_table.sql, v2_P02_002_create_clinics_table.sql, v2_P03_003_create_employees_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Clinic Staff Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create clinic_staff junction table for many-to-many relationship
 CREATE TABLE IF NOT EXISTS clinic_staff (
@@ -2442,9 +2442,9 @@ CREATE TABLE IF NOT EXISTS clinic_staff (
   CONSTRAINT unique_clinic_user UNIQUE (clinic_id, user_id)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_clinic_staff_clinic_id ON clinic_staff(clinic_id) WHERE is_active = true;
@@ -2455,9 +2455,9 @@ CREATE INDEX idx_clinic_staff_is_active ON clinic_staff(is_active);
 CREATE INDEX idx_clinic_staff_joined_at ON clinic_staff(joined_at);
 CREATE INDEX idx_clinic_staff_left_at ON clinic_staff(left_at);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on clinic_staff table
 ALTER TABLE clinic_staff ENABLE ROW LEVEL SECURITY;
@@ -2490,9 +2490,9 @@ CREATE POLICY "Super admins can manage all clinic staff"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_clinic_staff_updated_at()
@@ -2509,9 +2509,9 @@ CREATE TRIGGER clinic_staff_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_clinic_staff_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE clinic_staff IS 'Junction table linking clinics to staff members';
 COMMENT ON COLUMN clinic_staff.id IS 'Primary key (UUID)';
@@ -2523,9 +2523,9 @@ COMMENT ON COLUMN clinic_staff.permissions IS 'JSON object with specific permiss
 COMMENT ON COLUMN clinic_staff.joined_at IS 'Date when staff member joined the clinic';
 COMMENT ON COLUMN clinic_staff.left_at IS 'Date when staff member left the clinic';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Helper Functions
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Function to get clinic staff count by role
 CREATE OR REPLACE FUNCTION get_clinic_staff_count_by_role(clinic_id_param UUID)
@@ -2590,9 +2590,9 @@ $$ LANGUAGE plpgsql;
 -- Created: 2026-03-04
 -- Dependencies: v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P02_002_create_clinics_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Appointments Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create appointments table to store appointment information
 CREATE TABLE IF NOT EXISTS appointments (
@@ -2657,9 +2657,9 @@ CREATE TABLE IF NOT EXISTS appointments (
   )
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_appointments_patient_id ON appointments(patient_id);
@@ -2675,9 +2675,9 @@ CREATE INDEX idx_appointments_created_at ON appointments(created_at DESC);
 CREATE INDEX idx_appointments_doctor_date ON appointments(doctor_id, appointment_date);
 CREATE INDEX idx_appointments_patient_date ON appointments(patient_id, appointment_date);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on appointments table
 ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
@@ -2750,9 +2750,9 @@ CREATE POLICY "Super admins can manage all appointments"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_appointments_updated_at()
@@ -2769,9 +2769,9 @@ CREATE TRIGGER appointments_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_appointments_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Overlapping Appointments Prevention Trigger
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to prevent overlapping appointments
 CREATE OR REPLACE FUNCTION prevent_overlapping_appointments()
@@ -2804,9 +2804,9 @@ CREATE TRIGGER prevent_appointment_overlap
   FOR EACH ROW
   EXECUTE FUNCTION prevent_overlapping_appointments();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE appointments IS 'Medical appointments information';
 COMMENT ON COLUMN appointments.status IS 'Appointment status: pending, confirmed, in_progress, completed, cancelled, no_show, rescheduled';
@@ -2820,9 +2820,9 @@ COMMENT ON COLUMN appointments.follow_up_required IS 'Whether a follow-up appoin
 -- Created: 2026-03-04
 -- Dependencies: v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P04_001_create_appointments_table.sql, v2_P02_002_create_clinics_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Prescriptions Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create prescriptions table to store prescription information
 CREATE TABLE IF NOT EXISTS prescriptions (
@@ -2853,9 +2853,9 @@ CREATE TABLE IF NOT EXISTS prescriptions (
   updated_by UUID REFERENCES users(id) ON DELETE SET NULL
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_prescriptions_patient_id ON prescriptions(patient_id);
@@ -2866,9 +2866,9 @@ CREATE INDEX idx_prescriptions_prescription_number ON prescriptions(prescription
 CREATE INDEX idx_prescriptions_is_active ON prescriptions(is_active);
 CREATE INDEX idx_prescriptions_created_at ON prescriptions(created_at DESC);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on prescriptions table
 ALTER TABLE prescriptions ENABLE ROW LEVEL SECURITY;
@@ -2918,9 +2918,9 @@ CREATE POLICY "Super admins can manage all prescriptions"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_prescriptions_updated_at()
@@ -2937,16 +2937,16 @@ CREATE TRIGGER prescriptions_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_prescriptions_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE prescriptions IS 'Medical prescriptions information';
 COMMENT ON COLUMN prescriptions.prescription_number IS 'Unique prescription identification number';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Prescription Items Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create prescription_items table for individual medications
 CREATE TABLE IF NOT EXISTS prescription_items (
@@ -3033,9 +3033,9 @@ COMMENT ON COLUMN prescription_items.refills_remaining IS 'Number of refills rem
 -- Created: 2026-03-04
 -- Dependencies: v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P04_001_create_appointments_table.sql, v2_P02_002_create_clinics_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Lab Results Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create lab_results table to store laboratory test results
 CREATE TABLE IF NOT EXISTS lab_results (
@@ -3081,9 +3081,9 @@ CREATE TABLE IF NOT EXISTS lab_results (
   updated_by UUID REFERENCES users(id) ON DELETE SET NULL
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_lab_results_patient_id ON lab_results(patient_id);
@@ -3097,9 +3097,9 @@ CREATE INDEX idx_lab_results_status ON lab_results(status);
 CREATE INDEX idx_lab_results_is_abnormal ON lab_results(is_abnormal);
 CREATE INDEX idx_lab_results_created_at ON lab_results(created_at DESC);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on lab_results table
 ALTER TABLE lab_results ENABLE ROW LEVEL SECURITY;
@@ -3154,9 +3154,9 @@ CREATE POLICY "Super admins can manage all lab results"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_lab_results_updated_at()
@@ -3173,9 +3173,9 @@ CREATE TRIGGER update_lab_results_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_lab_results_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE lab_results IS 'Laboratory test results';
 COMMENT ON COLUMN lab_results.status IS 'Test status: pending, in_progress, completed, cancelled';
@@ -3185,9 +3185,9 @@ COMMENT ON COLUMN lab_results.interpretation IS 'Clinical interpretation of the 
 COMMENT ON COLUMN lab_results.is_abnormal IS 'Whether results are outside normal range';
 COMMENT ON COLUMN lab_results.requires_follow_up IS 'Whether follow-up testing is required';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Vital Signs Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create vital_signs table for patient vital signs
 CREATE TABLE IF NOT EXISTS vital_signs (
@@ -3307,9 +3307,9 @@ COMMENT ON COLUMN vital_signs.blood_glucose IS 'Blood glucose level in mg/dL';
 -- Created: 2026-03-04
 -- Dependencies: v2_P04_001_create_appointments_table.sql, v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P02_002_create_clinics_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Video Sessions Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 
 -- Create video_sessions table to store video call session information
 CREATE TABLE IF NOT EXISTS video_sessions (
@@ -3364,9 +3364,9 @@ CREATE TABLE IF NOT EXISTS video_sessions (
   )
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_video_sessions_appointment_id ON video_sessions(appointment_id);
@@ -3379,9 +3379,9 @@ CREATE INDEX idx_video_sessions_status ON video_sessions(status);
 CREATE INDEX idx_video_sessions_scheduled_start_time ON video_sessions(scheduled_start_time);
 CREATE INDEX idx_video_sessions_created_at ON video_sessions(created_at DESC);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════
 
 -- Enable RLS on video_sessions table
 ALTER TABLE video_sessions ENABLE ROW LEVEL SECURITY;
@@ -3449,9 +3449,9 @@ CREATE POLICY "Super admins can manage all video sessions"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_video_sessions_updated_at()
@@ -3468,9 +3468,9 @@ CREATE TRIGGER update_video_sessions_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_video_sessions_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════
 -- Video Session Duration Calculation Trigger
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 
 -- Create function to calculate duration when session ends
 CREATE OR REPLACE FUNCTION calculate_video_session_duration()
@@ -3493,9 +3493,9 @@ CREATE TRIGGER calculate_video_duration_on_completion
   FOR EACH ROW
   EXECUTE FUNCTION calculate_video_session_duration();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE video_sessions IS 'Video call session information';
 COMMENT ON COLUMN video_sessions.channel_name IS 'WebRTC channel name for the video call';
@@ -3510,9 +3510,9 @@ COMMENT ON COLUMN video_sessions.quality_rating IS 'User rating of video call qu
 -- Created: 2026-03-04
 -- Dependencies: v2_P03_001_create_doctors_table.sql, v2_P03_002_create_patients_table.sql, v2_P04_001_create_appointments_table.sql, v2_P02_002_create_clinics_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Invoices Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create invoices table to store invoice information
 CREATE TABLE IF NOT EXISTS invoices (
@@ -3568,9 +3568,9 @@ CREATE TABLE IF NOT EXISTS invoices (
   )
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_invoices_patient_id ON invoices(patient_id);
@@ -3583,9 +3583,9 @@ CREATE INDEX idx_invoices_status ON invoices(status);
 CREATE INDEX idx_invoices_due_date ON invoices(due_date);
 CREATE INDEX idx_invoices_created_at ON invoices(created_at DESC);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on invoices table
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
@@ -3649,9 +3649,9 @@ CREATE POLICY "Super admins can manage all invoices"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_invoices_updated_at()
@@ -3668,17 +3668,17 @@ CREATE TRIGGER update_invoices_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_invoices_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE invoices IS 'Invoice information for services rendered';
 COMMENT ON COLUMN invoices.status IS 'Invoice status: draft, issued, pending, paid, overdue, cancelled, refunded';
 COMMENT ON COLUMN invoices.payment_method IS 'Method of payment: cash, card, insurance, etc.';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Invoice Items Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create invoice_items table for individual line items
 CREATE TABLE IF NOT EXISTS invoice_items (
@@ -3743,16 +3743,16 @@ COMMENT ON COLUMN invoice_items.item_type IS 'Type of item: service, medication,
 COMMENT ON COLUMN invoice_items.quantity IS 'Quantity of items';
 COMMENT ON COLUMN invoice_items.unit_price IS 'Price per unit';
 COMMENT ON COLUMN invoice_items.discount_amount IS 'Discount amount';
-COMMENT ON COLUMN invoice_items.total_price IS 'Total price (quantity Ã— unit_price - discount)';
+COMMENT ON COLUMN invoice_items.total_price IS 'Total price (quantity × unit_price - discount)';
 -- Migration: Create Inventory Table
 -- Purpose: Store clinic inventory and stock management
 -- Version: v2_P05_002
 -- Created: 2026-03-04
 -- Dependencies: v2_P02_002_create_clinics_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Inventory Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create inventory table to store clinic inventory and stock management
 CREATE TABLE IF NOT EXISTS inventory (
@@ -3816,9 +3816,9 @@ CREATE TABLE IF NOT EXISTS inventory (
   )
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_inventory_clinic_id ON inventory(clinic_id);
@@ -3828,9 +3828,9 @@ CREATE INDEX idx_inventory_is_active ON inventory(is_active);
 CREATE INDEX idx_inventory_expiry_date ON inventory(expiry_date);
 CREATE INDEX idx_inventory_created_at ON inventory(created_at DESC);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on inventory table
 ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
@@ -3876,9 +3876,9 @@ CREATE POLICY "Super admins can manage all inventory"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_inventory_updated_at()
@@ -3895,9 +3895,9 @@ CREATE TRIGGER update_inventory_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_inventory_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE inventory IS 'Clinic inventory and stock management';
 COMMENT ON COLUMN inventory.item_code IS 'Unique item identification code';
@@ -3907,9 +3907,9 @@ COMMENT ON COLUMN inventory.maximum_stock IS 'Maximum stock capacity';
 COMMENT ON COLUMN inventory.reorder_quantity IS 'Quantity to reorder when stock reaches minimum';
 COMMENT ON COLUMN inventory.expiry_date IS 'Expiry date for perishable items';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Inventory Transactions Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 
 -- Create inventory_transactions table for tracking stock movements
 CREATE TABLE IF NOT EXISTS inventory_transactions (
@@ -3965,9 +3965,9 @@ COMMENT ON COLUMN inventory_transactions.transaction_type IS 'Type of transactio
 COMMENT ON COLUMN inventory_transactions.quantity IS 'Quantity (positive for additions, negative for deductions)';
 COMMENT ON COLUMN inventory_transactions.total_cost IS 'Total cost of transaction';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 -- Stock Update Trigger
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update inventory stock on transaction
 CREATE OR REPLACE FUNCTION update_inventory_stock()
@@ -3994,9 +3994,9 @@ CREATE TRIGGER update_inventory_stock_on_transaction
   FOR EACH ROW
   EXECUTE FUNCTION update_inventory_stock();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Reports Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════════════
 
 -- Create reports table for generated reports
 CREATE TABLE IF NOT EXISTS reports (
@@ -4014,8 +4014,8 @@ CREATE TABLE IF NOT EXISTS reports (
   
   -- Report Parameters
   start_date DATE,
-  end_date,
-  parameters JSONB,
+end_date DATE,
+parameters JSONB,
   
   -- Report Output
   file_url TEXT,
@@ -4090,9 +4090,9 @@ COMMENT ON COLUMN reports.record_count IS 'Number of records in the report';
 -- Created: 2026-03-04
 -- Dependencies: v2_P02_002_create_clinics_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════
 -- Subscription Codes Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════
 
 -- Create subscription_codes table to store subscription codes
 CREATE TABLE IF NOT EXISTS subscription_codes (
@@ -4178,9 +4178,9 @@ COMMENT ON COLUMN subscription_codes.duration_days IS 'Duration in days';
 -- Created: 2026-03-04
 -- Dependencies: None
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════
 -- Exchange Rates Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 
 -- Create exchange_rates table to store currency exchange rates
 CREATE TABLE IF NOT EXISTS exchange_rates (
@@ -4229,9 +4229,9 @@ INSERT INTO exchange_rates (id, from_currency, to_currency, rate, effective_date
   ('550e8400-e29b-41d4-a716-446655440009', 'DZD', 'DZD', 1.0, '2026-03-04')
 ON CONFLICT (from_currency, to_currency, effective_date) DO NOTHING;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 
 -- Enable RLS on exchange_rates table
 ALTER TABLE exchange_rates ENABLE ROW LEVEL SECURITY;
@@ -4271,9 +4271,9 @@ COMMENT ON TABLE exchange_rates IS 'Currency exchange rates';
 COMMENT ON COLUMN exchange_rates.rate IS 'Exchange rate from base to target currency';
 COMMENT ON COLUMN exchange_rates.effective_date IS 'Date when the rate becomes effective';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 -- Helper Functions
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 
 -- Function to calculate exchange rate between two currencies
 CREATE OR REPLACE FUNCTION calculate_exchange_rate(from_curr VARCHAR(3), to_curr VARCHAR(3))
@@ -4328,9 +4328,9 @@ $$ LANGUAGE plpgsql;
 -- Created: 2026-03-04
 -- Dependencies: v2_P01_004_create_users_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════
 -- Notifications Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════
 
 -- Create notifications table to store user notifications
 CREATE TABLE IF NOT EXISTS notifications (
@@ -4368,9 +4368,9 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_notifications_user_id ON notifications(user_id);
@@ -4381,9 +4381,9 @@ CREATE INDEX idx_notifications_related_entity ON notifications(related_entity_ty
 CREATE INDEX idx_notifications_created_at ON notifications(created_at DESC);
 CREATE INDEX idx_notifications_expires_at ON notifications(expires_at);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 
 -- Enable RLS on notifications table
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
@@ -4414,9 +4414,9 @@ CREATE POLICY "Super admins can manage all notifications"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE notifications IS 'User notifications';
 COMMENT ON COLUMN notifications.type IS 'Notification type: info, success, warning, error, appointment, prescription, lab_result, invoice, system, alert';
@@ -4425,9 +4425,9 @@ COMMENT ON COLUMN notifications.related_entity_type IS 'Type of related entity (
 COMMENT ON COLUMN notifications.related_entity_id IS 'ID of related entity';
 COMMENT ON COLUMN notifications.priority IS 'Notification priority: low, normal, high, urgent';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════
 -- Notification Settings Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 
 -- Create notification_settings table for user notification preferences
 CREATE TABLE IF NOT EXISTS notification_settings (
@@ -4482,9 +4482,9 @@ COMMENT ON TABLE notification_settings IS 'User notification preferences';
 COMMENT ON COLUMN notification_settings.quiet_hours_start IS 'Start time for quiet hours (no notifications)';
 COMMENT ON COLUMN notification_settings.quiet_hours_end IS 'End time for quiet hours (no notifications)';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════════
 -- Autism Assessments Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ════════════════════════════════════════════════════════════
 
 -- Create autism_assessments table
 CREATE TABLE IF NOT EXISTS autism_assessments (
@@ -4534,10 +4534,10 @@ CREATE TABLE IF NOT EXISTS autism_assessments (
 
 -- Create indexes for autism_assessments
 CREATE INDEX idx_autism_assessments_patient_id ON autism_assessments(patient_id);
-CREATE INDEX idx_autism_assessments_doctor_id ON autism_assessments_doctor_id);
-CREATE INDEX idx_autism_assessments_clinic_id ON autism_assessments_clinic_id);
-CREATE INDEX idx_autism_assessments_assessment_date ON autism_assessments_assessment_date);
-CREATE INDEX idx_autism_assessments_diagnosis ON autism_assessments_diagnosis);
+CREATE INDEX idx_autism_assessments_doctor_id ON autism_assessments(doctor_id);
+CREATE INDEX idx_autism_assessments_clinic_id ON autism_assessments(clinic_id);
+CREATE INDEX idx_autism_assessments_assessment_date ON autism_assessments(assessment_date);
+CREATE INDEX idx_autism_assessments_diagnosis ON autism_assessments(diagnosis);
 CREATE INDEX idx_autism_assessments_created_at ON autism_assessments(created_at DESC);
 
 -- Add RLS policies for autism_assessments
@@ -4603,9 +4603,9 @@ COMMENT ON COLUMN autism_assessments.diagnosis IS 'Final diagnosis if any';
 COMMENT ON COLUMN autism_assessments.severity_level IS 'Severity level of diagnosis';
 COMMENT ON COLUMN autism_assessments.parent_concerns IS 'Parent concerns about child development';
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 -- Bug Reports Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════
 
 -- Create bug_reports table
 CREATE TABLE IF NOT EXISTS bug_reports (
@@ -4704,9 +4704,9 @@ COMMENT ON COLUMN bug_reports.device_info IS 'JSON object containing device and 
 -- Created: 2026-03-04
 -- Dependencies: 20260304120012_create_prescriptions_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Prescription Items Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create prescription_items table to store individual medication items
 CREATE TABLE IF NOT EXISTS prescription_items (
@@ -4768,9 +4768,9 @@ CREATE TABLE IF NOT EXISTS prescription_items (
   CONSTRAINT valid_prices CHECK (unit_price >= 0 AND total_price >= 0)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_prescription_items_prescription_id ON prescription_items(prescription_id);
@@ -4779,9 +4779,9 @@ CREATE INDEX idx_prescription_items_is_dispensed ON prescription_items(is_dispen
 CREATE INDEX idx_prescription_items_is_active ON prescription_items(is_active);
 CREATE INDEX idx_prescription_items_created_at ON prescription_items(created_at DESC);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on prescription_items table
 ALTER TABLE prescription_items ENABLE ROW LEVEL SECURITY;
@@ -4855,9 +4855,9 @@ CREATE POLICY "Super admins can manage all prescription items"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_prescription_items_updated_at()
@@ -4874,9 +4874,9 @@ CREATE TRIGGER prescription_items_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_prescription_items_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE prescription_items IS 'Individual medication items in prescriptions';
 COMMENT ON COLUMN prescription_items.id IS 'Primary key (UUID)';
@@ -4896,9 +4896,9 @@ COMMENT ON COLUMN prescription_items.is_dispensed IS 'Whether the medication has
 -- Created: 2026-03-04
 -- Dependencies: 20260304120008_create_patients_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Vital Signs Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create vital_signs table to store patient vital signs
 CREATE TABLE IF NOT EXISTS vital_signs (
@@ -4993,9 +4993,9 @@ CREATE TABLE IF NOT EXISTS vital_signs (
   CONSTRAINT valid_height CHECK (height IS NULL OR height > 0)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_vital_signs_patient_id ON vital_signs(patient_id);
@@ -5006,9 +5006,9 @@ CREATE INDEX idx_vital_signs_measured_at ON vital_signs(measured_at DESC);
 CREATE INDEX idx_vital_signs_measured_by ON vital_signs(measured_by);
 CREATE INDEX idx_vital_signs_is_abnormal ON vital_signs(is_abnormal);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on vital_signs table
 ALTER TABLE vital_signs ENABLE ROW LEVEL SECURITY;
@@ -5074,9 +5074,9 @@ CREATE POLICY "Super admins can manage all vital signs"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_vital_signs_updated_at()
@@ -5093,9 +5093,9 @@ CREATE TRIGGER vital_signs_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_vital_signs_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE vital_signs IS 'Patient vital signs measurements';
 COMMENT ON COLUMN vital_signs.id IS 'Primary key (UUID)';
@@ -5118,9 +5118,9 @@ COMMENT ON COLUMN vital_signs.is_abnormal IS 'Whether vital signs are abnormal';
 -- Created: 2026-03-04
 -- Dependencies: 20260304120015_create_invoices_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Invoice Items Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create invoice_items table to store individual line items in invoices
 CREATE TABLE IF NOT EXISTS invoice_items (
@@ -5188,9 +5188,9 @@ CREATE TABLE IF NOT EXISTS invoice_items (
   CONSTRAINT valid_total CHECK (total >= 0)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_invoice_items_invoice_id ON invoice_items(invoice_id);
@@ -5205,9 +5205,9 @@ CREATE INDEX idx_invoice_items_is_paid ON invoice_items(is_paid);
 CREATE INDEX idx_invoice_items_is_refunded ON invoice_items(is_refunded);
 CREATE INDEX idx_invoice_items_created_at ON invoice_items(created_at DESC);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on invoice_items table
 ALTER TABLE invoice_items ENABLE ROW LEVEL SECURITY;
@@ -5273,9 +5273,9 @@ CREATE POLICY "Super admins can manage all invoice items"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_invoice_items_updated_at()
@@ -5292,9 +5292,9 @@ CREATE TRIGGER invoice_items_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_invoice_items_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE invoice_items IS 'Individual line items in invoices';
 COMMENT ON COLUMN invoice_items.id IS 'Primary key (UUID)';
@@ -5317,9 +5317,9 @@ COMMENT ON COLUMN invoice_items.is_refunded IS 'Whether the item has been refund
 -- Created: 2026-03-04
 -- Dependencies: 20260304120016_create_inventory_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Inventory Transactions Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create inventory_transactions table to track inventory stock movements
 CREATE TABLE IF NOT EXISTS inventory_transactions (
@@ -5389,9 +5389,9 @@ CREATE TABLE IF NOT EXISTS inventory_transactions (
   CONSTRAINT valid_total_cost CHECK (total_cost >= 0)
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_inventory_transactions_inventory_item_id ON inventory_transactions(inventory_item_id);
@@ -5409,9 +5409,9 @@ CREATE INDEX idx_inventory_transactions_transaction_date ON inventory_transactio
 CREATE INDEX idx_inventory_transactions_created_by ON inventory_transactions(created_by);
 CREATE INDEX idx_inventory_transactions_approved_by ON inventory_transactions(approved_by);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on inventory_transactions table
 ALTER TABLE inventory_transactions ENABLE ROW LEVEL SECURITY;
@@ -5446,9 +5446,9 @@ CREATE POLICY "Super admins can manage all inventory transactions"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE inventory_transactions IS 'Inventory stock movements tracking';
 COMMENT ON COLUMN inventory_transactions.id IS 'Primary key (UUID)';
@@ -5471,9 +5471,9 @@ COMMENT ON COLUMN inventory_transactions.created_by IS 'User who created the tra
 -- Created: 2026-03-04
 -- Dependencies: 20260304120001_create_users_table.sql
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Notification Settings Table
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create notification_settings table to store user notification preferences
 CREATE TABLE IF NOT EXISTS notification_settings (
@@ -5543,9 +5543,9 @@ CREATE TABLE IF NOT EXISTS notification_settings (
   )
 );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Indexes
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create indexes for common queries
 CREATE INDEX idx_notification_settings_user_id ON notification_settings(user_id);
@@ -5553,9 +5553,9 @@ CREATE INDEX idx_notification_settings_device_token ON notification_settings(dev
 CREATE INDEX idx_notification_settings_platform ON notification_settings(platform);
 CREATE INDEX idx_notification_settings_created_at ON notification_settings(created_at DESC);
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS) Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable RLS on notification_settings table
 ALTER TABLE notification_settings ENABLE ROW LEVEL SECURITY;
@@ -5586,9 +5586,9 @@ CREATE POLICY "Super admins can manage all notification settings"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Triggers
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Create function to update 'updated_at' timestamp
 CREATE OR REPLACE FUNCTION update_notification_settings_updated_at()
@@ -5605,9 +5605,9 @@ CREATE TRIGGER notification_settings_update_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_notification_settings_updated_at();
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Comments
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 COMMENT ON TABLE notification_settings IS 'User notification preferences';
 COMMENT ON COLUMN notification_settings.id IS 'Primary key (UUID)';
@@ -5627,9 +5627,9 @@ COMMENT ON COLUMN notification_settings.platform IS 'Device platform';
 -- Created: 2026-03-04
 -- Dependencies: users table must exist
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Countries Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage countries" ON countries;
 
@@ -5653,9 +5653,9 @@ CREATE POLICY "Clinic admins can view countries"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Regions Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage regions" ON regions;
 
@@ -5679,9 +5679,9 @@ CREATE POLICY "Clinic admins can view regions"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Specialties Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage specialties" ON specialties;
 
@@ -5695,9 +5695,9 @@ CREATE POLICY "Super admins can manage specialties"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Clinics Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage clinics" ON clinics;
 
@@ -5722,9 +5722,9 @@ CREATE POLICY "Clinic admins can manage their clinics"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Subscriptions Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage subscriptions" ON subscriptions;
 
@@ -5738,9 +5738,9 @@ CREATE POLICY "Super admins can manage subscriptions"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Doctors Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage doctors" ON doctors;
 
@@ -5769,9 +5769,9 @@ CREATE POLICY "Clinic admins can view their clinic's doctors"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Patients Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage patients" ON patients;
 
@@ -5799,9 +5799,9 @@ CREATE POLICY "Doctors can view their patients"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Employees Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage employees" ON employees;
 
@@ -5830,9 +5830,9 @@ CREATE POLICY "Clinic admins can view their clinic's employees"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Clinic Staff Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage clinic staff" ON clinic_staff;
 
@@ -5857,9 +5857,9 @@ CREATE POLICY "Clinic admins can manage their clinic's staff"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Appointments Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage appointments" ON appointments;
 
@@ -5881,9 +5881,9 @@ CREATE POLICY "Doctors can view their appointments"
   ON appointments FOR SELECT
   USING (doctor_id = auth.uid());
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Prescriptions Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage prescriptions" ON prescriptions;
 
@@ -5905,9 +5905,9 @@ CREATE POLICY "Doctors can view prescriptions they created"
   ON prescriptions FOR SELECT
   USING (doctor_id = auth.uid());
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Lab Results Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage lab results" ON lab_results;
 
@@ -5935,9 +5935,9 @@ CREATE POLICY "Doctors can view their patients' lab results"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Video Sessions Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage video sessions" ON video_sessions;
 
@@ -5959,9 +5959,9 @@ CREATE POLICY "Doctors can view their video sessions"
   ON video_sessions FOR SELECT
   USING (doctor_id = auth.uid());
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Invoices Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage invoices" ON invoices;
 
@@ -5990,9 +5990,9 @@ CREATE POLICY "Clinic admins can view their clinic's invoices"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Inventory Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage inventory" ON inventory;
 
@@ -6017,9 +6017,9 @@ CREATE POLICY "Clinic admins can manage their clinic's inventory"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Notifications Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage notifications" ON notifications;
 
@@ -6037,9 +6037,9 @@ CREATE POLICY "Users can view their own notifications"
   ON notifications FOR SELECT
   USING (user_id = auth.uid());
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Subscription Codes Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage subscription codes" ON subscription_codes;
 
@@ -6053,9 +6053,9 @@ CREATE POLICY "Super admins can manage subscription codes"
     )
   );
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Update Exchange Rates Policies
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 DROP POLICY IF EXISTS "Service role can manage exchange rates" ON exchange_rates;
 
@@ -6078,10 +6078,10 @@ CREATE POLICY "Everyone can view active exchange rates"
 -- Created: 2026-03-12
 -- Status: CRITICAL FIX
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Issue: Users during registration/login get 404 when fetching countries
 -- Fix: Add explicit policy for public access
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Drop existing policies if they exist
 DROP POLICY IF EXISTS "Active countries are viewable by everyone" ON countries;
@@ -6089,9 +6089,9 @@ DROP POLICY IF EXISTS "Supported countries are viewable by everyone" ON countrie
 DROP POLICY IF EXISTS "Service role can manage countries" ON countries;
 DROP POLICY IF EXISTS "Public can read countries" ON countries;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- New RLS Policies - Allows public access
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Policy 1: Everyone (authenticated or not) can view all supported countries
 CREATE POLICY "Public read access to supported countries"
@@ -6108,23 +6108,23 @@ CREATE POLICY "Service role can manage countries"
   ON countries FOR ALL
   USING (auth.role() = 'service_role');
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Ensure table has correct structure
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- Verify is_supported column has correct data
 UPDATE countries SET is_supported = true WHERE is_supported IS NULL;
 UPDATE countries SET is_active = true WHERE is_active IS NULL;
 
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 -- Verify data exists
--- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- ══════════════════════════════════════════════════════════════════════════════
 
 -- This query should return at least the core countries
 -- SELECT COUNT(*) as total, COUNT(CASE WHEN is_supported THEN 1 END) as supported
 -- FROM countries;
 -- Create user_approvals table
--- Ø¬Ø¯ÙˆÙ„ Ø·Ù„Ø¨Ø§Øª Ù…ÙˆØ§ÙÙ‚Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†
+-- جدول طلبات موافقة المستخدمين
 create table if not exists public.user_approvals (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
