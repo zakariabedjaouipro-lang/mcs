@@ -1,458 +1,349 @@
-/// Premium Admin Dashboard Screen
-library;
-
 import 'package:flutter/material.dart';
-import 'package:mcs/core/theme/premium_colors.dart';
-import 'package:mcs/core/theme/premium_text_styles.dart';
-import 'package:mcs/core/widgets/app_card.dart';
-import 'package:mcs/core/widgets/app_scaffold.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/config/injection_container.dart';
+import 'package:mcs/core/constants/app_routes.dart';
+import 'package:mcs/core/services/auth_service.dart';
+import 'package:mcs/core/services/supabase_service.dart';
+import 'package:mcs/core/theme/app_colors.dart';
+import 'package:mcs/core/theme/app_theme.dart';
+import 'package:mcs/core/theme/text_styles.dart';
+import 'package:mcs/features/admin/presentation/bloc/index.dart';
 
+import 'package:mcs/features/admin/presentation/screens/admin_stats_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/admin_subscriptions_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/approvals_management_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/premium_admin_clinics_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/premium_admin_currencies_screen.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
+import 'package:mcs/features/localization/presentation/bloc/localization_event.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:mcs/features/theme/presentation/bloc/theme_event.dart';
+
+/// Premium Admin Dashboard Screen
 class PremiumAdminDashboardScreen extends StatelessWidget {
   const PremiumAdminDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final isArabic = Directionality.of(context) == TextDirection.rtl;
+    return BlocProvider(
+      create: (_) => AdminBloc(sl<SupabaseService>()),
+      child: const PremiumAdminDashboardView(),
+    );
+  }
+}
 
-    return AppScaffold(
-      title: isArabic ? 'لوحة تحكم المدير' : 'Admin Dashboard',
-      showBackButton: false,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.notifications),
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  isArabic
-                      ? 'شاشة الإشعارات قريباً'
-                      : 'Notifications screen coming soon',
-                ),
-              ),
-            );
-          },
-        ),
-        PopupMenuButton<String>(
-          onSelected: (value) {
-            if (value == 'profile') {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    isArabic
-                        ? 'شاشة الملف الشخصي قريباً'
-                        : 'Profile screen coming soon',
-                  ),
-                ),
-              );
-            } else if (value == 'settings') {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    isArabic
-                        ? 'شاشة الإعدادات قريباً'
-                        : 'Settings screen coming soon',
-                  ),
-                ),
-              );
-            } else if (value == 'logout') {
-              _showLogoutConfirmation(context, isArabic);
-            }
-          },
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 'profile',
-              child: Text(isArabic ? 'الملف الشخصي' : 'Profile'),
-            ),
-            PopupMenuItem(
-              value: 'settings',
-              child: Text(isArabic ? 'الإعدادات' : 'Settings'),
-            ),
-            const PopupMenuDivider(),
-            PopupMenuItem(
-              value: 'logout',
-              child: Text(
-                isArabic ? 'تسجيل الخروج' : 'Logout',
-                style: const TextStyle(color: PremiumColors.errorRed),
-              ),
-            ),
-          ],
-        ),
-      ],
-      child: RefreshIndicator(
-        onRefresh: () async {},
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildWelcomeCard(context, isArabic),
-              const SizedBox(height: 24),
-              _buildStatsGrid(context, isArabic),
-              const SizedBox(height: 24),
-              _buildQuickActions(context, isArabic),
-              const SizedBox(height: 24),
-              _buildRecentActivity(context, isArabic),
-            ],
-          ),
-        ),
-      ),
+class PremiumAdminDashboardView extends StatefulWidget {
+  const PremiumAdminDashboardView({super.key});
+
+  @override
+  State<PremiumAdminDashboardView> createState() =>
+      _PremiumAdminDashboardViewState();
+}
+
+class _PremiumAdminDashboardViewState extends State<PremiumAdminDashboardView> {
+  int _selectedIndex = 0;
+  bool _isInitialized = false;
+
+  late final List<_DashboardTab> _tabs = [
+    _DashboardTab(
+      title: 'الإحصائيات',
+      icon: Icons.dashboard,
+      builder: _buildStatsScreen,
+    ),
+    _DashboardTab(
+      title: 'الموافقات',
+      icon: Icons.check_circle,
+      builder: _buildApprovalsScreen,
+    ),
+    _DashboardTab(
+      title: 'العيادات',
+      icon: Icons.local_hospital,
+      builder: _buildClinicsScreen,
+    ),
+    _DashboardTab(
+      title: 'الاشتراكات',
+      icon: Icons.card_membership,
+      builder: _buildSubscriptionsScreen,
+    ),
+    _DashboardTab(
+      title: 'العملات',
+      icon: Icons.currency_exchange,
+      builder: _buildCurrenciesScreen,
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // ✅ لا نستخدم context هنا - نستخدمه في didChangeDependencies
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // ✅ آمن تماماً هنا - الـ widget مُدرج بالكامل في الـ widget tree
+    if (!_isInitialized) {
+      context.read<AdminBloc>().add(const LoadDashboardStats());
+      _isInitialized = true;
+    }
+  }
+
+  // ── Screen Builders ──────────────────────────────────────
+
+  static Widget _buildStatsScreen(BuildContext context) {
+    return const AdminStatsScreen();
+  }
+
+  static Widget _buildApprovalsScreen(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ApprovalBloc>(),
+      child: const ApprovalsManagementScreen(),
     );
   }
 
-  Widget _buildWelcomeCard(BuildContext context, bool isArabic) {
-    return AppCard(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                gradient: PremiumColors.primaryGradient,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.admin_panel_settings,
-                color: Colors.white,
-                size: 28,
-              ),
+  static Widget _buildClinicsScreen(BuildContext context) {
+    return const PremiumAdminClinicsScreen();
+  }
+
+  static Widget _buildSubscriptionsScreen(BuildContext context) {
+    return const AdminSubscriptionsScreen();
+  }
+
+  static Widget _buildCurrenciesScreen(BuildContext context) {
+    return const PremiumAdminCurrenciesScreen();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 600;
+
+        if (isMobile) {
+          // Mobile layout with BottomNavigationBar
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('MCS Admin'),
+              elevation: 0,
+              actions: [
+                // زر تبديل اللغة
+                IconButton(
+                  icon: const Icon(Icons.language),
+                  tooltip: 'اللغة',
+                  onPressed: () {
+                    context
+                        .read<LocalizationBloc>()
+                        .add(const ToggleLanguageEvent());
+                  },
+                ),
+                // زر تبديل الثيم
+                IconButton(
+                  icon: Icon(
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Icons.light_mode
+                        : Icons.dark_mode,
+                  ),
+                  tooltip: 'الثيم',
+                  onPressed: () {
+                    context.read<ThemeBloc>().add(const ToggleThemeEvent());
+                  },
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    isArabic ? 'مرحباً، المدير' : 'Welcome, Admin',
-                    style: PremiumTextStyles.headingMedium.copyWith(
-                      color: PremiumColors.darkText,
+            body: _tabs[_selectedIndex].builder(context),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              onTap: (index) => setState(() => _selectedIndex = index),
+              type: BottomNavigationBarType.fixed,
+              items: _tabs
+                  .map(
+                    (tab) => BottomNavigationBarItem(
+                      icon: Icon(tab.icon),
+                      label: tab.title,
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    isArabic
-                        ? 'إدارة العيادات بسهولة'
-                        : 'Manage clinics with ease',
-                    style: PremiumTextStyles.bodyMedium.copyWith(
-                      color: PremiumColors.lightText,
-                    ),
-                  ),
+                  )
+                  .toList(),
+            ),
+          );
+        } else {
+          // Desktop layout with sidebar
+          return Scaffold(
+            body: Row(
+              children: [
+                // Sidebar
+                _buildSidebar(context),
+                // Main content
+                Expanded(
+                  child: _tabs[_selectedIndex].builder(context),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildSidebar(BuildContext context) {
+    return Container(
+      width: 280,
+      decoration: BoxDecoration(
+        color: AppTheme.light.scaffoldBackgroundColor,
+        border: Border(
+          right: BorderSide(color: Colors.grey[300]!),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Logo section
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primary,
+                  AppColors.primary.withValues(alpha: 0.8),
                 ],
               ),
             ),
+            child: Column(
+              children: [
+                const Icon(
+                  Icons.admin_panel_settings,
+                  color: Colors.white,
+                  size: 48,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'MCS Admin',
+                  style: TextStyles.headline4.copyWith(color: Colors.white),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'لوحة المبرمج',
+                  style: TextStyles.bodySmall.copyWith(color: Colors.white70),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          // Navigation items
+          ...List.generate(_tabs.length, (index) {
+            final tab = _tabs[index];
+            final isSelected = _selectedIndex == index;
+            return _buildSidebarItem(
+              context,
+              tab.icon,
+              tab.title,
+              isSelected,
+              () => setState(() => _selectedIndex = index),
+            );
+          }),
+          const Spacer(),
+          // Logout
+          _buildSidebarItem(
+            context,
+            Icons.logout,
+            'تسجيل الخروج',
+            false,
+            () => _handleLogout(context),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSidebarItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    bool isSelected,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : null,
+          border: Border(
+            right: BorderSide(
+              color: isSelected ? AppColors.primary : Colors.transparent,
+              width: 3,
+            ),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? AppColors.primary : Colors.grey[600],
+              size: 24,
+            ),
+            const SizedBox(width: 16),
+            Text(
+              title,
+              style: TextStyles.bodyMedium.copyWith(
+                color: isSelected ? AppColors.primary : Colors.grey[800],
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatsGrid(BuildContext context, bool isArabic) {
-    final stats = [
-      {
-        'title': isArabic ? 'إجمالي العيادات' : 'Total Clinics',
-        'value': '18',
-        'icon': Icons.local_hospital,
-        'color': PremiumColors.primaryBlue,
-      },
-      {
-        'title': isArabic ? 'إجمالي الأطباء' : 'Total Doctors',
-        'value': '42',
-        'icon': Icons.medical_services,
-        'color': PremiumColors.successGreen,
-      },
-      {
-        'title': isArabic ? 'إجمالي المرضى' : 'Total Patients',
-        'value': '1240',
-        'icon': Icons.people,
-        'color': PremiumColors.warningOrange,
-      },
-      {
-        'title': isArabic ? 'الاشتراكات النشطة' : 'Active Subscriptions',
-        'value': '15',
-        'icon': Icons.card_membership,
-        'color': PremiumColors.accentCyan,
-      },
-    ];
-
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      childAspectRatio: 1.5,
-      children: stats.map((stat) {
-        return AppCard(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: (stat['color']! as Color).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(
-                    stat['icon']! as IconData,
-                    color: stat['color']! as Color,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  stat['value']! as String,
-                  style: PremiumTextStyles.headingSmall.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: PremiumColors.darkText,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  stat['title']! as String,
-                  style: PremiumTextStyles.bodySmall.copyWith(
-                    color: PremiumColors.lightText,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildQuickActions(BuildContext context, bool isArabic) {
-    final actions = [
-      {
-        'icon': Icons.local_hospital,
-        'label': isArabic ? 'إدارة العيادات' : 'Manage Clinics',
-        'color': PremiumColors.primaryBlue,
-      },
-      {
-        'icon': Icons.people,
-        'label': isArabic ? 'إدارة الأطباء' : 'Manage Doctors',
-        'color': PremiumColors.successGreen,
-      },
-      {
-        'icon': Icons.card_membership,
-        'label': isArabic ? 'إدارة الاشتراكات' : 'Manage Subscriptions',
-        'color': PremiumColors.warningOrange,
-      },
-      {
-        'icon': Icons.monetization_on,
-        'label': isArabic ? 'العملات' : 'Currencies',
-        'color': PremiumColors.accentCyan,
-      },
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          isArabic ? 'الإجراءات السريعة' : 'Quick Actions',
-          style: PremiumTextStyles.headingMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: PremiumColors.darkText,
-          ),
-        ),
-        const SizedBox(height: 16),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-          childAspectRatio: 1.2,
-          children: actions.map((action) {
-            return AppCard(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(action['label']! as String),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color:
-                            (action['color']! as Color).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        action['icon']! as IconData,
-                        color: action['color']! as Color,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      action['label']! as String,
-                      textAlign: TextAlign.center,
-                      style: PremiumTextStyles.bodySmall.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: PremiumColors.darkText,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRecentActivity(BuildContext context, bool isArabic) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          isArabic ? 'الأنشطة الأخيرة' : 'Recent Activity',
-          style: PremiumTextStyles.headingMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: PremiumColors.darkText,
-          ),
-        ),
-        const SizedBox(height: 16),
-        AppCard(
-          child: Column(
-            children: [
-              _buildActivityItem(
-                icon: Icons.local_hospital,
-                title: isArabic ? 'تم إنشاء عيادة جديدة' : 'New clinic created',
-                subtitle: isArabic
-                    ? 'عيادة الرعاية - الرياض'
-                    : 'Care Clinic - Riyadh',
-                time: '2 min ago',
-              ),
-              _buildActivityItem(
-                icon: Icons.medical_services,
-                title: isArabic ? 'تمت إضافة طبيب' : 'Doctor added',
-                subtitle:
-                    isArabic ? 'د. أحمد المانصوري' : 'Dr. Ahmed Al-Mansouri',
-                time: '15 min ago',
-              ),
-              _buildActivityItem(
-                icon: Icons.card_membership,
-                title: isArabic ? 'تم تجديد اشتراك' : 'Subscription renewed',
-                subtitle: isArabic ? 'عيادة المستقبل' : 'Future Clinic',
-                time: '1 hour ago',
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActivityItem({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required String time,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: PremiumColors.primaryBlue.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(
-              icon,
-              color: PremiumColors.primaryBlue,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: PremiumTextStyles.bodyMedium.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: PremiumColors.darkText,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: PremiumTextStyles.bodySmall.copyWith(
-                    color: PremiumColors.lightText,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            time,
-            style: PremiumTextStyles.bodySmall.copyWith(
-              color: PremiumColors.lightText,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showLogoutConfirmation(BuildContext context, bool isArabic) {
+  void _handleLogout(BuildContext context) {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(isArabic ? 'تسجيل الخروج' : 'Logout'),
-        content: Text(
-          isArabic
-              ? 'هل أنت متأكد أنك تريد تسجيل الخروج؟'
-              : 'Are you sure you want to logout?',
-        ),
+        title: const Text('تسجيل الخروج'),
+        content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
         actions: [
-          TextButton(
-            onPressed: () {
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: Text(isArabic ? 'إلغاء' : 'Cancel'),
+          Expanded(
+            child: TextButton(
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('إلغاء'),
+            ),
           ),
-          TextButton(
-            onPressed: () {
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).pop();
-              }
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    isArabic
-                        ? 'تم تسجيل الخروج بنجاح'
-                        : 'Logged out successfully',
-                  ),
-                ),
-              );
-            },
-            child: Text(
-              isArabic ? 'تسجيل الخروج' : 'Logout',
-              style: const TextStyle(color: PremiumColors.errorRed),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+                AuthService().signOut();
+                if (context.mounted) {
+                  context.go(AppRoutes.login);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+              ),
+              child: const Text('تسجيل الخروج'),
             ),
           ),
         ],
       ),
     );
   }
+}
+
+class _DashboardTab {
+  _DashboardTab({
+    required this.title,
+    required this.icon,
+    required this.builder,
+  });
+  final String title;
+  final IconData icon;
+  final Widget Function(BuildContext) builder;
 }

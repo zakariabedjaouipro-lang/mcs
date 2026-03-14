@@ -16,11 +16,19 @@ Future<void> main() async {
 
   // قائمة حسابات التجريب
   final demoAccounts = [
-    {'email': 'doctor@mcs.demo', 'password': 'Demo123456', 'role': 'doctor'},
-    {'email': 'patient@mcs.demo', 'password': 'Demo123456', 'role': 'patient'},
-    {'email': 'admin@mcs.demo', 'password': 'Demo123456', 'role': 'clinic_admin'},
-    {'email': 'superadmin@mcs.demo', 'password': 'Demo123456', 'role': 'super_admin'},
-    {'email': 'staff@mcs.demo', 'password': 'Demo123456', 'role': 'staff'},
+    {'email': 'doctor@demo.com', 'password': 'Demo@123456', 'role': 'doctor'},
+    {'email': 'patient@demo.com', 'password': 'Demo@123456', 'role': 'patient'},
+    {
+      'email': 'admin@demo.com',
+      'password': 'Demo@123456',
+      'role': 'clinic_admin'
+    },
+    {
+      'email': 'superadmin@demo.com',
+      'password': 'Demo@123456',
+      'role': 'super_admin'
+    },
+    {'email': 'staff@demo.com', 'password': 'Demo@123456', 'role': 'staff'},
   ];
 
   print('🚀 جاري إنشاء حسابات التجريب...\n');

@@ -4,11 +4,11 @@
 
 | الدور | Email | كلمة المرور | الوصف |
 |------|-------|-----------|--------|
-| **Doctor** 👨‍⚕️ | doctor@mcs.demo | Demo123456 | حساب الطبيب |
-| **Patient** 🏥 | patient@mcs.demo | Demo123456 | حساب المريض |
-| **Admin** ⚙️ | admin@mcs.demo | Demo123456 | مسؤول العيادة |
-| **Super Admin** 👑 | superadmin@mcs.demo | Demo123456 | المسؤول الأساسي |
-| **Staff** 👨‍💼 | staff@mcs.demo | Demo123456 | حساب الموظف |
+| **Doctor** 👨‍⚕️ | doctor@demo.com | Demo@123456 | حساب الطبيب |
+| **Patient** 🏥 | patient@demo.com | Demo@123456 | حساب المريض |
+| **Admin** ⚙️ | admin@demo.com | Demo@123456 | مسؤول العيادة |
+| **Super Admin** 👑 | superadmin@demo.com | Demo@123456 | المسؤول الأساسي |
+| **Staff** 👨‍💼 | staff@demo.com | Demo@123456 | حساب الموظف |
 
 ## 🚀 كيفية الاستخدام
 
@@ -57,15 +57,15 @@ dart run create_demo_accounts.dart
 ## 📱 حالات الاستخدام
 
 ### ✅ لاختبار Admin Dashboard
-1. استخدم `admin@mcs.demo` في صفحة الدخول
+1. استخدم `admin@demo.com` في صفحة الدخول
 2. أو اذهب مباشرة لـ `/test-admin`
 
 ### ✅ لاختبار Super Admin
-1. استخدم `superadmin@mcs.demo` في صفحة الدخول
+1. استخدم `superadmin@demo.com` في صفحة الدخول
 2. أو اذهب مباشرة لـ `/test-super-admin`
 
 ### ✅ لاختبار Doctor Dashboard
-1. استخدم `doctor@mcs.demo` في صفحة الدخول
+1. استخدم `doctor@demo.com` في صفحة الدخول
 2. أو اذهب مباشرة لـ `/test-doctor`
 
 ## 🔄 مراجع إضافية

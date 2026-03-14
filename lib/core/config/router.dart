@@ -11,9 +11,8 @@ import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/constants/app_routes.dart';
 // Admin
 import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
-import 'package:mcs/features/admin/presentation/screens/admin_dashboard_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/premium_admin_dashboard_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/premium_super_admin_dashboard.dart';
-import 'package:mcs/features/admin/presentation/screens/super_admin_screen.dart';
 // App shell
 import 'package:mcs/features/app/shells/app_shell.dart';
 // Appointment
@@ -64,14 +63,14 @@ class AppRouter {
   static GoRouter? _router;
 
   static GoRouter _createRouter() => GoRouter(
-        navigatorKey: _rootNavigatorKey,
-        initialLocation: _getInitialRoute(),
-        debugLogDiagnostics: true,
-        redirect: _guard,
-        routes: _routes,
-        errorBuilder: (context, state) =>
-            _ErrorScreen(error: state.error?.toString() ?? 'Page not found'),
-      );
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: _getInitialRoute(),
+    debugLogDiagnostics: true,
+    redirect: _guard,
+    routes: _routes,
+    errorBuilder: (context, state) =>
+        _ErrorScreen(error: state.error?.toString() ?? 'Page not found'),
+  );
 
   /// Get initial route based on authentication status
   /// Mobile: Login or Dashboard, Web: Landing
@@ -93,13 +92,15 @@ class AppRouter {
   static String? _guard(BuildContext context, GoRouterState state) {
     final isAuthenticated = SupabaseConfig.isAuthenticated;
 
-    final isAuthRoute = state.matchedLocation == AppRoutes.login ||
+    final isAuthRoute =
+        state.matchedLocation == AppRoutes.login ||
         state.matchedLocation == AppRoutes.register ||
         state.matchedLocation == AppRoutes.forgotPassword ||
         state.matchedLocation == AppRoutes.otpVerification ||
         state.matchedLocation == AppRoutes.pendingApproval;
 
-    final isPublicRoute = state.matchedLocation == AppRoutes.landing ||
+    final isPublicRoute =
+        state.matchedLocation == AppRoutes.landing ||
         state.matchedLocation == AppRoutes.features ||
         state.matchedLocation == AppRoutes.pricing ||
         state.matchedLocation == AppRoutes.contact ||
@@ -308,17 +309,14 @@ class AppRouter {
       path: AppRoutes.adminHome,
       builder: (context, state) => BlocProvider(
         create: (context) => sl<AdminBloc>(),
-        child: const AdminDashboardScreen(),
+        child: const PremiumAdminDashboardScreen(),
       ),
     ),
 
-    /// Super Admin
+    /// Super Admin (Premium Dashboard)
     GoRoute(
       path: AppRoutes.superAdminHome,
-      builder: (context, state) => BlocProvider(
-        create: (context) => sl<AdminBloc>(),
-        child: const SuperAdminScreen(),
-      ),
+      builder: (context, state) => const PremiumSuperAdminDashboard(),
     ),
 
     /// Premium Super Admin
@@ -328,27 +326,21 @@ class AppRouter {
     ),
 
     /// Splash
-    GoRoute(
-      path: '/splash',
-      builder: (context, state) => const SplashScreen(),
-    ),
+    GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
 
     /// ═══════════════════════════════════════════════════════════
     /// TEST ROUTES (لاختبار الشاشات بسهولة - قم بحذفها بعد الانتهاء)
     /// ═══════════════════════════════════════════════════════════
     GoRoute(
-      path: '/test-admin',
-      builder: (context, state) => BlocProvider(
-        create: (context) => sl<AdminBloc>(),
-        child: const AdminDashboardScreen(),
-      ),
+      path: '/test-super-admin',
+      builder: (context, state) => const PremiumSuperAdminDashboard(),
     ),
 
     GoRoute(
-      path: '/test-super-admin',
+      path: '/test-admin',
       builder: (context, state) => BlocProvider(
         create: (context) => sl<AdminBloc>(),
-        child: const SuperAdminScreen(),
+        child: const PremiumAdminDashboardScreen(),
       ),
     ),
 

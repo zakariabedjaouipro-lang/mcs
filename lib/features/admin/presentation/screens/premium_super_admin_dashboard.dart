@@ -464,6 +464,9 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
     bool isArabic,
     bool isDark,
   ) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final showSearch = screenWidth > 768; // Hide search on small screens
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 24,
@@ -477,80 +480,89 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
           ),
         ),
       ),
-      child: Row(
-        children: [
-          // Search Bar
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            // Search Bar (hidden on small screens)
+            if (showSearch) ...[
+              SizedBox(
+                width: 300,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: TextField(
-                onChanged: (_) {},
-                decoration: InputDecoration(
-                  hintText: isArabic ? 'ابحث في النظام...' : 'Search system...',
-                  prefixIcon: const Icon(Icons.search, size: 20),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+                  child: TextField(
+                    onChanged: (_) {},
+                    decoration: InputDecoration(
+                      hintText: isArabic ? 'ابحث...' : 'Search...',
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      isDense: true,
+                    ),
                   ),
-                  isDense: true,
                 ),
               ),
+              const SizedBox(width: 24),
+            ],
+
+            // Notifications
+            _buildIconButton(
+              icon: Icons.notifications_outlined,
+              badge: '3',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      isArabic
+                          ? 'لا توجد إخطارات جديدة'
+                          : 'No new notifications',
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
 
-          const SizedBox(width: 24),
+            const SizedBox(width: 16),
 
-          // Notifications
-          _buildIconButton(
-            icon: Icons.notifications_outlined,
-            badge: '3',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    isArabic ? 'لا توجد إخطارات جديدة' : 'No new notifications',
-                  ),
-                ),
-              );
-            },
-          ),
+            // Theme Toggle
+            _buildIconButton(
+              icon: isDark ? Icons.light_mode : Icons.dark_mode,
+              onTap: () {
+                context.read<ThemeBloc>().add(const ToggleThemeEvent());
+              },
+            ),
 
-          const SizedBox(width: 16),
+            const SizedBox(width: 16),
 
-          // Theme Toggle
-          _buildIconButton(
-            icon: isDark ? Icons.light_mode : Icons.dark_mode,
-            onTap: () {
-              context.read<ThemeBloc>().add(const ToggleThemeEvent());
-            },
-          ),
+            // Language Toggle
+            _buildIconButton(
+              icon: Icons.language,
+              onTap: () {
+                context
+                    .read<LocalizationBloc>()
+                    .add(const ToggleLanguageEvent());
+              },
+            ),
 
-          const SizedBox(width: 16),
+            const SizedBox(width: 16),
 
-          // Language Toggle
-          _buildIconButton(
-            icon: Icons.language,
-            onTap: () {
-              context.read<LocalizationBloc>().add(const ToggleLanguageEvent());
-            },
-          ),
-
-          const SizedBox(width: 16),
-
-          // User Profile
-          _buildUserProfile(context, isArabic),
-        ],
+            // User Profile
+            _buildUserProfile(context, isArabic),
+          ],
+        ),
       ),
     );
   }

@@ -18,32 +18,32 @@ import 'package:supabase_flutter/supabase_flutter.dart' show OAuthProvider;
 final _demoAccounts = [
   {
     'role': 'Doctor',
-    'email': 'doctor@mcs.demo',
-    'password': 'Demo123456',
+    'email': 'doctor@demo.com1',
+    'password': 'Demo@123456',
     'description': 'Doctor Account',
   },
   {
     'role': 'Patient',
-    'email': 'patient@mcs.demo',
-    'password': 'Demo123456',
+    'email': 'patient@demo.com',
+    'password': 'Demo@123456',
     'description': 'Patient Account',
   },
   {
     'role': 'Admin',
-    'email': 'admin@mcs.demo',
-    'password': 'Demo123456',
+    'email': 'admin@demo.com',
+    'password': 'Demo@123456',
     'description': 'Clinic Admin Account',
   },
   {
     'role': 'Super Admin',
-    'email': 'superadmin@mcs.demo',
-    'password': 'Demo123456',
+    'email': 'superadmin@demo.com',
+    'password': 'Demo@123456',
     'description': 'Super Admin Account',
   },
   {
     'role': 'Staff',
-    'email': 'staff@mcs.demo',
-    'password': 'Demo123456',
+    'email': 'staff@demo.com',
+    'password': 'Demo@123456',
     'description': 'Staff Account',
   },
 ];
