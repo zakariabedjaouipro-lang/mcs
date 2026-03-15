@@ -1,5 +1,6 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
+
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Simple script to create a test user with a role
 Future<void> main() async {

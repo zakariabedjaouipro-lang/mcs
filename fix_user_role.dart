@@ -1,7 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer';
 
 Future<void> main() async {
-  print('\n🔐 Assigning Role to Current User\n');
+  log('🔐 Assigning Role to Current User');
 
   await Supabase.initialize(
     url: 'https://lwhuwjimlyzjiiyodmfw.supabase.co',
@@ -12,22 +13,28 @@ Future<void> main() async {
   final client = Supabase.instance.client;
 
   // Fetch all users without roles
-  final response = await client.from('users').select('id, email, role');
+  final response =
+      await client.from('users').select('id, email, role') as List<dynamic>;
 
-  print('📊 Users in database:\n');
+  log('📊 Users in database:');
   for (final user in response) {
-    print('  • ${user['email']} → Role: ${user['role']}');
+    if (user is Map<String, dynamic>) {
+      log('  • ${user['email']} → Role: ${user['role']}');
+    }
   }
 
   // Update first user to have patient role
   if (response.isNotEmpty) {
-    final userId = response.first['id'];
-    final email = response.first['email'];
+    final firstUser = response.first;
+    if (firstUser is Map<String, dynamic>) {
+      final userId = firstUser['id'] as Object;
+      final email = firstUser['email'] as String;
 
-    print('\n🔄 Updating user: $email\n');
+      log('🔄 Updating user: $email');
 
-    await client.from('users').update({'role': 'patient'}).eq('id', userId);
+      await client.from('users').update({'role': 'patient'}).eq('id', userId);
 
-    print('✅ User updated to role: patient\n');
+      log('✅ User updated to role: patient');
+    }
   }
 }

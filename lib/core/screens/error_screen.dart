@@ -1,10 +1,11 @@
-/// Error Screen - Shown When Initialization Fails
+﻿/// Error Screen - Shown When Initialization Fails
 ///
 /// Displays error information with a retry button to recover from
 /// initialization failures (Supabase, dependencies, BLoCs, etc.)
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/responsive_utils.dart';
 
@@ -13,8 +14,8 @@ class ErrorScreen extends StatelessWidget {
     required this.error,
     required this.onRetry,
     super.key,
-    this.title = 'خطأ في التطبيق',
-    this.subtitle = 'حدث خطأ أثناء تحميل التطبيق',
+    this.title = 'Ø®Ø·Ø£ ÙÙŠ Ø§Ù„ØªØ·Ø¨ÙŠÙ‚',
+    this.subtitle = 'Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ ØªØ­Ù…ÙŠÙ„ Ø§Ù„ØªØ·Ø¨ÙŠÙ‚',
   });
 
   /// Error message to display
@@ -42,15 +43,15 @@ class ErrorScreen extends StatelessWidget {
             children: [
               // Error Icon
               Container(
-                width: 80,
-                height: 80,
+                width: 80.w,
+                height: 80.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: MedicalColors.error.withValues(alpha: 0.1),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.error_outline,
-                  size: 48,
+                  size: 48.sp,
                   color: MedicalColors.error,
                 ),
               ),
@@ -84,7 +85,7 @@ class ErrorScreen extends StatelessWidget {
 
               // Error Details (scrollable for long errors)
               SizedBox(
-                height: 120,
+                height: 120.h,
                 child: SingleChildScrollView(
                   child: Container(
                     width: double.infinity,
@@ -118,7 +119,7 @@ class ErrorScreen extends StatelessWidget {
                   onPressed: onRetry,
                   icon: const Icon(Icons.refresh),
                   label: Text(
-                    'حاول مرة أخرى',
+                    'Ø­Ø§ÙˆÙ„ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰',
                     style: TextStyle(
                       fontSize: context.buttonTextSize,
                       fontWeight: FontWeight.w600,
@@ -151,7 +152,7 @@ class ErrorScreen extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'إغلاق التطبيق',
+                    'Ø¥ØºÙ„Ø§Ù‚ Ø§Ù„ØªØ·Ø¨ÙŠÙ‚',
                     style: TextStyle(
                       fontSize: context.buttonTextSize,
                       fontWeight: FontWeight.w600,

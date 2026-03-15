@@ -80,6 +80,7 @@ Future<void> configureDependencies() async {
         registerUseCase: sl(),
         verifyOTPUseCase: sl(),
         authRepository: sl(),
+        authService: sl(),
       ),
     )
     // ── Theme Feature ────────────────────────────────────────
