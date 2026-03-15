@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mcs/core/config/injection_container.dart';
+import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/constants/app_routes.dart';
-import 'package:mcs/core/services/auth_service.dart';
+import 'package:mcs/core/services/role_management_service.dart';
 import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/core/theme/app_colors.dart';
 import 'package:mcs/core/theme/app_theme.dart';
@@ -316,13 +317,34 @@ class _PremiumAdminDashboardViewState extends State<PremiumAdminDashboardView> {
           const SizedBox(width: 8),
           Expanded(
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (Navigator.canPop(context)) {
                   Navigator.of(context).pop();
                 }
-                AuthService().signOut();
-                if (context.mounted) {
-                  context.go(AppRoutes.login);
+
+                // Clear role cache
+                RoleManagementService.clearCache();
+
+                try {
+                  // Sign out from Supabase
+                  await SupabaseConfig.auth.signOut();
+
+                  // Wait for state to update
+                  await Future.delayed(const Duration(milliseconds: 500));
+
+                  // Navigate to login
+                  if (context.mounted) {
+                    context.go(AppRoutes.login);
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Logout error: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 }
               },
               style: ElevatedButton.styleFrom(

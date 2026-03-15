@@ -5,6 +5,8 @@
 
 library;
 
+import 'dart:io' show SocketException;
+
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/constants/app_routes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -137,7 +139,13 @@ class RoleManagementService {
   /// Cache duration
   static const Duration _cacheDuration = Duration(minutes: 5);
 
-  /// Get current user role
+  /// Get current user role from profiles table
+  ///
+  /// Process:
+  /// 1. Check if cached and valid
+  /// 2. Query profiles table directly (source of truth)
+  /// 3. Cache the result for 5 minutes
+  /// 4. Return UserRole.unknown only if profile not found
   static Future<UserRole> getCurrentUserRole({
     bool forceRefresh = false,
   }) async {
@@ -148,68 +156,66 @@ class RoleManagementService {
         return UserRole.unknown;
       }
 
-      /// Return cached role if valid
+      /// ✅ Return cached role if valid and not forcing refresh
       if (!forceRefresh && _cachedRole != null && _cacheTime != null) {
         final age = DateTime.now().difference(_cacheTime!);
-
         if (age < _cacheDuration) {
           return _cachedRole!;
         }
       }
 
-      /// Strategy 1
-      final role = _readRoleFromMetadata(user);
+      /// ✅ Query profiles table directly (source of truth)
+      final roleFromDb = await _fetchRoleFromProfiles(user.id);
 
-      if (role != null) {
-        _updateCache(role);
-        return role;
+      if (roleFromDb != null) {
+        _updateCache(roleFromDb);
+        return roleFromDb;
       }
 
-      /// Strategy 2
-      final dbRole = await _getRoleFromDatabase(user.id);
-
-      if (dbRole != null) {
-        final parsedRole = UserRole.fromString(dbRole);
-        _updateCache(parsedRole);
-        return parsedRole;
-      }
-
+      /// ✅ No role found in profiles
       return UserRole.unknown;
     } catch (_) {
-      return UserRole.unknown;
+      /// Fallback to cache on error (graceful degradation)
+      return _cachedRole ?? UserRole.unknown;
     }
   }
 
-  /// Read role from metadata
-  static UserRole? _readRoleFromMetadata(User user) {
-    try {
-      final role = user.appMetadata['role'] ?? user.userMetadata?['role'];
-
-      if (role is String && role.isNotEmpty) {
-        return UserRole.fromString(role);
-      }
-
-      return null;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  /// Query database
-  static Future<String?> _getRoleFromDatabase(String userId) async {
+  /// Fetch role directly from profiles table
+  ///
+  /// This is the ONLY source of truth for user roles.
+  /// profiles.id matches auth.users.id
+  static Future<UserRole?> _fetchRoleFromProfiles(String userId) async {
     try {
       final response = await _client
-          .from('users')
+          .from('profiles')
           .select('role')
           .eq('id', userId)
-          .maybeSingle();
+          .maybeSingle()
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw Exception('Database query timeout');
+        },
+      );
 
-      if (response != null && response['role'] != null) {
-        return response['role'] as String;
+      if (response == null) {
+        return null;
       }
 
+      final roleString = response['role'] as String?;
+      if (roleString == null || roleString.isEmpty) {
+        return null;
+      }
+
+      return UserRole.fromString(roleString);
+    } on PostgrestException catch (e) {
+      /// Handle Supabase-specific errors
+      return null;
+    } on SocketException catch (_) {
+      /// Network error
       return null;
     } catch (_) {
+      /// Generic error - gracefully return null
       return null;
     }
   }
@@ -226,27 +232,35 @@ class RoleManagementService {
     _cacheTime = null;
   }
 
-  /// Get approval status
+  /// Get approval status for current user
+  /// Returns: 'pending', 'approved', 'rejected', or null if not found
   static Future<String?> getUserApprovalStatus() async {
     try {
       final user = SupabaseConfig.currentUser;
 
       if (user == null) return null;
 
-      final status = user.userMetadata?['approvalStatus'];
+      /// Query profiles table for approval status
+      final response = await _client
+          .from('profiles')
+          .select('is_active')
+          .eq('id', user.id)
+          .maybeSingle()
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout: () => null,
+          );
 
-      if (status is String && status.isNotEmpty) {
-        return status;
+      if (response == null) {
+        return null;
       }
 
-      final response = await _client
-          .from('users')
-          .select('approval_status')
-          .eq('id', user.id)
-          .maybeSingle();
-
-      if (response != null) {
-        return response['approval_status'] as String?;
+      /// Return status based on is_active flag
+      final isActive = response['is_active'] as bool?;
+      if (isActive == true) {
+        return 'approved';
+      } else if (isActive == false) {
+        return 'rejected';
       }
 
       return null;

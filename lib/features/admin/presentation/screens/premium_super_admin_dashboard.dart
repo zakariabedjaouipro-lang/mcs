@@ -4,7 +4,11 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mcs/core/config/injection_container.dart';
+import 'package:mcs/core/config/supabase_config.dart';
+import 'package:mcs/core/constants/app_routes.dart';
+import 'package:mcs/core/services/role_management_service.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/features/admin/presentation/bloc/approval_bloc.dart';
 import 'package:mcs/features/admin/presentation/screens/approvals_management_screen.dart';
@@ -122,6 +126,52 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
   void dispose() {
     _drawerAnimationController.dispose();
     super.dispose();
+  }
+
+  /// Handle logout - clear cache and sign out
+  Future<void> _handleLogout() async {
+    // Clear role cache
+    RoleManagementService.clearCache();
+
+    // Show loading
+    if (!mounted) return;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    try {
+      // Sign out from Supabase
+      await SupabaseConfig.auth.signOut();
+
+      // Wait for state to update
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Close loading dialog
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+
+      // Navigate to login
+      if (mounted) {
+        context.go(AppRoutes.login);
+      }
+    } catch (e) {
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Logout error: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -300,16 +350,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () {
-                          // Logout action
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                isArabic ? 'تم تسجيل الخروج' : 'Logged Out',
-                              ),
-                            ),
-                          );
-                        },
+                        onTap: _handleLogout,
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
@@ -617,8 +658,14 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
   Widget _buildUserProfile(BuildContext context, bool isArabic) {
     return PopupMenuButton<String>(
       offset: const Offset(0, 40),
+      onSelected: (value) {
+        if (value == 'logout') {
+          _handleLogout();
+        }
+      },
       itemBuilder: (context) => <PopupMenuEntry<String>>[
         PopupMenuItem<String>(
+          value: 'profile',
           child: Row(
             children: [
               const Icon(Icons.person, size: 18),
@@ -628,6 +675,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
           ),
         ),
         PopupMenuItem<String>(
+          value: 'settings',
           child: Row(
             children: [
               const Icon(Icons.settings, size: 18),
@@ -638,6 +686,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
         ),
         const PopupMenuDivider(),
         PopupMenuItem<String>(
+          value: 'logout',
           child: Row(
             children: [
               const Icon(Icons.logout, size: 18, color: Colors.red),

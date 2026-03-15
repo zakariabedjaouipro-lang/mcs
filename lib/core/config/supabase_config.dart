@@ -169,35 +169,34 @@ class SupabaseConfig {
   /// Check network availability asynchronously (non-blocking).
   static void _checkNetworkAvailability(String url) {
     // Fire and forget - log network status but don't block initialization
-    unawaited(
-      Future<void>(() async {
-        try {
-          final hasInternet = await ConnectivityService.hasInternet();
-          final diagnostic =
-              await ConnectivityService.diagnoseSupabaseConnectivity(url);
 
-          if (!hasInternet) {
-            log(
-              'Network check: Device appears to be offline\n$diagnostic',
-              name: 'SupabaseConfig.NetworkCheck',
-              level: 800, // warning
-            );
-          } else {
-            log(
-              'Network check: OK\n$diagnostic',
-              name: 'SupabaseConfig.NetworkCheck',
-              level: 1000,
-            );
-          }
-        } catch (e) {
+    Future<void>(() async {
+      try {
+        final hasInternet = await ConnectivityService.hasInternet();
+        final diagnostic =
+            await ConnectivityService.diagnoseSupabaseConnectivity(url);
+
+        if (!hasInternet) {
           log(
-            'Network diagnostic failed: $e',
+            'Network check: Device appears to be offline\n$diagnostic',
             name: 'SupabaseConfig.NetworkCheck',
-            level: 800,
+            level: 800, // warning
+          );
+        } else {
+          log(
+            'Network check: OK\n$diagnostic',
+            name: 'SupabaseConfig.NetworkCheck',
+            level: 1000,
           );
         }
-      }).catchError((_) {}),
-    );
+      } catch (e) {
+        log(
+          'Network diagnostic failed: $e',
+          name: 'SupabaseConfig.NetworkCheck',
+          level: 800,
+        );
+      }
+    }).catchError((_) {});
   }
 
   /// Throws a detailed SupabaseInitializationException with diagnostic information.

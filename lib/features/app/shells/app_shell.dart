@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/constants/app_routes.dart';
+import 'package:mcs/core/services/role_management_service.dart';
 import 'package:mcs/core/theme/medical_colors.dart';
 import 'package:mcs/core/utils/extensions.dart';
 import 'package:mcs/features/localization/presentation/bloc/localization_bloc.dart';
@@ -94,13 +95,15 @@ class _AppShellScreenState extends State<AppShellScreen> {
   void _navigateToInvoices() => context.go(AppRoutes.invoices);
 
   Future<void> _logout() async {
+    // Close any open navigation drawers first
     if (context.canPop()) {
-      context.pop(); // أغلق الدرواِر أولاً
+      context.pop();
     }
 
-    // أظهر loading
+    // Show loading dialog with proper synchronization
     if (!mounted) return;
-    await showDialog<void>(
+
+    showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (context) => const Center(
@@ -109,21 +112,50 @@ class _AppShellScreenState extends State<AppShellScreen> {
     );
 
     try {
+      // Step 1: Clear role cache to prevent stale data
+      RoleManagementService.clearCache();
+
+      // Step 2: Sign out from Supabase
+      // This will trigger auth state changes
       await SupabaseConfig.auth.signOut();
-      if (mounted && context.canPop()) {
-        context.pop(); // أغلق loading dialog
-        if (mounted) {
-          context.go(AppRoutes.login);
-        }
+
+      // Step 3: Give the auth state stream time to update
+      // The Supabase SDK updates currentUser asynchronously
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Step 4: Close loading dialog
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+
+      // Step 5: Navigate to login
+      // The router guard will redirect since isAuthenticated is now false
+      if (mounted) {
+        context.go(AppRoutes.login);
       }
     } catch (e) {
-      if (mounted && context.canPop()) {
-        context.pop(); // أغلق loading dialog
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('خطأ في تسجيل الخروج: $e')),
-          );
-        }
+      debugPrint('Logout error: $e');
+
+      // Even on error, try to navigate to login
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.of(context).pop();
+      }
+
+      if (mounted) {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('خطأ في تسجيل الخروج: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+
+        // Still navigate to login in case of error
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) {
+            context.go(AppRoutes.login);
+          }
+        });
       }
     }
   }
