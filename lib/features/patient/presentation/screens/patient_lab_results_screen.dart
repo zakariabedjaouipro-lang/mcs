@@ -170,9 +170,12 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
                   const SizedBox(width: 16),
                   const Icon(Icons.person, size: 16),
                   const SizedBox(width: 4),
-                  Text(
-                    result.doctorName ?? 'Doctor',
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  Expanded(
+                    child: Text(
+                      result.doctorName ?? 'Doctor',
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ],
               ),
@@ -183,7 +186,12 @@ class _PatientLabResultsScreenState extends State<PatientLabResultsScreen> {
                   children: [
                     const Icon(Icons.location_on, size: 16),
                     const SizedBox(width: 4),
-                    Text(result.labName!),
+                    Expanded(
+                      child: Text(
+                        result.labName!,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               ],

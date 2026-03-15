@@ -178,9 +178,12 @@ class _PatientPrescriptionsScreenState
                 children: [
                   const Icon(Icons.person, size: 16),
                   const SizedBox(width: 4),
-                  Text(
-                    prescription.doctorName ?? 'Doctor',
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  Expanded(
+                    child: Text(
+                      prescription.doctorName ?? 'Doctor',
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ],
               ),

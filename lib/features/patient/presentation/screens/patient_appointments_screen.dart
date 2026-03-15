@@ -204,9 +204,12 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                 children: [
                   const Icon(Icons.access_time, size: 16),
                   const SizedBox(width: 4),
-                  Text(
-                    appointment.timeSlot,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                  Expanded(
+                    child: Text(
+                      appointment.timeSlot,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Icon(
@@ -216,11 +219,14 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                     size: 16,
                   ),
                   const SizedBox(width: 4),
-                  Text(
-                    appointment.type == AppointmentType.remote
-                        ? context.translateSafe('remote')
-                        : context.translateSafe('in_person'),
-                    style: Theme.of(context).textTheme.bodyMedium,
+                  Expanded(
+                    child: Text(
+                      appointment.type == AppointmentType.remote
+                          ? context.translateSafe('remote')
+                          : context.translateSafe('in_person'),
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
                 ],
               ),
@@ -229,11 +235,14 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                 children: [
                   const Icon(Icons.person, size: 16),
                   const SizedBox(width: 4),
-                  Text(
-                    appointment.doctorName ?? 'Doctor Name',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
+                  Expanded(
+                    child: Text(
+                      appointment.doctorName ?? 'Doctor Name',
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                          ),
+                    ),
                   ),
                 ],
               ),
