@@ -1,5 +1,6 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer';
+
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   log('🔐 Assigning Role to Current User');

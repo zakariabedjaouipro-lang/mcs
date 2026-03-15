@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:mcs/core/enums/user_role.dart';
 import 'package:mcs/core/errors/failures.dart';
+import 'package:mcs/core/models/user_model.dart';
+import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mcs/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/register_usecase.dart';
@@ -18,6 +21,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.registerUseCase,
     required this.verifyOTPUseCase,
     required this.authRepository,
+    required this.authService,
   }) : super(const AuthInitial()) {
     // تسجيل معالجات الأحداث
     on<LoginEmailChanged>(_onLoginEmailChanged);
@@ -47,6 +51,86 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RegisterUseCase registerUseCase;
   final VerifyOTPUseCase verifyOTPUseCase;
   final AuthRepository authRepository;
+  final AuthService authService;
+
+  /// معالج حدث تسجيل الدخول عبر وسائل التواصل الاجتماعية
+  /// يتعامل مع Google و Facebook و Apple Sign-In
+  Future<void> _onLoginWithSocialSubmitted(
+    LoginWithSocialSubmitted event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+
+    try {
+      log(
+        'معالج Google Sign-In: بدء العملية للمزود ${event.provider}',
+        name: 'AuthBloc._onLoginWithSocialSubmitted',
+        level: 800,
+      );
+
+      // استدعاء خدمة المصادقة للتعامل مع Google Sign-In
+      final authResponse = await authService.signInWithGoogle();
+
+      // إذا كان المستخدم قد ألغى Google Sign-In
+      if (authResponse == null) {
+        log(
+          'المستخدم ألغى Google Sign-In',
+          name: 'AuthBloc._onLoginWithSocialSubmitted',
+          level: 800,
+        );
+        emit(const LoginFailure('تم إلغاء تسجيل الدخول'));
+        return;
+      }
+
+      // الحصول على بيانات المستخدم من Supabase
+      final user = authResponse.user;
+      if (user == null) {
+        throw Exception('لم يتم الحصول على بيانات المستخدم من Supabase');
+      }
+
+      // تحويل Supabase User إلى UserModel
+      // ملاحظة: في هذه المرحلة، لم يتم تعيين دور المستخدم بعد
+      // يجب أن يكون لدى المستخدم دور مسند من قاعدة البيانات
+      final userModel = UserModel(
+        id: user.id,
+        email: user.email ?? '',
+        fullName: user.userMetadata?['full_name'] as String? ??
+            user.userMetadata?['name'] as String? ??
+            user.email,
+        phone: user.userMetadata?['phone'] as String?,
+        role: UserRole
+            .patient, // الدور الافتراضي (سيتم التحديث من قاعدة البيانات لاحقاً)
+        createdAt: DateTime.now(),
+      );
+
+      log(
+        'تسجيل الدخول عبر Google نجح: ${user.email}',
+        name: 'AuthBloc._onLoginWithSocialSubmitted',
+        level: 800,
+      );
+
+      // إطلاق حالة النجاح مع بيانات المستخدم
+      emit(
+        LoginSuccess(
+          user: userModel,
+          message: 'تم تسجيل الدخول عبر Google بنجاح',
+        ),
+      );
+    } catch (e) {
+      log(
+        'خطأ في Google Sign-In: $e',
+        name: 'AuthBloc._onLoginWithSocialSubmitted',
+        level: 1000,
+      );
+
+      // إطلاق حالة الفشل مع رسالة الخطأ
+      emit(
+        LoginFailure(
+          'خطأ في تسجيل الدخول عبر Google: $e',
+        ),
+      );
+    }
+  }
 
   /// متغيرات للحفاظ على حالة النموذج
   String _loginEmail = '';
@@ -107,39 +191,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
 
     _clearLoginForm();
-  }
-
-  Future<void> _onLoginWithSocialSubmitted(
-    LoginWithSocialSubmitted event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const AuthLoading());
-
-    try {
-      final result = await authRepository
-          .loginWithSocial(
-            provider: event.provider,
-            token: event.token,
-          )
-          .timeout(const Duration(seconds: 30));
-
-      result.fold(
-        (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
-        (user) => emit(LoginSuccess(user: user)),
-      );
-    } on TimeoutException {
-      emit(
-        const LoginFailure(
-          'تم انتهاء انتظار الطلب. تحقق من اتصالك بالإنترنت.',
-        ),
-      );
-    } catch (e) {
-      emit(
-        LoginFailure(
-          'حدث خطأ: $e',
-        ),
-      );
-    }
   }
 
   /// ==============================

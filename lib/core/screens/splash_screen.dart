@@ -1,4 +1,4 @@
-/// Splash Screen - Shown During App Initialization
+﻿/// Splash Screen - Shown During App Initialization
 ///
 /// This screen is displayed while the app initializes:
 /// - Loading Supabase configuration
