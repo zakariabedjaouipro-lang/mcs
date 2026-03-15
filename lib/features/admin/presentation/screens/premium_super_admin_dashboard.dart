@@ -2,6 +2,8 @@
 /// لوحة تحكم Admin حديثة مع تصميم طبي عصري
 library;
 
+import 'dart:async' show unawaited;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -135,11 +137,13 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
 
     // Show loading
     if (!mounted) return;
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
+    unawaited(
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
 
@@ -148,7 +152,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
       await SupabaseConfig.auth.signOut();
 
       // Wait for state to update
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       // Close loading dialog
       if (mounted && Navigator.canPop(context)) {
@@ -1111,12 +1115,16 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                 color: PremiumColors.primaryBlue,
               ),
               const SizedBox(height: 8),
-              Text(
-                label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                textAlign: TextAlign.center,
+              Expanded(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),
