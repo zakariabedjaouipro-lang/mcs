@@ -284,11 +284,15 @@ class _PremiumAdminDashboardViewState extends State<PremiumAdminDashboardView> {
               size: 24,
             ),
             const SizedBox(width: 16),
-            Text(
-              title,
-              style: TextStyles.bodyMedium.copyWith(
-                color: isSelected ? AppColors.primary : Colors.grey[800],
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            Expanded(
+              child: Text(
+                title,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: TextStyles.bodyMedium.copyWith(
+                  color: isSelected ? AppColors.primary : Colors.grey[800],
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -330,7 +334,7 @@ class _PremiumAdminDashboardViewState extends State<PremiumAdminDashboardView> {
                   await SupabaseConfig.auth.signOut();
 
                   // Wait for state to update
-                  await Future.delayed(const Duration(milliseconds: 500));
+                  await Future<void>.delayed(const Duration(milliseconds: 500));
 
                   // Navigate to login
                   if (context.mounted) {

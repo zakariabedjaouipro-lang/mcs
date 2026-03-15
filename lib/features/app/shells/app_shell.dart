@@ -2,6 +2,8 @@
 /// Main app structure with navigation between screens
 library;
 
+import 'dart:async' show unawaited;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -103,11 +105,13 @@ class _AppShellScreenState extends State<AppShellScreen> {
     // Show loading dialog with proper synchronization
     if (!mounted) return;
 
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
+    unawaited(
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
 
@@ -121,7 +125,7 @@ class _AppShellScreenState extends State<AppShellScreen> {
 
       // Step 3: Give the auth state stream time to update
       // The Supabase SDK updates currentUser asynchronously
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       // Step 4: Close loading dialog
       if (mounted && Navigator.canPop(context)) {
@@ -151,11 +155,13 @@ class _AppShellScreenState extends State<AppShellScreen> {
         );
 
         // Still navigate to login in case of error
-        Future.delayed(const Duration(seconds: 1), () {
-          if (mounted) {
-            context.go(AppRoutes.login);
-          }
-        });
+        unawaited(
+          Future<void>.delayed(const Duration(seconds: 1), () {
+            if (mounted) {
+              context.go(AppRoutes.login);
+            }
+          }),
+        );
       }
     }
   }
