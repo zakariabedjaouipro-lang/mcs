@@ -83,14 +83,18 @@ class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${appointment.date.day}/${appointment.date.month}/${appointment.date.year} ${appointment.time}',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                Expanded(
+                  child: Text(
+                    '${appointment.date.day}/${appointment.date.month}/${appointment.date.year} ${appointment.time}',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
@@ -104,6 +108,7 @@ class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 1,
                   ),
                 ),
               ],
@@ -152,7 +157,13 @@ class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
               children: [
                 const Icon(Icons.phone, size: 16),
                 const SizedBox(width: 8),
-                Text(appointment.patientPhone),
+                Expanded(
+                  child: Text(
+                    appointment.patientPhone,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -161,6 +172,8 @@ class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.grey[600],
                   ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 12),
             Row(

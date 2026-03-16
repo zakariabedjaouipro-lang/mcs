@@ -33,57 +33,151 @@ class AppShellScreen extends StatefulWidget {
 class _AppShellScreenState extends State<AppShellScreen> {
   int _selectedIndex = 0;
 
+  /// Get current user role from Supabase metadata
+  String _getCurrentUserRole() {
+    try {
+      final authUser = SupabaseConfig.currentUser;
+      if (authUser == null) return widget.userRole;
+      
+      // Try appMetadata first
+      final appRole = authUser.appMetadata['role'];
+      if (appRole != null && appRole.toString().isNotEmpty) {
+        return appRole.toString().toLowerCase();
+      }
+      
+      // Try userMetadata
+      final userRole = authUser.userMetadata?['role'];
+      if (userRole != null && userRole.toString().isNotEmpty) {
+        return userRole.toString().toLowerCase();
+      }
+      
+      return widget.userRole;
+    } catch (e) {
+      return widget.userRole;
+    }
+  }
+
   List<NavigationItem> _buildNavigationItems() {
-    // بناء قائمة العناصر الأساسية
-    final items = <NavigationItem>[
-      NavigationItem(
-        label: 'Dashboard',
-        icon: Icons.dashboard,
-        route: '/patient/dashboard',
-      ),
-      NavigationItem(
-        label: 'Patients',
-        icon: Icons.people,
-        route: '/patient/patients',
-      ),
-      NavigationItem(
-        label: 'Appointments',
-        icon: Icons.calendar_today,
-        route: '/patient/appointments',
-      ),
-      NavigationItem(
-        label: 'Records',
-        icon: Icons.description,
-        route: '/patient/records',
-      ),
-      NavigationItem(
-        label: 'Settings',
-        icon: Icons.settings,
-        route: '/patient/settings',
-      ),
-    ];
-
-    // إضافة أزرار المسؤولين حسب الدور
-    if (widget.userRole == 'admin' || widget.userRole == 'superAdmin') {
-      items.add(
-        NavigationItem(
-          label: 'Admin',
-          icon: Icons.admin_panel_settings,
-          route: '/admin',
-        ),
-      );
+    final role = _getCurrentUserRole();
+    
+    // Return navigation items based on role
+    switch (role) {
+      case 'super_admin':
+      case 'superadmin':
+        return [
+          NavigationItem(
+            label: 'Dashboard',
+            icon: Icons.dashboard,
+            route: AppRoutes.superAdminHome,
+          ),
+        ];
+      
+      case 'clinic_admin':
+      case 'clinicadmin':
+      case 'admin':
+        return [
+          NavigationItem(
+            label: 'Dashboard',
+            icon: Icons.dashboard,
+            route: AppRoutes.adminHome,
+          ),
+        ];
+      
+      case 'doctor':
+        return [
+          NavigationItem(
+            label: 'Dashboard',
+            icon: Icons.dashboard,
+            route: AppRoutes.doctorHome,
+          ),
+          NavigationItem(
+            label: 'Appointments',
+            icon: Icons.calendar_today,
+            route: AppRoutes.doctorAppointments,
+          ),
+          NavigationItem(
+            label: 'Patients',
+            icon: Icons.people,
+            route: AppRoutes.doctorPatients,
+          ),
+          NavigationItem(
+            label: 'Prescriptions',
+            icon: Icons.medication,
+            route: AppRoutes.doctorPrescriptions,
+          ),
+          NavigationItem(
+            label: 'Settings',
+            icon: Icons.settings,
+            route: AppRoutes.doctorSettings,
+          ),
+        ];
+      
+      case 'nurse':
+      case 'receptionist':
+      case 'pharmacist':
+      case 'lab_technician':
+      case 'labtechnician':
+      case 'radiographer':
+      case 'employee':
+        return [
+          NavigationItem(
+            label: 'Dashboard',
+            icon: Icons.dashboard,
+            route: AppRoutes.employeeHome,
+          ),
+          NavigationItem(
+            label: 'Appointments',
+            icon: Icons.calendar_today,
+            route: AppRoutes.employeeAppointments,
+          ),
+          NavigationItem(
+            label: 'Patients',
+            icon: Icons.people,
+            route: AppRoutes.employeePatients,
+          ),
+          NavigationItem(
+            label: 'Inventory',
+            icon: Icons.inventory,
+            route: AppRoutes.inventory,
+          ),
+          NavigationItem(
+            label: 'Invoices',
+            icon: Icons.receipt,
+            route: AppRoutes.invoices,
+          ),
+        ];
+      
+      case 'patient':
+      case 'relative':
+      default:
+        return [
+          NavigationItem(
+            label: 'Home',
+            icon: Icons.home,
+            route: AppRoutes.patientHome,
+          ),
+          NavigationItem(
+            label: 'Appointments',
+            icon: Icons.calendar_today,
+            route: AppRoutes.appointments,
+          ),
+          NavigationItem(
+            label: 'Records',
+            icon: Icons.description,
+            route: AppRoutes.records,
+          ),
+          NavigationItem(
+            label: 'Lab Results',
+            icon: Icons.science,
+            route: AppRoutes.patientLabResults,
+          ),
+          NavigationItem(
+            label: 'Settings',
+            icon: Icons.settings,
+            route: AppRoutes.settings,
+          ),
+        ];
     }
-    if (widget.userRole == 'superAdmin') {
-      items.add(
-        NavigationItem(
-          label: 'SuperAdmin',
-          icon: Icons.supervised_user_circle,
-          route: '/super-admin',
-        ),
-      );
-    }
-
-    return items;
   }
 
   void _onNavItemTapped(int index) {

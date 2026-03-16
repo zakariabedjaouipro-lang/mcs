@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/extensions/context_extensions.dart';
 import 'package:mcs/features/doctor/presentation/bloc/doctor_bloc.dart';
 
@@ -109,23 +111,29 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildStatItem(
-              context,
-              '12',
-              context.translateSafe('today_appointments'),
-              Icons.calendar_today,
+            Expanded(
+              child: _buildStatItem(
+                context,
+                '12',
+                context.translateSafe('today_appointments'),
+                Icons.calendar_today,
+              ),
             ),
-            _buildStatItem(
-              context,
-              '45',
-              context.translateSafe('total_patients'),
-              Icons.people,
+            Expanded(
+              child: _buildStatItem(
+                context,
+                '45',
+                context.translateSafe('total_patients'),
+                Icons.people,
+              ),
             ),
-            _buildStatItem(
-              context,
-              '8',
-              context.translateSafe('pending'),
-              Icons.pending_actions,
+            Expanded(
+              child: _buildStatItem(
+                context,
+                '8',
+                context.translateSafe('pending'),
+                Icons.pending_actions,
+              ),
             ),
           ],
         ),
@@ -140,14 +148,20 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
     IconData icon,
   ) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: Theme.of(context).colorScheme.primary),
+        Icon(
+          icon,
+          color: Theme.of(context).colorScheme.primary,
+          size: 24,
+        ),
         const SizedBox(height: 8),
         Text(
           value,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
+          maxLines: 1,
         ),
         const SizedBox(height: 4),
         Text(
@@ -155,6 +169,9 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.grey[600],
               ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
         ),
       ],
     );
@@ -180,7 +197,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
               Icons.calendar_today,
               context.translateSafe('view_appointments'),
               () {
-                // Navigate to appointments
+                context.go(AppRoutes.doctorAppointments);
               },
             ),
             _buildActionCard(
@@ -188,7 +205,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
               Icons.people,
               context.translateSafe('view_patients'),
               () {
-                // Navigate to patients
+                context.go(AppRoutes.doctorPatients);
               },
             ),
             _buildActionCard(
@@ -196,7 +213,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
               Icons.medication,
               context.translateSafe('manage_prescriptions'),
               () {
-                // Navigate to prescriptions
+                context.go(AppRoutes.doctorPrescriptions);
               },
             ),
             _buildActionCard(
@@ -204,7 +221,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
               Icons.science,
               context.translateSafe('view_lab_results'),
               () {
-                // Navigate to lab results
+                context.go(AppRoutes.doctorLabResults);
               },
             ),
           ],
@@ -352,14 +369,16 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
             leading: const Icon(Icons.person_outline),
             title: Text(context.translateSafe('profile')),
             onTap: () {
-              // Navigate to profile
+              Navigator.pop(context);
+              context.go(AppRoutes.doctorProfile);
             },
           ),
           ListTile(
             leading: const Icon(Icons.settings_outlined),
             title: Text(context.translateSafe('settings')),
             onTap: () {
-              _handleSettings(context);
+              Navigator.pop(context);
+              context.go(AppRoutes.doctorSettings);
             },
           ),
           ListTile(
@@ -382,7 +401,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
   }
 
   void _handleSettings(BuildContext context) {
-    // Navigate to settings
+    context.go(AppRoutes.doctorSettings);
   }
 
   void _handleLogout(BuildContext context) {

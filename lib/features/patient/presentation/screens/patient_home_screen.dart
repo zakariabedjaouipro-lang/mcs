@@ -121,7 +121,7 @@ class PatientHomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              SizedBox(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -131,6 +131,8 @@ class PatientHomeScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: PremiumColors.darkText,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -138,6 +140,8 @@ class PatientHomeScreen extends StatelessWidget {
                       style: PremiumTextStyles.bodyMedium.copyWith(
                         color: PremiumColors.lightText,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -349,20 +353,18 @@ class PatientHomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              SizedBox(
+              Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: PremiumTextStyles.bodyMedium.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: PremiumColors.darkText,
-                        ),
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: PremiumTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: PremiumColors.darkText,
                       ),
                     ),
                     Text(
@@ -399,18 +401,16 @@ class PatientHomeScreen extends StatelessWidget {
               color: context.colorSchemeSafe.primary,
             ),
             SizedBox(width: context.adaptivePaddingHorizontal),
-            SizedBox(
+            Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Flexible(
-                    child: Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: context.textThemeSafe.titleSmall,
-                    ),
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textThemeSafe.titleSmall,
                   ),
                   Text(
                     subtitle,

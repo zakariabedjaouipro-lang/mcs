@@ -2,6 +2,8 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/widgets/premium_button.dart';
 import 'package:mcs/core/widgets/premium_card.dart';
 import 'package:mcs/core/widgets/premium_section.dart';
@@ -69,7 +71,9 @@ class EmployeeDashboardScreen extends StatelessWidget {
                   child: PremiumButton(
                     label: isArabic ? 'إضافة مخزون' : 'Add Inventory',
                     icon: Icons.add,
-                    onPressed: () {},
+                    onPressed: () {
+                      context.go(AppRoutes.inventory);
+                    },
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -77,7 +81,9 @@ class EmployeeDashboardScreen extends StatelessWidget {
                   child: PremiumButton(
                     label: isArabic ? 'إصدار فاتورة' : 'Issue Invoice',
                     icon: Icons.receipt_long,
-                    onPressed: () {},
+                    onPressed: () {
+                      context.go(AppRoutes.invoices);
+                    },
                   ),
                 ),
               ],

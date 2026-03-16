@@ -251,64 +251,78 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // Remember me checkbox
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() => _rememberMe = !_rememberMe);
-                                },
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 20,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: _rememberMe
-                                              ? PremiumColors.primaryBlue
-                                              : PremiumColors.mediumGrey,
-                                          width: 2,
+                              Flexible(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() => _rememberMe = !_rememberMe);
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: 20,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: _rememberMe
+                                                ? PremiumColors.primaryBlue
+                                                : PremiumColors.mediumGrey,
+                                            width: 2,
+                                          ),
+                                          borderRadius: BorderRadius.circular(4),
                                         ),
-                                        borderRadius: BorderRadius.circular(4),
+                                        child: _rememberMe
+                                            ? const Center(
+                                                child: Icon(
+                                                  Icons.check,
+                                                  size: 12,
+                                                  color:
+                                                      PremiumColors.primaryBlue,
+                                                ),
+                                              )
+                                            : null,
                                       ),
-                                      child: _rememberMe
-                                          ? const Center(
-                                              child: Icon(
-                                                Icons.check,
-                                                size: 12,
-                                                color:
-                                                    PremiumColors.primaryBlue,
-                                              ),
-                                            )
-                                          : null,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      'Remember me',
-                                      style:
-                                          PremiumTextStyles.bodyMedium.copyWith(
-                                        color: PremiumColors.darkText,
+                                      const SizedBox(width: 8),
+                                      Flexible(
+                                        child: Text(
+                                          'Remember me',
+                                          style:
+                                              PremiumTextStyles.bodySmall.copyWith(
+                                            color: PremiumColors.darkText,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
 
+                              const SizedBox(width: 8),
+
                               // Forgot password link
-                              GestureDetector(
-                                onTap: () {
-                                  // Navigate to forgot password
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Forgot password feature coming soon',
+                              Flexible(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // Navigate to forgot password
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Forgot password feature coming soon',
+                                        ),
                                       ),
+                                    );
+                                  },
+                                  child: Text(
+                                    'Forgot password?',
+                                    style: PremiumTextStyles.bodySmall.copyWith(
+                                      color: PremiumColors.primaryBlue,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                  );
-                                },
-                                child: Text(
-                                  'Forgot password?',
-                                  style: PremiumTextStyles.bodyMedium.copyWith(
-                                    color: PremiumColors.primaryBlue,
-                                    fontWeight: FontWeight.w600,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.end,
                                   ),
                                 ),
                               ),
