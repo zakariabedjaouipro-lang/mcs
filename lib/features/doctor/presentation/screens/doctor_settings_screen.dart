@@ -183,7 +183,7 @@ class _DoctorSettingsScreenState extends State<DoctorSettingsScreen> {
               _buildListTile(
                 context,
                 Icons.update,
-                context.translateSafe('version') + ' 1.0.0',
+                '${context.translateSafe('version')} 1.0.0',
                 null,
               ),
             ],

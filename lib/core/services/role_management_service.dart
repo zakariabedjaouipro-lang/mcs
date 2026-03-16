@@ -208,7 +208,7 @@ class RoleManagementService {
       }
 
       return UserRole.fromString(roleString);
-    } on PostgrestException catch (e) {
+    } on PostgrestException {
       /// Handle Supabase-specific errors
       return null;
     } on SocketException catch (_) {
@@ -257,7 +257,7 @@ class RoleManagementService {
 
       /// Return status based on is_active flag
       final isActive = response['is_active'] as bool?;
-      if (isActive == true) {
+      if (isActive ?? false) {
         return 'approved';
       } else if (isActive == false) {
         return 'rejected';

@@ -6,7 +6,8 @@ class AdminAppointmentsScreen extends StatefulWidget {
   const AdminAppointmentsScreen({super.key});
 
   @override
-  State<AdminAppointmentsScreen> createState() => _AdminAppointmentsScreenState();
+  State<AdminAppointmentsScreen> createState() =>
+      _AdminAppointmentsScreenState();
 }
 
 class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
@@ -96,9 +97,11 @@ class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(context, appointment.status).withAlpha(30),
+                    color: _getStatusColor(context, appointment.status)
+                        .withAlpha(30),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -225,15 +228,6 @@ class _AdminAppointmentsScreenState extends State<AdminAppointmentsScreen> {
 
 // Mock data classes
 class Appointment {
-  final DateTime date;
-  final String time;
-  final String patientName;
-  final String doctorName;
-  final String specialty;
-  final String patientPhone;
-  final String reason;
-  final String status;
-
   Appointment({
     required this.date,
     required this.time,
@@ -244,6 +238,14 @@ class Appointment {
     required this.reason,
     required this.status,
   });
+  final DateTime date;
+  final String time;
+  final String patientName;
+  final String doctorName;
+  final String specialty;
+  final String patientPhone;
+  final String reason;
+  final String status;
 }
 
 List<Appointment> _getAppointments() {

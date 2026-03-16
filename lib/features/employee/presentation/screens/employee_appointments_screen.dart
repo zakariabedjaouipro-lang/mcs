@@ -92,7 +92,9 @@ class _CompletedAppointmentsTab extends StatelessWidget {
 }
 
 Widget _buildAppointmentsList(
-    BuildContext context, List<Appointment> appointments) {
+  BuildContext context,
+  List<Appointment> appointments,
+) {
   if (appointments.isEmpty) {
     return Center(
       child: Column(
@@ -228,12 +230,6 @@ Color _getStatusColor(BuildContext context, String status) {
 
 // Mock data classes
 class Appointment {
-  final String time;
-  final String patientName;
-  final String phoneNumber;
-  final String reason;
-  final String status;
-
   Appointment({
     required this.time,
     required this.patientName,
@@ -241,6 +237,11 @@ class Appointment {
     required this.reason,
     required this.status,
   });
+  final String time;
+  final String patientName;
+  final String phoneNumber;
+  final String reason;
+  final String status;
 }
 
 List<Appointment> _getTodayAppointments() {

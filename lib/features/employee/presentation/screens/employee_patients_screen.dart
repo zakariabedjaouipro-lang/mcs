@@ -108,9 +108,10 @@ class _EmployeePatientsScreenState extends State<EmployeePatientsScreen> {
                       children: [
                         Text(
                           patient.name,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -157,9 +158,10 @@ class _EmployeePatientsScreenState extends State<EmployeePatientsScreen> {
                         const SizedBox(width: 4),
                         Text(
                           '${context.translateSafe('last_visit')}: ${patient.lastVisit}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.grey[600],
+                                  ),
                         ),
                       ],
                     ),
@@ -174,9 +176,11 @@ class _EmployeePatientsScreenState extends State<EmployeePatientsScreen> {
   }
 
   Color _getGenderColor(BuildContext context, String gender) {
-    if (gender.toLowerCase().contains('male') || gender.toLowerCase().contains('ذكر')) {
+    if (gender.toLowerCase().contains('male') ||
+        gender.toLowerCase().contains('ذكر')) {
       return Colors.blue;
-    } else if (gender.toLowerCase().contains('female') || gender.toLowerCase().contains('أنثى')) {
+    } else if (gender.toLowerCase().contains('female') ||
+        gender.toLowerCase().contains('أنثى')) {
       return Colors.pink;
     }
     return Colors.grey;
@@ -185,13 +189,6 @@ class _EmployeePatientsScreenState extends State<EmployeePatientsScreen> {
 
 // Mock data classes
 class Patient {
-  final String name;
-  final int age;
-  final String gender;
-  final String phone;
-  final String lastVisit;
-  final String nextAppointment;
-
   Patient({
     required this.name,
     required this.age,
@@ -200,6 +197,12 @@ class Patient {
     required this.lastVisit,
     required this.nextAppointment,
   });
+  final String name;
+  final int age;
+  final String gender;
+  final String phone;
+  final String lastVisit;
+  final String nextAppointment;
 }
 
 List<Patient> _getPatients() {

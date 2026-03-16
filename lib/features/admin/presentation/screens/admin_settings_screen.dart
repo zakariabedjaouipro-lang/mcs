@@ -221,7 +221,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
               _buildListTile(
                 context,
                 Icons.update,
-                context.translateSafe('version') + ' 1.0.0',
+                '${context.translateSafe('version')} 1.0.0',
                 null,
               ),
             ],

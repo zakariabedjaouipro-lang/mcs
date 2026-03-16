@@ -59,7 +59,9 @@ class _DoctorPrescriptionsScreenState extends State<DoctorPrescriptionsScreen> {
   }
 
   Widget _buildPrescriptionCard(
-      BuildContext context, Prescription prescription) {
+    BuildContext context,
+    Prescription prescription,
+  ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -147,12 +149,12 @@ class _DoctorPrescriptionsScreenState extends State<DoctorPrescriptionsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Medications:',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        ...medications.take(3).map((med) => _buildMedicationItem(med)),
+        ...medications.take(3).map(_buildMedicationItem),
         if (medications.length > 3)
           Text(
             '+${medications.length - 3} more medications',
@@ -183,13 +185,6 @@ class _DoctorPrescriptionsScreenState extends State<DoctorPrescriptionsScreen> {
 
 // Mock data classes
 class Prescription {
-  final String id;
-  final String patientName;
-  final String diagnosis;
-  final DateTime date;
-  final List<Medication> medications;
-  final String status;
-
   Prescription({
     required this.id,
     required this.patientName,
@@ -198,20 +193,25 @@ class Prescription {
     required this.medications,
     required this.status,
   });
+  final String id;
+  final String patientName;
+  final String diagnosis;
+  final DateTime date;
+  final List<Medication> medications;
+  final String status;
 }
 
 class Medication {
-  final String name;
-  final String dosage;
-  final String frequency;
-  final int duration;
-
   Medication({
     required this.name,
     required this.dosage,
     required this.frequency,
     required this.duration,
   });
+  final String name;
+  final String dosage;
+  final String frequency;
+  final int duration;
 }
 
 List<Prescription> _getPrescriptions() {

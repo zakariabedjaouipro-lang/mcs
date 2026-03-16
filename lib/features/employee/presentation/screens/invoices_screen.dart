@@ -62,7 +62,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
   }
 
   Widget _buildInvoiceCard(BuildContext context, Invoice invoice) {
-    Color statusColor = _getStatusColor(context, invoice.status);
+    var statusColor = _getStatusColor(context, invoice.status);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -178,7 +178,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        ...items.take(3).map((item) => _buildInvoiceItem(item)),
+        ...items.take(3).map(_buildInvoiceItem),
         if (items.length > 3)
           Text(
             '+${items.length - 3} ${context.translateSafe('more_items')}',
@@ -203,7 +203,6 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
             ),
           ),
           Expanded(
-            flex: 1,
             child: Text(
               item.quantity.toString(),
               textAlign: TextAlign.center,
@@ -211,9 +210,8 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
             ),
           ),
           Expanded(
-            flex: 1,
             child: Text(
-              '${item.unitPrice.toStringAsFixed(2)}',
+              item.unitPrice.toStringAsFixed(2),
               textAlign: TextAlign.end,
               style: const TextStyle(fontSize: 12),
             ),
@@ -241,14 +239,6 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
 
 // Mock data classes
 class Invoice {
-  final String id;
-  final String patientName;
-  final DateTime date;
-  final String status;
-  final double totalAmount;
-  final String currency;
-  final List<InvoiceItem> items;
-
   Invoice({
     required this.id,
     required this.patientName,
@@ -258,18 +248,24 @@ class Invoice {
     required this.currency,
     required this.items,
   });
+  final String id;
+  final String patientName;
+  final DateTime date;
+  final String status;
+  final double totalAmount;
+  final String currency;
+  final List<InvoiceItem> items;
 }
 
 class InvoiceItem {
-  final String name;
-  final int quantity;
-  final double unitPrice;
-
   InvoiceItem({
     required this.name,
     required this.quantity,
     required this.unitPrice,
   });
+  final String name;
+  final int quantity;
+  final double unitPrice;
 }
 
 List<Invoice> _getInvoices() {
@@ -279,11 +275,11 @@ List<Invoice> _getInvoices() {
       patientName: 'Ahmed Ali',
       date: DateTime.now().subtract(const Duration(days: 5)),
       status: 'Paid',
-      totalAmount: 150.00,
+      totalAmount: 150,
       currency: 'AED',
       items: [
-        InvoiceItem(name: 'Consultation Fee', quantity: 1, unitPrice: 100.00),
-        InvoiceItem(name: 'Prescription', quantity: 1, unitPrice: 50.00),
+        InvoiceItem(name: 'Consultation Fee', quantity: 1, unitPrice: 100),
+        InvoiceItem(name: 'Prescription', quantity: 1, unitPrice: 50),
       ],
     ),
     Invoice(
@@ -291,10 +287,10 @@ List<Invoice> _getInvoices() {
       patientName: 'Fatima Mohamed',
       date: DateTime.now().subtract(const Duration(days: 3)),
       status: 'Pending',
-      totalAmount: 75.00,
+      totalAmount: 75,
       currency: 'AED',
       items: [
-        InvoiceItem(name: 'Lab Test', quantity: 1, unitPrice: 75.00),
+        InvoiceItem(name: 'Lab Test', quantity: 1, unitPrice: 75),
       ],
     ),
     Invoice(
@@ -302,11 +298,12 @@ List<Invoice> _getInvoices() {
       patientName: 'Omar Hassan',
       date: DateTime.now().subtract(const Duration(days: 10)),
       status: 'Overdue',
-      totalAmount: 200.00,
+      totalAmount: 200,
       currency: 'AED',
       items: [
-        InvoiceItem(name: 'Specialist Consultation', quantity: 1, unitPrice: 150.00),
-        InvoiceItem(name: 'Medication', quantity: 1, unitPrice: 50.00),
+        InvoiceItem(
+            name: 'Specialist Consultation', quantity: 1, unitPrice: 150),
+        InvoiceItem(name: 'Medication', quantity: 1, unitPrice: 50),
       ],
     ),
   ];

@@ -65,8 +65,8 @@ void main() async {
     final authDemoUsers = authUsersList
         .where(
           (user) =>
-              user.email?.contains('demo') == true ||
-              user.email?.contains('admin') == true,
+              (user.email?.contains('demo') ?? false) ||
+              (user.email?.contains('admin') ?? false),
         )
         .toList();
 
@@ -76,7 +76,8 @@ void main() async {
       print('✅ Found ${authDemoUsers.length} demo in auth.users:');
       for (final user in authDemoUsers) {
         print(
-            '   - ${user.email} (verified: ${user.emailConfirmedAt != null})');
+          '   - ${user.email} (verified: ${user.emailConfirmedAt != null})',
+        );
       }
     }
     print('');
@@ -189,8 +190,8 @@ void main() async {
       print('');
       for (final email in missingInDb) {
         print('   INSERT INTO users (id, email, role, created_at, updated_at)');
-        print('   SELECT id, email, \'patient\'::user_role, NOW(), NOW()');
-        print('   FROM auth.users WHERE email = \'$email\'');
+        print("   SELECT id, email, 'patient'::user_role, NOW(), NOW()");
+        print("   FROM auth.users WHERE email = '$email'");
         print('   ON CONFLICT DO NOTHING;');
         print('');
       }

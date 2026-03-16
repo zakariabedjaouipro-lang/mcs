@@ -237,7 +237,6 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
     VoidCallback onTap,
   ) {
     return Expanded(
-      flex: 1,
       child: Card(
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
@@ -247,8 +246,11 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon,
-                    size: 32, color: Theme.of(context).colorScheme.primary),
+                Icon(
+                  icon,
+                  size: 32,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(height: 8),
                 Text(
                   label,
@@ -355,9 +357,9 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
+                const Text(
                   'doctor@email.com',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white70,
                     fontSize: 14,
                   ),

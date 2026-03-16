@@ -189,13 +189,6 @@ class _DoctorPatientsScreenState extends State<DoctorPatientsScreen> {
 
 // Mock data classes
 class Patient {
-  final String name;
-  final int age;
-  final String gender;
-  final String phone;
-  final String lastVisit;
-  final String nextAppointment;
-
   Patient({
     required this.name,
     required this.age,
@@ -204,6 +197,12 @@ class Patient {
     required this.lastVisit,
     required this.nextAppointment,
   });
+  final String name;
+  final int age;
+  final String gender;
+  final String phone;
+  final String lastVisit;
+  final String nextAppointment;
 }
 
 List<Patient> _getPatients() {

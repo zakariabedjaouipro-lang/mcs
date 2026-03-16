@@ -89,7 +89,9 @@ class _AdminClinicsScreenState extends State<AdminClinicsScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    clinic.isActive ? context.translateSafe('active') : context.translateSafe('inactive'),
+                    clinic.isActive
+                        ? context.translateSafe('active')
+                        : context.translateSafe('inactive'),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,
@@ -140,9 +142,21 @@ class _AdminClinicsScreenState extends State<AdminClinicsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildStatItem(context, Icons.people, clinic.doctorsCount.toString(), context.translateSafe('doctors')),
-                _buildStatItem(context, Icons.medical_services, clinic.patientsCount.toString(), context.translateSafe('patients')),
-                _buildStatItem(context, Icons.pending_actions, clinic.appointmentsCount.toString(), context.translateSafe('appointments')),
+                _buildStatItem(
+                    context,
+                    Icons.people,
+                    clinic.doctorsCount.toString(),
+                    context.translateSafe('doctors')),
+                _buildStatItem(
+                    context,
+                    Icons.medical_services,
+                    clinic.patientsCount.toString(),
+                    context.translateSafe('patients')),
+                _buildStatItem(
+                    context,
+                    Icons.pending_actions,
+                    clinic.appointmentsCount.toString(),
+                    context.translateSafe('appointments')),
               ],
             ),
             const SizedBox(height: 12),
@@ -175,7 +189,8 @@ class _AdminClinicsScreenState extends State<AdminClinicsScreen> {
     );
   }
 
-  Widget _buildStatItem(BuildContext context, IconData icon, String value, String label) {
+  Widget _buildStatItem(
+      BuildContext context, IconData icon, String value, String label) {
     return Column(
       children: [
         Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
@@ -200,15 +215,6 @@ class _AdminClinicsScreenState extends State<AdminClinicsScreen> {
 
 // Mock data classes
 class Clinic {
-  final String name;
-  final String address;
-  final String phone;
-  final String email;
-  final bool isActive;
-  final int doctorsCount;
-  final int patientsCount;
-  final int appointmentsCount;
-
   Clinic({
     required this.name,
     required this.address,
@@ -219,6 +225,14 @@ class Clinic {
     required this.patientsCount,
     required this.appointmentsCount,
   });
+  final String name;
+  final String address;
+  final String phone;
+  final String email;
+  final bool isActive;
+  final int doctorsCount;
+  final int patientsCount;
+  final int appointmentsCount;
 }
 
 List<Clinic> _getClinics() {

@@ -108,9 +108,10 @@ class _AdminEmployeesScreenState extends State<AdminEmployeesScreen> {
                       children: [
                         Text(
                           employee.name,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -162,9 +163,10 @@ class _AdminEmployeesScreenState extends State<AdminEmployeesScreen> {
                         Expanded(
                           child: Text(
                             employee.email,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.grey[600],
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.grey[600],
+                                    ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -198,15 +200,6 @@ class _AdminEmployeesScreenState extends State<AdminEmployeesScreen> {
 
 // Mock data classes
 class Employee {
-  final String name;
-  final String position;
-  final String phone;
-  final String email;
-  final String status;
-  final String department;
-  final String clinic;
-  final int yearsOfExperience;
-
   Employee({
     required this.name,
     required this.position,
@@ -217,6 +210,14 @@ class Employee {
     required this.clinic,
     required this.yearsOfExperience,
   });
+  final String name;
+  final String position;
+  final String phone;
+  final String email;
+  final String status;
+  final String department;
+  final String clinic;
+  final int yearsOfExperience;
 }
 
 List<Employee> _getEmployees() {

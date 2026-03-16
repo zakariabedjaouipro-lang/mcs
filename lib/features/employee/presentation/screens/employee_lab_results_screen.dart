@@ -57,7 +57,7 @@ class _EmployeeLabResultsScreenState extends State<EmployeeLabResultsScreen> {
   }
 
   Widget _buildLabResultCard(BuildContext context, LabResult result) {
-    Color statusColor = _getStatusColor(result.status);
+    var statusColor = _getStatusColor(result.status);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -136,12 +136,12 @@ class _EmployeeLabResultsScreenState extends State<EmployeeLabResultsScreen> {
             ],
             const SizedBox(height: 12),
             if (result.results.isNotEmpty) ...[
-              Text(
+              const Text(
                 'Results:',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              ...result.results.take(3).map((r) => _buildResultItem(r)),
+              ...result.results.take(3).map(_buildResultItem),
               if (result.results.length > 3)
                 Text(
                   '+${result.results.length - 3} more results',
@@ -179,7 +179,7 @@ class _EmployeeLabResultsScreenState extends State<EmployeeLabResultsScreen> {
   }
 
   Widget _buildResultItem(LabResultItem result) {
-    Color valueColor = Colors.black;
+    var valueColor = Colors.black;
     if (result.isAbnormal) {
       valueColor = Colors.orange;
     } else if (result.isCritical) {
@@ -198,7 +198,6 @@ class _EmployeeLabResultsScreenState extends State<EmployeeLabResultsScreen> {
             ),
           ),
           Expanded(
-            flex: 1,
             child: Text(
               result.value,
               textAlign: TextAlign.center,
@@ -210,7 +209,6 @@ class _EmployeeLabResultsScreenState extends State<EmployeeLabResultsScreen> {
             ),
           ),
           Expanded(
-            flex: 1,
             child: Text(
               result.unit,
               textAlign: TextAlign.center,
@@ -218,7 +216,6 @@ class _EmployeeLabResultsScreenState extends State<EmployeeLabResultsScreen> {
             ),
           ),
           Expanded(
-            flex: 1,
             child: Text(
               result.range,
               textAlign: TextAlign.center,
@@ -246,13 +243,6 @@ class _EmployeeLabResultsScreenState extends State<EmployeeLabResultsScreen> {
 
 // Mock data classes
 class LabResult {
-  final String testName;
-  final String patientName;
-  final DateTime date;
-  final String status;
-  final String? labName;
-  final List<LabResultItem> results;
-
   LabResult({
     required this.testName,
     required this.patientName,
@@ -261,16 +251,15 @@ class LabResult {
     this.labName,
     required this.results,
   });
+  final String testName;
+  final String patientName;
+  final DateTime date;
+  final String status;
+  final String? labName;
+  final List<LabResultItem> results;
 }
 
 class LabResultItem {
-  final String name;
-  final String value;
-  final String unit;
-  final String range;
-  final bool isAbnormal;
-  final bool isCritical;
-
   LabResultItem({
     required this.name,
     required this.value,
@@ -279,6 +268,12 @@ class LabResultItem {
     required this.isAbnormal,
     required this.isCritical,
   });
+  final String name;
+  final String value;
+  final String unit;
+  final String range;
+  final bool isAbnormal;
+  final bool isCritical;
 }
 
 List<LabResult> _getLabResults() {

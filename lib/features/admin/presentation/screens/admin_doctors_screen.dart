@@ -108,9 +108,10 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                       children: [
                         Text(
                           'Dr. ${doctor.name}',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -162,9 +163,10 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                         Expanded(
                           child: Text(
                             doctor.email,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.grey[600],
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.grey[600],
+                                    ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -198,14 +200,6 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
 
 // Mock data classes
 class Doctor {
-  final String name;
-  final String specialty;
-  final String phone;
-  final String email;
-  final String status;
-  final String clinic;
-  final int yearsOfExperience;
-
   Doctor({
     required this.name,
     required this.specialty,
@@ -215,6 +209,13 @@ class Doctor {
     required this.clinic,
     required this.yearsOfExperience,
   });
+  final String name;
+  final String specialty;
+  final String phone;
+  final String email;
+  final String status;
+  final String clinic;
+  final int yearsOfExperience;
 }
 
 List<Doctor> _getDoctors() {

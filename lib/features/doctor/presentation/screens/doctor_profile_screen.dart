@@ -247,9 +247,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       child: Row(
         children: [
           Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
-          SizedBox(width: 12),
+          const SizedBox(width: 12),
           Expanded(
-            flex: 1,
             child: Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -276,7 +275,6 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       child: Row(
         children: [
           Expanded(
-            flex: 1,
             child: Text(
               day,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(

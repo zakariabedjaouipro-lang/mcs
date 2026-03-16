@@ -249,7 +249,6 @@ class _EmployeeProfileScreenState extends State<EmployeeProfileScreen> {
           Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 12),
           Expanded(
-            flex: 1,
             child: Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -276,7 +275,6 @@ class _EmployeeProfileScreenState extends State<EmployeeProfileScreen> {
       child: Row(
         children: [
           Expanded(
-            flex: 1,
             child: Text(
               day,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(

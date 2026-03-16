@@ -6,10 +6,12 @@ class EmployeePrescriptionsScreen extends StatefulWidget {
   const EmployeePrescriptionsScreen({super.key});
 
   @override
-  State<EmployeePrescriptionsScreen> createState() => _EmployeePrescriptionsScreenState();
+  State<EmployeePrescriptionsScreen> createState() =>
+      _EmployeePrescriptionsScreenState();
 }
 
-class _EmployeePrescriptionsScreenState extends State<EmployeePrescriptionsScreen> {
+class _EmployeePrescriptionsScreenState
+    extends State<EmployeePrescriptionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +57,8 @@ class _EmployeePrescriptionsScreenState extends State<EmployeePrescriptionsScree
     );
   }
 
-  Widget _buildPrescriptionCard(BuildContext context, Prescription prescription) {
+  Widget _buildPrescriptionCard(
+      BuildContext context, Prescription prescription) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -143,12 +146,12 @@ class _EmployeePrescriptionsScreenState extends State<EmployeePrescriptionsScree
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Medications:',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        ...medications.take(3).map((med) => _buildMedicationItem(med)),
+        ...medications.take(3).map(_buildMedicationItem),
         if (medications.length > 3)
           Text(
             '+${medications.length - 3} more medications',
@@ -179,13 +182,6 @@ class _EmployeePrescriptionsScreenState extends State<EmployeePrescriptionsScree
 
 // Mock data classes
 class Prescription {
-  final String id;
-  final String patientName;
-  final String diagnosis;
-  final DateTime date;
-  final List<Medication> medications;
-  final String status;
-
   Prescription({
     required this.id,
     required this.patientName,
@@ -194,20 +190,25 @@ class Prescription {
     required this.medications,
     required this.status,
   });
+  final String id;
+  final String patientName;
+  final String diagnosis;
+  final DateTime date;
+  final List<Medication> medications;
+  final String status;
 }
 
 class Medication {
-  final String name;
-  final String dosage;
-  final String frequency;
-  final int duration;
-
   Medication({
     required this.name,
     required this.dosage,
     required this.frequency,
     required this.duration,
   });
+  final String name;
+  final String dosage;
+  final String frequency;
+  final int duration;
 }
 
 List<Prescription> _getPrescriptions() {
