@@ -200,37 +200,39 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
       },
       child: Scaffold(
         drawer: _buildDrawerOnMobile(context, isArabic),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            final showFullSidebar = constraints.maxWidth > 800;
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final showFullSidebar = constraints.maxWidth > 800;
 
-            return Row(
-              children: [
-                // Sidebar - Show on large screens
-                if (showFullSidebar) _buildSidebar(context, isArabic),
+              return Row(
+                children: [
+                  // Sidebar - Show on large screens
+                  if (showFullSidebar) _buildSidebar(context, isArabic),
 
-                // Main Content
-                Expanded(
-                  child: Column(
-                    children: [
-                      // Top App Bar
-                      _buildTopAppBar(
-                        context,
-                        isArabic,
-                        isDark,
-                        showFullSidebar,
-                      ),
+                  // Main Content
+                  Expanded(
+                    child: Column(
+                      children: [
+                        // Top App Bar
+                        _buildTopAppBar(
+                          context,
+                          isArabic,
+                          isDark,
+                          showFullSidebar,
+                        ),
 
-                      // Content Area
-                      Expanded(
-                        child: _buildMainContent(context, isArabic),
-                      ),
-                    ],
+                        // Content Area
+                        Expanded(
+                          child: _buildMainContent(context, isArabic),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -254,7 +256,10 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
         begin: const Offset(-1, 0),
         end: Offset.zero,
       ).animate(_drawerAnimationController),
-      child: _buildSidebarContent(context, isArabic),
+      child: SafeArea(
+        // ← هذا يحل مشكلة التداخل مع status bar
+        child: _buildSidebarContent(context, isArabic),
+      ),
     );
   }
 
