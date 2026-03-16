@@ -199,13 +199,14 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
         }
       },
       child: Scaffold(
+        drawer: _buildDrawerOnMobile(context, isArabic),
         body: LayoutBuilder(
           builder: (context, constraints) {
             final showFullSidebar = constraints.maxWidth > 800;
 
             return Row(
               children: [
-                // Sidebar - Hidden on very small screens
+                // Sidebar - Show on large screens
                 if (showFullSidebar) _buildSidebar(context, isArabic),
 
                 // Main Content
@@ -213,7 +214,12 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                   child: Column(
                     children: [
                       // Top App Bar
-                      _buildTopAppBar(context, isArabic, isDark),
+                      _buildTopAppBar(
+                        context,
+                        isArabic,
+                        isDark,
+                        showFullSidebar,
+                      ),
 
                       // Content Area
                       Expanded(
@@ -234,180 +240,186 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
   // SIDEBAR
   // ═══════════════════════════════════════════════════════════════
 
+  Widget _buildDrawerOnMobile(BuildContext context, bool isArabic) {
+    return Drawer(
+      child: SafeArea(
+        child: _buildSidebarContent(context, isArabic),
+      ),
+    );
+  }
+
   Widget _buildSidebar(BuildContext context, bool isArabic) {
     return SlideTransition(
       position: Tween<Offset>(
         begin: const Offset(-1, 0),
         end: Offset.zero,
       ).animate(_drawerAnimationController),
-      child: Container(
-        width: _isDrawerOpen ? 280 : 80,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Theme.of(context).scaffoldBackgroundColor,
-              Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.95),
-            ],
-          ),
-          border: Border(
-            right: BorderSide(
-              color: Colors.grey.withValues(alpha: 0.1),
-            ),
-          ),
-        ),
-        child: Column(
-          children: [
-            // Logo Section
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-              child: Column(
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          PremiumColors.successGreen,
-                          PremiumColors.primaryBlue,
-                        ],
-                      ),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color:
-                              PremiumColors.primaryBlue.withValues(alpha: 0.3),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.healing,
-                      size: 28,
-                      color: Colors.white,
-                    ),
-                  ),
-                  if (_isDrawerOpen) ...[
-                    const SizedBox(height: 12),
-                    Text(
-                      'MCS',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: PremiumColors.primaryBlue,
-                              ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      isArabic ? 'لوحة التحكم' : 'Admin Panel',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                  ],
-                ],
-              ),
-            ),
+      child: _buildSidebarContent(context, isArabic),
+    );
+  }
 
-            // Menu Items
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                itemCount: _menuItems.length,
-                itemBuilder: (context, index) {
-                  final item = _menuItems[index];
-                  final isSelected = _selectedMenuItem == item.id;
-
-                  return _buildMenuItemAnimation(
-                    child: _buildMenuItem(
-                      context,
-                      item,
-                      isSelected,
-                      isArabic,
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // Bottom Actions
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: Colors.grey.withValues(alpha: 0.1),
-                  ),
-                ),
-              ),
-              child: Column(
-                children: [
-                  // Collapse Button
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _isDrawerOpen = !_isDrawerOpen;
-                        if (_isDrawerOpen) {
-                          _drawerAnimationController.forward();
-                        } else {
-                          _drawerAnimationController.reverse();
-                        }
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Icon(
-                        _isDrawerOpen
-                            ? Icons.chevron_left
-                            : Icons.chevron_right,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Logout Button
-                  _buildMenuItemAnimation(
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: _handleLogout,
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.logout,
-                                size: 20,
-                                color: Colors.red,
-                              ),
-                              if (_isDrawerOpen) ...[
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    isArabic ? 'تسجيل الخروج' : 'Logout',
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+  Widget _buildSidebarContent(BuildContext context, bool isArabic) {
+    return Container(
+      width: _isDrawerOpen ? 280 : 80,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).scaffoldBackgroundColor,
+            Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.95),
           ],
         ),
+        border: Border(
+          right: BorderSide(
+            color: Colors.grey.withValues(alpha: 0.1),
+          ),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Logo Section
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: Column(
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        PremiumColors.successGreen,
+                        PremiumColors.primaryBlue,
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: PremiumColors.primaryBlue.withValues(alpha: 0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.healing,
+                    size: 28,
+                    color: Colors.white,
+                  ),
+                ),
+                if (_isDrawerOpen) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'MCS',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: PremiumColors.primaryBlue,
+                        ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    isArabic ? 'لوحة التحكم' : 'Admin Panel',
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          // Menu Items
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              itemCount: _menuItems.length,
+              itemBuilder: (context, index) {
+                final item = _menuItems[index];
+                final isSelected = _selectedMenuItem == item.id;
+
+                return _buildMenuItemAnimation(
+                  child: _buildMenuItem(
+                    context,
+                    item,
+                    isSelected,
+                    isArabic,
+                  ),
+                );
+              },
+            ),
+          ),
+
+          // Bottom Actions
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: Colors.grey.withValues(alpha: 0.1),
+                ),
+              ),
+            ),
+            child: Column(
+              children: [
+                // Collapse Button
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      _isDrawerOpen = !_isDrawerOpen;
+                      if (_isDrawerOpen) {
+                        _drawerAnimationController.forward();
+                      } else {
+                        _drawerAnimationController.reverse();
+                      }
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Icon(
+                      _isDrawerOpen ? Icons.chevron_left : Icons.chevron_right,
+                      size: 24,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Logout Button
+                _buildMenuItemAnimation(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _handleLogout,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.logout,
+                              size: 20,
+                              color: Colors.red,
+                            ),
+                            if (_isDrawerOpen) ...[
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  isArabic ? 'تسجيل الخروج' : 'Logout',
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -527,6 +539,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
     BuildContext context,
     bool isArabic,
     bool isDark,
+    bool showFullSidebar,
   ) {
     final screenWidth = MediaQuery.of(context).size.width;
     final showSearch = screenWidth > 768; // Hide search on small screens
@@ -552,6 +565,22 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
           spacing: 8,
           runSpacing: 8,
           children: [
+            // Menu Button (only on mobile)
+            if (!showFullSidebar)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: const Icon(Icons.menu, size: 20),
+                ),
+              ),
+
             // Back Button with Swipe Hint
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -789,8 +818,26 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
     switch (_selectedMenuItem) {
       case 'dashboard':
         return _buildDashboardContent(context, isArabic);
+      case 'clinics':
+        return _buildClinicsContent(context, isArabic);
+      case 'doctors':
+        return _buildDoctorsContent(context, isArabic);
+      case 'patients':
+        return _buildPatientsContent(context, isArabic);
+      case 'appointments':
+        return _buildAppointmentsContent(context, isArabic);
+      case 'payments':
+        return _buildPaymentsContent(context, isArabic);
       case 'approvals':
         return _buildApprovalsContent(context);
+      case 'subscriptions':
+        return _buildSubscriptionsContent(context, isArabic);
+      case 'analytics':
+        return _buildAnalyticsContent(context, isArabic);
+      case 'permissions':
+        return _buildPermissionsContent(context, isArabic);
+      case 'settings':
+        return _buildSettingsContent(context, isArabic);
       default:
         return _buildUnderConstructionScreen(context, isArabic);
     }
@@ -1268,6 +1315,298 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
     return BlocProvider(
       create: (_) => sl<ApprovalBloc>(),
       child: const ApprovalsManagementScreen(),
+    );
+  }
+
+  Widget _buildClinicsContent(BuildContext context, bool isArabic) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'إدارة العيادات' : 'Clinics Management',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildContentCard(
+            context: context,
+            title: isArabic ? 'العيادات النشطة' : 'Active Clinics',
+            icon: Icons.local_hospital,
+            color: Colors.teal,
+            content: '24 عيادة',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDoctorsContent(BuildContext context, bool isArabic) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'إدارة الأطباء' : 'Doctors Management',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildContentCard(
+            context: context,
+            title: isArabic ? 'الأطباء المسجلين' : 'Registered Doctors',
+            icon: Icons.medical_services,
+            color: Colors.cyan,
+            content: '156 طبيب',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPatientsContent(BuildContext context, bool isArabic) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'إدارة المرضى' : 'Patients Management',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildContentCard(
+            context: context,
+            title: isArabic ? 'إجمالي المرضى' : 'Total Patients',
+            icon: Icons.people,
+            color: Colors.green,
+            content: '2,341 مريض',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppointmentsContent(BuildContext context, bool isArabic) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'المواعيد' : 'Appointments',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildContentCard(
+            context: context,
+            title: isArabic ? 'المواعيد اليومية' : 'Today Appointments',
+            icon: Icons.calendar_today,
+            color: Colors.purple,
+            content: '12 موعد',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentsContent(BuildContext context, bool isArabic) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'المدفوعات' : 'Payments',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildContentCard(
+            context: context,
+            title: isArabic ? 'إجمالي الإيرادات' : 'Total Revenue',
+            icon: Icons.payment,
+            color: Colors.orange,
+            content: '45.8K ريال',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubscriptionsContent(BuildContext context, bool isArabic) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'الاشتراكات' : 'Subscriptions',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildContentCard(
+            context: context,
+            title: isArabic ? 'الاشتراكات النشطة' : 'Active Subscriptions',
+            icon: Icons.card_membership,
+            color: Colors.indigo,
+            content: '85 اشتراك',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsContent(BuildContext context, bool isArabic) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'التحليلات والتقارير' : 'Analytics & Reports',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildContentCard(
+            context: context,
+            title: isArabic ? 'الأداء الشهري' : 'Monthly Performance',
+            icon: Icons.analytics,
+            color: Colors.red,
+            content: isArabic ? 'معدل النمو: +15%' : 'Growth Rate: +15%',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPermissionsContent(BuildContext context, bool isArabic) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'الصلاحيات' : 'Permissions',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildContentCard(
+            context: context,
+            title: isArabic ? 'الأدوار المتاحة' : 'Available Roles',
+            icon: Icons.security,
+            color: Colors.deepOrange,
+            content: '5 أدوار',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettingsContent(BuildContext context, bool isArabic) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isArabic ? 'الإعدادات' : 'Settings',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _buildContentCard(
+            context: context,
+            title: isArabic ? 'إعدادات النظام' : 'System Settings',
+            icon: Icons.settings,
+            color: Colors.grey,
+            content: isArabic ? 'محدثة' : 'Updated',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContentCard({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required Color color,
+    required String content,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color.withValues(alpha: 0.1),
+            color.withValues(alpha: 0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: color.withValues(alpha: 0.2),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: color, size: 32),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  content,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
