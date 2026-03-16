@@ -58,7 +58,9 @@ class _EmployeePrescriptionsScreenState
   }
 
   Widget _buildPrescriptionCard(
-      BuildContext context, Prescription prescription) {
+    BuildContext context,
+    Prescription prescription,
+  ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(

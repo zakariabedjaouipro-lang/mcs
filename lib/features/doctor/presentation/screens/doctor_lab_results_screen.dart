@@ -56,7 +56,7 @@ class _DoctorLabResultsScreen extends State<DoctorLabResultsScreen> {
   }
 
   Widget _buildLabResultCard(BuildContext context, LabResult result) {
-    var statusColor = _getStatusColor(result.status);
+    final statusColor = _getStatusColor(result.status);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -247,8 +247,8 @@ class LabResult {
     required this.patientName,
     required this.date,
     required this.status,
-    this.labName,
     required this.results,
+    this.labName,
   });
   final String testName;
   final String patientName;

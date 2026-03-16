@@ -62,7 +62,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
   }
 
   Widget _buildInvoiceCard(BuildContext context, Invoice invoice) {
-    var statusColor = _getStatusColor(context, invoice.status);
+    final statusColor = _getStatusColor(context, invoice.status);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -302,7 +302,10 @@ List<Invoice> _getInvoices() {
       currency: 'AED',
       items: [
         InvoiceItem(
-            name: 'Specialist Consultation', quantity: 1, unitPrice: 150),
+          name: 'Specialist Consultation',
+          quantity: 1,
+          unitPrice: 150,
+        ),
         InvoiceItem(name: 'Medication', quantity: 1, unitPrice: 50),
       ],
     ),

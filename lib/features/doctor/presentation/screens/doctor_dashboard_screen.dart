@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/extensions/context_extensions.dart';
-import 'package:mcs/features/doctor/presentation/bloc/doctor_bloc.dart';
 
 /// Doctor Dashboard Screen
 class DoctorDashboardScreen extends StatefulWidget {

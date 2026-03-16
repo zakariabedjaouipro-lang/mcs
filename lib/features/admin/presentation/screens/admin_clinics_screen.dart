@@ -143,20 +143,23 @@ class _AdminClinicsScreenState extends State<AdminClinicsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildStatItem(
-                    context,
-                    Icons.people,
-                    clinic.doctorsCount.toString(),
-                    context.translateSafe('doctors')),
+                  context,
+                  Icons.people,
+                  clinic.doctorsCount.toString(),
+                  context.translateSafe('doctors'),
+                ),
                 _buildStatItem(
-                    context,
-                    Icons.medical_services,
-                    clinic.patientsCount.toString(),
-                    context.translateSafe('patients')),
+                  context,
+                  Icons.medical_services,
+                  clinic.patientsCount.toString(),
+                  context.translateSafe('patients'),
+                ),
                 _buildStatItem(
-                    context,
-                    Icons.pending_actions,
-                    clinic.appointmentsCount.toString(),
-                    context.translateSafe('appointments')),
+                  context,
+                  Icons.pending_actions,
+                  clinic.appointmentsCount.toString(),
+                  context.translateSafe('appointments'),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -190,7 +193,11 @@ class _AdminClinicsScreenState extends State<AdminClinicsScreen> {
   }
 
   Widget _buildStatItem(
-      BuildContext context, IconData icon, String value, String label) {
+    BuildContext context,
+    IconData icon,
+    String value,
+    String label,
+  ) {
     return Column(
       children: [
         Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
