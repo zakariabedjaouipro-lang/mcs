@@ -28,7 +28,7 @@ Widget build(BuildContext context) {
       } else {
         // Desktop: Keep sidebar
         return Scaffold(
-          body: Row(children: [_buildSidebar(), Expanded(...)]),
+          body: Row(children: [_buildSidebar(), SizedBox(...)]),
         );
       }
     },

@@ -145,7 +145,7 @@ Padding(padding: EdgeInsets.all(16))  // Always 16px
 - Tab bars with many tabs
 
 **Root Cause**:
-- Column/Row not wrapped in Expanded/Flexible
+- Column/Row not wrapped in SizedBox/Flexible
 - No maxWidth constraints on content
 - SingleChildScrollView without proper height limits
 

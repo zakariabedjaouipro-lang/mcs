@@ -53,7 +53,7 @@ class CurrencySelector extends StatefulWidget {
 
 class _CurrencySelectorState extends State<CurrencySelector> {
   late String _selectedCurrency;
-  bool _isExpanded = false;
+  bool _isSizedBox = false;
 
   @override
   void initState() {
@@ -83,7 +83,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
         GestureDetector(
           onTap: () {
             setState(() {
-              _isExpanded = !_isExpanded;
+              _isSizedBox = !_isSizedBox;
             });
           },
           child: Container(
@@ -93,10 +93,10 @@ class _CurrencySelectorState extends State<CurrencySelector> {
             ),
             decoration: BoxDecoration(
               border: Border.all(
-                color: _isExpanded ? AppColors.primary : Colors.grey,
+                color: _isSizedBox ? AppColors.primary : Colors.grey,
               ),
               borderRadius: BorderRadius.circular(8),
-              color: _isExpanded
+              color: _isSizedBox
                   ? AppColors.primary.withValues(alpha: 0.1)
                   : Colors.transparent,
             ),
@@ -117,7 +117,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
                 ),
                 const SizedBox(width: 8),
                 Icon(
-                  _isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  _isSizedBox ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                   size: 20,
                   color: AppColors.primary,
                 ),
@@ -127,7 +127,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
         ),
 
         // Dropdown options
-        if (_isExpanded)
+        if (_isSizedBox)
           Container(
             margin: const EdgeInsets.only(top: 8),
             decoration: BoxDecoration(
@@ -168,7 +168,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
             onTap: () {
               widget.controller.setCurrency(currency.$1);
               setState(() {
-                _isExpanded = false;
+                _isSizedBox = false;
               });
             },
             child: Container(
@@ -195,7 +195,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
                       color: Colors.grey,
                     ),
                   const SizedBox(width: 12),
-                  Expanded(
+                  SizedBox(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -261,4 +261,3 @@ class CurrencyRates {
     }
   }
 }
-

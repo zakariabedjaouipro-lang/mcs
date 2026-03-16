@@ -456,7 +456,7 @@
 // BEFORE (❌ كود قديم):
                 Row(
                   children: [
-                    Expanded(
+                    SizedBox(
                       child: OutlinedButton.icon(
                         onPressed: () {
                           // TODO: Reschedule appointment
@@ -465,7 +465,7 @@
 // AFTER (✅ كود جديد):
                 Row(
                   children: [
-                    Expanded(
+                    SizedBox(
                       child: OutlinedButton.icon(
                         onPressed: () {
                           // Navigate to reschedule appointment screen

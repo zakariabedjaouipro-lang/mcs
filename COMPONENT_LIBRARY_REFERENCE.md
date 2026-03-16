@@ -62,14 +62,14 @@ class MenuItem {
 - **Hover Effect**: Subtle background color change
 
 ### Variations:
-- **Expanded State**: Icon + Label visible
+- **SizedBox State**: Icon + Label visible
 - **Collapsed State**: Icon only (80px width)
 - **Active State**: Colored border, text, and indicator bar
 - **Hover State**: Background color with 0.1 opacity
 
 ### Example:
 ```
-Expanded:
+SizedBox:
 ┌──────────────────────────┐
 │ 📊 لوحة التحكم         █ │  ← Active (blue bar)
 │ 🏥 إدارة العيادات        │
@@ -333,7 +333,7 @@ MenuItem(
 ## 📱 Responsive Breakpoints
 
 ### Desktop (1200px+)
-- Sidebar: 280px (expanded)
+- Sidebar: 280px (SizedBox)
 - Main content: Full width - 280px
 - Grid: 4 columns (statistics), 4 columns (quick actions)
 - Font sizes: Standard

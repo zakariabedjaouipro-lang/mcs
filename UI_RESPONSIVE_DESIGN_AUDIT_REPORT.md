@@ -55,14 +55,14 @@ Comprehensive audit of MCS Flutter project identified **critical responsive desi
 - Button heights: `.h` units
 - Widths: `.w` units  
 - Icon sizes: `.sp` units
-- Full-width support: `isExpanded` property
+- Full-width support: `isSizedBox` property
 - Responsive loading indicator
 
 **Key Features:**
 ```dart
 SizedBox(
   height: height.h,        // Responsive height
-  width: isExpanded ? double.infinity : null,
+  width: isSizedBox ? double.infinity : null,
   child: ElevatedButton(...)
 )
 ```

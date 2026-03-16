@@ -202,9 +202,9 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
 
         // Indicators
         _buildIndicators(
-            primaryColor,
-            itemCount,
-          ), // ✅ تم الإصلاح: تمرير itemCount
+          primaryColor,
+          itemCount,
+        ), // ✅ تم الإصلاح: تمرير itemCount
       ],
     );
   }
@@ -240,7 +240,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
               const SizedBox(height: 12),
 
               // Comment
-              Expanded(
+              SizedBox(
                 child: Text(
                   testimonial.comment,
                   style: TextStyles.body1.copyWith(
@@ -299,7 +299,7 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
                   const SizedBox(width: 16),
 
                   // Name & Title
-                  Expanded(
+                  SizedBox(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -408,4 +408,3 @@ class _TestimonialsWidgetState extends State<TestimonialsWidget>
     }
   }
 }
-

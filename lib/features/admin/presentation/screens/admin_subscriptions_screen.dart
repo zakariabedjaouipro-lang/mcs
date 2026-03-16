@@ -254,14 +254,14 @@ class _AdminSubscriptionsViewState extends State<AdminSubscriptionsView> {
           ],
         ),
         actions: [
-          Expanded(
+          SizedBox(
             child: TextButton(
               onPressed: () => Navigator.pop(context, false),
               child: const Text('إلغاء'),
             ),
           ),
           const SizedBox(width: 8),
-          Expanded(
+          SizedBox(
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context, true);

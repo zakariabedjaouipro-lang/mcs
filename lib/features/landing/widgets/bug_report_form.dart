@@ -163,7 +163,7 @@ class _BugReportFormWidgetState extends State<BugReportFormWidget> {
           // Category and Severity Row
           Row(
             children: [
-              Expanded(
+              SizedBox(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -202,7 +202,7 @@ class _BugReportFormWidgetState extends State<BugReportFormWidget> {
                 ),
               ),
               const SizedBox(width: 16),
-              Expanded(
+              SizedBox(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -424,4 +424,3 @@ class _BugReportFormWidgetState extends State<BugReportFormWidget> {
     );
   }
 }
-

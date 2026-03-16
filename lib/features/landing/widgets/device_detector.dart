@@ -66,7 +66,7 @@ class _DeviceDetectorState extends State<DeviceDetector> {
               children: [
                 const Icon(Icons.info, color: Colors.blue),
                 const SizedBox(width: 12),
-                Expanded(
+                SizedBox(
                   child: Text(
                     _getDeviceMessage(),
                     style: TextStyles.bodyMedium.copyWith(

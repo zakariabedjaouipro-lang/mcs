@@ -175,7 +175,7 @@ class FeatureDetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          Expanded(
+          SizedBox(
             child: Text(
               feature,
               style: TextStyles.bodyLarge.copyWith(

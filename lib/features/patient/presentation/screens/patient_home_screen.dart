@@ -121,7 +121,7 @@ class PatientHomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              Expanded(
+              SizedBox(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -161,7 +161,7 @@ class PatientHomeScreen extends StatelessWidget {
             ),
           ),
           SizedBox(width: context.adaptivePaddingHorizontal),
-          Expanded(
+          SizedBox(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -349,7 +349,7 @@ class PatientHomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              Expanded(
+              SizedBox(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,7 +399,7 @@ class PatientHomeScreen extends StatelessWidget {
               color: context.colorSchemeSafe.primary,
             ),
             SizedBox(width: context.adaptivePaddingHorizontal),
-            Expanded(
+            SizedBox(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,

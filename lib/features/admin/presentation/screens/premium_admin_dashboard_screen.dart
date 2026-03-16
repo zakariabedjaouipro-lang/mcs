@@ -175,7 +175,7 @@ class _PremiumAdminDashboardViewState extends State<PremiumAdminDashboardView> {
                 // Sidebar
                 _buildSidebar(context),
                 // Main content
-                Expanded(
+                SizedBox(
                   child: _tabs[_selectedIndex].builder(context),
                 ),
               ],
@@ -284,7 +284,7 @@ class _PremiumAdminDashboardViewState extends State<PremiumAdminDashboardView> {
               size: 24,
             ),
             const SizedBox(width: 16),
-            Expanded(
+            SizedBox(
               child: Text(
                 title,
                 overflow: TextOverflow.ellipsis,
@@ -308,7 +308,7 @@ class _PremiumAdminDashboardViewState extends State<PremiumAdminDashboardView> {
         title: const Text('تسجيل الخروج'),
         content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
         actions: [
-          Expanded(
+          SizedBox(
             child: TextButton(
               onPressed: () {
                 if (Navigator.canPop(context)) {
@@ -319,7 +319,7 @@ class _PremiumAdminDashboardViewState extends State<PremiumAdminDashboardView> {
             ),
           ),
           const SizedBox(width: 8),
-          Expanded(
+          SizedBox(
             child: ElevatedButton(
               onPressed: () async {
                 if (Navigator.canPop(context)) {

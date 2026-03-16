@@ -1,330 +1,150 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:mcs/core/extensions/context_extensions.dart';
-import 'package:mcs/core/widgets/custom_button.dart';
-import 'package:mcs/core/widgets/custom_text_field.dart';
 import 'package:mcs/features/patient/presentation/bloc/index.dart';
 
-class PatientChangePasswordScreen extends StatefulWidget {
-  const PatientChangePasswordScreen({super.key});
+/// Patient Social Accounts Screen
+/// Allows patients to link and manage their social media accounts
+class PatientSocialAccountsScreen extends StatefulWidget {
+  const PatientSocialAccountsScreen({super.key});
 
   @override
-  State<PatientChangePasswordScreen> createState() =>
-      _PatientChangePasswordScreenState();
+  State<PatientSocialAccountsScreen> createState() =>
+      _PatientSocialAccountsScreenState();
 }
 
-class _PatientChangePasswordScreenState
-    extends State<PatientChangePasswordScreen>
-    with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
-
-  final _currentController = TextEditingController();
-  final _newController = TextEditingController();
-  final _confirmController = TextEditingController();
-
-  bool _currentHidden = true;
-  bool _newHidden = true;
-  bool _confirmHidden = true;
-
-  late AnimationController _animationController;
-  late Animation<double> _fade;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-
-    _fade = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeIn,
-    );
-
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _currentController.dispose();
-    _newController.dispose();
-    _confirmController.dispose();
-    _animationController.dispose();
-    super.dispose();
-  }
-
+class _PatientSocialAccountsScreenState
+    extends State<PatientSocialAccountsScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.translateSafe('change_password')),
+        title: Text(context.translateSafe('social_accounts')),
       ),
-      body: BlocListener<PatientBloc, PatientState>(
-        listener: (context, state) {
-          if (state is PasswordChanged) {
-            _showSuccessDialog(state.message);
-          }
-
-          if (state is PatientError) {
-            _showError(state.message);
-          }
-        },
-        child: FadeTransition(
-          opacity: _fade,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.lock_reset,
-                    size: 70,
-                    color: theme.colorScheme.primary,
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  Text(
-                    context.translateSafe('change_password'),
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  /// Current Password
-                  CustomTextField(
-                    controller: _currentController,
-                    label: context.translateSafe('current_password'),
-                    hint: context.translateSafe('enter_current_password'),
-                    prefixIcon: Icons.lock,
-                    obscureText: _currentHidden,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _currentHidden
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+      body: BlocBuilder<PatientBloc, PatientState>(
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.translateSafe('manage_social_accounts'),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _currentHidden = !_currentHidden;
-                        });
-                      },
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return context.translateSafe(
-                          'please_enter_current_password',
+                ),
+                const SizedBox(height: 16),
+                _buildSocialAccountCard(
+                  context,
+                  Icons.facebook,
+                  'Facebook',
+                  false,
+                  () {
+                    // Link Facebook
+                    context.read<PatientBloc>().add(
+                          const LinkSocialAccount(
+                            provider: 'facebook',
+                            providerId: 'facebook_id',
+                            accessToken: 'access_token',
+                          ),
                         );
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  /// New Password
-                  CustomTextField(
-                    controller: _newController,
-                    label: context.translateSafe('new_password'),
-                    hint: context.translateSafe('enter_new_password'),
-                    prefixIcon: Icons.lock_outline,
-                    obscureText: _newHidden,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _newHidden ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _newHidden = !_newHidden;
-                        });
-                      },
-                    ),
-                    onChanged: (_) => setState(() {}),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return context.translateSafe(
-                          'please_enter_new_password',
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildSocialAccountCard(
+                  context,
+                  Icons.g_mobiledata,
+                  'Google',
+                  false,
+                  () {
+                    // Link Google
+                    context.read<PatientBloc>().add(
+                          const LinkSocialAccount(
+                            provider: 'google',
+                            providerId: 'google_id',
+                            accessToken: 'access_token',
+                          ),
                         );
-                      }
-
-                      if (value.length < 8) {
-                        return context.translateSafe(
-                          'password_too_short',
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildSocialAccountCard(
+                  context,
+                  Icons.mail,
+                  'Apple',
+                  false,
+                  () {
+                    // Link Apple
+                    context.read<PatientBloc>().add(
+                          const LinkSocialAccount(
+                            provider: 'apple',
+                            providerId: 'apple_id',
+                            accessToken: 'access_token',
+                          ),
                         );
-                      }
-
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  _buildStrengthMeter(),
-
-                  const SizedBox(height: 18),
-
-                  /// Confirm Password
-                  CustomTextField(
-                    controller: _confirmController,
-                    label: context.translateSafe('confirm_password'),
-                    hint: context.translateSafe('confirm_new_password'),
-                    prefixIcon: Icons.lock_outline,
-                    obscureText: _confirmHidden,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _confirmHidden
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _confirmHidden = !_confirmHidden;
-                        });
-                      },
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return context.translateSafe(
-                          'please_confirm_password',
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildSocialAccountCard(
+                  context,
+                  Icons.phone,
+                  'Phone',
+                  true,
+                  () {
+                    // Unlink Phone
+                    context.read<PatientBloc>().add(
+                          const UnlinkSocialAccount('phone'),
                         );
-                      }
-
-                      if (value != _newController.text) {
-                        return context.translateSafe(
-                          'passwords_do_not_match',
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildSocialAccountCard(
+                  context,
+                  Icons.email,
+                  'Email',
+                  true,
+                  () {
+                    // Unlink Email
+                    context.read<PatientBloc>().add(
+                          const UnlinkSocialAccount('email'),
                         );
-                      }
-
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  BlocBuilder<PatientBloc, PatientState>(
-                    builder: (context, state) {
-                      final loading = state is PatientLoading;
-
-                      return CustomButton(
-                        label: loading
-                            ? context.translateSafe('loading')
-                            : context.translateSafe('change_password'),
-                        onPressed: loading ? null : _changePassword,
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStrengthMeter() {
-    final password = _newController.text;
-    final strength = _calculateStrength(password);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          strength.label,
-          style: TextStyle(
-            color: strength.color,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 6),
-        LinearProgressIndicator(
-          value: strength.value,
-          minHeight: 6,
-          backgroundColor: Colors.grey.shade300,
-          valueColor: AlwaysStoppedAnimation(strength.color),
-        ),
-      ],
-    );
-  }
-
-  PasswordStrength _calculateStrength(String password) {
-    if (password.isEmpty) {
-      return PasswordStrength(0, '', Colors.grey);
-    }
-
-    var score = 0;
-
-    if (password.length >= 8) score++;
-    if (password.length >= 12) score++;
-    if (password.contains(RegExp('[A-Z]'))) score++;
-    if (password.contains(RegExp('[a-z]'))) score++;
-    if (password.contains(RegExp('[0-9]'))) score++;
-
-    if (score <= 2) {
-      return PasswordStrength(0.3, 'Weak', Colors.red);
-    }
-
-    if (score <= 4) {
-      return PasswordStrength(0.6, 'Medium', Colors.orange);
-    }
-
-    return PasswordStrength(1, 'Strong', Colors.green);
-  }
-
-  void _changePassword() {
-    if (_formKey.currentState!.validate()) {
-      context.read<PatientBloc>().add(
-            ChangePassword(
-              currentPassword: _currentController.text,
-              newPassword: _newController.text,
+                  },
+                ),
+              ],
             ),
           );
-    }
-  }
-
-  void _showSuccessDialog(String message) {
-    showDialog<void>(
-      context: context,
-      builder: (_) => AlertDialog(
-        icon: const Icon(Icons.check_circle, color: Colors.green, size: 50),
-        title: const Text('Success'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: const Text('OK'),
-          ),
-        ],
+        },
       ),
     );
   }
 
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
+  Widget _buildSocialAccountCard(
+    BuildContext context,
+    IconData icon,
+    String provider,
+    bool isLinked,
+    VoidCallback onPressed,
+  ) {
+    return Card(
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          child: Icon(icon, color: Theme.of(context).colorScheme.primary),
+        ),
+        title: Text(provider),
+        trailing: isLinked
+            ? OutlinedButton.icon(
+                icon: const Icon(Icons.link_off, size: 16),
+                label: Text(context.translateSafe('unlink')),
+                onPressed: onPressed,
+              )
+            : ElevatedButton.icon(
+                icon: const Icon(Icons.link, size: 16),
+                label: Text(context.translateSafe('link')),
+                onPressed: onPressed,
+              ),
       ),
     );
   }
-}
-
-class PasswordStrength {
-  PasswordStrength(this.value, this.label, this.color);
-
-  final double value;
-  final String label;
-  final Color color;
 }

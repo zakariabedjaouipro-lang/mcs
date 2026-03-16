@@ -259,7 +259,7 @@ class PremiumLandingScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    Expanded(
+                    SizedBox(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,

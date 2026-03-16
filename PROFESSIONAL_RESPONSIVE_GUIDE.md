@@ -561,7 +561,7 @@ return SingleLayout()  // Works only on one device
 Row(
   children: [
     SizedBox(width: 100),  // Fixed width
-    Expanded(...)          // Responsive width
+    SizedBox(...)          // Responsive width
   ]
 )
 ```

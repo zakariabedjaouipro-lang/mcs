@@ -29,6 +29,7 @@ abstract class AppRoutes {
   static const String appointments = '/patient/appointments';
   static const String records = '/patient/records';
   static const String settings = '/patient/settings';
+  static const String socialAccounts = '/patient/social-accounts';
 
   static String appointmentDetails(String appointmentId) =>
       '/patient/appointments/$appointmentId';

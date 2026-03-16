@@ -545,7 +545,7 @@ Widget _buildDisabledState(String message) {
       children: [
         Icon(Icons.lock_outline, color: Colors.grey[600]),
         SizedBox(width: 8.w),
-        Expanded(
+        SizedBox(
           child: Text(
             message,
             style: TextStyle(color: Colors.grey[700]),

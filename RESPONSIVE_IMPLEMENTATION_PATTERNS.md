@@ -266,7 +266,7 @@ Scaffold(
         return Row(
           children: [
             _buildSidebar(),
-            Expanded(child: _buildContent()),
+            SizedBox(child: _buildContent()),
           ],
         );
       }

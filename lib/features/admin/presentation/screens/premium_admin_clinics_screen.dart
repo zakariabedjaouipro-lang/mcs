@@ -95,7 +95,7 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
 
     return Column(
       children: [
-        Expanded(
+        SizedBox(
           child: GridView.builder(
             padding: const EdgeInsets.all(16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -171,7 +171,7 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Expanded(
+                SizedBox(
                   child: Text(
                     clinic['name']?.toString() ?? '',
                     maxLines: 1,
@@ -219,7 +219,7 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
             const Spacer(),
             Row(
               children: [
-                Expanded(
+                SizedBox(
                   child: AppButton(
                     label: isArabic ? 'التفاصيل' : 'Details',
                     size: AppButtonSize.small,
@@ -229,7 +229,7 @@ class _PremiumAdminClinicsScreenState extends State<PremiumAdminClinicsScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Expanded(
+                SizedBox(
                   child: AppButton(
                     label: isArabic ? 'تعديل' : 'Edit',
                     size: AppButtonSize.small,

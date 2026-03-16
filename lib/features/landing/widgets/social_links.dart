@@ -136,7 +136,7 @@ class SocialLinksWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Expanded(
+              SizedBox(
                 child: Text(
                   link.platform,
                   style: TextStyles.subtitle1.copyWith(
@@ -173,4 +173,3 @@ class SocialLink {
   final String url;
   final Color color;
 }
-

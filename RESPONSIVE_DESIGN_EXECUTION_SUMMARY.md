@@ -29,7 +29,7 @@
 - **Status:** Already fully responsive
 - **Features:**
   - Dynamic height based on screen: isMobile ? 44.h : 48.h
-  - Full-width support with `isExpanded`
+  - Full-width support with `isSizedBox`
   - Icon/text sizing responsive
 
 ### 4. Database-Driven Dropdowns ✅ IMPLEMENTED

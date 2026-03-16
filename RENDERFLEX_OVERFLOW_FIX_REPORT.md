@@ -17,7 +17,7 @@ File: lib/features/landing/widgets/feature_card.dart
 - النصوص الطويلة تحاول أن تأخذ مساحة أكبر من المتاح
 - خاصة على الشاشات الصغيرة (mobile)
 
-### 2. **عدم استخدام Flexible/Expanded**
+### 2. **عدم استخدام Flexible/SizedBox**
 - النصوص (Title و Description) لم تكن مرنة
 - لم تتكيف مع المساحة المتاحة في البطاقة
 - أدت إلى overflow عندما تكون النصوص طويلة

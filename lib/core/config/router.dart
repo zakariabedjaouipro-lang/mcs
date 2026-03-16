@@ -45,6 +45,7 @@ import 'package:mcs/features/patient/presentation/screens/patient_home_screen.da
 import 'package:mcs/features/patient/presentation/screens/patient_lab_results_screen.dart';
 import 'package:mcs/features/patient/presentation/screens/patient_prescriptions_screen.dart';
 import 'package:mcs/features/patient/presentation/screens/patient_remote_sessions_screen.dart';
+import 'package:mcs/features/patient/presentation/screens/patient_social_accounts_screen.dart';
 import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
 // Records
 import 'package:mcs/features/records/presentation/screens/records_screen.dart';
@@ -394,11 +395,16 @@ class AppRouter {
                           builder: (context, state) =>
                               const AppShellScreen(child: PatientRemoteSessionsScreen()),
                         ),
-                        GoRoute(
-                          path: 'settings',
-                          builder: (context, state) =>
-                              const AppShellScreen(child: SettingsScreen(isPremium: true)),
-                        ),      ],
+                                GoRoute(
+                                  path: 'settings',
+                                  builder: (context, state) =>
+                                      const AppShellScreen(child: SettingsScreen(isPremium: true)),
+                                ),
+                                                GoRoute(
+                                                  path: 'social-accounts',
+                                                  builder: (context, state) =>
+                                                      const AppShellScreen(child: PatientSocialAccountsScreen()),
+                                                ),      ],
     ),
 
     /// Doctor

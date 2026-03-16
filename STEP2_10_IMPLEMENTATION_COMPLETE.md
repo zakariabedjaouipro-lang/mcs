@@ -38,7 +38,7 @@ LayoutBuilder(
       );
     } else {
       return Scaffold(
-        body: Row(children: [sidebar, expanded_content]),
+        body: Row(children: [sidebar, SizedBox_content]),
       );
     }
   },
@@ -97,7 +97,7 @@ All button rows and action grids now use responsive patterns:
 
 #### **2. DoctorDashboard**
 **Status:** ✅ Fully Responsive
-- Welcome card uses Expanded/Flexible - wraps on small screens
+- Welcome card uses SizedBox/Flexible - wraps on small screens
 - Stats grid: 2-column responsive layout
 - Icon buttons use mainAxisSize.min - no overflow
 - Drawer navigation - mobile-friendly

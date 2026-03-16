@@ -204,7 +204,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                 children: [
                   const Icon(Icons.access_time, size: 16),
                   const SizedBox(width: 4),
-                  Expanded(
+                  SizedBox(
                     child: Text(
                       appointment.timeSlot,
                       overflow: TextOverflow.ellipsis,
@@ -219,7 +219,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                     size: 16,
                   ),
                   const SizedBox(width: 4),
-                  Expanded(
+                  SizedBox(
                     child: Text(
                       appointment.type == AppointmentType.remote
                           ? context.translateSafe('remote')
@@ -235,7 +235,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                 children: [
                   const Icon(Icons.person, size: 16),
                   const SizedBox(width: 4),
-                  Expanded(
+                  SizedBox(
                     child: Text(
                       appointment.doctorName ?? 'Doctor Name',
                       overflow: TextOverflow.ellipsis,
@@ -262,7 +262,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    Expanded(
+                    SizedBox(
                       child: OutlinedButton.icon(
                         onPressed: () {
                           context.push(
@@ -276,7 +276,7 @@ class _PatientAppointmentsScreenState extends State<PatientAppointmentsScreen> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Expanded(
+                    SizedBox(
                       child: OutlinedButton.icon(
                         onPressed: () {
                           _showCancelDialog(appointment);

@@ -213,7 +213,7 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
             ),
           ),
           // Content
-          Expanded(
+          SizedBox(
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
@@ -385,4 +385,3 @@ class _SupportScreenLandingState extends State<SupportScreenLanding> {
     );
   }
 }
-

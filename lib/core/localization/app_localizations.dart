@@ -126,11 +126,12 @@ class AppLocalizations {
       locale.languageCode == 'ar' ? 'الوصفات' : 'Prescriptions';
   String get invoices => locale.languageCode == 'ar' ? 'الفواتير' : 'Invoices';
   String get inventory => locale.languageCode == 'ar' ? 'المخزون' : 'Inventory';
-  String get labResults =>
-      locale.languageCode == 'ar' ? 'نتائج المختبر' : 'Lab Results';
-  String get videoCalls =>
-      locale.languageCode == 'ar' ? 'المكالمات المرئية' : 'Video Calls';
-
+    String get labResults =>
+        locale.languageCode == 'ar' ? 'نتائج المختبر' : 'Lab Results';
+    String get videoCalls =>
+        locale.languageCode == 'ar' ? 'المكالمات المرئية' : 'Video Calls';
+    String get socialAccounts =>
+        locale.languageCode == 'ar' ? 'الحسابات الاجتماعية' : 'Social Accounts';
   // ── Status ───────────────────────────────────────────────
   String get pending =>
       locale.languageCode == 'ar' ? 'قيد الانتظار' : 'Pending';
@@ -230,12 +231,12 @@ class AppLocalizations {
             locale.languageCode == 'ar' ? 'حجز موعد' : 'Book Appointment',
         'inventory': locale.languageCode == 'ar' ? 'المخزون' : 'Inventory',
         'invoices': locale.languageCode == 'ar' ? 'الفواتير' : 'Invoices',
-        'employee': locale.languageCode == 'ar' ? 'الموظف' : 'Employee',
-        'appointments':
-            locale.languageCode == 'ar' ? 'المواعيد' : 'Appointments',
-        'patients': locale.languageCode == 'ar' ? 'المرضى' : 'Patients',
-      };
-
+                'employee': locale.languageCode == 'ar' ? 'الموظف' : 'Employee',
+                'appointments':
+                    locale.languageCode == 'ar' ? 'المواعيد' : 'Appointments',
+                'patients': locale.languageCode == 'ar' ? 'المرضى' : 'Patients',
+                'social_accounts': locale.languageCode == 'ar' ? 'الحسابات الاجتماعية' : 'Social Accounts',
+              };
   // ── Delegate & Localization Support ─────────────────────────────
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = [
     delegate,

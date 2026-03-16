@@ -176,7 +176,7 @@ class AppointmentDataService {
       return _countryCache.values.toList();
     } catch (e) {
       debugPrint('❌ Error loading countries: $e');
-      
+
       // Return empty list as fallback (user will be notified in UI)
       return [];
     }
@@ -936,7 +936,7 @@ class _PatientBookAppointmentScreenState
         children: [
           Icon(Icons.lock_outline, color: Colors.grey[600]),
           SizedBox(width: 8.w),
-          Expanded(
+          SizedBox(
             child: Text(
               message,
               style: TextStyle(color: Colors.grey[700]),

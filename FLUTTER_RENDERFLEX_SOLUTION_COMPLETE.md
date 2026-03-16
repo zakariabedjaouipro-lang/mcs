@@ -30,7 +30,7 @@ child: Column(
 
 ---
 
-#### ❌ **المشكلة 2: عدم استخدام Flexible/Expanded**
+#### ❌ **المشكلة 2: عدم استخدام Flexible/SizedBox**
 ```dart
 // النسخة القديمة:
 Text(
