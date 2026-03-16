@@ -32,6 +32,7 @@ import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen
 // Employee
 import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/inventory_screen.dart';
+import 'package:mcs/features/employee/presentation/screens/invoices_screen.dart';
 // Landing
 import 'package:mcs/features/landing/screens/contact_screen.dart' as contact;
 import 'package:mcs/features/landing/screens/download_screen.dart';
@@ -41,6 +42,9 @@ import 'package:mcs/features/landing/screens/premium_landing_screen.dart'
 import 'package:mcs/features/landing/screens/pricing_screen.dart';
 // Patient
 import 'package:mcs/features/patient/presentation/screens/patient_home_screen.dart';
+import 'package:mcs/features/patient/presentation/screens/patient_lab_results_screen.dart';
+import 'package:mcs/features/patient/presentation/screens/patient_prescriptions_screen.dart';
+import 'package:mcs/features/patient/presentation/screens/patient_remote_sessions_screen.dart';
 import 'package:mcs/features/patient/presentation/screens/patients_screen.dart';
 // Records
 import 'package:mcs/features/records/presentation/screens/records_screen.dart';
@@ -360,27 +364,41 @@ class AppRouter {
       builder: (context, state) =>
           const AppShellScreen(child: PatientHomeScreen(isPremium: true)),
       routes: [
-        GoRoute(
-          path: 'patients',
-          builder: (context, state) =>
-              const AppShellScreen(child: PatientsScreen()),
-        ),
-        GoRoute(
-          path: 'appointments',
-          builder: (context, state) =>
-              const AppShellScreen(child: AppointmentsScreen(isPremium: true)),
-        ),
-        GoRoute(
-          path: 'records',
-          builder: (context, state) =>
-              const AppShellScreen(child: RecordsScreen()),
-        ),
-        GoRoute(
-          path: 'settings',
-          builder: (context, state) =>
-              const AppShellScreen(child: SettingsScreen(isPremium: true)),
-        ),
-      ],
+                GoRoute(
+                  path: 'patients',
+                  builder: (context, state) =>
+                      const AppShellScreen(child: PatientsScreen()),
+                ),
+                GoRoute(
+                  path: 'appointments',
+                  builder: (context, state) =>
+                      const AppShellScreen(child: AppointmentsScreen(isPremium: true)),
+                ),
+                GoRoute(
+                  path: 'records',
+                  builder: (context, state) =>
+                      const AppShellScreen(child: RecordsScreen()),
+                ),
+                        GoRoute(
+                          path: 'lab-results',
+                          builder: (context, state) =>
+                              const AppShellScreen(child: PatientLabResultsScreen()),
+                        ),
+                        GoRoute(
+                          path: 'prescriptions',
+                          builder: (context, state) =>
+                              const AppShellScreen(child: PatientPrescriptionsScreen()),
+                        ),
+                        GoRoute(
+                          path: 'remote-sessions',
+                          builder: (context, state) =>
+                              const AppShellScreen(child: PatientRemoteSessionsScreen()),
+                        ),
+                        GoRoute(
+                          path: 'settings',
+                          builder: (context, state) =>
+                              const AppShellScreen(child: SettingsScreen(isPremium: true)),
+                        ),      ],
     ),
 
     /// Doctor
@@ -401,11 +419,10 @@ class AppRouter {
           path: 'inventory',
           builder: (context, state) => const InventoryScreen(),
         ),
-        // TODO: Implement InvoicesScreen
-        // GoRoute(
-        //   path: 'invoices',
-        //   builder: (context, state) => const InvoicesScreen(),
-        // ),
+        GoRoute(
+          path: 'invoices',
+          builder: (context, state) => const InvoicesScreen(),
+        ),
       ],
     ),
 

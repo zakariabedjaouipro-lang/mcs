@@ -208,7 +208,8 @@ class _PremiumDropdownFieldState<T> extends State<PremiumDropdownField<T>>
                           Expanded(
                             child: Text(
                               widget.value != null
-                                  ? widget.itemBuilder(widget.value as T)
+                                  ? widget
+                                      .itemBuilder(widget.value as T)
                                       .toString()
                                   : widget.hint ?? 'Select...',
                               style: PremiumTextStyles.bodyRegular.copyWith(
@@ -220,9 +221,7 @@ class _PremiumDropdownFieldState<T> extends State<PremiumDropdownField<T>>
                             ),
                           ),
                           Icon(
-                            _isFocused
-                                ? Icons.expand_less
-                                : Icons.expand_more,
+                            _isFocused ? Icons.expand_less : Icons.expand_more,
                             color: _isFocused
                                 ? PremiumColors.primaryBlue
                                 : PremiumColors.darkText,

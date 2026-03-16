@@ -44,12 +44,18 @@ class ResponsiveCard extends StatelessWidget {
 
     final defaultMargin = context.isSmallScreen
         ? const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md, vertical: AppSpacing.sm,)
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          )
         : context.isMediumScreen
             ? const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg, vertical: AppSpacing.md,)
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
+              )
             : const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xl, vertical: AppSpacing.lg,);
+                horizontal: AppSpacing.xl,
+                vertical: AppSpacing.lg,
+              );
 
     return Container(
       margin: margin ?? defaultMargin,
@@ -58,7 +64,8 @@ class ResponsiveCard extends StatelessWidget {
         color: backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: borderRadius ?? BorderRadius.circular(AppRadius.lg),
-          side: (border is BorderSide) ? border! as BorderSide : BorderSide.none,
+          side:
+              (border is BorderSide) ? border! as BorderSide : BorderSide.none,
         ),
         child: InkWell(
           onTap: onTap,
