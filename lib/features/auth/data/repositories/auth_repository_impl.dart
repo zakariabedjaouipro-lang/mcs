@@ -4,6 +4,7 @@ import 'package:mcs/core/errors/exceptions.dart';
 import 'package:mcs/core/errors/failures.dart';
 import 'package:mcs/core/models/user_model.dart';
 import 'package:mcs/core/services/auth_service.dart';
+import 'package:mcs/core/usecases/approval_usecase.dart';
 import 'package:mcs/features/auth/domain/repositories/auth_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -12,8 +13,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({
     required AuthService authService,
-  }) : _authService = authService;
+    required ApprovalRepository approvalRepository,
+  })  : _authService = authService,
+        _approvalRepository = approvalRepository;
+
   final AuthService _authService;
+  final ApprovalRepository _approvalRepository;
 
   @override
   Future<Either<Failure, UserModel>> login({
@@ -65,11 +70,18 @@ class AuthRepositoryImpl implements AuthRepository {
       final result = await _authService.signUpWithEmail(
         email: email,
         password: password,
-        metadata: {'name': name, 'phone': phone, 'role': role},
+        metadata: {
+          'name': name,
+          'phone': phone,
+          'role': role,
+          'approvalStatus':
+              'pending', // Set approval status for all users requiring approval
+        },
       );
 
+      final userId = result.user?.id ?? '';
       final user = UserModel(
-        id: result.user?.id ?? '',
+        id: userId,
         fullName: name,
         email: email,
         phone: phone,
@@ -77,6 +89,17 @@ class AuthRepositoryImpl implements AuthRepository {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
+
+      // Create approval request for admin/doctor/clinic_admin roles
+      if (role == 'admin' || role == 'doctor' || role == 'clinic_admin') {
+        await _approvalRepository.createApprovalRequest(
+          userId: userId,
+          email: email,
+          fullName: name,
+          role: role,
+          registrationType: 'email',
+        );
+      }
 
       return Right(user);
     } on AppException catch (e) {
@@ -304,4 +327,3 @@ class AuthRepositoryImpl implements AuthRepository {
     return null;
   }
 }
-

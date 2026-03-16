@@ -67,9 +67,39 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton(
       () => CheckDemoAccountExistsUseCase(sl<DemoAccountService>()),
     )
+    // ── Approval Feature ────────────────────────────────────
+    // Register approval feature BEFORE auth to allow auth to use it
+    ..registerLazySingleton<ApprovalRemoteDataSource>(
+      () => ApprovalRemoteDataSourceImpl(
+        supabaseService: sl(),
+        supabaseClient: sl(),
+      ),
+    )
+    ..registerLazySingleton<ApprovalRepository>(
+      () => ApprovalRepositoryImpl(remoteDataSource: sl()),
+    )
+    ..registerLazySingleton(
+      () => GetPendingApprovalsUseCase(sl()),
+    )
+    ..registerLazySingleton(
+      () => ApproveUserUseCase(sl()),
+    )
+    ..registerLazySingleton(
+      () => RejectUserUseCase(sl()),
+    )
+    ..registerFactory(
+      () => ApprovalBloc(
+        getPendingApprovalsUseCase: sl(),
+        approveUserUseCase: sl(),
+        rejectUserUseCase: sl(),
+      ),
+    )
     // ── Auth Feature ─────────────────────────────────────────
     ..registerLazySingleton<AuthRepository>(
-      () => AuthRepositoryImpl(authService: sl()),
+      () => AuthRepositoryImpl(
+        authService: sl(),
+        approvalRepository: sl(),
+      ),
     )
     ..registerLazySingleton(() => LoginUseCase(sl()))
     ..registerLazySingleton(() => RegisterUseCase(sl()))
@@ -112,33 +142,7 @@ Future<void> configureDependencies() async {
     )
     // ── Other BLoCs ──────────────────────────────────────────
     // ✅ Admin BLoC - محدد بشكل واضح
-    ..registerFactory(() => AdminBloc(sl<SupabaseService>()))
-    // ── Approval Feature ────────────────────────────────────
-    ..registerLazySingleton<ApprovalRemoteDataSource>(
-      () => ApprovalRemoteDataSourceImpl(
-        supabaseService: sl(),
-        supabaseClient: sl(),
-      ),
-    )
-    ..registerLazySingleton<ApprovalRepository>(
-      () => ApprovalRepositoryImpl(remoteDataSource: sl()),
-    )
-    ..registerLazySingleton(
-      () => GetPendingApprovalsUseCase(sl()),
-    )
-    ..registerLazySingleton(
-      () => ApproveUserUseCase(sl()),
-    )
-    ..registerLazySingleton(
-      () => RejectUserUseCase(sl()),
-    )
-    ..registerFactory(
-      () => ApprovalBloc(
-        getPendingApprovalsUseCase: sl(),
-        approveUserUseCase: sl(),
-        rejectUserUseCase: sl(),
-      ),
-    );
+    ..registerFactory(() => AdminBloc(sl<SupabaseService>()));
 }
 
 /// Alias for [configureDependencies] for backward compatibility.
