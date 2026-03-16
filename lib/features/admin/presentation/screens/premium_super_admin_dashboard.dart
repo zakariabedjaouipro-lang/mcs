@@ -183,30 +183,49 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      body: Row(
-        children: [
-          // Sidebar
-          _buildSidebar(context, isArabic),
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        // Swipe right to go back (RTL)
+        if (isArabic && details.primaryVelocity! < -500) {
+          if (mounted && Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
+        }
+        // Swipe left to go back (LTR)
+        else if (!isArabic && details.primaryVelocity! > 500) {
+          if (mounted && Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
+        }
+      },
+      child: Scaffold(
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final showFullSidebar = constraints.maxWidth > 800;
 
-          // Main Content
-          Expanded(
-            child: Column(
+            return Row(
               children: [
-                // Top App Bar
-                _buildTopAppBar(context, isArabic, isDark),
+                // Sidebar - Hidden on very small screens
+                if (showFullSidebar) _buildSidebar(context, isArabic),
 
-                // Content Area
+                // Main Content
                 Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: _buildMainContent(context, isArabic),
+                  child: Column(
+                    children: [
+                      // Top App Bar
+                      _buildTopAppBar(context, isArabic, isDark),
+
+                      // Content Area
+                      Expanded(
+                        child: _buildMainContent(context, isArabic),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -511,11 +530,13 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
   ) {
     final screenWidth = MediaQuery.of(context).size.width;
     final showSearch = screenWidth > 768; // Hide search on small screens
+    final padding = screenWidth < 600 ? 12.0 : 16.0;
+    final horPadding = screenWidth < 600 ? 12.0 : 24.0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: 16,
+      padding: EdgeInsets.symmetric(
+        horizontal: horPadding,
+        vertical: padding,
       ),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -527,41 +548,61 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
           children: [
+            // Back Button with Swipe Hint
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Tooltip(
+                message: Localizations.localeOf(context).languageCode == 'ar'
+                    ? 'اسحب للعودة'
+                    : 'Swipe to go back',
+                child: InkWell(
+                  onTap: () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Icon(Icons.arrow_back, size: 20),
+                ),
+              ),
+            ),
+
             // Search Bar (hidden on small screens)
-            if (showSearch) ...[
-              SizedBox(
-                width: 300,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    onChanged: (_) {},
-                    decoration: InputDecoration(
-                      hintText: isArabic ? 'ابحث...' : 'Search...',
-                      prefixIcon: const Icon(Icons.search, size: 20),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      isDense: true,
+            if (showSearch)
+              Container(
+                constraints: const BoxConstraints(maxWidth: 300),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
+                  ],
+                ),
+                child: TextField(
+                  onChanged: (_) {},
+                  decoration: InputDecoration(
+                    hintText: isArabic ? 'ابحث...' : 'Search...',
+                    prefixIcon: const Icon(Icons.search, size: 20),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    isDense: true,
                   ),
                 ),
               ),
-              const SizedBox(width: 24),
-            ],
 
             // Notifications
             _buildIconButton(
@@ -580,8 +621,6 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
               },
             ),
 
-            const SizedBox(width: 16),
-
             // Theme Toggle
             _buildIconButton(
               icon: isDark ? Icons.light_mode : Icons.dark_mode,
@@ -589,8 +628,6 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                 context.read<ThemeBloc>().add(const ToggleThemeEvent());
               },
             ),
-
-            const SizedBox(width: 16),
 
             // Language Toggle
             _buildIconButton(
@@ -601,8 +638,6 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
                     .add(const ToggleLanguageEvent());
               },
             ),
-
-            const SizedBox(width: 16),
 
             // User Profile
             _buildUserProfile(context, isArabic),
@@ -762,59 +797,80 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
   }
 
   Widget _buildDashboardContent(BuildContext context, bool isArabic) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Welcome Message
-        Text(
-          isArabic ? 'مرحباً بعودتك!' : 'Welcome Back!',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final padding = screenWidth < 600 ? 16.0 : 20.0;
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Welcome Message
+            Text(
+              isArabic ? 'مرحباً بعودتك!' : 'Welcome Back!',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              isArabic
+                  ? 'إليك ملخص نشاط النظام اليوم'
+                  : "Here's a summary of today's activities",
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey,
+                  ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Statistics Cards
+            _buildStatisticsGrid(context, isArabic),
+
+            const SizedBox(height: 32),
+
+            // Recent Activity
+            Text(
+              isArabic ? 'النشاط الأخير' : 'Recent Activity',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            _buildActivityPanel(context, isArabic),
+
+            const SizedBox(height: 32),
+
+            // Quick Actions
+            Text(
+              isArabic ? 'الإجراءات السريعة' : 'Quick Actions',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            _buildQuickActionsGrid(context, isArabic),
+            const SizedBox(height: 20),
+          ],
         ),
-        const SizedBox(height: 4),
-        Text(
-          isArabic
-              ? 'إليك ملخص نشاط النظام اليوم'
-              : "Here's a summary of today's activities",
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey,
-              ),
-        ),
-
-        const SizedBox(height: 24),
-
-        // Statistics Cards
-        _buildStatisticsGrid(context, isArabic),
-
-        const SizedBox(height: 32),
-
-        // Recent Activity
-        Text(
-          isArabic ? 'النشاط الأخير' : 'Recent Activity',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 12),
-        _buildActivityPanel(context, isArabic),
-
-        const SizedBox(height: 32),
-
-        // Quick Actions
-        Text(
-          isArabic ? 'الإجراءات السريعة' : 'Quick Actions',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 12),
-        _buildQuickActionsGrid(context, isArabic),
-      ],
+      ),
     );
   }
 
   Widget _buildStatisticsGrid(BuildContext context, bool isArabic) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount;
+
+    // Responsive grid columns based on screen width
+    if (screenWidth < 600) {
+      crossAxisCount = 1;
+    } else if (screenWidth < 1200) {
+      crossAxisCount = 2;
+    } else {
+      crossAxisCount = 4;
+    }
+
     final stats = [
       StatisticCard(
         title: isArabic ? 'العيادات' : 'Clinics',
@@ -847,7 +903,7 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
     ];
 
     return GridView.count(
-      crossAxisCount: 4,
+      crossAxisCount: crossAxisCount,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 16,
@@ -1048,36 +1104,89 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
   }
 
   Widget _buildQuickActionsGrid(BuildContext context, bool isArabic) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount;
+    double childAspectRatio;
+
+    // Responsive grid columns based on screen width
+    if (screenWidth < 600) {
+      crossAxisCount = 1;
+      childAspectRatio = 1.5;
+    } else if (screenWidth < 1000) {
+      crossAxisCount = 2;
+      childAspectRatio = 1.3;
+    } else {
+      crossAxisCount = 4;
+      childAspectRatio = 1.0;
+    }
+
     return GridView.count(
-      crossAxisCount: 4,
+      crossAxisCount: crossAxisCount,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
+      childAspectRatio: childAspectRatio,
       children: [
         _buildQuickActionButton(
           context: context,
           icon: Icons.person_add,
           label: isArabic ? 'مريض جديد' : 'New Patient',
-          onTap: () {},
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  isArabic ? 'إضافة مريض جديد' : 'Adding new patient',
+                ),
+                backgroundColor: Colors.blue,
+              ),
+            );
+          },
         ),
         _buildQuickActionButton(
           context: context,
           icon: Icons.calendar_today,
           label: isArabic ? 'موعد جديد' : 'New Appointment',
-          onTap: () {},
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  isArabic ? 'حجز موعد جديد' : 'Booking new appointment',
+                ),
+                backgroundColor: Colors.purple,
+              ),
+            );
+          },
         ),
         _buildQuickActionButton(
           context: context,
           icon: Icons.note_add,
           label: isArabic ? 'تقرير جديد' : 'New Report',
-          onTap: () {},
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  isArabic ? 'إنشاء تقرير جديد' : 'Creating new report',
+                ),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          },
         ),
         _buildQuickActionButton(
           context: context,
           icon: Icons.local_hospital,
           label: isArabic ? 'عيادة جديدة' : 'New Clinic',
-          onTap: () {},
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  isArabic ? 'تسجيل عيادة جديدة' : 'Registering new clinic',
+                ),
+                backgroundColor: Colors.teal,
+              ),
+            );
+          },
         ),
       ],
     );
@@ -1091,8 +1200,18 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            PremiumColors.primaryBlue.withValues(alpha: 0.08),
+            PremiumColors.primaryBlue.withValues(alpha: 0.04),
+          ],
+        ),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: PremiumColors.primaryBlue.withValues(alpha: 0.15),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withValues(alpha: 0.1),
@@ -1106,24 +1225,36 @@ class _PremiumSuperAdminDashboardState extends State<PremiumSuperAdminDashboard>
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(12),
+          splashColor: PremiumColors.primaryBlue.withValues(alpha: 0.1),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 32,
-                color: PremiumColors.primaryBlue,
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: PremiumColors.primaryBlue.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  size: 28,
+                  color: PremiumColors.primaryBlue,
+                ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Expanded(
-                child: Text(
-                  label,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                  textAlign: TextAlign.center,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    label,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: PremiumColors.primaryBlue,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ],
