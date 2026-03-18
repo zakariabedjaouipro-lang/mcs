@@ -72,16 +72,6 @@ CREATE POLICY "Doctors can view their prescriptions"
   ON prescriptions FOR SELECT
   USING (doctor_id IN (SELECT id FROM doctors WHERE user_id = auth.uid()));
 
--- Policy: Clinic staff can view clinic prescriptions
-CREATE POLICY "Clinic staff can view clinic prescriptions"
-  ON prescriptions FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
 -- Policy: Doctors can create prescriptions
 CREATE POLICY "Doctors can create prescriptions"
   ON prescriptions FOR INSERT

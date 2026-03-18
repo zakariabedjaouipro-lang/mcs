@@ -114,16 +114,6 @@ CREATE POLICY "Doctors can view their appointments"
     )
   );
 
--- Policy: Clinic staff can view clinic appointments
-CREATE POLICY "Clinic staff can view clinic appointments"
-  ON appointments FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
 -- Policy: Patients can create appointments
 CREATE POLICY "Patients can create appointments"
   ON appointments FOR INSERT

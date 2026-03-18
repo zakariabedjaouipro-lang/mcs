@@ -99,47 +99,10 @@ CREATE POLICY "Patients can view their own profile"
   ON patients FOR SELECT
   USING (user_id = auth.uid());
 
--- Policy: Doctors can view patients they have appointments with
-CREATE POLICY "Doctors can view their patients"
-  ON patients FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM appointments
-      WHERE appointments.patient_id = patients.id
-      AND appointments.doctor_id IN (
-        SELECT id FROM doctors WHERE user_id = auth.uid()
-      )
-    )
-  );
-
--- Policy: Clinic staff can view patients in their clinic
-CREATE POLICY "Clinic staff can view clinic patients"
-  ON patients FOR SELECT
-  USING (
-    preferred_clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
 -- Policy: Patients can update their own profile
 CREATE POLICY "Patients can update their own profile"
   ON patients FOR UPDATE
   USING (user_id = auth.uid());
-
--- Policy: Doctors can update patient medical information
-CREATE POLICY "Doctors can update patient medical info"
-  ON patients FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM appointments
-      WHERE appointments.patient_id = patients.id
-      AND appointments.doctor_id IN (
-        SELECT id FROM doctors WHERE user_id = auth.uid()
-      )
-      AND appointments.status = 'completed'
-    )
-  );
 
 -- Policy: Super admins can manage all patients
 CREATE POLICY "Super admins can manage all patients"

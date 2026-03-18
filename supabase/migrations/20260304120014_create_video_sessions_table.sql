@@ -102,16 +102,6 @@ CREATE POLICY "Doctors can view their video sessions"
     )
   );
 
--- Policy: Clinic staff can view clinic video sessions
-CREATE POLICY "Clinic staff can view clinic video sessions"
-  ON video_sessions FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
 -- Policy: Authorized users can create video sessions
 CREATE POLICY "Authorized users can create video sessions"
   ON video_sessions FOR INSERT

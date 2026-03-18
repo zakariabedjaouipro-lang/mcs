@@ -92,36 +92,6 @@ CREATE INDEX idx_inventory_created_at ON inventory(created_at DESC);
 -- Enable RLS on inventory table
 ALTER TABLE inventory ENABLE ROW LEVEL SECURITY;
 
--- Policy: Clinic staff can view inventory in their clinic
-CREATE POLICY "Clinic staff can view clinic inventory"
-  ON inventory FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Clinic staff can create inventory items
-CREATE POLICY "Clinic staff can create inventory items"
-  ON inventory FOR INSERT
-  WITH CHECK (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Clinic staff can update inventory items
-CREATE POLICY "Clinic staff can update inventory items"
-  ON inventory FOR UPDATE
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
 -- Policy: Super admins can manage all inventory
 CREATE POLICY "Super admins can manage all inventory"
   ON inventory FOR ALL
@@ -307,16 +277,6 @@ ALTER TABLE reports ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their own reports"
   ON reports FOR SELECT
   USING (generated_by = auth.uid());
-
--- Policy: Clinic staff can view clinic reports
-CREATE POLICY "Clinic staff can view clinic reports"
-  ON reports FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
 
 -- Policy: Authorized users can create reports
 CREATE POLICY "Authorized users can create reports"

@@ -106,25 +106,6 @@ CREATE INDEX idx_inventory_transactions_approved_by ON inventory_transactions(ap
 -- Enable RLS on inventory_transactions table
 ALTER TABLE inventory_transactions ENABLE ROW LEVEL SECURITY;
 
--- Policy: Clinic staff can view clinic inventory transactions
-CREATE POLICY "Clinic staff can view clinic inventory transactions"
-  ON inventory_transactions FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Clinic staff can create inventory transactions
-CREATE POLICY "Clinic staff can create inventory transactions"
-  ON inventory_transactions FOR INSERT
-  WITH CHECK (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
-      AND role IN ('admin', 'manager', 'technician', 'nurse')
-    )
-  );
-
 -- Policy: Super admins can manage all inventory transactions
 CREATE POLICY "Super admins can manage all inventory transactions"
   ON inventory_transactions FOR ALL

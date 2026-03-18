@@ -103,32 +103,10 @@ CREATE POLICY "Doctors can view their own profile"
   ON doctors FOR SELECT
   USING (user_id = auth.uid());
 
--- Policy: Clinic staff can view doctors in their clinic
-CREATE POLICY "Clinic staff can view clinic doctors"
-  ON doctors FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
 -- Policy: Doctors can update their own profile
 CREATE POLICY "Doctors can update their own profile"
   ON doctors FOR UPDATE
   USING (user_id = auth.uid());
-
--- Policy: Clinic admins can update doctors in their clinic
-CREATE POLICY "Clinic admins can update clinic doctors"
-  ON doctors FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE clinic_id = doctors.clinic_id
-      AND user_id = auth.uid()
-      AND role IN ('admin', 'manager')
-    )
-  );
 
 -- Policy: Super admins can manage all doctors
 CREATE POLICY "Super admins can manage all doctors"

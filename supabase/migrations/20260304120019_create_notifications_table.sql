@@ -247,16 +247,6 @@ CREATE POLICY "Doctors can view their assessments"
   ON autism_assessments FOR SELECT
   USING (doctor_id IN (SELECT id FROM doctors WHERE user_id = auth.uid()));
 
--- Policy: Clinic staff can view clinic assessments
-CREATE POLICY "Clinic staff can view clinic assessments"
-  ON autism_assessments FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
 -- Policy: Doctors can create assessments
 CREATE POLICY "Doctors can create assessments"
   ON autism_assessments FOR INSERT

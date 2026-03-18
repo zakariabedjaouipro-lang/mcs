@@ -111,18 +111,6 @@ CREATE POLICY "Doctors can view prescription items for their patients"
     )
   );
 
--- Policy: Clinic staff can view clinic prescription items
-CREATE POLICY "Clinic staff can view clinic prescription items"
-  ON prescription_items FOR SELECT
-  USING (
-    prescription_id IN (
-      SELECT id FROM prescriptions
-      WHERE clinic_id IN (
-        SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
-      )
-    )
-  );
-
 -- Policy: Doctors can create prescription items
 CREATE POLICY "Doctors can create prescription items"
   ON prescription_items FOR INSERT

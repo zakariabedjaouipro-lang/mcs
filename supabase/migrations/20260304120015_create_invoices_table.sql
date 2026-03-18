@@ -105,36 +105,6 @@ CREATE POLICY "Doctors can view their appointment invoices"
     )
   );
 
--- Policy: Clinic staff can view clinic invoices
-CREATE POLICY "Clinic staff can view clinic invoices"
-  ON invoices FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Clinic staff can create invoices
-CREATE POLICY "Clinic staff can create invoices"
-  ON invoices FOR INSERT
-  WITH CHECK (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Clinic staff can update invoices
-CREATE POLICY "Clinic staff can update invoices"
-  ON invoices FOR UPDATE
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
 -- Policy: Super admins can manage all invoices
 CREATE POLICY "Super admins can manage all invoices"
   ON invoices FOR ALL

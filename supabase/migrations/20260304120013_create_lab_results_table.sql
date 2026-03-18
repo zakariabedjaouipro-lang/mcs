@@ -96,27 +96,6 @@ CREATE POLICY "Doctors can view their patients lab results"
     )
   );
 
--- Policy: Clinic staff can view clinic lab results
-CREATE POLICY "Clinic staff can view clinic lab results"
-  ON lab_results FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Lab technicians can create and update lab results
-CREATE POLICY "Lab technicians can manage lab results"
-  ON lab_results FOR ALL
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-      AND role IN ('lab_technician', 'doctor', 'admin', 'manager')
-    )
-  );
-
 -- Policy: Super admins can manage all lab results
 CREATE POLICY "Super admins can manage all lab results"
   ON lab_results FOR ALL
@@ -239,24 +218,14 @@ CREATE POLICY "Doctors can view their patients vital signs"
     )
   );
 
--- Policy: Clinic staff can view clinic vital signs
-CREATE POLICY "Clinic staff can view clinic vital signs"
-  ON vital_signs FOR SELECT
+-- Policy: Super admins can manage all vital signs
+CREATE POLICY "Super admins can manage all vital signs"
+  ON vital_signs FOR ALL
   USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Medical staff can create vital signs
-CREATE POLICY "Medical staff can create vital signs"
-  ON vital_signs FOR INSERT
-  WITH CHECK (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-      AND role IN ('doctor', 'nurse', 'admin', 'manager')
+    EXISTS (
+      SELECT 1 FROM users
+      WHERE id = auth.uid()
+      AND role = 'super_admin'
     )
   );
 

@@ -97,41 +97,10 @@ CREATE POLICY "Employees can view their own profile"
   ON employees FOR SELECT
   USING (user_id = auth.uid());
 
--- Policy: Clinic staff can view employees in their clinic
-CREATE POLICY "Clinic staff can view clinic employees"
-  ON employees FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff
-      WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Managers can view their direct reports
-CREATE POLICY "Managers can view their direct reports"
-  ON employees FOR SELECT
-  USING (
-    manager_id IN (
-      SELECT id FROM employees WHERE user_id = auth.uid()
-    )
-  );
-
 -- Policy: Employees can update their own profile
 CREATE POLICY "Employees can update their own profile"
   ON employees FOR UPDATE
   USING (user_id = auth.uid());
-
--- Policy: Clinic admins can update employees in their clinic
-CREATE POLICY "Clinic admins can update clinic employees"
-  ON employees FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE clinic_id = employees.clinic_id
-      AND user_id = auth.uid()
-      AND role IN ('admin', 'manager', 'hr')
-    )
-  );
 
 -- Policy: Super admins can manage all employees
 CREATE POLICY "Super admins can manage all employees"

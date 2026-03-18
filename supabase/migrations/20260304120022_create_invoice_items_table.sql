@@ -113,44 +113,6 @@ CREATE POLICY "Patients can view their own invoice items"
     )
   );
 
--- Policy: Clinic staff can view clinic invoice items
-CREATE POLICY "Clinic staff can view clinic invoice items"
-  ON invoice_items FOR SELECT
-  USING (
-    invoice_id IN (
-      SELECT id FROM invoices
-      WHERE clinic_id IN (
-        SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
-      )
-    )
-  );
-
--- Policy: Clinic staff can create invoice items
-CREATE POLICY "Clinic staff can create invoice items"
-  ON invoice_items FOR INSERT
-  WITH CHECK (
-    invoice_id IN (
-      SELECT id FROM invoices
-      WHERE clinic_id IN (
-        SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
-        AND role IN ('admin', 'manager', 'receptionist', 'technician')
-      )
-    )
-  );
-
--- Policy: Clinic staff can update invoice items
-CREATE POLICY "Clinic staff can update invoice items"
-  ON invoice_items FOR UPDATE
-  USING (
-    invoice_id IN (
-      SELECT id FROM invoices
-      WHERE clinic_id IN (
-        SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
-        AND role IN ('admin', 'manager', 'receptionist', 'technician')
-      )
-    )
-  );
-
 -- Policy: Super admins can manage all invoice items
 CREATE POLICY "Super admins can manage all invoice items"
   ON invoice_items FOR ALL

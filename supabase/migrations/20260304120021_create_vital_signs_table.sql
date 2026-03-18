@@ -143,37 +143,6 @@ CREATE POLICY "Doctors can view vital signs for their patients"
     )
   );
 
--- Policy: Clinic staff can view clinic vital signs
-CREATE POLICY "Clinic staff can view clinic vital signs"
-  ON vital_signs FOR SELECT
-  USING (
-    clinic_id IN (
-      SELECT clinic_id FROM clinic_staff WHERE user_id = auth.uid()
-    )
-  );
-
--- Policy: Doctors and nurses can create vital signs
-CREATE POLICY "Doctors and nurses can create vital signs"
-  ON vital_signs FOR INSERT
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE user_id = auth.uid()
-      AND role IN ('doctor', 'nurse')
-    )
-  );
-
--- Policy: Doctors and nurses can update vital signs
-CREATE POLICY "Doctors and nurses can update vital signs"
-  ON vital_signs FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM clinic_staff
-      WHERE user_id = auth.uid()
-      AND role IN ('doctor', 'nurse')
-    )
-  );
-
 -- Policy: Super admins can manage all vital signs
 CREATE POLICY "Super admins can manage all vital signs"
   ON vital_signs FOR ALL
