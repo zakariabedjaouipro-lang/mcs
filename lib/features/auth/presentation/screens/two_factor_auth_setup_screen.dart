@@ -4,16 +4,15 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/extensions/context_extension.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_bloc.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_event.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_state.dart';
 
 class TwoFactorAuthSetupScreen extends StatefulWidget {
   const TwoFactorAuthSetupScreen({
-    Key? key,
+    super.key,
     required this.userId,
-  }) : super(key: key);
+  });
 
   final String userId;
 
@@ -27,6 +26,8 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
   String? _secret;
   String? _qrCode;
   bool _setupComplete = false;
+
+  bool get _isArabic => Localizations.localeOf(context).languageCode == 'ar';
 
   @override
   void initState() {
@@ -46,18 +47,14 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
   void _verifyAndEnable2FA() {
     if (_codeController.text.isEmpty) {
       _showError(
-        context.isArabic
-            ? 'يرجى إدخال الرمز'
-            : 'Please enter the code',
+        _isArabic ? 'يرجى إدخال الرمز' : 'Please enter the code',
       );
       return;
     }
 
     if (_secret == null) {
       _showError(
-        context.isArabic
-            ? 'لم يتم إنشاء السر'
-            : 'Secret not generated',
+        _isArabic ? 'لم يتم إنشاء السر' : 'Secret not generated',
       );
       return;
     }
@@ -71,6 +68,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
   }
 
   void _showError(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -82,14 +80,34 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
   void _copySecret() {
     if (_secret != null) {
       // Simulate copy to clipboard
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            context.isArabic ? 'تم النسخ' : 'Copied',
+            _isArabic ? 'تم النسخ' : 'Copied',
           ),
         ),
       );
     }
+  }
+
+  void _handleSetupStarted(TwoFactorAuthSetupStarted state) {
+    setState(() {
+      _secret = state.secret;
+      _qrCode = state.qrCode;
+    });
+  }
+
+  void _handleEnabledSuccess(TwoFactorAuthEnabledSuccess state) {
+    setState(() => _setupComplete = true);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state.message),
+        backgroundColor: Colors.green,
+      ),
+    );
+    _showBackupCodesDialog(state.backupCodes);
   }
 
   @override
@@ -97,9 +115,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          context.isArabic
-              ? 'إعداد المصادقة الثنائية'
-              : '2FA Setup',
+          _isArabic ? 'إعداد المصادقة الثنائية' : '2FA Setup',
         ),
         centerTitle: true,
         elevation: 0,
@@ -107,19 +123,9 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
       body: BlocListener<AdvancedAuthBloc, AdvancedAuthState>(
         listener: (context, state) {
           if (state is TwoFactorAuthSetupStarted) {
-            setState(() {
-              _secret = state.secret;
-              _qrCode = state.qrCode;
-            });
+            _handleSetupStarted(state);
           } else if (state is TwoFactorAuthEnabledSuccess) {
-            setState(() => _setupComplete = true);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.green,
-              ),
-            );
-            _showBackupCodesDialog(state.backupCodes);
+            _handleEnabledSuccess(state);
           } else if (state is AdvancedAuthError) {
             _showError(state.message);
           }
@@ -138,7 +144,9 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
                   // Step 1: Scan QR Code
                   if (!_setupComplete) ...[
                     Text(
-                      context.isArabic ? 'الخطوة 1: مسح رمز QR' : 'Step 1: Scan QR Code',
+                      _isArabic
+                          ? 'الخطوة 1: مسح رمز QR'
+                          : 'Step 1: Scan QR Code',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 16),
@@ -162,9 +170,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
                                     ),
                                     const SizedBox(height: 12),
                                     Text(
-                                      context.isArabic
-                                          ? 'رمز QR'
-                                          : 'QR Code',
+                                      _isArabic ? 'رمز QR' : 'QR Code',
                                     ),
                                   ],
                                 ),
@@ -178,7 +184,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
 
                     // Or enter secret manually
                     Text(
-                      context.isArabic
+                      _isArabic
                           ? 'أو أدخل كود السر يدويًا'
                           : 'Or enter secret manually',
                       style: Theme.of(context).textTheme.bodySmall,
@@ -196,8 +202,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
                             Expanded(
                               child: SelectableText(
                                 _secret!,
-                                style:
-                                    const TextStyle(fontFamily: 'monospace'),
+                                style: const TextStyle(fontFamily: 'monospace'),
                               ),
                             ),
                             IconButton(
@@ -211,14 +216,14 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
 
                     // Step 2: Verify Code
                     Text(
-                      context.isArabic
+                      _isArabic
                           ? 'الخطوة 2: التحقق من الرمز'
                           : 'Step 2: Verify Code',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      context.isArabic
+                      _isArabic
                           ? 'أدخل الرمز من تطبيق المصادقة'
                           : 'Enter code from authenticator app',
                       style: Theme.of(context).textTheme.bodySmall,
@@ -227,8 +232,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
                     TextField(
                       controller: _codeController,
                       decoration: InputDecoration(
-                        labelText:
-                            context.isArabic ? 'رمز المصادقة' : 'Auth Code',
+                        labelText: _isArabic ? 'رمز المصادقة' : 'Auth Code',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -250,7 +254,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
                             : _verifyAndEnable2FA,
                         child: state is AdvancedAuthLoading
                             ? const CircularProgressIndicator()
-                            : Text(context.isArabic ? 'تفعيل' : 'Enable 2FA'),
+                            : Text(_isArabic ? 'تفعيل' : 'Enable 2FA'),
                       ),
                     ),
                   ] else ...[
@@ -273,7 +277,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
                           ),
                           const SizedBox(height: 24),
                           Text(
-                            context.isArabic
+                            _isArabic
                                 ? 'تم تفعيل المصادقة الثنائية'
                                 : '2FA Enabled Successfully',
                             style: Theme.of(context).textTheme.headlineSmall,
@@ -284,7 +288,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
                     ),
                   ],
                 ],
-              );
+              ),
             );
           },
         ),
@@ -293,18 +297,18 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
   }
 
   void _showBackupCodesDialog(List<String> codes) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          context.isArabic ? 'أكواد الاحتياطي' : 'Backup Codes',
+          _isArabic ? 'أكواد الاحتياطي' : 'Backup Codes',
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              context.isArabic
+              _isArabic
                   ? 'احفظ هذه الأكواد في مكان آمن'
                   : 'Save these codes in a safe place',
             ),
@@ -318,9 +322,7 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: codes
-                      .map((code) => Text(code))
-                      .toList(),
+                  children: codes.map((code) => Text(code)).toList(),
                 ),
               ),
             ),
@@ -328,8 +330,8 @@ class _TwoFactorAuthSetupScreenState extends State<TwoFactorAuthSetupScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.isArabic ? 'موافق' : 'OK'),
+            onPressed: Navigator.of(context).pop,
+            child: Text(_isArabic ? 'موافق' : 'OK'),
           ),
         ],
       ),

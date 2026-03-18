@@ -4,15 +4,13 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/extensions/context_extension.dart';
 import 'package:mcs/core/models/role_model.dart';
-import 'package:mcs/core/theme/app_theme.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_bloc.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_event.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_state.dart';
 
 class UnifiedRegistrationScreen extends StatefulWidget {
-  const UnifiedRegistrationScreen({Key? key}) : super(key: key);
+  const UnifiedRegistrationScreen({super.key});
 
   @override
   State<UnifiedRegistrationScreen> createState() =>
@@ -30,10 +28,15 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
   bool _showPassword = false;
   bool _agreeToTerms = false;
 
+  bool get _isArabic => Localizations.localeOf(context).languageCode == 'ar';
+
   @override
   void initState() {
     super.initState();
-    // Load available roles
+    _loadRoles();
+  }
+
+  void _loadRoles() {
     context
         .read<AdvancedAuthBloc>()
         .add(const LoadAvailableRolesRequested(publicOnly: true));
@@ -51,12 +54,16 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
   void _submitRegistration() {
     if (_formKey.currentState!.validate()) {
       if (_selectedRole == null) {
-        _showError('يرجى اختيار دور');
+        _showError(_isArabic ? 'يرجى اختيار دور' : 'Please select a role');
         return;
       }
 
       if (!_agreeToTerms) {
-        _showError('يرجى الموافقة على الشروط والأحكام');
+        _showError(
+          _isArabic
+              ? 'يرجى الموافقة على الشروط والأحكام'
+              : 'Please agree to terms and conditions',
+        );
         return;
       }
 
@@ -66,13 +73,16 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
               password: _passwordController.text,
               fullName: _fullNameController.text.trim(),
               roleId: _selectedRole!.id,
-              phone: _phoneController.text.trim(),
+              phone: _phoneController.text.trim().isEmpty
+                  ? null
+                  : _phoneController.text.trim(),
             ),
           );
     }
   }
 
   void _showError(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -81,41 +91,52 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
     );
   }
 
+  void _handleRegistrationSuccess(
+    BuildContext context,
+    RoleBasedRegistrationSuccess state,
+  ) {
+    if (_selectedRole != null && _selectedRole!.requiresApproval) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) Navigator.pop(context);
+      });
+    } else if (_selectedRole != null &&
+        _selectedRole!.requiresEmailVerification) {
+      Navigator.pushNamed(
+        context,
+        '/email-verification',
+        arguments: state.userProfile.id,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) Navigator.pop(context);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.isArabic ? 'تسجيل جديد' : 'Sign Up'),
+        title: Text(_isArabic ? 'تسجيل جديد' : 'Sign Up'),
         centerTitle: true,
         elevation: 0,
       ),
       body: BlocListener<AdvancedAuthBloc, AdvancedAuthState>(
         listener: (context, state) {
           if (state is RoleBasedRegistrationSuccess) {
-            if (_selectedRole!.requiresApproval) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.orange,
-                ),
-              );
-              Future.delayed(const Duration(seconds: 2), () {
-                if (mounted) Navigator.pop(context);
-              });
-            } else if (_selectedRole!.requiresEmailVerification) {
-              Navigator.pushNamed(context, '/email-verification',
-                  arguments: state.userProfile.id);
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.green,
-                ),
-              );
-              Future.delayed(const Duration(seconds: 2), () {
-                if (mounted) Navigator.pop(context);
-              });
-            }
+            _handleRegistrationSuccess(context, state);
           } else if (state is RoleBasedRegistrationFailure) {
             _showError(state.message);
           }
@@ -136,28 +157,34 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                     children: [
                       // Role Selection
                       Text(
-                        context.isArabic ? 'اختر الدور' : 'Select Role',
+                        _isArabic ? 'اختر الدور' : 'Select Role',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 12),
                       DropdownButtonFormField<RoleModel>(
                         value: _selectedRole,
                         items: state.roles
-                            .map((role) => DropdownMenuItem(
-                                  value: role,
-                                  child: Text(context.isArabic
+                            .map(
+                              (role) => DropdownMenuItem(
+                                value: role,
+                                child: Text(
+                                  _isArabic
                                       ? role.displayNameAr
-                                      : role.displayNameEn),
-                                ))
+                                      : role.displayNameEn,
+                                ),
+                              ),
+                            )
                             .toList(),
                         onChanged: (role) {
                           setState(() => _selectedRole = role);
-                          context
-                              .read<AdvancedAuthBloc>()
-                              .add(RoleSelected(role!));
+                          if (role != null) {
+                            context
+                                .read<AdvancedAuthBloc>()
+                                .add(RoleSelected(role));
+                          }
                         },
                         decoration: InputDecoration(
-                          labelText: context.isArabic ? 'الدور' : 'Role',
+                          labelText: _isArabic ? 'الدور' : 'Role',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -165,7 +192,7 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                         ),
                         validator: (value) {
                           if (value == null) {
-                            return context.isArabic
+                            return _isArabic
                                 ? 'يرجى اختيار دور'
                                 : 'Please select a role';
                           }
@@ -178,8 +205,7 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                       TextFormField(
                         controller: _fullNameController,
                         decoration: InputDecoration(
-                          labelText:
-                              context.isArabic ? 'الاسم الكامل' : 'Full Name',
+                          labelText: _isArabic ? 'الاسم الكامل' : 'Full Name',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -187,7 +213,7 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return context.isArabic
+                            return _isArabic
                                 ? 'يرجى إدخال الاسم الكامل'
                                 : 'Please enter full name';
                           }
@@ -201,8 +227,7 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          labelText:
-                              context.isArabic ? 'البريد الإلكتروني' : 'Email',
+                          labelText: _isArabic ? 'البريد الإلكتروني' : 'Email',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -210,12 +235,12 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return context.isArabic
+                            return _isArabic
                                 ? 'يرجى إدخال البريد الإلكتروني'
                                 : 'Please enter email';
                           }
                           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                            return context.isArabic
+                            return _isArabic
                                 ? 'البريد الإلكتروني غير صحيح'
                                 : 'Invalid email';
                           }
@@ -229,7 +254,7 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
-                          labelText: context.isArabic
+                          labelText: _isArabic
                               ? 'رقم الهاتف (اختياري)'
                               : 'Phone (Optional)',
                           border: OutlineInputBorder(
@@ -245,28 +270,29 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                         controller: _passwordController,
                         obscureText: !_showPassword,
                         decoration: InputDecoration(
-                          labelText:
-                              context.isArabic ? 'كلمة المرور' : 'Password',
+                          labelText: _isArabic ? 'كلمة المرور' : 'Password',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           prefixIcon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
-                            icon: Icon(_showPassword
-                                ? Icons.visibility_off
-                                : Icons.visibility),
+                            icon: Icon(
+                              _showPassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
                             onPressed: () =>
                                 setState(() => _showPassword = !_showPassword),
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return context.isArabic
+                            return _isArabic
                                 ? 'يرجى إدخال كلمة المرور'
                                 : 'Please enter password';
                           }
                           if (value.length < 8) {
-                            return context.isArabic
+                            return _isArabic
                                 ? 'كلمة المرور يجب أن تكون 8 أحرف على الأقل'
                                 : 'Password must be at least 8 characters';
                           }
@@ -288,7 +314,7 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                               onTap: () => setState(
                                   () => _agreeToTerms = !_agreeToTerms),
                               child: Text(
-                                context.isArabic
+                                _isArabic
                                     ? 'أوافق على الشروط والأحكام'
                                     : 'I agree to Terms and Conditions',
                               ),
@@ -308,35 +334,34 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                               : _submitRegistration,
                           child: state is AdvancedAuthLoading
                               ? const CircularProgressIndicator()
-                              : Text(context.isArabic ? 'تسجيل' : 'Sign Up'),
+                              : Text(_isArabic ? 'تسجيل' : 'Sign Up'),
                         ),
                       ),
                       const SizedBox(height: 16),
 
                       // Login Link
                       Center(
-                        child: RichText(
-                          text: TextSpan(
-                            text: context.isArabic
-                                ? 'لديك حساب بالفعل؟ '
-                                : 'Already have account? ',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            children: [
-                              TextSpan(
-                                text: context.isArabic
-                                    ? 'تسجيل الدخول'
-                                    : 'Sign In',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => Navigator.pop(context),
-                              ),
-                            ],
+                        child: GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: RichText(
+                            text: TextSpan(
+                              text: _isArabic
+                                  ? 'لديك حساب بالفعل؟ '
+                                  : 'Already have account? ',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              children: [
+                                TextSpan(
+                                  text: _isArabic ? 'تسجيل الدخول' : 'Sign In',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -351,19 +376,17 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline,
-                        size: 48, color: Colors.red),
+                    const Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: Colors.red,
+                    ),
                     const SizedBox(height: 16),
                     Text(state.message),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () {
-                        context.read<AdvancedAuthBloc>().add(
-                              const LoadAvailableRolesRequested(
-                                  publicOnly: true),
-                            );
-                      },
-                      child: Text(context.isArabic ? 'إعادة محاولة' : 'Retry'),
+                      onPressed: _loadRoles,
+                      child: Text(_isArabic ? 'إعادة محاولة' : 'Retry'),
                     ),
                   ],
                 ),
@@ -376,31 +399,4 @@ class _UnifiedRegistrationScreenState extends State<UnifiedRegistrationScreen> {
       ),
     );
   }
-}
-
-class TapGestureRecognizer extends GestureRecognizer {
-  TapGestureRecognizer({
-    VoidCallback? onTap,
-  }) : _onTap = onTap;
-
-  final VoidCallback? _onTap;
-
-  @override
-  void addPointer(PointerDownEvent event) {
-    startTrackingPointer(event.pointer);
-  }
-
-  @override
-  void handleEvent(PointerEvent event) {
-    if (event is PointerUpEvent) {
-      stopTrackingPointer(event.pointer);
-      _onTap?.call();
-    }
-  }
-
-  @override
-  String get debugDescription => 'tap';
-
-  @override
-  void didStopTrackingLastPointer(int pointer) {}
 }

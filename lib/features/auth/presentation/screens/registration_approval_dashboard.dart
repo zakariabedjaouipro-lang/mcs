@@ -4,14 +4,13 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/extensions/context_extension.dart';
 import 'package:mcs/core/models/registration_request_model.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_bloc.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_event.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_state.dart';
 
 class RegistrationApprovalDashboard extends StatefulWidget {
-  const RegistrationApprovalDashboard({Key? key}) : super(key: key);
+  const RegistrationApprovalDashboard({super.key});
 
   @override
   State<RegistrationApprovalDashboard> createState() =>
@@ -20,6 +19,8 @@ class RegistrationApprovalDashboard extends StatefulWidget {
 
 class _RegistrationApprovalDashboardState
     extends State<RegistrationApprovalDashboard> {
+  bool get _isArabic => Localizations.localeOf(context).languageCode == 'ar';
+
   @override
   void initState() {
     super.initState();
@@ -30,21 +31,21 @@ class _RegistrationApprovalDashboardState
   }
 
   void _approveRequest(String requestId) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          context.isArabic ? 'تأكيد الموافقة' : 'Confirm Approval',
+          _isArabic ? 'تأكيد الموافقة' : 'Confirm Approval',
         ),
         content: Text(
-          context.isArabic
+          _isArabic
               ? 'هل تريد الموافقة على هذا الطلب؟'
               : 'Are you sure you want to approve this request?',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(context.isArabic ? 'إلغاء' : 'Cancel'),
+            child: Text(_isArabic ? 'إلغاء' : 'Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -56,7 +57,7 @@ class _RegistrationApprovalDashboardState
                     ),
                   );
             },
-            child: Text(context.isArabic ? 'موافق' : 'Approve'),
+            child: Text(_isArabic ? 'موافق' : 'Approve'),
           ),
         ],
       ),
@@ -66,48 +67,45 @@ class _RegistrationApprovalDashboardState
   void _rejectRequest(String requestId) {
     final reasonController = TextEditingController();
 
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          context.isArabic ? 'رفض الطلب' : 'Reject Request',
+          _isArabic ? 'رفض الطلب' : 'Reject Request',
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              context.isArabic
-                  ? 'أدخل سبب الرفض'
-                  : 'Enter rejection reason',
+              _isArabic ? 'أدخل سبب الرفض' : 'Enter rejection reason',
             ),
             const SizedBox(height: 12),
             TextField(
               controller: reasonController,
               decoration: InputDecoration(
-                labelText: context.isArabic ? 'السبب' : 'Reason',
+                labelText: _isArabic ? 'السبب' : 'Reason',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                minLines: 2,
-                maxLines: 4,
               ),
+              minLines: 2,
+              maxLines: 4,
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(context.isArabic ? 'إلغاء' : 'Cancel'),
+            child: Text(_isArabic ? 'إلغاء' : 'Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
               if (reasonController.text.isNotEmpty) {
+                Navigator.pop(context);
                 context.read<AdvancedAuthBloc>().add(
                       RegistrationRequestRejectionSubmitted(
                         requestId: requestId,
-                        approverUserId:
-                            'current_user_id', // Use actual user ID
+                        approverUserId: 'current_user_id', // Use actual user ID
                         rejectionReason: reasonController.text,
                       ),
                     );
@@ -116,7 +114,7 @@ class _RegistrationApprovalDashboardState
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
             ),
-            child: Text(context.isArabic ? 'رفض' : 'Reject'),
+            child: Text(_isArabic ? 'رفض' : 'Reject'),
           ),
         ],
       ),
@@ -128,9 +126,7 @@ class _RegistrationApprovalDashboardState
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          context.isArabic
-              ? 'طلبات التسجيل المعلقة'
-              : 'Pending Registrations',
+          _isArabic ? 'طلبات التسجيل المعلقة' : 'Pending Registrations',
         ),
         centerTitle: true,
         elevation: 0,
@@ -154,9 +150,7 @@ class _RegistrationApprovalDashboardState
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      context.isArabic
-                          ? 'لا توجد طلبات معلقة'
-                          : 'No pending requests',
+                      _isArabic ? 'لا توجد طلبات معلقة' : 'No pending requests',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
@@ -196,10 +190,10 @@ class _RegistrationApprovalDashboardState
                             const LoadPendingRegistrationRequestsRequested(),
                           );
                     },
-                    child: Text(context.isArabic ? 'إعادة محاولة' : 'Retry'),
+                    child: Text(_isArabic ? 'إعادة محاولة' : 'Retry'),
                   ),
                 ],
-              );
+              ),
             );
           }
 
@@ -246,7 +240,7 @@ class _RegistrationApprovalDashboardState
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.2),
+                    color: statusColor.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -293,12 +287,12 @@ class _RegistrationApprovalDashboardState
             Row(
               children: [
                 Text(
-                  context.isArabic ? 'مقدم في: ' : 'Submitted: ',
+                  _isArabic ? 'مقدم في: ' : 'Submitted: ',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 Expanded(
                   child: Text(
-                    _formatDate(request.createdAt),
+                    _formatDate(request.createdAt!),
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
@@ -317,10 +311,8 @@ class _RegistrationApprovalDashboardState
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  context.isArabic ? 'سبب الرفض: ' : 'Rejection Reason: ' +
-                      request.rejectionReason!,
-                  style:
-                      TextStyle(color: Colors.red[700], fontSize: 12),
+                  '${_isArabic ? 'سبب الرفض: ' : 'Rejection Reason: '}${request.rejectionReason}',
+                  style: TextStyle(color: Colors.red[700], fontSize: 12),
                 ),
               ),
             ],
@@ -335,7 +327,7 @@ class _RegistrationApprovalDashboardState
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.check),
                       label: Text(
-                        context.isArabic ? 'موافق' : 'Approve',
+                        _isArabic ? 'موافق' : 'Approve',
                       ),
                       onPressed: () => _approveRequest(request.id),
                     ),
@@ -345,7 +337,7 @@ class _RegistrationApprovalDashboardState
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.close),
                       label: Text(
-                        context.isArabic ? 'رفض' : 'Reject',
+                        _isArabic ? 'رفض' : 'Reject',
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
@@ -376,9 +368,10 @@ class _RegistrationApprovalDashboardState
     }
   }
 
-  String _getStatusText(BuildContext context, RegistrationRequestStatus status) {
+  String _getStatusText(
+      BuildContext context, RegistrationRequestStatus status) {
     final statusStr = status.toString().split('.').last;
-    if (context.isArabic) {
+    if (_isArabic) {
       switch (statusStr) {
         case 'pending':
           return 'معلق';

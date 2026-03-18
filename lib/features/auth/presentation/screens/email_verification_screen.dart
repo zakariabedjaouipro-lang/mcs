@@ -4,16 +4,15 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/extensions/context_extension.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_bloc.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_event.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_state.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({
-    Key? key,
+    super.key,
     required this.userId,
-  }) : super(key: key);
+  });
 
   final String userId;
 
@@ -25,6 +24,8 @@ class EmailVerificationScreen extends StatefulWidget {
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final _codeController = TextEditingController();
   bool _codeVerified = false;
+
+  bool get _isArabic => Localizations.localeOf(context).languageCode == 'ar';
 
   @override
   void initState() {
@@ -44,9 +45,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   void _verifyEmail() {
     if (_codeController.text.isEmpty) {
       _showError(
-        context.isArabic
-            ? 'يرجى إدخال رمز التحقق'
-            : 'Please enter verification code',
+        _isArabic ? 'يرجى إدخال رمز التحقق' : 'Please enter verification code',
       );
       return;
     }
@@ -66,6 +65,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   void _showError(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -78,13 +78,14 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.isArabic ? 'التحقق من البريد' : 'Email Verification'),
+        title: Text(_isArabic ? 'التحقق من البريد' : 'Email Verification'),
         centerTitle: true,
         elevation: 0,
       ),
       body: BlocListener<AdvancedAuthBloc, AdvancedAuthState>(
         listener: (context, state) {
           if (state is EmailVerificationLinkSent) {
+            if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
@@ -93,6 +94,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             );
           } else if (state is EmailVerifiedSuccess) {
             setState(() => _codeVerified = true);
+            if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
@@ -127,7 +129,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
+                        color: Colors.blue.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -142,7 +144,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   // Title
                   Center(
                     child: Text(
-                      context.isArabic
+                      _isArabic
                           ? 'تحقق من بريدك الإلكتروني'
                           : 'Verify Your Email',
                       style: Theme.of(context).textTheme.headlineSmall,
@@ -153,7 +155,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   // Description
                   Center(
                     child: Text(
-                      context.isArabic
+                      _isArabic
                           ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني'
                           : 'We sent a verification code to your email',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -168,9 +170,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   TextField(
                     controller: _codeController,
                     decoration: InputDecoration(
-                      labelText: context.isArabic
-                          ? 'رمز التحقق'
-                          : 'Verification Code',
+                      labelText: _isArabic ? 'رمز التحقق' : 'Verification Code',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -189,12 +189,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       width: double.infinity,
                       height: 54,
                       child: ElevatedButton(
-                        onPressed: state is AdvancedAuthLoading
-                            ? null
-                            : _verifyEmail,
+                        onPressed:
+                            state is AdvancedAuthLoading ? null : _verifyEmail,
                         child: state is AdvancedAuthLoading
                             ? const CircularProgressIndicator()
-                            : Text(context.isArabic ? 'تحقق' : 'Verify'),
+                            : Text(_isArabic ? 'تحقق' : 'Verify'),
                       ),
                     ),
 
@@ -206,7 +205,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                         onPressed: null,
                         icon: const Icon(Icons.check_circle),
                         label: Text(
-                          context.isArabic ? 'تم التحقق' : 'Verified',
+                          _isArabic ? 'تم التحقق' : 'Verified',
                         ),
                       ),
                     ),
@@ -217,18 +216,15 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   if (!_codeVerified)
                     Center(
                       child: TextButton(
-                        onPressed: state is AdvancedAuthLoading
-                            ? null
-                            : _resendCode,
+                        onPressed:
+                            state is AdvancedAuthLoading ? null : _resendCode,
                         child: Text(
-                          context.isArabic
-                              ? 'إعادة إرسال رمز'
-                              : 'Resend Code',
+                          _isArabic ? 'إعادة إرسال رمز' : 'Resend Code',
                         ),
                       ),
                     ),
                 ],
-              );
+              ),
             );
           },
         ),

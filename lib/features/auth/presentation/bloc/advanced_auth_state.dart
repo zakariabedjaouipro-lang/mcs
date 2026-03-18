@@ -8,6 +8,20 @@ import 'package:mcs/core/models/role_model.dart';
 import 'package:mcs/core/models/role_permissions_model.dart';
 import 'package:mcs/core/models/user_profile_model.dart';
 
+// أضف هذا الكلاس في advanced_auth_state.dart
+class LoginAttemptsCleared extends AdvancedAuthState {
+  const LoginAttemptsCleared({
+    required this.userId,
+    required this.message,
+  });
+
+  final String userId;
+  final String message;
+
+  @override
+  List<Object?> get props => [userId, message];
+}
+
 /// Base class for all advanced auth states
 abstract class AdvancedAuthState extends Equatable {
   const AdvancedAuthState();

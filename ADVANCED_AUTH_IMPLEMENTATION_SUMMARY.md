@@ -31,7 +31,7 @@ Successfully implemented a comprehensive, multi-layered authentication system fo
 ┌────────────────────────────────────────────────────────┴─┐
 │              BLoC State Management Layer                  │
 │  ┌──────────────────────────────────────────────────────┐│
-│  │  AdvancedAuthBloc (30+ Events, 16+ States)          ││
+│  │  AdvancedAuthBloc (20 Events, 24 States)          ││
 │  └──────────────────────────────────────────────────────┘│
 └────────────────────────────────────────────────────────┬─┘
                                                          │
@@ -104,30 +104,30 @@ Successfully implemented a comprehensive, multi-layered authentication system fo
    - Computed properties for verification checks
 
 ### Services (lib/core/services/)
-5. **role_based_authentication_service.dart** (300+ lines)
+5. **role_based_authentication_service.dart** (450+ lines)
    - 15+ methods for auth operations
-   - Comprehensive error handling
-   - Developer-friendly logging
+   - Comprehensive error handling with Arabic/English messages
+   - Developer-friendly logging in both languages
 
 ### Use Cases (lib/features/auth/domain/usecases/)
-6. **role_registration_usecases.dart** (400+ lines)
+6. **role_registration_usecases.dart** (295 lines)
    - 9 use cases implementing clean architecture
    - Proper error handling with Either<Failure, T>
    - Parameter classes for each use case
 
 ### BLoC (lib/features/auth/presentation/bloc/)
-7. **advanced_auth_event.dart** (300+ lines)
-   - 30+ event classes covering all auth workflows
+7. **advanced_auth_event.dart** (290 lines)
+   - 20 event classes covering all auth workflows
    - Proper Equatable implementation
    - Comprehensive props for comparison
 
-8. **advanced_auth_state.dart** (350+ lines)
-   - 16+ state classes for state management
+8. **advanced_auth_state.dart** (400+ lines)
+   - 24 state classes for state management
    - Typed properties for type safety
    - Error states with descriptive messages
 
-9. **advanced_auth_bloc.dart** (600+ lines)
-   - Event handlers for all 30 events
+9. **advanced_auth_bloc.dart** (780+ lines)
+   - Event handlers for all 20 events
    - State management logic
    - Error handling and logging
    - Helper methods for 2FA operations

@@ -4,16 +4,15 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mcs/core/extensions/context_extension.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_bloc.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_event.dart';
 import 'package:mcs/features/auth/presentation/bloc/advanced_auth_state.dart';
 
 class TwoFactorAuthVerifyScreen extends StatefulWidget {
   const TwoFactorAuthVerifyScreen({
-    Key? key,
+    super.key,
     required this.userId,
-  }) : super(key: key);
+  });
 
   final String userId;
 
@@ -28,6 +27,8 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
   int _attemptCount = 0;
   static const int _maxAttempts = 3;
 
+  bool get _isArabic => Localizations.localeOf(context).languageCode == 'ar';
+
   @override
   void dispose() {
     _codeController.dispose();
@@ -37,18 +38,14 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
   void _verify2FA() {
     if (_codeController.text.isEmpty) {
       _showError(
-        context.isArabic
-            ? 'يرجى إدخال الرمز'
-            : 'Please enter the code',
+        _isArabic ? 'يرجى إدخال الرمز' : 'Please enter the code',
       );
       return;
     }
 
     if (_attemptCount >= _maxAttempts) {
       _showError(
-        context.isArabic
-            ? 'تم عدد المحاولات القصوى'
-            : 'Maximum attempts exceeded',
+        _isArabic ? 'تم عدد المحاولات القصوى' : 'Maximum attempts exceeded',
       );
       Future.delayed(const Duration(seconds: 2), () {
         if (mounted) Navigator.pop(context);
@@ -65,6 +62,7 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
   }
 
   void _showError(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -73,14 +71,34 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
     );
   }
 
+  void _handleVerificationSuccess(
+    BuildContext context,
+    TwoFactorAuthVerificationSuccess state,
+  ) {
+    setState(() => _verified = true);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(state.message),
+        backgroundColor: Colors.green,
+      ),
+    );
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/home',
+          (route) => false,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          context.isArabic
-              ? 'التحقق من الهويتين'
-              : '2FA Verification',
+          _isArabic ? 'التحقق من الهوية' : '2FA Verification',
         ),
         centerTitle: true,
         elevation: 0,
@@ -88,22 +106,7 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
       body: BlocListener<AdvancedAuthBloc, AdvancedAuthState>(
         listener: (context, state) {
           if (state is TwoFactorAuthVerificationSuccess) {
-            setState(() => _verified = true);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.green,
-              ),
-            );
-            Future.delayed(const Duration(seconds: 2), () {
-              if (mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/home',
-                  (route) => false,
-                );
-              }
-            });
+            _handleVerificationSuccess(context, state);
           } else if (state is TwoFactorAuthVerificationFailure) {
             setState(() => _attemptCount++);
             _showError(state.message);
@@ -125,7 +128,7 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
+                        color: Colors.blue.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -140,9 +143,7 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
                   // Title
                   Center(
                     child: Text(
-                      context.isArabic
-                          ? 'التحقق من الهويتين'
-                          : '2FA Verification',
+                      _isArabic ? 'التحقق من الهوية' : '2FA Verification',
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
@@ -151,7 +152,7 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
                   // Description
                   Center(
                     child: Text(
-                      context.isArabic
+                      _isArabic
                           ? 'أدخل رمز التحقق من تطبيق المصادقة'
                           : 'Enter the verification code from your authenticator app',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -167,8 +168,7 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
                     TextField(
                       controller: _codeController,
                       decoration: InputDecoration(
-                        labelText:
-                            context.isArabic ? 'الرمز' : 'Verification Code',
+                        labelText: _isArabic ? 'الرمز' : 'Verification Code',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -193,7 +193,7 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              context.isArabic
+                              _isArabic
                                   ? 'تم التحقق بنجاح'
                                   : 'Verified Successfully',
                             ),
@@ -208,7 +208,7 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
                   if (!_verified)
                     Center(
                       child: Text(
-                        context.isArabic
+                        _isArabic
                             ? 'محاولات متبقية: ${_maxAttempts - _attemptCount}'
                             : 'Attempts remaining: ${_maxAttempts - _attemptCount}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -225,12 +225,11 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
                       width: double.infinity,
                       height: 54,
                       child: ElevatedButton(
-                        onPressed: state is AdvancedAuthLoading
-                            ? null
-                            : _verify2FA,
+                        onPressed:
+                            state is AdvancedAuthLoading ? null : _verify2FA,
                         child: state is AdvancedAuthLoading
                             ? const CircularProgressIndicator()
-                            : Text(context.isArabic ? 'تحقق' : 'Verify'),
+                            : Text(_isArabic ? 'تحقق' : 'Verify'),
                       ),
                     ),
 
@@ -242,12 +241,12 @@ class _TwoFactorAuthVerifyScreenState extends State<TwoFactorAuthVerifyScreen> {
                         onPressed: null,
                         icon: const Icon(Icons.check_circle),
                         label: Text(
-                          context.isArabic ? 'تم التحقق' : 'Verified',
+                          _isArabic ? 'تم التحقق' : 'Verified',
                         ),
                       ),
                     ),
                 ],
-              );
+              ),
             );
           },
         ),
