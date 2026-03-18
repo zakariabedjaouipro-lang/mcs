@@ -169,7 +169,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       final result = await loginUseCase(
-        LoginParams(email: event.email, password: event.password),
+        LoginParams(
+          email: event.email,
+          password: event.password,
+          role: event.role, // تمرير الدور المحدد
+        ),
       ).timeout(const Duration(seconds: 30));
 
       result.fold(

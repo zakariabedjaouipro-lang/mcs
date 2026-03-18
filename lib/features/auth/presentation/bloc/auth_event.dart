@@ -36,12 +36,14 @@ class LoginSubmitted extends AuthEvent {
   const LoginSubmitted({
     required this.email,
     required this.password,
+    this.role = 'patient', // Default role
   });
   final String email;
   final String password;
+  final String role; // patient, doctor, employee, admin
 
   @override
-  List<Object?> get props => [email, password];
+  List<Object?> get props => [email, password, role];
 }
 
 /// تسجيل الدخول عبر وسائل التواصل الاجتماعية
@@ -135,7 +137,8 @@ class RegisterSubmitted extends AuthEvent {
   final String? regionId;
 
   @override
-  List<Object?> get props => [name, email, phone, password, role, countryId, regionId];
+  List<Object?> get props =>
+      [name, email, phone, password, role, countryId, regionId];
 }
 
 /// ==============================

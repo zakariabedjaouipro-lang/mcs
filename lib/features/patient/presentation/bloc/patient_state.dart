@@ -30,6 +30,15 @@ class PatientLoading extends PatientState {
   const PatientLoading();
 }
 
+/// Patient initialized state
+class PatientInitialized extends PatientState {
+  const PatientInitialized(this.user);
+  final UserModel user;
+
+  @override
+  List<Object?> get props => [user];
+}
+
 // ═════════════════════════════════════════════════════════════════════════════
 // Appointments States
 // ═════════════════════════════════════════════════════════════════════════════

@@ -25,10 +25,12 @@ class LoginParams extends Equatable {
   const LoginParams({
     required this.email,
     required this.password,
+    this.role = 'patient', // Default role
   });
   final String email;
   final String password;
+  final String role; // patient, doctor, employee, admin
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [email, password, role];
 }

@@ -50,6 +50,14 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
     on<ChangePassword>(_onChangePassword);
 
     // ═════════════════════════════════════════════════════════════════════════════
+    // App Initialization Handlers
+    // ═════════════════════════════════════════════════════════════════════════════
+    on<InitializePatientApp>(_onInitializePatientApp);
+    on<NavigateToMedicalRecords>(_onNavigateToMedicalRecords);
+    on<NavigateToInvoices>(_onNavigateToInvoices);
+    on<LogoutRequested>(_onLogoutRequested);
+
+    // ═════════════════════════════════════════════════════════════════════════════
     // Social Accounts Handlers
     // ═════════════════════════════════════════════════════════════════════════════
     on<LinkSocialAccount>(_onLinkSocialAccount);
@@ -414,6 +422,62 @@ class PatientBloc extends Bloc<PatientEvent, PatientState> {
       // Sign out from authentication service
       // This would typically be done via an auth repository method
       // For now, just clear the patient state
+      emit(const PatientInitial());
+    } catch (e) {
+      emit(PatientError('فشل تسجيل الخروج: $e'));
+    }
+  }
+
+  // ═════════════════════════════════════════════════════════════════════════════
+  // App Initialization Handlers
+  // ═════════════════════════════════════════════════════════════════════════════
+
+  /// Initialize the patient app
+  Future<void> _onInitializePatientApp(
+    InitializePatientApp event,
+    Emitter<PatientState> emit,
+  ) async {
+    emit(const PatientLoading());
+    try {
+      // Load initial patient data
+      final result = await _patientRepository.getProfile();
+      result.fold(
+        (failure) => emit(PatientError(_mapFailureToMessage(failure))),
+        (patient) => emit(PatientInitialized(patient)),
+      );
+    } catch (e) {
+      emit(PatientError('فشل تهيئة التطبيق: $e'));
+    }
+  }
+
+  /// Navigate to medical records
+  Future<void> _onNavigateToMedicalRecords(
+    NavigateToMedicalRecords event,
+    Emitter<PatientState> emit,
+  ) async {
+    // Navigation is typically handled by the presentation layer
+    // This is a placeholder for future state management needs
+    emit(const PatientInitial());
+  }
+
+  /// Navigate to invoices
+  Future<void> _onNavigateToInvoices(
+    NavigateToInvoices event,
+    Emitter<PatientState> emit,
+  ) async {
+    // Navigation is typically handled by the presentation layer
+    // This is a placeholder for future state management needs
+    emit(const PatientInitial());
+  }
+
+  /// Handle logout requested from UI
+  Future<void> _onLogoutRequested(
+    LogoutRequested event,
+    Emitter<PatientState> emit,
+  ) async {
+    emit(const PatientLoading());
+    try {
+      // Perform logout operations
       emit(const PatientInitial());
     } catch (e) {
       emit(PatientError('فشل تسجيل الخروج: $e'));

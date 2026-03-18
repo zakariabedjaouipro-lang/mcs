@@ -12,6 +12,30 @@ abstract class PatientEvent extends Equatable {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+// App Initialization Events
+// ═════════════════════════════════════════════════════════════════════════════
+
+/// Initialize patient app - load initial data
+class InitializePatientApp extends PatientEvent {
+  const InitializePatientApp();
+}
+
+/// Navigate to medical records
+class NavigateToMedicalRecords extends PatientEvent {
+  const NavigateToMedicalRecords();
+}
+
+/// Navigate to invoices
+class NavigateToInvoices extends PatientEvent {
+  const NavigateToInvoices();
+}
+
+/// Logout requested
+class LogoutRequested extends PatientEvent {
+  const LogoutRequested();
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
 // Appointments Events
 // ═════════════════════════════════════════════════════════════════════════════
 
