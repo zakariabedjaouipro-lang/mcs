@@ -40,9 +40,7 @@ Future<void> main() async {
 
       // 2️⃣ تحديث الدور
       print('⏳ جاري تحديث الدور...');
-      final result = await client
-          .from('profiles')
-          .update({'role': newRole}).eq('id', userId);
+      await client.from('profiles').update({'role': newRole}).eq('id', userId);
 
       print('✅ تم تحديث الدور بنجاح!');
       print('   الدور الجديد: $newRole\n');

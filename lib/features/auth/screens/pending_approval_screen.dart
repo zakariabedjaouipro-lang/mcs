@@ -350,7 +350,7 @@ class _PendingApprovalScreenState extends State<PendingApprovalScreen> {
   void _showSupportDialog() {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(isArabic ? 'الاتصال بالدعم' : 'Contact Support'),
