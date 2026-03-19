@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mcs/core/models/appointment_model.dart';
 import 'package:mcs/core/models/clinic_model.dart';
+import 'package:mcs/core/models/doctor_model.dart';
+import 'package:mcs/core/models/patient_model.dart';
 import 'package:mcs/core/models/subscription_model.dart';
 import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/features/admin/presentation/bloc/admin_event.dart';
@@ -18,6 +21,11 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     on<LoadExchangeRates>(_onLoadExchangeRates);
     on<UpdateExchangeRate>(_onUpdateExchangeRate);
     on<LoadDashboardStats>(_onLoadDashboardStats);
+    on<LoadDoctors>(_onLoadDoctors);
+    on<LoadPatients>(_onLoadPatients);
+    on<LoadAppointments>(_onLoadAppointments);
+    on<LoadPendingApprovals>(_onLoadPendingApprovals);
+    on<LoadPayments>(_onLoadPayments);
   }
   final SupabaseService _supabaseService;
 
@@ -342,5 +350,110 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     final random = (timestamp * 1000 + (timestamp % 1000)).toString();
     return 'MCS-${random.substring(random.length - 12)}'.toUpperCase();
   }
-}
 
+  // ── New Handlers ────────────────────────────────────────
+
+  Future<void> _onLoadDoctors(
+    LoadDoctors event,
+    Emitter<AdminState> emit,
+  ) async {
+    emit(const AdminLoading());
+    try {
+      final data = await _supabaseService.fetchAll(
+        'doctors',
+        orderBy: 'created_at',
+        ascending: false,
+      );
+      final doctors = data.map(DoctorModel.fromJson).toList();
+      emit(DoctorsLoaded(doctors));
+    } catch (e) {
+      emit(AdminError('فشل تحميل الأطباء: $e'));
+    }
+  }
+
+  Future<void> _onLoadPatients(
+    LoadPatients event,
+    Emitter<AdminState> emit,
+  ) async {
+    emit(const AdminLoading());
+    try {
+      final data = await _supabaseService.fetchAll(
+        'patients',
+        orderBy: 'created_at',
+        ascending: false,
+      );
+      final patients = data.map(PatientModel.fromJson).toList();
+      emit(PatientsLoaded(patients));
+    } catch (e) {
+      emit(AdminError('فشل تحميل المرضى: $e'));
+    }
+  }
+
+  Future<void> _onLoadAppointments(
+    LoadAppointments event,
+    Emitter<AdminState> emit,
+  ) async {
+    emit(const AdminLoading());
+    try {
+      final data = await _supabaseService.fetchAll(
+        'appointments',
+        orderBy: 'created_at',
+        ascending: false,
+      );
+      final appointments = data.map(AppointmentModel.fromJson).toList();
+      emit(AppointmentsLoaded(appointments));
+    } catch (e) {
+      emit(AdminError('فشل تحميل المواعيد: $e'));
+    }
+  }
+
+  Future<void> _onLoadPendingApprovals(
+    LoadPendingApprovals event,
+    Emitter<AdminState> emit,
+  ) async {
+    emit(const AdminLoading());
+    try {
+      final data = await _supabaseService.fetchAll(
+        'registration_requests',
+        filters: {'status': 'pending'},
+      );
+      emit(PendingApprovalsLoaded(data.length));
+    } catch (e) {
+      emit(AdminError('فشل تحميل الموافقات: $e'));
+    }
+  }
+
+  Future<void> _onLoadPayments(
+    LoadPayments event,
+    Emitter<AdminState> emit,
+  ) async {
+    emit(const AdminLoading());
+    try {
+      final invoices = await _supabaseService.fetchAll('invoices');
+
+      double totalRevenue = 0;
+      int pending = 0;
+      int completed = 0;
+
+      for (final invoice in invoices) {
+        final status = invoice['status'] as String?;
+        final amount = (invoice['amount'] as num?)?.toDouble() ?? 0;
+
+        if (status == 'paid') {
+          totalRevenue += amount;
+          completed++;
+        } else if (status == 'pending') {
+          pending++;
+        }
+      }
+
+      emit(PaymentsLoaded(
+        totalRevenue: totalRevenue,
+        pendingPayments: pending,
+        completedPayments: completed,
+      ));
+    } catch (e) {
+      emit(AdminError('فشل تحميل المدفوعات: $e'));
+    }
+  }
+}

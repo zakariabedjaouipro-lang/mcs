@@ -141,3 +141,27 @@ class LoadDashboardStats extends AdminEvent {
   const LoadDashboardStats();
 }
 
+/// Load doctors
+class LoadDoctors extends AdminEvent {
+  const LoadDoctors();
+}
+
+/// Load patients
+class LoadPatients extends AdminEvent {
+  const LoadPatients();
+}
+
+/// Load pending approvals
+class LoadPendingApprovals extends AdminEvent {
+  const LoadPendingApprovals();
+}
+
+/// Load appointments
+class LoadAppointments extends AdminEvent {
+  const LoadAppointments();
+}
+
+/// Load payments
+class LoadPayments extends AdminEvent {
+  const LoadPayments();
+}
