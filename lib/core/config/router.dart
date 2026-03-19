@@ -12,7 +12,7 @@ import 'package:mcs/core/constants/app_routes.dart';
 // Admin
 import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_appointments_screen.dart';
-import 'package:mcs/features/admin/presentation/screens/admin_doctors_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/premium_admin_clinics_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_employees_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_patients_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_settings_screen.dart';
@@ -386,66 +386,66 @@ class AppRouter {
       builder: (context, state) =>
           const AppShellScreen(child: PatientHomeScreen(isPremium: true)),
       routes: [
-                GoRoute(
-                  path: 'patients',
-                  builder: (context, state) =>
-                      const AppShellScreen(child: PatientsScreen()),
-                ),
-                GoRoute(
-                  path: 'appointments',
-                  builder: (context, state) =>
-                      const AppShellScreen(child: AppointmentsScreen(isPremium: true)),
-                ),
-                GoRoute(
-                  path: 'records',
-                  builder: (context, state) =>
-                      const AppShellScreen(child: RecordsScreen()),
-                ),
-                        GoRoute(
-                          path: 'lab-results',
-                          builder: (context, state) =>
-                              const AppShellScreen(child: PatientLabResultsScreen()),
-                        ),
-                        GoRoute(
-                          path: 'prescriptions',
-                          builder: (context, state) =>
-                              const AppShellScreen(child: PatientPrescriptionsScreen()),
-                        ),
-                        GoRoute(
-                          path: 'remote-sessions',
-                          builder: (context, state) =>
-                              const AppShellScreen(child: PatientRemoteSessionsScreen()),
-                        ),
-                                GoRoute(
-                                  path: 'settings',
-                                  builder: (context, state) =>
-                                      const AppShellScreen(child: SettingsScreen(isPremium: true)),
-                                ),
-                                                GoRoute(
-                                                  path: 'social-accounts',
-                                                  builder: (context, state) =>
-                                                      const AppShellScreen(child: PatientSocialAccountsScreen()),
-                                                ),
-                GoRoute(
-                  path: 'book-appointment',
-                  builder: (context, state) =>
-                      const AppShellScreen(child: PatientBookAppointmentScreen()),
-                ),
-                GoRoute(
-                  path: 'medical-history',
-                  builder: (context, state) =>
-                      const AppShellScreen(child: PatientMedicalHistoryScreen()),
-                ),
-                GoRoute(
-                  path: 'profile',
-                  builder: (context, state) =>
-                      const AppShellScreen(child: PatientProfileScreen()),
-                ),
-                GoRoute(
-                  path: 'change-password',
-                  builder: (context, state) =>
-                      const AppShellScreen(child: PatientChangePasswordScreen()),
-                ),
+        GoRoute(
+          path: 'patients',
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientsScreen()),
+        ),
+        GoRoute(
+          path: 'appointments',
+          builder: (context, state) =>
+              const AppShellScreen(child: AppointmentsScreen(isPremium: true)),
+        ),
+        GoRoute(
+          path: 'records',
+          builder: (context, state) =>
+              const AppShellScreen(child: RecordsScreen()),
+        ),
+        GoRoute(
+          path: 'lab-results',
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientLabResultsScreen()),
+        ),
+        GoRoute(
+          path: 'prescriptions',
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientPrescriptionsScreen()),
+        ),
+        GoRoute(
+          path: 'remote-sessions',
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientRemoteSessionsScreen()),
+        ),
+        GoRoute(
+          path: 'settings',
+          builder: (context, state) =>
+              const AppShellScreen(child: SettingsScreen(isPremium: true)),
+        ),
+        GoRoute(
+          path: 'social-accounts',
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientSocialAccountsScreen()),
+        ),
+        GoRoute(
+          path: 'book-appointment',
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientBookAppointmentScreen()),
+        ),
+        GoRoute(
+          path: 'medical-history',
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientMedicalHistoryScreen()),
+        ),
+        GoRoute(
+          path: 'profile',
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientProfileScreen()),
+        ),
+        GoRoute(
+          path: 'change-password',
+          builder: (context, state) =>
+              const AppShellScreen(child: PatientChangePasswordScreen()),
+        ),
       ],
     ),
 
@@ -538,7 +538,7 @@ class AppRouter {
         ),
         GoRoute(
           path: 'doctors',
-          builder: (context, state) => const AdminDoctorsScreen(),
+          builder: (context, state) => const PremiumAdminClinicsScreen(),
         ),
         GoRoute(
           path: 'employees',

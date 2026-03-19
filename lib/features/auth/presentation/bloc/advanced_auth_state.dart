@@ -101,14 +101,24 @@ class RoleBasedRegistrationSuccess extends AdvancedAuthState {
     required this.userProfile,
     required this.message,
     this.registrationRequest,
+    this.requiresEmailVerification = false,
+    this.pendingApproval = false,
   });
 
   final UserProfile userProfile;
   final String message;
   final RegistrationRequest? registrationRequest;
+  final bool requiresEmailVerification;
+  final bool pendingApproval;
 
   @override
-  List<Object?> get props => [userProfile, message, registrationRequest];
+  List<Object?> get props => [
+        userProfile,
+        message,
+        registrationRequest,
+        requiresEmailVerification,
+        pendingApproval,
+      ];
 }
 
 /// Role-based registration failure

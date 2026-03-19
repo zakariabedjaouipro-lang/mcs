@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mcs/core/models/role_model.dart';
 import 'package:mcs/core/services/role_based_authentication_service.dart';
 
 void main() {
@@ -19,12 +18,21 @@ void main() {
               throw AssertionError('Admin role should exist in system'),
         );
 
-        expect(admin.isActive, true);
-        expect(admin.requiresApproval, isNotNull);
+        expect(
+          admin.requiresApproval,
+          isNotNull,
+        );
+        expect(
+          admin.name,
+          'admin',
+        );
 
         final adminPermissions =
             await authService.getRolePermissions(admin.name);
-        expect(adminPermissions, isNotEmpty);
+        expect(
+          adminPermissions.permissions,
+          isNotEmpty,
+        );
       });
 
       test('Doctor should have clinical permissions', () async {
@@ -35,11 +43,17 @@ void main() {
               throw AssertionError('Doctor role should exist in system'),
         );
 
-        expect(doctor.isActive, true);
+        expect(
+          doctor.name,
+          'doctor',
+        );
 
         final doctorPermissions =
             await authService.getRolePermissions(doctor.name);
-        expect(doctorPermissions, isNotEmpty);
+        expect(
+          doctorPermissions.permissions,
+          isNotEmpty,
+        );
       });
 
       test('Patient should have limited permissions', () async {
@@ -50,23 +64,31 @@ void main() {
               throw AssertionError('Patient role should exist in system'),
         );
 
-        expect(patient.isActive, true);
-        expect(patient.requiresApproval, false); // Patients don't need approval
+        expect(
+          patient.requiresApproval,
+          false,
+        ); // Patients don't need approval
 
         final patientPermissions =
             await authService.getRolePermissions(patient.name);
         // Patients should have some permissions (view own data)
-        expect(patientPermissions, isNotEmpty);
+        expect(
+          patientPermissions.permissions,
+          isNotEmpty,
+        );
       });
     });
 
     group('Registration Workflow', () {
       test('should support patient self-registration', () async {
-        final roles = await authService.getPublicRoles();
-        final patientIsPublic = roles.any((r) => r.name == 'patient');
+        final publicRoles = await authService.getPublicRoles();
+        final patientIsPublic = publicRoles.any((r) => r.name == 'patient');
 
-        expect(patientIsPublic, true,
-            reason: 'Patients should be able to self-register');
+        expect(
+          patientIsPublic,
+          true,
+          reason: 'Patients should be able to self-register',
+        );
       });
 
       test('should require approval for staff roles', () async {
@@ -76,7 +98,7 @@ void main() {
           'receptionist',
           'nurse',
           'lab_technician',
-          'pharmacist'
+          'pharmacist',
         ];
 
         for (final roleName in staffRoles) {
@@ -128,7 +150,6 @@ void main() {
       });
 
       test('should provide different permission sets for each role', () async {
-        final roles = await authService.getAllRoles();
         final roleNames = [
           'super_admin',
           'admin',
@@ -140,16 +161,24 @@ void main() {
         final permissionsByRole = <String, Set<String>>{};
 
         for (final roleName in roleNames) {
-          final permissions =
-              await authService.getRolePermissions(roleName);
+          final permissions = await authService.getRolePermissions(roleName);
           permissionsByRole[roleName] =
-              permissions.map((p) => p.toString()).toSet();
+              permissions.permissions.map((p) => p.permissionKey).toSet();
         }
 
         // Each role should have unique permission set
-        expect(permissionsByRole['super_admin']!.isNotEmpty, true);
-        expect(permissionsByRole['doctor']!.isNotEmpty, true);
-        expect(permissionsByRole['patient']!.isNotEmpty, true);
+        expect(
+          permissionsByRole['super_admin']!.isNotEmpty,
+          true,
+        );
+        expect(
+          permissionsByRole['doctor']!.isNotEmpty,
+          true,
+        );
+        expect(
+          permissionsByRole['patient']!.isNotEmpty,
+          true,
+        );
       });
     });
 
@@ -157,7 +186,10 @@ void main() {
       test('should handle non-existent role gracefully', () async {
         final permissions =
             await authService.getRolePermissions('non_existent_role');
-        expect(permissions, isEmpty);
+        expect(
+          permissions.permissions,
+          isEmpty,
+        );
       });
 
       test('should return empty permissions for invalid roles', () async {
@@ -165,13 +197,13 @@ void main() {
           'xyz_invalid',
           'fake_role',
           'admin_super',
-          '123_numeric'
+          '123_numeric',
         ];
 
         for (final role in invalidRoles) {
           final permissions = await authService.getRolePermissions(role);
           expect(
-            permissions.isEmpty,
+            permissions.permissions.isEmpty,
             true,
             reason: '$role should return empty permissions',
           );
@@ -181,21 +213,39 @@ void main() {
 
     group('System Integrity', () {
       test('all roles should have required metadata', () async {
-        final roles = await authService.getAllRoles();
+        final allRoles = await authService.getAllRoles();
 
-        for (final role in roles) {
-          expect(role.id, isNotEmpty, reason: 'Role ${role.name} needs ID');
-          expect(role.name, isNotEmpty, reason: 'Role needs name');
-          expect(role.displayName, isNotEmpty,
-              reason: 'Role ${role.name} needs displayName');
-          expect(role.isActive, isNotNull,
-              reason: 'Role ${role.name} needs isActive status');
-          expect(role.requiresApproval, isNotNull,
-              reason: 'Role ${role.name} needs requiresApproval setting');
-          expect(role.createdAt, isNotNull,
-              reason: 'Role ${role.name} needs createdAt');
-          expect(role.updatedAt, isNotNull,
-              reason: 'Role ${role.name} needs updatedAt');
+        for (final role in allRoles) {
+          expect(
+            role.id,
+            isNotEmpty,
+            reason: 'Role ${role.name} needs ID',
+          );
+          expect(
+            role.name,
+            isNotEmpty,
+            reason: 'Role needs name',
+          );
+          expect(
+            role.displayNameAr,
+            isNotEmpty,
+            reason: 'Role ${role.name} needs displayNameAr',
+          );
+          expect(
+            role.displayNameEn,
+            isNotEmpty,
+            reason: 'Role ${role.name} needs displayNameEn',
+          );
+          expect(
+            role.requiresApproval,
+            isNotNull,
+            reason: 'Role ${role.name} needs requiresApproval setting',
+          );
+          expect(
+            role.createdAt,
+            isNotNull,
+            reason: 'Role ${role.name} needs createdAt',
+          );
         }
       });
 

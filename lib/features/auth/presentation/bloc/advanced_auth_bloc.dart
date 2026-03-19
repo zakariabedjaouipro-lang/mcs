@@ -4,20 +4,24 @@ library;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mcs/core/errors/failures.dart';
+import 'package:mcs/core/models/registration_request_model.dart';
 import 'package:mcs/core/models/user_profile_model.dart';
+import 'package:mcs/core/services/approval_notification_service.dart';
+import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/services/role_based_authentication_service.dart';
 import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/core/usecases/usecase.dart';
 import 'package:mcs/features/auth/domain/usecases/role_registration_usecases.dart';
-
-import 'advanced_auth_event.dart';
-import 'advanced_auth_state.dart';
+import 'package:mcs/features/auth/presentation/bloc/advanced_auth_event.dart';
+import 'package:mcs/features/auth/presentation/bloc/advanced_auth_state.dart';
 
 /// BLoC for advanced role-based authentication
 class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
   AdvancedAuthBloc({
+    required this.authService,
     required this.roleBasedAuthService,
     required this.supabaseService,
+    required this.approvalNotificationService,
     required this.getAllRolesUseCase,
     required this.getPublicRolesUseCase,
     required this.getRolePermissionsUseCase,
@@ -81,8 +85,10 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
     );
   }
 
+  final AuthService authService;
   final RoleBasedAuthenticationService roleBasedAuthService;
   final SupabaseService supabaseService;
+  final ApprovalNotificationService approvalNotificationService;
   final GetAllRolesUseCase getAllRolesUseCase;
   final GetPublicRolesUseCase getPublicRolesUseCase;
   final GetRolePermissionsUseCase getRolePermissionsUseCase;
@@ -124,12 +130,14 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
     Emitter<AdvancedAuthState> emit,
   ) async {
     try {
-      emit(RoleSelectedState(
-        selectedRole: event.role,
-        requiresEmailVerification: event.role.requiresEmailVerification,
-        requires2FA: event.role.requires2FA,
-        requiresApproval: event.role.requiresApproval,
-      ));
+      emit(
+        RoleSelectedState(
+          selectedRole: event.role,
+          requiresEmailVerification: event.role.requiresEmailVerification,
+          requires2FA: event.role.requires2FA,
+          requiresApproval: event.role.requiresApproval,
+        ),
+      );
     } catch (e) {
       _log('Error selecting role: $e');
       emit(AdvancedAuthError(message: 'Failed to select role: $e'));
@@ -149,34 +157,134 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
     try {
       _log('Registering user with role: ${event.roleId}');
 
+      // Get the role to check requirements
       final role = await roleBasedAuthService.getRoleById(event.roleId);
 
-      if (role != null && role.requiresApproval) {
-        emit(RoleBasedRegistrationSuccess(
-          userProfile: UserProfile(
-            id: 'temp_id',
-            email: event.email,
-            fullName: event.fullName,
-            roleId: event.roleId,
-            phone: event.phone ?? '',
+      // Create the user account on Supabase
+      final authResponse = await authService.signUpWithEmail(
+        email: event.email,
+        password: event.password,
+        metadata: {
+          'full_name': event.fullName,
+          'phone': event.phone ?? '',
+          'role': role.name,
+        },
+      );
+
+      final userId = authResponse.user?.id;
+      if (userId == null) {
+        emit(
+          const RoleBasedRegistrationFailure(
+            'Failed to create user account',
           ),
-          message: 'Registration submitted. Awaiting admin approval.',
-        ));
+        );
+        return;
+      }
+
+      _log('User account created: $userId');
+
+      // Create registration request for approval if role requires it
+      RegistrationRequest? registrationRequest;
+      if (role.requiresApproval) {
+        registrationRequest =
+            await roleBasedAuthService.createRegistrationRequest(
+          userId: userId,
+          roleId: event.roleId,
+          requestedData: {
+            'phone': event.phone,
+            'additional_data': event.additionalData,
+          },
+        );
+
+        _log('Approval request created: ${registrationRequest.id}');
+
+        // Notify admins about the pending approval
+        await _notifyAdminsOfPendingApproval(
+          userId: userId,
+          email: event.email,
+          fullName: event.fullName,
+          roleName: role.displayNameAr,
+        );
       } else {
-        emit(RoleBasedRegistrationSuccess(
-          userProfile: UserProfile(
-            id: 'temp_id',
-            email: event.email,
-            fullName: event.fullName,
-            roleId: event.roleId,
-            phone: event.phone ?? '',
+        // For roles without approval requirement, create a default request
+        registrationRequest =
+            await roleBasedAuthService.createRegistrationRequest(
+          userId: userId,
+          roleId: event.roleId,
+          requestedData: {
+            'phone': event.phone,
+            'additional_data': event.additionalData,
+          },
+        );
+        _log('Default registration request created: ${registrationRequest.id}');
+      }
+
+      // Check if email verification is required
+      if (role.requiresEmailVerification) {
+        _log('Email verification required, prompting user...');
+        emit(
+          RoleBasedRegistrationSuccess(
+            userProfile: UserProfile(
+              id: userId,
+              email: event.email,
+              fullName: event.fullName,
+              roleId: event.roleId,
+              phone: event.phone ?? '',
+            ),
+            message: role.requiresApproval
+                ? 'Registration submitted. Please verify your email and wait for admin approval.'
+                : 'Registration successful. Please verify your email.',
+            requiresEmailVerification: true,
+            pendingApproval: role.requiresApproval,
           ),
-          message: 'Registration successful!',
-        ));
+        );
+      } else {
+        emit(
+          RoleBasedRegistrationSuccess(
+            userProfile: UserProfile(
+              id: userId,
+              email: event.email,
+              fullName: event.fullName,
+              roleId: event.roleId,
+              phone: event.phone ?? '',
+            ),
+            message: role.requiresApproval
+                ? 'Registration submitted. Your account will be activated after admin approval.'
+                : 'Registration successful!',
+            pendingApproval: role.requiresApproval,
+          ),
+        );
       }
     } catch (e) {
       _log('Error during role-based registration: $e');
       emit(RoleBasedRegistrationFailure('Registration failed: $e'));
+    }
+  }
+
+  /// Notify admins of pending user approval
+  Future<void> _notifyAdminsOfPendingApproval({
+    required String userId,
+    required String email,
+    required String fullName,
+    required String roleName,
+  }) async {
+    try {
+      _log('Sending admin notification for user: $email');
+
+      await approvalNotificationService.notifyAdminsOfPendingApproval(
+        userId: userId,
+        email: email,
+        fullName: fullName,
+        roleName: roleName,
+        registrationType: 'email',
+        approvalLink:
+            'https://mcs.example.com/admin-dashboard/pending-approvals',
+      );
+
+      _log('Admin notification sent for: $fullName ($roleName)');
+    } catch (e) {
+      _log('Error notifying admins: $e');
+      // Non-blocking error, don't fail the registration
     }
   }
 
@@ -203,10 +311,12 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
 
       await Future<void>.delayed(const Duration(milliseconds: 500));
 
-      emit(EmailVerificationLinkSent(
-        email: userProfile.email,
-        message: 'Verification link sent. Please check your email.',
-      ));
+      emit(
+        EmailVerificationLinkSent(
+          email: userProfile.email,
+          message: 'Verification link sent. Please check your email.',
+        ),
+      );
     } catch (e) {
       _log('Error requesting email verification: $e');
       emit(EmailVerificationFailure('Failed to send verification email: $e'));
@@ -227,10 +337,12 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
         (failure) => _handleFailure(failure, emit),
         (isVerified) {
           if (isVerified) {
-            emit(EmailVerifiedSuccess(
-              userId: event.userId,
-              message: 'Email verified successfully!',
-            ));
+            emit(
+              EmailVerifiedSuccess(
+                userId: event.userId,
+                message: 'Email verified successfully!',
+              ),
+            );
           } else {
             emit(const EmailVerificationFailure('Email verification failed'));
           }
@@ -248,10 +360,12 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
   ) async {
     try {
       _log('Email verification completed for user: ${event.userId}');
-      emit(EmailVerifiedSuccess(
-        userId: event.userId,
-        message: 'Email verified successfully!',
-      ));
+      emit(
+        EmailVerifiedSuccess(
+          userId: event.userId,
+          message: 'Email verified successfully!',
+        ),
+      );
     } catch (e) {
       _log('Error handling email verification success: $e');
       emit(AdvancedAuthError(message: 'Failed to process verification: $e'));
@@ -272,11 +386,13 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
       final secret = _generate2FASecret();
       final qrCode = _generateQRCode(event.userId, secret);
 
-      emit(TwoFactorAuthSetupStarted(
-        userId: event.userId,
-        secret: secret,
-        qrCode: qrCode,
-      ));
+      emit(
+        TwoFactorAuthSetupStarted(
+          userId: event.userId,
+          secret: secret,
+          qrCode: qrCode,
+        ),
+      );
     } catch (e) {
       _log('Error setting up 2FA: $e');
       emit(AdvancedAuthError(message: 'Failed to setup 2FA: $e'));
@@ -306,11 +422,13 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
         (isEnabled) {
           if (isEnabled) {
             final backupCodes = _generateBackupCodes();
-            emit(TwoFactorAuthEnabledSuccess(
-              userId: event.userId,
-              backupCodes: backupCodes,
-              message: 'Two-factor authentication enabled successfully!',
-            ));
+            emit(
+              TwoFactorAuthEnabledSuccess(
+                userId: event.userId,
+                backupCodes: backupCodes,
+                message: 'Two-factor authentication enabled successfully!',
+              ),
+            );
           } else {
             emit(const AdvancedAuthError(message: '2FA activation failed'));
           }
@@ -329,11 +447,13 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
     try {
       _log('2FA enabled for user: ${event.userId}');
       final backupCodes = _generateBackupCodes();
-      emit(TwoFactorAuthEnabledSuccess(
-        userId: event.userId,
-        backupCodes: backupCodes,
-        message: 'Two-factor authentication enabled successfully!',
-      ));
+      emit(
+        TwoFactorAuthEnabledSuccess(
+          userId: event.userId,
+          backupCodes: backupCodes,
+          message: 'Two-factor authentication enabled successfully!',
+        ),
+      );
     } catch (e) {
       _log('Error handling 2FA enabled: $e');
       emit(AdvancedAuthError(message: 'Failed to process 2FA enablement: $e'));
@@ -351,10 +471,12 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
       final isValid = _verify2FACode(storedSecret, event.code);
 
       if (isValid) {
-        emit(TwoFactorAuthVerificationSuccess(
-          userId: event.userId,
-          message: '2FA verification successful!',
-        ));
+        emit(
+          TwoFactorAuthVerificationSuccess(
+            userId: event.userId,
+            message: '2FA verification successful!',
+          ),
+        );
       } else {
         emit(const TwoFactorAuthVerificationFailure('Invalid 2FA code'));
       }
@@ -403,11 +525,28 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
 
       result.fold(
         (failure) => _handleFailure(failure, emit),
-        (request) {
-          emit(RegistrationRequestApprovedSuccess(
-            requestId: event.requestId,
-            message: 'Registration request approved successfully!',
-          ));
+        (request) async {
+          _log('Registration request approved: ${event.requestId}');
+
+          // Fetch user and role data to send approval email
+          final userProfile =
+              await roleBasedAuthService.getUserProfile(request.userId);
+          final role = await roleBasedAuthService.getRoleById(request.roleId);
+
+          if (userProfile != null) {
+            await _sendApprovalEmailToUser(
+              userEmail: userProfile.email,
+              fullName: userProfile.fullName,
+              roleName: role.name,
+            );
+          }
+
+          emit(
+            RegistrationRequestApprovedSuccess(
+              requestId: event.requestId,
+              message: 'Registration request approved successfully!',
+            ),
+          );
         },
       );
     } catch (e) {
@@ -433,16 +572,72 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
 
       result.fold(
         (failure) => _handleFailure(failure, emit),
-        (request) {
-          emit(RegistrationRequestRejectedSuccess(
-            requestId: event.requestId,
-            message: 'Registration request rejected.',
-          ));
+        (request) async {
+          _log('Registration request rejected: ${event.requestId}');
+
+          // Fetch user data to send rejection email
+          final userProfile =
+              await roleBasedAuthService.getUserProfile(request.userId);
+
+          if (userProfile != null) {
+            await _sendRejectionEmailToUser(
+              userEmail: userProfile.email,
+              fullName: userProfile.fullName,
+              rejectionReason: event.rejectionReason,
+            );
+          }
+
+          emit(
+            RegistrationRequestRejectedSuccess(
+              requestId: event.requestId,
+              message: 'Registration request rejected.',
+            ),
+          );
         },
       );
     } catch (e) {
       _log('Error rejecting registration request: $e');
       emit(RegistrationRequestApprovalFailure('Rejection failed: $e'));
+    }
+  }
+
+  /// Send approval confirmation email to user
+  Future<void> _sendApprovalEmailToUser({
+    required String userEmail,
+    required String fullName,
+    required String roleName,
+  }) async {
+    try {
+      _log('Sending approval confirmation email to: $userEmail');
+      await approvalNotificationService.sendApprovalConfirmationEmail(
+        userEmail: userEmail,
+        fullName: fullName,
+        roleName: roleName,
+      );
+      _log('Approval email sent successfully');
+    } catch (e) {
+      _log('Error sending approval email: $e');
+      // Non-blocking - don't fail the approval
+    }
+  }
+
+  /// Send rejection email to user
+  Future<void> _sendRejectionEmailToUser({
+    required String userEmail,
+    required String fullName,
+    required String rejectionReason,
+  }) async {
+    try {
+      _log('Sending rejection email to: $userEmail');
+      await approvalNotificationService.sendRejectionEmail(
+        userEmail: userEmail,
+        fullName: fullName,
+        rejectionReason: rejectionReason,
+      );
+      _log('Rejection email sent successfully');
+    } catch (e) {
+      _log('Error sending rejection email: $e');
+      // Non-blocking - don't fail the rejection
     }
   }
 
@@ -458,17 +653,20 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
       );
 
       if (request != null) {
-        emit(UserRegistrationRequestStatus(
-          status: request.status.toString().split('.').last,
-          request: request,
-          message: 'Registration status: ${request.status}',
-        ));
+        emit(
+          UserRegistrationRequestStatus(
+            status: request.status.toString().split('.').last,
+            request: request,
+            message: 'Registration status: ${request.status}',
+          ),
+        );
       } else {
-        emit(const UserRegistrationRequestStatus(
-          status: 'none',
-          request: null,
-          message: 'No pending registration request',
-        ));
+        emit(
+          const UserRegistrationRequestStatus(
+            status: 'none',
+            message: 'No pending registration request',
+          ),
+        );
       }
     } catch (e) {
       _log('Error checking registration request status: $e');
@@ -503,11 +701,13 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
         (failure) => _handleFailure(failure, emit),
         (permissions) {
           final hasPermission = permissions.hasPermission(event.permissionKey);
-          emit(PermissionCheckResult(
-            userId: event.userId,
-            permissionKey: event.permissionKey,
-            hasPermission: hasPermission,
-          ));
+          emit(
+            PermissionCheckResult(
+              userId: event.userId,
+              permissionKey: event.permissionKey,
+              hasPermission: hasPermission,
+            ),
+          );
         },
       );
     } catch (e) {
@@ -538,10 +738,12 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
       result.fold(
         (failure) => _handleFailure(failure, emit),
         (permissions) {
-          emit(UserPermissionsLoaded(
-            userId: event.userId,
-            permissions: permissions,
-          ));
+          emit(
+            UserPermissionsLoaded(
+              userId: event.userId,
+              permissions: permissions,
+            ),
+          );
         },
       );
     } catch (e) {
@@ -560,10 +762,12 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
   ) async {
     try {
       _log('Login attempt failed for email: ${event.email}');
-      emit(AdvancedAuthError(
-        message:
-            'Login failed for ${event.email}. Please check your credentials.',
-      ));
+      emit(
+        AdvancedAuthError(
+          message:
+              'Login failed for ${event.email}. Please check your credentials.',
+        ),
+      );
     } catch (e) {
       _log('Error handling login attempt failure: $e');
       emit(AdvancedAuthError(message: 'Failed to handle login attempt: $e'));
@@ -579,11 +783,13 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
 
       final lockedUntil =
           DateTime.now().add(Duration(minutes: event.lockDurationMinutes));
-      emit(UserAccountLockedState(
-        userId: event.userId,
-        lockedUntil: lockedUntil,
-        message: 'Account locked for security reasons.',
-      ));
+      emit(
+        UserAccountLockedState(
+          userId: event.userId,
+          lockedUntil: lockedUntil,
+          message: 'Account locked for security reasons.',
+        ),
+      );
     } catch (e) {
       _log('Error locking user account: $e');
       emit(AdvancedAuthError(message: 'Failed to lock account: $e'));
@@ -596,10 +802,12 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
   ) async {
     try {
       _log('Clearing login attempts for user: ${event.userId}');
-      emit(LoginAttemptsCleared(
-        userId: event.userId,
-        message: 'Login attempts cleared',
-      ));
+      emit(
+        LoginAttemptsCleared(
+          userId: event.userId,
+          message: 'Login attempts cleared',
+        ),
+      );
     } catch (e) {
       _log('Error clearing login attempts: $e');
       emit(AdvancedAuthError(message: 'Failed to clear attempts: $e'));
@@ -632,12 +840,7 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
       final roleModel =
           await roleBasedAuthService.getRoleById(userProfile.roleId!);
 
-      if (roleModel == null) {
-        emit(const AdvancedAuthError(message: 'Role not found'));
-        return;
-      }
-
-      bool isComplete = true;
+      var isComplete = true;
       if (roleModel.requiresEmailVerification && !isEmailVerified) {
         isComplete = false;
       }
@@ -645,13 +848,15 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
         isComplete = false;
       }
 
-      emit(RoleVerificationComplete(
-        userId: event.userId,
-        isComplete: isComplete,
-        message: isComplete
-            ? 'All verifications complete'
-            : 'Additional verifications required',
-      ));
+      emit(
+        RoleVerificationComplete(
+          userId: event.userId,
+          isComplete: isComplete,
+          message: isComplete
+              ? 'All verifications complete'
+              : 'Additional verifications required',
+        ),
+      );
     } catch (e) {
       _log('Error checking verification status: $e');
       emit(AdvancedAuthError(message: 'Failed to check status: $e'));
@@ -664,20 +869,26 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
 
   void _handleFailure(Failure failure, Emitter<AdvancedAuthState> emit) {
     if (failure is ServerFailure) {
-      emit(AdvancedAuthError(
-        message: failure.message,
-        code: 'SERVER_ERROR',
-      ));
+      emit(
+        AdvancedAuthError(
+          message: failure.message,
+          code: 'SERVER_ERROR',
+        ),
+      );
     } else if (failure is CacheFailure) {
-      emit(AdvancedAuthError(
-        message: 'Cache error: ${failure.message}',
-        code: 'CACHE_ERROR',
-      ));
+      emit(
+        AdvancedAuthError(
+          message: 'Cache error: ${failure.message}',
+          code: 'CACHE_ERROR',
+        ),
+      );
     } else {
-      emit(AdvancedAuthError(
-        message: 'An error occurred',
-        code: 'UNKNOWN_ERROR',
-      ));
+      emit(
+        const AdvancedAuthError(
+          message: 'An error occurred',
+          code: 'UNKNOWN_ERROR',
+        ),
+      );
     }
   }
 
@@ -700,7 +911,7 @@ class AdvancedAuthBloc extends Bloc<AdvancedAuthEvent, AdvancedAuthState> {
 
   List<String> _generateBackupCodes() {
     final codes = <String>[];
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       codes.add('${DateTime.now().millisecondsSinceEpoch}-$i');
     }
     return codes;

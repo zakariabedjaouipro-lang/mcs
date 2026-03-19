@@ -26,8 +26,9 @@ class RoleBasedAuthenticationService {
           name: 'RoleBasedAuthService.getAllRoles');
 
       final response = await _client.from('roles').select();
+      final List<dynamic> responseList = response as List;
 
-      final roles = (response as List)
+      final roles = responseList
           .map((role) => RoleModel.fromJson(role as Map<String, dynamic>))
           .toList();
 
@@ -77,8 +78,9 @@ class RoleBasedAuthenticationService {
 
       final response =
           await _client.from('role_permissions').select().eq('role_id', roleId);
+      final List<dynamic> responseList = response as List;
 
-      final permissions = (response as List)
+      final permissions = responseList
           .map((p) => RolePermission.fromJson(p as Map<String, dynamic>))
           .toList();
 
@@ -155,9 +157,11 @@ class RoleBasedAuthenticationService {
           .order('created_at', ascending: false)
           .limit(1);
 
-      if ((response as List).isEmpty) return null;
+      final List<dynamic> responseList = response as List;
+      if (responseList.isEmpty) return null;
 
-      return RegistrationRequest.fromJson(response[0] as Map<String, dynamic>);
+      return RegistrationRequest.fromJson(
+          responseList.first as Map<String, dynamic>);
     } catch (e) {
       log('خطأ في استرجاع طلب التسجيل للمستخدم: $e',
           name: 'RoleBasedAuthService.getUserRegistrationRequest', level: 1000);
@@ -176,8 +180,9 @@ class RoleBasedAuthenticationService {
           .select()
           .eq('status', 'pending')
           .order('created_at', ascending: false);
+      final List<dynamic> responseList = response as List;
 
-      final requests = (response as List)
+      final requests = responseList
           .map((r) => RegistrationRequest.fromJson(r as Map<String, dynamic>))
           .toList();
 
