@@ -417,7 +417,11 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
         'registration_requests',
         filters: {'status': 'pending'},
       );
-      emit(PendingApprovalsLoaded(data.length));
+      // ◄── تمرير البيانات الكاملة + العدد
+      emit(PendingApprovalsLoaded(
+        count: data.length,
+        approvalRequests: data,
+      ));
     } catch (e) {
       emit(AdminError('فشل تحميل الموافقات: $e'));
     }

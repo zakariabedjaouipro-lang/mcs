@@ -156,6 +156,32 @@ class LoadPendingApprovals extends AdminEvent {
   const LoadPendingApprovals();
 }
 
+/// Approve user registration
+class ApproveUserEvent extends AdminEvent {
+  const ApproveUserEvent({
+    required this.userId,
+    required this.notes,
+  });
+  final String userId;
+  final String notes;
+
+  @override
+  List<Object?> get props => [userId, notes];
+}
+
+/// Reject user registration
+class RejectUserEvent extends AdminEvent {
+  const RejectUserEvent({
+    required this.userId,
+    required this.reason,
+  });
+  final String userId;
+  final String reason;
+
+  @override
+  List<Object?> get props => [userId, reason];
+}
+
 /// Load appointments
 class LoadAppointments extends AdminEvent {
   const LoadAppointments();

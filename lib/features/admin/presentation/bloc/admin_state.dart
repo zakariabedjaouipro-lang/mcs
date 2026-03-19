@@ -123,13 +123,18 @@ class AppointmentsLoaded extends AdminState {
   List<Object?> get props => [appointments];
 }
 
-/// Pending approvals loaded
+/// Pending approvals loaded - مع البيانات الكاملة
 class PendingApprovalsLoaded extends AdminState {
-  const PendingApprovalsLoaded(this.count);
+  const PendingApprovalsLoaded({
+    required this.count,
+    required this.approvalRequests,
+  });
+
   final int count;
+  final List<Map<String, dynamic>> approvalRequests;
 
   @override
-  List<Object?> get props => [count];
+  List<Object?> get props => [count, approvalRequests];
 }
 
 /// Payments data loaded
