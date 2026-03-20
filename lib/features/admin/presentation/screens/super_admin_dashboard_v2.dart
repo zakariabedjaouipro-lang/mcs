@@ -6,7 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
-import 'package:mcs/features/admin/presentation/bloc/admin_event.dart';
+import 'package:mcs/features/admin/presentation/bloc/admin_event.dart'
+    as admin_events;
 import 'package:mcs/features/admin/presentation/bloc/admin_state.dart';
 
 /// Super Admin Dashboard Screen
@@ -17,13 +18,13 @@ class SuperAdminDashboardV2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => AdminBloc(sl<SupabaseService>())
-        ..add(const LoadDashboardStats())
-        ..add(const LoadDoctors())
-        ..add(const LoadPatients())
-        ..add(const LoadAppointments())
-        ..add(const LoadPayments())
-        ..add(const LoadClinics())
-        ..add(const LoadPendingApprovals()),
+        ..add(const admin_events.LoadDashboardStats())
+        ..add(const admin_events.LoadDoctors())
+        ..add(const admin_events.LoadPatients())
+        ..add(const admin_events.LoadAppointments())
+        ..add(const admin_events.LoadPayments())
+        ..add(const admin_events.LoadClinics())
+        ..add(const admin_events.LoadPendingApprovals()),
       child: const _SuperAdminDashboardView(),
     );
   }
@@ -87,7 +88,9 @@ class _SuperAdminDashboardViewState extends State<_SuperAdminDashboardView>
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<AdminBloc>().add(const LoadDashboardStats());
+                      context
+                          .read<AdminBloc>()
+                          .add(const admin_events.LoadDashboardStats());
                     },
                     child: Text(isArabic ? 'إعادة محاولة' : 'Retry'),
                   ),
@@ -534,7 +537,9 @@ class _SuperAdminDashboardViewState extends State<_SuperAdminDashboardView>
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: () {
-                context.read<AdminBloc>().add(const LoadPendingApprovals());
+                context
+                    .read<AdminBloc>()
+                    .add(const admin_events.LoadPendingApprovals());
               },
               icon: const Icon(Icons.refresh),
               label: Text(isArabic ? 'إعادة محاولة' : 'Retry'),
@@ -561,7 +566,9 @@ class _SuperAdminDashboardViewState extends State<_SuperAdminDashboardView>
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () {
-              context.read<AdminBloc>().add(const LoadPendingApprovals());
+              context
+                  .read<AdminBloc>()
+                  .add(const admin_events.LoadPendingApprovals());
             },
             icon: const Icon(Icons.refresh),
             label: Text(isArabic ? 'تحديث' : 'Refresh'),
@@ -645,9 +652,9 @@ class _SuperAdminDashboardViewState extends State<_SuperAdminDashboardView>
               // هنا يتم إرسال الحدث للموافقة أو الرفض
               if (isApprove) {
                 context.read<AdminBloc>().add(
-                      ApproveUserEvent(
+                      admin_events.ApproveUserEvent(
                         userId: userId,
-                        notes: textController.text,
+                        approvalNotes: textController.text,
                       ),
                     );
               } else {
@@ -664,9 +671,9 @@ class _SuperAdminDashboardViewState extends State<_SuperAdminDashboardView>
                   return;
                 }
                 context.read<AdminBloc>().add(
-                      RejectUserEvent(
+                      admin_events.RejectUserEvent(
                         userId: userId,
-                        reason: textController.text,
+                        rejectionReason: textController.text,
                       ),
                     );
               }

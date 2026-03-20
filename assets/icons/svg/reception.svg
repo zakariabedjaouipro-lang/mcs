@@ -1,0 +1,5 @@
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <!-- Reception desk icon -->
+  <path d="M20 2H4c-1.1 0-2 .9-2 2v15c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 15H4v-3h16v3zm0-5H4V7h16v5zm-6-6H8v2h6V6z"/>
+  <circle cx="18" cy="9" r="1.5"/>
+</svg>

@@ -8,7 +8,7 @@ import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/services/supabase_service.dart';
 import 'package:mcs/core/theme/app_theme.dart';
 import 'package:mcs/features/admin/presentation/bloc/index.dart';
-import 'package:mcs/features/admin/presentation/screens/premium_admin_dashboard_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/super_admin_dashboard_v2.dart';
 
 class AdminApp extends StatelessWidget {
   const AdminApp({super.key});
@@ -26,7 +26,7 @@ class AdminApp extends StatelessWidget {
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
         debugShowCheckedModeBanner: false,
-        home: const PremiumAdminDashboardScreen(),
+        home: const SuperAdminDashboardV2(),
       ),
     );
   }

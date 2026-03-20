@@ -26,6 +26,8 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     on<LoadAppointments>(_onLoadAppointments);
     on<LoadPendingApprovals>(_onLoadPendingApprovals);
     on<LoadPayments>(_onLoadPayments);
+    on<ApproveUserEvent>(_onApproveUser);
+    on<RejectUserEvent>(_onRejectUser);
   }
   final SupabaseService _supabaseService;
 
@@ -458,6 +460,63 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       ));
     } catch (e) {
       emit(AdminError('فشل تحميل المدفوعات: $e'));
+    }
+  }
+
+  // ── Approval Handlers ───────────────────────────────────────
+
+  /// Approve a user registration request
+  Future<void> _onApproveUser(
+    ApproveUserEvent event,
+    Emitter<AdminState> emit,
+  ) async {
+    emit(const AdminLoading());
+    try {
+      // Update registration request status to approved
+      await _supabaseService.update(
+        'registration_requests',
+        event.userId,
+        {
+          'status': 'approved',
+          'approval_notes': event.approvalNotes,
+          'approved_at': DateTime.now().toIso8601String(),
+        },
+      );
+
+      // Update user approval status in auth metadata
+      // Note: This would typically be done via a trigger in database
+      // For now, we emit success and reload pending approvals
+      emit(const AdminSuccess('تم الموافقة على المستخدم بنجاح'));
+      add(const LoadPendingApprovals());
+    } catch (e) {
+      emit(AdminError('فشل الموافقة على المستخدم: $e'));
+    }
+  }
+
+  /// Reject a user registration request
+  Future<void> _onRejectUser(
+    RejectUserEvent event,
+    Emitter<AdminState> emit,
+  ) async {
+    emit(const AdminLoading());
+    try {
+      // Update registration request status to rejected
+      await _supabaseService.update(
+        'registration_requests',
+        event.userId,
+        {
+          'status': 'rejected',
+          'rejection_reason': event.rejectionReason,
+          'rejected_at': DateTime.now().toIso8601String(),
+        },
+      );
+
+      // Update user approval status in auth metadata to rejected
+      // Note: This would typically be done via a trigger in database
+      emit(const AdminSuccess('تم رفض المستخدم بنجاح'));
+      add(const LoadPendingApprovals());
+    } catch (e) {
+      emit(AdminError('فشل رفض المستخدم: $e'));
     }
   }
 }

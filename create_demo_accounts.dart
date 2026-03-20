@@ -10,19 +10,25 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 ///
 /// Run: dart run create_demo_accounts.dart
 ///
-/// الحسابات المتاحة:
-/// - 👨‍⚕️ Doctor: doctor@demo.com
-/// - 🏥 Patient: patient@demo.com
-/// - ⚙️ Admin: admin@demo.com
-/// - 👑 SuperAdmin: superadmin@demo.com
-/// - 👨‍💼 Staff: staff@demo.com
+/// الحسابات المتاحة (10 أدوار كاملة):
+/// - 👑 Super Admin: super@example.com
+/// - ⚙️ Clinic Admin: clinic@example.com
+/// - 👨‍⚕️ Doctor: doctor@example.com
+/// - 💉 Nurse: nurse@example.com
+/// - 📞 Receptionist: reception@example.com
+/// - 💊 Pharmacist: pharmacy@example.com
+/// - 🔬 Lab Technician: lab@example.com
+/// - 📡 Radiographer: radio@example.com
+/// - 🏥 Patient: patient@example.com
+/// - 👨‍👩‍👧 Relative: relative@example.com
 ///
-/// Password for all: Demo@123456
+/// Password for all: Password123!
 /// ═══════════════════════════════════════════════════════════════
 
 Future<void> main() async {
   print('═══════════════════════════════════════════════════════════════');
-  print('🔐 إنشاء حسابات التجريب | Creating Demo Accounts');
+  print(
+      '🔐 إنشاء حسابات التجريب (10 أدوار) | Creating Demo Accounts (10 Roles)');
   print('═══════════════════════════════════════════════════════════════\n');
 
   // تهيئة Supabase | Initialize Supabase
@@ -40,42 +46,77 @@ Future<void> main() async {
 
   final supabase = Supabase.instance.client;
 
-  /// قائمة حسابات التجريب | Demo Accounts List
+  /// قائمة حسابات التجريب (10 أدوار) | Demo Accounts List (10 Roles)
   final demoAccounts = [
+    // Admin Roles (4)
     {
-      'email': 'doctor@demo.com',
-      'password': 'Demo@123456',
-      'role': 'doctor',
-      'description': '👨‍⚕️ حساب الطبيب | Doctor Account',
-    },
-    {
-      'email': 'patient@demo.com',
-      'password': 'Demo@123456',
-      'role': 'patient',
-      'description': '🏥 حساب المريض | Patient Account',
-    },
-    {
-      'email': 'admin@demo.com',
-      'password': 'Demo@123456',
-      'role': 'clinic_admin',
-      'description': '⚙️ مسؤول العيادة | Clinic Admin',
-    },
-    {
-      'email': 'superadmin@demo.com',
-      'password': 'Demo@123456',
+      'email': 'super@example.com',
+      'password': 'Password123!',
       'role': 'super_admin',
-      'description': '👑 المسؤول الأساسي | Super Admin',
+      'description': '👑 مدير النظام | Super Admin',
     },
     {
-      'email': 'staff@demo.com',
-      'password': 'Demo@123456',
-      'role': 'staff',
-      'description': '👨‍💼 حساب الموظف | Staff Account',
+      'email': 'clinic@example.com',
+      'password': 'Password123!',
+      'role': 'clinic_admin',
+      'description': '⚙️ مدير العيادة | Clinic Admin',
+    },
+    {
+      'email': 'doctor@example.com',
+      'password': 'Password123!',
+      'role': 'doctor',
+      'description': '👨‍⚕️ طبيب | Doctor',
+    },
+    {
+      'email': 'nurse@example.com',
+      'password': 'Password123!',
+      'role': 'nurse',
+      'description': '💉 ممرض | Nurse',
+    },
+
+    // Staff Roles (4)
+    {
+      'email': 'reception@example.com',
+      'password': 'Password123!',
+      'role': 'receptionist',
+      'description': '📞 موظف استقبال | Receptionist',
+    },
+    {
+      'email': 'pharmacy@example.com',
+      'password': 'Password123!',
+      'role': 'pharmacist',
+      'description': '💊 صيدلي | Pharmacist',
+    },
+    {
+      'email': 'lab@example.com',
+      'password': 'Password123!',
+      'role': 'lab_technician',
+      'description': '🔬 فني مختبر | Lab Technician',
+    },
+    {
+      'email': 'radio@example.com',
+      'password': 'Password123!',
+      'role': 'radiographer',
+      'description': '📡 أخصائي أشعة | Radiographer',
+    },
+
+    // Patient Roles (2)
+    {
+      'email': 'patient@example.com',
+      'password': 'Password123!',
+      'role': 'patient',
+      'description': '🏥 مريض | Patient',
+    },
+    {
+      'email': 'relative@example.com',
+      'password': 'Password123!',
+      'role': 'relative',
+      'description': '👨‍👩‍👧 قريب | Relative',
     },
   ];
 
-  print('🚀 جاري إنشاء حسابات التجريب...\n');
-  print('Creating demo accounts...\n');
+  print('🚀 جاري إنشاء حسابات التجريب (10 حسابات)...\n');
+  print('Creating demo accounts (10 accounts)...\n');
 
   var successCount = 0;
   var failureCount = 0;
@@ -84,16 +125,52 @@ Future<void> main() async {
     try {
       print('─────────────────────────────────────────');
       print('${account['description']}');
-      print('Email: ${account['email']}');
+      print('📧 Email: ${account['email']}');
+      print('🔑 Role: ${account['role']}');
 
       final response = await supabase.auth.signUp(
-        email: account['email'],
+        email: account['email']!,
         password: account['password']!,
+        data: {
+          'role': account['role'],
+          'full_name': _getFullNameFromRole(account['role']!),
+        },
       );
 
       if (response.user != null) {
         print('✅ تم الإنشاء بنجاح | Created Successfully');
-        print('Password: ${account['password']!}\n');
+        print('🔐 Password: ${account['password']!}');
+
+        // تحديث البيانات في جدول users
+        try {
+          await supabase.from('users').upsert({
+            'id': response.user!.id,
+            'email': account['email']!,
+            'role': account['role'],
+            'first_name': _getFirstNameFromRole(account['role']!),
+            'last_name': _getLastNameFromRole(account['role']!),
+          });
+          print('📝 تم تحديث بيانات المستخدم | User profile updated');
+        } catch (e) {
+          print('⚠️ تحذير: لم يتم تحديث بيانات المستخدم: $e');
+        }
+
+        // تحديث طلبات الموافقة
+        try {
+          await supabase.from('user_approvals').upsert({
+            'user_id': response.user!.id,
+            'email': account['email']!,
+            'full_name': _getFullNameFromRole(account['role']!),
+            'role': account['role'],
+            'registration_type': 'email',
+            'status': 'approved', // موافقة تلقائية للحسابات التجريبية
+          });
+          print('✅ تمت الموافقة على الحساب | Account approved');
+        } catch (e) {
+          print('⚠️ تحذير: لم يتم تحديث طلب الموافقة: $e');
+        }
+
+        print('');
         successCount++;
       } else {
         print('⚠️ استجابة غير متوقعة | Unexpected response\n');
@@ -113,13 +190,105 @@ Future<void> main() async {
   print('═══════════════════════════════════════════════════════════════\n');
 
   if (failureCount == 0 && successCount > 0) {
-    print('✨ اكتمل إنشاء جميع حسابات التجريب بنجاح!');
-    print('✨ All demo accounts created successfully!\n');
-    print('📖 يمكنك الآن استخدام الحسابات أعلاه للدخول');
-    print('📖 You can now use the accounts above to login\n');
-    print('📄 لمزيد من الفاصيل، انظر: DEMO_ACCOUNTS.md');
+    print('✨ اكتمل إنشاء جميع حسابات التجريب (10 أدوار) بنجاح!');
+    print('✨ All 10 demo accounts created successfully!\n');
+    print('📖 قائمة الحسابات | Accounts List:');
+    print('═══════════════════════════════════════════════════════════════');
+
+    for (final account in demoAccounts) {
+      print('${account['description']}');
+      print('   📧 ${account['email']}');
+      print('   🔐 ${account['password']}');
+    }
+
+    print('═══════════════════════════════════════════════════════════════\n');
+    print('📄 لمزيد من التفاصيل، انظر: DEMO_ACCOUNTS.md');
     print('📄 For more details, see: DEMO_ACCOUNTS.md\n');
   }
 
   exit(failureCount > 0 ? 1 : 0);
+}
+
+/// الحصول على الاسم الكامل بناءً على الدور
+String _getFullNameFromRole(String role) {
+  switch (role) {
+    case 'super_admin':
+      return 'مدير النظام';
+    case 'clinic_admin':
+      return 'مدير العيادة';
+    case 'doctor':
+      return 'د. أحمد محمد';
+    case 'nurse':
+      return 'م. فاطمة علي';
+    case 'receptionist':
+      return 'موظف استقبال';
+    case 'pharmacist':
+      return 'صيدلي';
+    case 'lab_technician':
+      return 'فني مختبر';
+    case 'radiographer':
+      return 'أخصائي أشعة';
+    case 'patient':
+      return 'مريض';
+    case 'relative':
+      return 'قريب';
+    default:
+      return 'مستخدم';
+  }
+}
+
+/// الحصول على الاسم الأول بناءً على الدور
+String _getFirstNameFromRole(String role) {
+  switch (role) {
+    case 'super_admin':
+      return 'مدير';
+    case 'clinic_admin':
+      return 'مدير';
+    case 'doctor':
+      return 'أحمد';
+    case 'nurse':
+      return 'فاطمة';
+    case 'receptionist':
+      return 'موظف';
+    case 'pharmacist':
+      return 'صيدلي';
+    case 'lab_technician':
+      return 'فني';
+    case 'radiographer':
+      return 'أخصائي';
+    case 'patient':
+      return 'مريض';
+    case 'relative':
+      return 'قريب';
+    default:
+      return 'مستخدم';
+  }
+}
+
+/// الحصول على الاسم الأخير بناءً على الدور
+String _getLastNameFromRole(String role) {
+  switch (role) {
+    case 'super_admin':
+      return 'النظام';
+    case 'clinic_admin':
+      return 'العيادة';
+    case 'doctor':
+      return 'محمد';
+    case 'nurse':
+      return 'علي';
+    case 'receptionist':
+      return 'استقبال';
+    case 'pharmacist':
+      return '';
+    case 'lab_technician':
+      return 'مختبر';
+    case 'radiographer':
+      return 'أشعة';
+    case 'patient':
+      return '';
+    case 'relative':
+      return '';
+    default:
+      return '';
+  }
 }

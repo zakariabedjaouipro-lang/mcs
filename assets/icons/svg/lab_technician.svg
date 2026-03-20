@@ -1,0 +1,5 @@
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <!-- Lab Technician/Beaker icon -->
+  <path d="M19 3H5L4 5l7 9v5h2v-5l7-9-1-2zM12 12.5L7.5 7h9L12 12.5z"/>
+  <line x1="12" y1="14" x2="12" y2="20" stroke="currentColor" stroke-width="2"/>
+</svg>

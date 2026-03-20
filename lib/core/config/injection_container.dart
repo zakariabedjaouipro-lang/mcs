@@ -27,6 +27,15 @@ import 'package:mcs/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mcs/features/doctor/data/repositories/doctor_repository_impl.dart';
 import 'package:mcs/features/doctor/domain/repositories/doctor_repository.dart';
 import 'package:mcs/features/doctor/presentation/bloc/doctor_bloc.dart';
+import 'package:mcs/features/clinic/data/repositories/clinic_repository_impl.dart';
+import 'package:mcs/features/clinic/domain/repositories/clinic_repository.dart';
+import 'package:mcs/features/clinic/presentation/bloc/clinic_bloc.dart';
+import 'package:mcs/features/nurse/presentation/bloc/nurse_bloc.dart';
+import 'package:mcs/features/receptionist/presentation/bloc/receptionist_bloc.dart';
+import 'package:mcs/features/pharmacist/presentation/bloc/pharmacist_bloc.dart';
+import 'package:mcs/features/lab/presentation/bloc/lab_technician_bloc.dart';
+import 'package:mcs/features/radiology/presentation/bloc/radiographer_bloc.dart';
+import 'package:mcs/features/relative/presentation/bloc/relative_bloc.dart';
 import 'package:mcs/features/localization/data/datasources/localization_local_data_source.dart';
 import 'package:mcs/features/localization/data/repositories/localization_repository.dart'
     as localization_repo;
@@ -140,6 +149,26 @@ Future<void> configureDependencies() async {
     ..registerFactory(
       () => DoctorBloc(sl<DoctorRepository>()),
     )
+    // ── New Features ────────────────────────────────────────
+    // Clinic Admin
+    ..registerLazySingleton<ClinicRepository>(
+      () => ClinicRepositoryImpl(sl<SupabaseService>()),
+    )
+    ..registerFactory(
+      () => ClinicBloc(sl<ClinicRepository>()),
+    )
+    // Nurse
+    ..registerFactory(() => NurseBloc())
+    // Receptionist
+    ..registerFactory(() => ReceptionistBloc())
+    // Pharmacist
+    ..registerFactory(() => PharmacistBloc())
+    // Lab Technician
+    ..registerFactory(() => LabTechnicianBloc())
+    // Radiographer
+    ..registerFactory(() => RadioGrapherBloc())
+    // Relative
+    ..registerFactory(() => RelativeBloc())
     // ── Other BLoCs ──────────────────────────────────────────
     // ✅ Admin BLoC - محدد بشكل واضح
     ..registerFactory(() => AdminBloc(sl<SupabaseService>()));

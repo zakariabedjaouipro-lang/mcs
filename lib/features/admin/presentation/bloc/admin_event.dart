@@ -160,26 +160,26 @@ class LoadPendingApprovals extends AdminEvent {
 class ApproveUserEvent extends AdminEvent {
   const ApproveUserEvent({
     required this.userId,
-    required this.notes,
+    required this.approvalNotes,
   });
   final String userId;
-  final String notes;
+  final String approvalNotes;
 
   @override
-  List<Object?> get props => [userId, notes];
+  List<Object?> get props => [userId, approvalNotes];
 }
 
 /// Reject user registration
 class RejectUserEvent extends AdminEvent {
   const RejectUserEvent({
     required this.userId,
-    required this.reason,
+    required this.rejectionReason,
   });
   final String userId;
-  final String reason;
+  final String rejectionReason;
 
   @override
-  List<Object?> get props => [userId, reason];
+  List<Object?> get props => [userId, rejectionReason];
 }
 
 /// Load appointments

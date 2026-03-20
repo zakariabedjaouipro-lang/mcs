@@ -16,12 +16,25 @@ import 'package:mcs/features/admin/presentation/screens/premium_admin_clinics_sc
 import 'package:mcs/features/admin/presentation/screens/admin_employees_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_patients_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_settings_screen.dart';
-import 'package:mcs/features/admin/presentation/screens/premium_admin_dashboard_screen.dart';
-import 'package:mcs/features/admin/presentation/screens/premium_super_admin_dashboard.dart';
+import 'package:mcs/features/admin/presentation/screens/super_admin_dashboard_v2.dart';
 // App shell
 import 'package:mcs/features/app/shells/app_shell.dart';
 // Appointment
 import 'package:mcs/features/appointment/presentation/screens/appointments_screen.dart';
+// Clinic Admin
+import 'package:mcs/features/clinic/presentation/screens/clinic_dashboard.dart';
+// Nurse
+import 'package:mcs/features/nurse/presentation/screens/nurse_dashboard.dart';
+// Receptionist
+import 'package:mcs/features/receptionist/presentation/screens/receptionist_dashboard.dart';
+// Pharmacist
+import 'package:mcs/features/pharmacist/presentation/screens/pharmacist_dashboard.dart';
+// Lab Technician
+import 'package:mcs/features/lab/presentation/screens/lab_technician_dashboard.dart';
+// Radiographer
+import 'package:mcs/features/radiology/presentation/screens/radiographer_dashboard.dart';
+// Relative
+import 'package:mcs/features/relative/presentation/screens/relative_home_screen.dart';
 // Auth
 import 'package:mcs/features/auth/screens/change_password_screen.dart';
 import 'package:mcs/features/auth/screens/forgot_password_screen.dart';
@@ -529,7 +542,7 @@ class AppRouter {
       path: AppRoutes.adminHome,
       builder: (context, state) => BlocProvider(
         create: (context) => sl<AdminBloc>(),
-        child: const PremiumAdminDashboardScreen(),
+        child: const SuperAdminDashboardV2(),
       ),
       routes: [
         GoRoute(
@@ -558,13 +571,55 @@ class AppRouter {
     /// Super Admin (Premium Dashboard)
     GoRoute(
       path: AppRoutes.superAdminHome,
-      builder: (context, state) => const PremiumSuperAdminDashboard(),
+      builder: (context, state) => const SuperAdminDashboardV2(),
     ),
 
     /// Premium Super Admin
     GoRoute(
       path: AppRoutes.premiumSuperAdminHome,
-      builder: (context, state) => const PremiumSuperAdminDashboard(),
+      builder: (context, state) => const SuperAdminDashboardV2(),
+    ),
+
+    /// Clinic Admin
+    GoRoute(
+      path: '/clinic/dashboard',
+      builder: (context, state) => const ClinicDashboard(),
+    ),
+
+    /// Nurse
+    GoRoute(
+      path: '/nurse/dashboard',
+      builder: (context, state) => const NurseDashboard(),
+    ),
+
+    /// Receptionist
+    GoRoute(
+      path: '/receptionist/dashboard',
+      builder: (context, state) => const ReceptionistDashboard(),
+    ),
+
+    /// Pharmacist
+    GoRoute(
+      path: '/pharmacist/dashboard',
+      builder: (context, state) => const PharmacistDashboard(),
+    ),
+
+    /// Lab Technician
+    GoRoute(
+      path: '/lab/dashboard',
+      builder: (context, state) => const LabTechnicianDashboard(),
+    ),
+
+    /// Radiographer
+    GoRoute(
+      path: '/radiology/dashboard',
+      builder: (context, state) => const RadiographerDashboard(),
+    ),
+
+    /// Relative
+    GoRoute(
+      path: '/relative/home',
+      builder: (context, state) => const RelativeDashboard(),
     ),
 
     /// Splash
@@ -575,14 +630,14 @@ class AppRouter {
     /// ═══════════════════════════════════════════════════════════
     GoRoute(
       path: '/test-super-admin',
-      builder: (context, state) => const PremiumSuperAdminDashboard(),
+      builder: (context, state) => const SuperAdminDashboardV2(),
     ),
 
     GoRoute(
       path: '/test-admin',
       builder: (context, state) => BlocProvider(
         create: (context) => sl<AdminBloc>(),
-        child: const PremiumAdminDashboardScreen(),
+        child: const SuperAdminDashboardV2(),
       ),
     ),
 
