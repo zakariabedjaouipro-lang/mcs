@@ -11,11 +11,10 @@ import 'package:mcs/core/config/supabase_config.dart';
 import 'package:mcs/core/constants/app_routes.dart';
 // Admin
 import 'package:mcs/features/admin/presentation/bloc/admin_bloc.dart';
-import 'package:mcs/features/admin/presentation/screens/admin_appointments_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/premium_admin_clinics_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_employees_screen.dart';
 import 'package:mcs/features/admin/presentation/screens/admin_patients_screen.dart';
-import 'package:mcs/features/admin/presentation/screens/admin_settings_screen.dart';
+import 'package:mcs/features/admin/presentation/screens/admin_dashboard.dart';
 import 'package:mcs/features/admin/presentation/screens/super_admin_dashboard_v2.dart';
 // App shell
 import 'package:mcs/features/app/shells/app_shell.dart';
@@ -43,26 +42,22 @@ import 'package:mcs/features/auth/screens/pending_approval_screen.dart';
 import 'package:mcs/features/auth/screens/premium_login_screen.dart';
 import 'package:mcs/features/auth/screens/premium_register_screen.dart';
 // Dashboard
-import 'package:mcs/features/dashboard/screens/premium_dashboard_screen.dart';
+// (Removed: premium_dashboard_screen - now using role-based dashboards)
 // Doctor
 import 'package:mcs/features/doctor/presentation/bloc/doctor_bloc.dart';
-import 'package:mcs/features/doctor/presentation/screens/doctor_appointments_screen.dart';
-import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard_screen.dart';
 import 'package:mcs/features/doctor/presentation/screens/doctor_lab_results_screen.dart';
 import 'package:mcs/features/doctor/presentation/screens/doctor_patients_screen.dart';
 import 'package:mcs/features/doctor/presentation/screens/doctor_prescriptions_screen.dart';
 import 'package:mcs/features/doctor/presentation/screens/doctor_profile_screen.dart';
-import 'package:mcs/features/doctor/presentation/screens/doctor_settings_screen.dart';
+import 'package:mcs/features/doctor/presentation/screens/doctor_dashboard.dart';
 // Employee
-import 'package:mcs/features/employee/presentation/screens/employee_appointments_screen.dart';
-import 'package:mcs/features/employee/presentation/screens/employee_dashboard_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/employee_lab_results_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/employee_patients_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/employee_prescriptions_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/employee_profile_screen.dart';
-import 'package:mcs/features/employee/presentation/screens/employee_settings_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/inventory_screen.dart';
 import 'package:mcs/features/employee/presentation/screens/invoices_screen.dart';
+import 'package:mcs/features/employee/presentation/screens/employee_dashboard.dart';
 // Landing
 import 'package:mcs/features/landing/screens/contact_screen.dart' as contact;
 import 'package:mcs/features/landing/screens/download_screen.dart';
@@ -386,12 +381,8 @@ class AppRouter {
       builder: (context, state) => const PendingApprovalScreen(),
     ),
 
-    /// Dashboard
-    GoRoute(
-      path: AppRoutes.dashboard,
-      builder: (context, state) =>
-          const AppShellScreen(child: PremiumDashboardScreen()),
-    ),
+    /// Dashboard (redirects to role-based home)
+    // NOTE: Removed PremiumDashboardScreen - now using UnifiedAppScaffold with role-based dashboards
 
     /// Patient
     GoRoute(
@@ -467,12 +458,13 @@ class AppRouter {
       path: AppRoutes.doctorHome,
       builder: (context, state) => BlocProvider(
         create: (context) => sl<DoctorBloc>(),
-        child: const DoctorDashboardScreen(isPremium: true),
+        child: const DoctorDashboard(),
       ),
       routes: [
         GoRoute(
           path: 'appointments',
-          builder: (context, state) => const DoctorAppointmentsScreen(),
+          builder: (context, state) =>
+              const AppShellScreen(child: AppointmentsScreen(isPremium: true)),
         ),
         GoRoute(
           path: 'patients',
@@ -492,7 +484,8 @@ class AppRouter {
         ),
         GoRoute(
           path: 'settings',
-          builder: (context, state) => const DoctorSettingsScreen(),
+          builder: (context, state) =>
+              const AppShellScreen(child: SettingsScreen(isPremium: true)),
         ),
       ],
     ),
@@ -500,11 +493,12 @@ class AppRouter {
     /// Employee
     GoRoute(
       path: AppRoutes.employeeHome,
-      builder: (context, state) => const EmployeeDashboardScreen(),
+      builder: (context, state) => const EmployeeDashboard(),
       routes: [
         GoRoute(
           path: 'appointments',
-          builder: (context, state) => const EmployeeAppointmentsScreen(),
+          builder: (context, state) =>
+              const AppShellScreen(child: AppointmentsScreen(isPremium: true)),
         ),
         GoRoute(
           path: 'patients',
@@ -532,7 +526,8 @@ class AppRouter {
         ),
         GoRoute(
           path: 'settings',
-          builder: (context, state) => const EmployeeSettingsScreen(),
+          builder: (context, state) =>
+              const AppShellScreen(child: SettingsScreen(isPremium: true)),
         ),
       ],
     ),
@@ -542,12 +537,13 @@ class AppRouter {
       path: AppRoutes.adminHome,
       builder: (context, state) => BlocProvider(
         create: (context) => sl<AdminBloc>(),
-        child: const SuperAdminDashboardV2(),
+        child: const AdminDashboard(),
       ),
       routes: [
         GoRoute(
           path: 'appointments',
-          builder: (context, state) => const AdminAppointmentsScreen(),
+          builder: (context, state) =>
+              const AppShellScreen(child: AppointmentsScreen(isPremium: true)),
         ),
         GoRoute(
           path: 'doctors',
@@ -563,7 +559,8 @@ class AppRouter {
         ),
         GoRoute(
           path: 'settings',
-          builder: (context, state) => const AdminSettingsScreen(),
+          builder: (context, state) =>
+              const AppShellScreen(child: SettingsScreen(isPremium: true)),
         ),
       ],
     ),
@@ -645,19 +642,13 @@ class AppRouter {
       path: '/test-doctor',
       builder: (context, state) => BlocProvider(
         create: (context) => sl<DoctorBloc>(),
-        child: const DoctorDashboardScreen(isPremium: true),
+        child: const DoctorDashboard(),
       ),
     ),
 
     GoRoute(
-      path: '/test-patient',
-      builder: (context, state) =>
-          const AppShellScreen(child: PatientHomeScreen(isPremium: true)),
-    ),
-
-    GoRoute(
       path: '/test-employee',
-      builder: (context, state) => const EmployeeDashboardScreen(),
+      builder: (context, state) => const EmployeeDashboard(),
     ),
   ];
 }
