@@ -129,6 +129,9 @@ class AppRouter {
     final isAuthenticated = SupabaseConfig.isAuthenticated;
     final currentPath = state.matchedLocation;
 
+    debugPrint(
+        '🛡️ GUARD CHECK: isAuthenticated=$isAuthenticated, path=$currentPath');
+
     // ✅ ALLOW public routes without any checks
     const publicRoutes = [
       AppRoutes.landing,
@@ -139,11 +142,13 @@ class AppRouter {
     ];
 
     if (publicRoutes.contains(currentPath)) {
+      debugPrint('🛡️ Public route allowed: $currentPath');
       return null;
     }
 
     // ✅ ALLOW splash screen without any checks
     if (currentPath == '/splash') {
+      debugPrint('🛡️ Splash screen allowed');
       return null;
     }
 
@@ -162,8 +167,12 @@ class AppRouter {
 
     if (!isAuthenticated) {
       if (authRoutes.contains(currentPath)) {
+        debugPrint(
+            '🛡️ Auth route allowed for unauthenticated user: $currentPath');
         return null;
       }
+      debugPrint(
+          '🛡️ Unauthenticated user trying to access protected route, redirecting to login');
       return AppRoutes.login;
     }
 
@@ -176,10 +185,13 @@ class AppRouter {
             currentPath == AppRoutes.forgotPassword ||
             currentPath == AppRoutes.changePassword) &&
         isAuthenticated) {
+      debugPrint(
+          '🛡️ Auth route allowed for authenticated user (completing flow): $currentPath');
       return null;
     }
 
     if (currentPath == AppRoutes.pendingApproval) {
+      debugPrint('🛡️ Pending approval screen allowed');
       return null;
     }
 
@@ -194,18 +206,23 @@ class AppRouter {
         final approvalStatus =
             (authUser.userMetadata?['approvalStatus'] as String?) ?? '';
 
+        debugPrint('🛡️ Approval status: $approvalStatus');
+
         if (approvalStatus == 'pending') {
           if (currentPath != AppRoutes.pendingApproval) {
+            debugPrint(
+                '🛡️ User pending approval, redirecting to pending screen');
             return AppRoutes.pendingApproval;
           }
         } else if (approvalStatus == 'rejected') {
           if (currentPath != AppRoutes.login) {
+            debugPrint('🛡️ User rejected, redirecting to login');
             return AppRoutes.login;
           }
         }
       }
     } catch (e) {
-      debugPrint('Error checking approval status: $e');
+      debugPrint('❌ Error checking approval status: $e');
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -213,13 +230,19 @@ class AppRouter {
     // ═══════════════════════════════════════════════════════════════════════
 
     if (currentPath == AppRoutes.dashboard) {
-      return _getRoleBasedHomePath();
+      final homePath = _getRoleBasedHomePath();
+      debugPrint('🛡️ Redirecting from dashboard to: $homePath');
+      return homePath;
     }
 
     if (currentPath == AppRoutes.login) {
-      return _getRoleBasedHomePath();
+      final homePath = _getRoleBasedHomePath();
+      debugPrint(
+          '🛡️ User already authenticated on login page, redirecting to: $homePath');
+      return homePath;
     }
 
+    debugPrint('🛡️ No redirect needed');
     return null;
   }
 
@@ -230,8 +253,10 @@ class AppRouter {
     try {
       final authUser = SupabaseConfig.currentUser;
 
+      debugPrint('🛡️ Getting role-based home for user: ${authUser?.email}');
+
       if (authUser == null) {
-        debugPrint('[GO_ROUTER] User is null - returning to splash');
+        debugPrint('🛡️ User is null, returning to splash');
         return '/splash';
       }
 
@@ -239,41 +264,48 @@ class AppRouter {
       // PRIORITY 1: Try appMetadata['role']
       // ═════════════════════════════════════════════════════════════════════
       final appMetadata = authUser.appMetadata;
+      debugPrint('🛡️ appMetadata: $appMetadata');
 
       try {
         final appRole = appMetadata['role'];
         if (appRole != null && appRole.toString().isNotEmpty) {
-          debugPrint('[GO_ROUTER] Found role in appMetadata: $appRole');
-          return _mapRoleToPath(appRole.toString());
+          debugPrint('🛡️ Found role in appMetadata: $appRole');
+          final path = _mapRoleToPath(appRole.toString());
+          debugPrint('🛡️ Mapping role "$appRole" to path: $path');
+          return path;
         }
-      } catch (_) {
-        // Continue
+      } catch (e) {
+        debugPrint('🛡️ Error reading appMetadata: $e');
       }
 
       // ═════════════════════════════════════════════════════════════════════
       // PRIORITY 2: Try userMetadata['role']
       // ═════════════════════════════════════════════════════════════════════
       final userMetadata = authUser.userMetadata;
+      debugPrint('🛡️ userMetadata: $userMetadata');
+
       if (userMetadata != null) {
         try {
           final userRole = userMetadata['role'];
           if (userRole != null && userRole.toString().isNotEmpty) {
-            debugPrint('[GO_ROUTER] Found role in userMetadata: $userRole');
-            return _mapRoleToPath(userRole.toString());
+            debugPrint('🛡️ Found role in userMetadata: $userRole');
+            final path = _mapRoleToPath(userRole.toString());
+            debugPrint('🛡️ Mapping role "$userRole" to path: $path');
+            return path;
           }
-        } catch (_) {
-          // Continue
+        } catch (e) {
+          debugPrint('🛡️ Error reading userMetadata: $e');
         }
       }
 
       debugPrint(
-        '[GO_ROUTER] WARNING: User ${authUser.id} has no role in metadata. '
+        '🛡️ WARNING: User ${authUser.id} has no role in metadata. '
         'Returning to splash for role resolution.',
       );
 
       return '/splash';
     } catch (e) {
-      debugPrint('[GO_ROUTER] ERROR in _getRoleBasedHomePath: $e');
+      debugPrint('❌ ERROR in _getRoleBasedHomePath: $e');
       return '/splash';
     }
   }

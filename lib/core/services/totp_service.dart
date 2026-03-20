@@ -2,11 +2,8 @@
 /// خدمة كلمة المرور لمرة واحدة المبنية على الوقت
 library;
 
-import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:math';
-
-import 'package:web/web.dart';
 
 class TotpService {
   // ── Generate Secret ──────────────────────────────────────
@@ -14,7 +11,6 @@ class TotpService {
   /// Generate a random base32 secret for TOTP
   /// توليد سر عشوائي base32 لـ TOTP
   static String generateSecret({int length = 32}) {
-    const AlphaOption = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
     final random = Random.secure();
     final values = List<int>.generate(length, (i) => random.nextInt(256));
     return base32.encode(values).substring(0, length);

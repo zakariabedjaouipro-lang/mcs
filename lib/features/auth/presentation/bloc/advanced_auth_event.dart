@@ -3,7 +3,6 @@
 library;
 
 import 'package:equatable/equatable.dart';
-import 'package:mcs/core/models/registration_request_model.dart';
 import 'package:mcs/core/models/role_model.dart';
 
 /// Base class for all advanced auth events

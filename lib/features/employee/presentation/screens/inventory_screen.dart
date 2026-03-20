@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mcs/core/widgets/custom_button.dart';
 import 'package:mcs/core/widgets/app_card.dart';
-import 'package:mcs/core/widgets/app_scaffold.dart';
 
 class InventoryScreen extends StatelessWidget {
   const InventoryScreen({super.key});

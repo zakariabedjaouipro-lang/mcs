@@ -3,7 +3,6 @@
 library;
 
 import 'package:go_router/go_router.dart';
-import 'package:mcs/features/auth/presentation/screens/screens_index.dart';
 
 /// Route paths for advanced authentication
 class AdvancedAuthRoutes {

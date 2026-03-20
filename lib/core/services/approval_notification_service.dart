@@ -257,7 +257,7 @@ class ApprovalNotificationService {
   }) async {
     try {
       // Try to call a Supabase Edge Function for sending emails
-      final response = await _client.functions.invoke(
+      await _client.functions.invoke(
         'send-email',
         body: {
           'to': to,

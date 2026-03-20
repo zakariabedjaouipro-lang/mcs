@@ -7,7 +7,6 @@ import 'package:mcs/core/errors/failures.dart';
 import 'package:mcs/core/models/registration_request_model.dart';
 import 'package:mcs/core/models/role_model.dart';
 import 'package:mcs/core/models/role_permissions_model.dart';
-import 'package:mcs/core/models/user_profile_model.dart';
 import 'package:mcs/core/services/role_based_authentication_service.dart';
 import 'package:mcs/core/usecases/usecase.dart';
 import 'package:equatable/equatable.dart';

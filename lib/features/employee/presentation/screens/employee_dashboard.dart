@@ -436,7 +436,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
 
   /// عرض الإشعارات
   void _showNotifications(BuildContext context, bool isArabic) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(isArabic ? 'الإشعارات' : 'Notifications'),
@@ -472,7 +472,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
 
   /// معالج تسجيل الخروج
   void _handleLogout(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(_currentLanguage == 'ar' ? 'تسجيل الخروج' : 'Logout'),

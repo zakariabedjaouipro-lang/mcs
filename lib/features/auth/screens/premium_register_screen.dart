@@ -58,10 +58,40 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       icon: Icons.medical_services,
     ),
     RoleOption(
+      value: 'nurse',
+      label: 'Nurse',
+      description: 'Provide patient care',
+      icon: Icons.healing,
+    ),
+    RoleOption(
+      value: 'receptionist',
+      label: 'Receptionist',
+      description: 'Manage appointments',
+      icon: Icons.door_front_door,
+    ),
+    RoleOption(
+      value: 'pharmacist',
+      label: 'Pharmacist',
+      description: 'Manage medications',
+      icon: Icons.local_pharmacy,
+    ),
+    RoleOption(
+      value: 'lab_technician',
+      label: 'Lab Technician',
+      description: 'Process lab tests',
+      icon: Icons.science,
+    ),
+    RoleOption(
+      value: 'radiographer',
+      label: 'Radiographer',
+      description: 'Perform imaging',
+      icon: Icons.radar,
+    ),
+    RoleOption(
       value: 'clinic_admin',
-      label: 'Admin',
+      label: 'Clinic Admin',
       description: 'Manage clinic and staff',
-      icon: Icons.business,
+      icon: Icons.business_center,
     ),
     RoleOption(
       value: 'super_admin',
@@ -70,10 +100,10 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       icon: Icons.security,
     ),
     RoleOption(
-      value: 'staff',
-      label: 'Staff',
-      description: 'Manage clinic operations',
-      icon: Icons.people_alt,
+      value: 'relative',
+      label: 'Relative',
+      description: 'Patient family member',
+      icon: Icons.family_restroom,
     ),
   ];
 

@@ -745,6 +745,14 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
             backgroundColor: PremiumColors.successGreen,
           ),
         );
+
+        // 🔥 التعديل الحاسم
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+
+        if (mounted) {
+          debugPrint('🚀 Manual redirect after login');
+          context.go('/splash');
+        }
       }
     } catch (e) {
       if (mounted) {
