@@ -4,15 +4,17 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+// الاستيرادات مرتبة أبجدياً
 import 'package:mcs/core/config/injection_container.dart';
 import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
-import 'package:mcs/core/widgets/premium_button.dart';
-import 'package:mcs/core/widgets/premium_card.dart';
-import 'package:mcs/core/widgets/premium_form_field.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mcs/core/widgets/app_card.dart';
+import 'package:mcs/core/widgets/custom_button.dart';
+import 'package:mcs/core/widgets/custom_text_field.dart';
 
 class PremiumRegisterScreen extends StatefulWidget {
   const PremiumRegisterScreen({super.key});
@@ -42,7 +44,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
   List<Map<String, dynamic>> _countries = [];
   bool _countriesLoaded = false;
 
-  final List<RoleOption> _roles = [
+  final List<RoleOption> _roles = const [
     RoleOption(
       value: 'patient',
       label: 'Patient',
@@ -435,7 +437,10 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           const SizedBox(height: 16),
           const Text(
             'Choose your role',
-            style: TextStyle(),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -458,14 +463,55 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
             itemCount: _roles.length,
             itemBuilder: (context, index) {
               final role = _roles[index];
-              return PremiumRoleCard(
-                icon: role.icon,
-                title: role.label,
-                description: role.description,
-                isSelected: _selectedRole == role.value,
-                onTap: () {
-                  setState(() => _selectedRole = role.value);
-                },
+              return AppCard(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      setState(() => _selectedRole = role.value);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            role.icon,
+                            size: 40,
+                            color: _selectedRole == role.value
+                                ? PremiumColors.primaryBlue
+                                : Colors.grey,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            role.label,
+                            style: PremiumTextStyles.labelLarge.copyWith(
+                              color: _selectedRole == role.value
+                                  ? PremiumColors.primaryBlue
+                                  : PremiumColors.darkText,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            role.description,
+                            style: PremiumTextStyles.bodySmall.copyWith(
+                              color: PremiumColors.lightText,
+                            ),
+                          ),
+                          if (_selectedRole == role.value) ...[
+                            const SizedBox(height: 12),
+                            const Icon(
+                              Icons.check_circle,
+                              color: PremiumColors.primaryBlue,
+                              size: 20,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               );
             },
           ),
@@ -494,7 +540,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           const SizedBox(height: 32),
 
           // Next Button
-          PremiumButton(
+          CustomButton(
             label: 'Continue',
             onPressed: _nextStep,
             icon: Icons.arrow_forward,
@@ -537,7 +583,10 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           const SizedBox(height: 16),
           const Text(
             'Basic information',
-            style: TextStyle(),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -553,27 +602,27 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
             key: _formKey,
             child: Column(
               children: [
-                PremiumFormField(
+                CustomTextField(
                   label: 'Full Name',
                   hint: 'John Doe',
                   controller: _nameController,
-                  prefixIcon: const Icon(Icons.person_outline),
+                  prefixIcon: Icons.person_outline,
                 ),
                 const SizedBox(height: 24),
-                PremiumFormField(
+                CustomTextField(
                   label: 'Email Address',
                   hint: 'john@example.com',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  prefixIcon: const Icon(Icons.mail_outline),
+                  prefixIcon: Icons.mail_outline,
                 ),
                 const SizedBox(height: 24),
-                PremiumFormField(
+                CustomTextField(
                   label: 'Phone Number',
                   hint: '+213 XXX XXX XXX',
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  prefixIcon: const Icon(Icons.phone_outlined),
+                  prefixIcon: Icons.phone_outlined,
                 ),
               ],
             ),
@@ -606,15 +655,14 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           Row(
             children: [
               Expanded(
-                child: PremiumButton(
+                child: CustomButton(
                   label: 'Back',
-                  variant: PremiumButtonVariant.secondary,
                   onPressed: _previousStep,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: PremiumButton(
+                child: CustomButton(
                   label: 'Next',
                   onPressed: _nextStep,
                   icon: Icons.arrow_forward,
@@ -637,7 +685,10 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           const SizedBox(height: 16),
           const Text(
             'Secure your account',
-            style: TextStyle(),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -648,13 +699,13 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           ),
           const SizedBox(height: 32),
 
-          // Password Fields
-          PremiumFormField(
+          // Password Fields - تم إصلاح الأخطاء هنا
+          CustomTextField(
             label: 'Password',
             hint: '••••••••',
             controller: _passwordController,
             obscureText: _obscurePassword,
-            prefixIcon: const Icon(Icons.lock_outline),
+            prefixIcon: Icons.lock_outline,
             suffixIcon: GestureDetector(
               onTap: () {
                 setState(() => _obscurePassword = !_obscurePassword);
@@ -665,12 +716,12 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
             ),
           ),
           const SizedBox(height: 24),
-          PremiumFormField(
+          CustomTextField(
             label: 'Confirm Password',
             hint: '••••••••',
             controller: _confirmPasswordController,
             obscureText: _obscureConfirmPassword,
-            prefixIcon: const Icon(Icons.lock_outline),
+            prefixIcon: Icons.lock_outline,
             suffixIcon: GestureDetector(
               onTap: () {
                 setState(
@@ -765,15 +816,14 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           Row(
             children: [
               Expanded(
-                child: PremiumButton(
+                child: CustomButton(
                   label: 'Back',
-                  variant: PremiumButtonVariant.secondary,
                   onPressed: _previousStep,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: PremiumButton(
+                child: CustomButton(
                   label: 'Create Account',
                   isLoading: _isLoading,
                   onPressed: _isLoading ? null : _handleCreateAccount,
@@ -836,7 +886,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       'Contains special character': password.contains(RegExp(r'[!@#$%^&*]')),
     };
 
-    return PremiumCard(
+    return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -877,7 +927,7 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
 }
 
 class RoleOption {
-  RoleOption({
+  const RoleOption({
     required this.value,
     required this.label,
     required this.description,

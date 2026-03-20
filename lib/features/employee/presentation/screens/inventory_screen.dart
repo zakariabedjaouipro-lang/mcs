@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mcs/core/widgets/premium_button.dart';
-import 'package:mcs/core/widgets/premium_card.dart';
-import 'package:mcs/core/widgets/premium_section.dart';
+import 'package:mcs/core/widgets/custom_button.dart';
+import 'package:mcs/core/widgets/app_card.dart';
+import 'package:mcs/core/widgets/app_scaffold.dart';
 
 class InventoryScreen extends StatelessWidget {
   const InventoryScreen({super.key});
@@ -21,32 +21,39 @@ class InventoryScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          PremiumSection(
-            title: isArabic ? 'المخزون الحالي' : 'Current Inventory',
-            child: Column(
-              children: List.generate(5, (i) {
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                isArabic ? 'المخزون الحالي' : 'Current Inventory',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 16),
+              ...List.generate(5, (i) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: PremiumCard(
+                  child: AppCard(
                     child: ListTile(
-                      leading: const Icon(Icons.medical_services, color: Colors.blue),
-                      title: Text(isArabic
-                          ? 'منتج طبي ${i + 1}'
-                          : 'Medical Item ${i + 1}',),
+                      leading: const Icon(Icons.medical_services,
+                          color: Colors.blue),
+                      title: Text(
+                        isArabic
+                            ? 'منتج طبي ${i + 1}'
+                            : 'Medical Item ${i + 1}',
+                      ),
                       subtitle: Text(isArabic ? 'الكمية: 50' : 'Quantity: 50'),
-                      trailing: PremiumButton(
+                      trailing: CustomButton(
                         label: isArabic ? 'تعديل' : 'Edit',
-                        size: PremiumButtonSize.small,
                         onPressed: () {},
                       ),
                     ),
                   ),
                 );
               }),
-            ),
+            ],
           ),
           const SizedBox(height: 32),
-          PremiumButton(
+          CustomButton(
             label: isArabic ? 'إضافة منتج جديد' : 'Add New Item',
             icon: Icons.add,
             onPressed: () {},

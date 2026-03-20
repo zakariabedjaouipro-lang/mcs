@@ -12,8 +12,8 @@ import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
-import 'package:mcs/core/widgets/premium_button.dart';
-import 'package:mcs/core/widgets/premium_form_field.dart';
+import 'package:mcs/core/widgets/custom_button.dart';
+import 'package:mcs/core/widgets/custom_text_field.dart';
 
 /// Demo accounts for all 10 roles
 final _demoAccounts = [
@@ -215,7 +215,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                       child: Column(
                         children: [
                           // Email field
-                          PremiumFormField(
+                          CustomTextField(
                             label: isArabic
                                 ? 'البريد الإلكتروني'
                                 : 'Email Address',
@@ -224,7 +224,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                                 : 'you@example.com',
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
-                            prefixIcon: const Icon(Icons.mail_outlined),
+                            prefixIcon: Icons.mail_outlined,
                             validator: (value) {
                               if (value?.isEmpty ?? true) {
                                 return isArabic
@@ -245,12 +245,12 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                           const SizedBox(height: 24),
 
                           // Password field
-                          PremiumFormField(
+                          CustomTextField(
                             label: isArabic ? 'كلمة المرور' : 'Password',
                             hint: isArabic ? '••••••••' : '••••••••',
                             controller: _passwordController,
                             obscureText: _obscurePassword,
-                            prefixIcon: const Icon(Icons.lock_outline),
+                            prefixIcon: Icons.lock_outline,
                             suffixIcon: GestureDetector(
                               onTap: () {
                                 setState(
@@ -286,7 +286,7 @@ class _PremiumLoginScreenState extends State<PremiumLoginScreen>
                           const SizedBox(height: 32),
 
                           // Sign in button
-                          PremiumButton(
+                          CustomButton(
                             label: isArabic ? 'تسجيل الدخول' : 'Sign In',
                             onPressed: _isLoading ? null : _handleSignIn,
                             isLoading: _isLoading,

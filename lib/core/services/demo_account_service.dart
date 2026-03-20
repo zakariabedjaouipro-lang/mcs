@@ -1,11 +1,16 @@
 /// Service for creating and managing demo/test accounts for development.
 ///
 /// Provides methods to create and verify demo accounts for all user roles:
-/// - Super Admin
-/// - Admin
-/// - Doctor
-/// - Patient
-/// - Employee
+/// - Super Admin (super_admin)
+/// - Clinic Admin (clinic_admin)
+/// - Doctor (doctor)
+/// - Nurse (nurse)
+/// - Receptionist (receptionist)
+/// - Pharmacist (pharmacist)
+/// - Lab Technician (lab_technician)
+/// - Radiographer (radiographer)
+/// - Patient (patient)
+/// - Relative (relative)
 library;
 
 import 'dart:developer';
@@ -23,14 +28,20 @@ class DemoAccountService {
 
   // ── Demo Account Credentials ──────────────────────────
 
-  static const String _demoPassword = 'Demo@123456';
+  static const String _demoPassword = 'Password123!';
 
+  /// جميع الأدوار العشرة مع بريد إلكتروني لكل دور
   static const Map<String, String> demoAccounts = {
-    'super_admin': 'superadmin@demo.com',
-    'admin': 'admin@demo.com',
-    'doctor': 'doctor@demo.com',
-    'patient': 'patient@demo.com',
-    'employee': 'employee@demo.com',
+    'super_admin': 'super@example.com',
+    'clinic_admin': 'clinic@example.com',
+    'doctor': 'doctor@example.com',
+    'nurse': 'nurse@example.com',
+    'receptionist': 'reception@example.com',
+    'pharmacist': 'pharmacy@example.com',
+    'lab_technician': 'lab@example.com',
+    'radiographer': 'radio@example.com',
+    'patient': 'patient@example.com',
+    'relative': 'relative@example.com',
   };
 
   // ── Public Methods ────────────────────────────────────
@@ -41,7 +52,7 @@ class DemoAccountService {
     final results = <String, DemoAccountResult>{};
 
     log(
-      '🚀 Starting demo account creation...',
+      '🚀 Starting demo account creation for all 10 roles...',
       name: 'DemoAccountService',
       level: 800,
     );
@@ -84,7 +95,8 @@ class DemoAccountService {
   /// Creates a specific demo account by role.
   Future<DemoAccountResult> createDemoAccountByRole(String role) async {
     if (!demoAccounts.containsKey(role)) {
-      throw ArgumentError('Invalid role: $role');
+      throw ArgumentError(
+          'Invalid role: $role. Available roles: ${demoAccounts.keys.join(', ')}');
     }
 
     final email = demoAccounts[role]!;
@@ -142,9 +154,11 @@ class DemoAccountService {
         email: email,
         password: _demoPassword,
         data: {
-          'name': _getDemoFullName(role),
+          'full_name': _getDemoFullName(role),
           'phone': _getDemoPhone(role),
           'role': role,
+          'approvalStatus': 'approved', // الموافقة التلقائية للحسابات التجريبية
+          'registrationType': 'demo',
         },
       );
 
@@ -158,6 +172,9 @@ class DemoAccountService {
 
       // Create role-specific records
       await _createRoleSpecificRecords(userId, role);
+
+      // Create approval record
+      await _createApprovalRecord(userId, email, role);
 
       return DemoAccountResult(
         role: role,
@@ -179,10 +196,11 @@ class DemoAccountService {
     String role,
   ) async {
     try {
-      await _client.from('users').insert({
+      await _client.from('users').upsert({
         'id': userId,
         'email': email,
-        'full_name': _getDemoFullName(role),
+        'first_name': _getDemoFirstName(role),
+        'last_name': _getDemoLastName(role),
         'phone': _getDemoPhone(role),
         'role': role,
         'is_active': true,
@@ -198,7 +216,31 @@ class DemoAccountService {
     }
   }
 
-  /// Creates role-specific records (doctor, patient, employee, etc.).
+  /// Creates an approval record in the user_approvals table.
+  Future<void> _createApprovalRecord(
+    String userId,
+    String email,
+    String role,
+  ) async {
+    try {
+      await _client.from('user_approvals').upsert({
+        'user_id': userId,
+        'email': email,
+        'full_name': _getDemoFullName(role),
+        'role': role,
+        'registration_type': 'demo',
+        'status': 'approved', // موافقة تلقائية للحسابات التجريبية
+      });
+    } catch (e) {
+      log(
+        'Warning: Failed to create approval record: $e',
+        name: 'DemoAccountService',
+        level: 900,
+      );
+    }
+  }
+
+  /// Creates role-specific records (doctor, patient, nurse, etc.).
   Future<void> _createRoleSpecificRecords(
     String userId,
     String role,
@@ -209,10 +251,20 @@ class DemoAccountService {
           await _createDoctorRecord(userId);
         case 'patient':
           await _createPatientRecord(userId);
-        case 'employee':
-          await _createEmployeeRecord(userId);
-        case 'admin':
+        case 'nurse':
+          await _createNurseRecord(userId);
+        case 'receptionist':
+          await _createReceptionistRecord(userId);
+        case 'pharmacist':
+          await _createPharmacistRecord(userId);
+        case 'lab_technician':
+          await _createLabTechnicianRecord(userId);
+        case 'radiographer':
+          await _createRadiographerRecord(userId);
+        case 'relative':
+          await _createRelativeRecord(userId);
         case 'super_admin':
+        case 'clinic_admin':
           // Admin roles don't need specific records
           break;
       }
@@ -227,42 +279,89 @@ class DemoAccountService {
 
   /// Creates a doctor record.
   Future<void> _createDoctorRecord(String userId) async {
-    await _client.from('doctors').insert({
+    await _client.from('doctors').upsert({
       'user_id': userId,
-      'specialization': 'عام',
+      'specialization': 'طب عام',
       'bio': 'طبيب تجريبي لاختبار النظام',
-      'license_number': 'LIC-DEMO-001',
-      'years_of_experience': 5,
+      'license_number': 'DOC-DEMO-001',
+      'years_of_experience': 8,
       'is_available': true,
-      'consultation_fee': 100,
-      'created_by': userId,
+      'consultation_fee': 150.00,
+      'rating': 4.5,
     });
   }
 
   /// Creates a patient record.
   Future<void> _createPatientRecord(String userId) async {
-    await _client.from('patients').insert({
+    await _client.from('patients').upsert({
       'user_id': userId,
-      'date_of_birth': '1990-01-01',
-      'gender': 'M',
+      'date_of_birth': '1985-05-15',
+      'gender': 'male',
       'blood_type': 'O+',
-      'allergies': '[]',
-      'medical_history': '[]',
-      'emergency_contact_name': 'اسم آخر',
-      'emergency_contact_phone': '0123456789',
-      'created_by': userId,
+      'allergies': ['بنسلين'],
+      'medical_history': ['لا يوجد'],
+      'emergency_contact_name': 'أحمد المريض',
+      'emergency_contact_phone': '+213551234567',
     });
   }
 
-  /// Creates an employee record.
-  Future<void> _createEmployeeRecord(String userId) async {
-    await _client.from('employees').insert({
+  /// Creates a nurse record.
+  Future<void> _createNurseRecord(String userId) async {
+    await _client.from('nurses').upsert({
       'user_id': userId,
-      'position': 'موظف تجريبي',
-      'department': 'عام',
-      'hire_date': DateTime.now().toIso8601String(),
-      'is_active': true,
-      'created_by': userId,
+      'specialization': 'تمريض عام',
+      'license_number': 'NRS-DEMO-001',
+      'years_of_experience': 5,
+      'shift': 'صباحي',
+    });
+  }
+
+  /// Creates a receptionist record.
+  Future<void> _createReceptionistRecord(String userId) async {
+    await _client.from('receptionists').upsert({
+      'user_id': userId,
+      'department': 'استقبال',
+      'languages': ['العربية', 'الإنجليزية'],
+      'years_of_experience': 3,
+    });
+  }
+
+  /// Creates a pharmacist record.
+  Future<void> _createPharmacistRecord(String userId) async {
+    await _client.from('pharmacists').upsert({
+      'user_id': userId,
+      'license_number': 'PHM-DEMO-001',
+      'specialization': 'صيدلة سريرية',
+      'years_of_experience': 4,
+    });
+  }
+
+  /// Creates a lab technician record.
+  Future<void> _createLabTechnicianRecord(String userId) async {
+    await _client.from('lab_technicians').upsert({
+      'user_id': userId,
+      'specialization': 'تحاليل طبية',
+      'license_number': 'LAB-DEMO-001',
+      'years_of_experience': 6,
+    });
+  }
+
+  /// Creates a radiographer record.
+  Future<void> _createRadiographerRecord(String userId) async {
+    await _client.from('radiographers').upsert({
+      'user_id': userId,
+      'specialization': 'أشعة تشخيصية',
+      'license_number': 'RAD-DEMO-001',
+      'years_of_experience': 7,
+    });
+  }
+
+  /// Creates a relative record.
+  Future<void> _createRelativeRecord(String userId) async {
+    await _client.from('relatives').upsert({
+      'user_id': userId,
+      'relationship_type': 'parent',
+      'is_primary_contact': true,
     });
   }
 
@@ -270,23 +369,89 @@ class DemoAccountService {
   String _getDemoFullName(String role) {
     switch (role) {
       case 'super_admin':
-        return 'Super Administrator';
-      case 'admin':
-        return 'Administrator';
+        return 'مدير النظام';
+      case 'clinic_admin':
+        return 'مدير العيادة';
       case 'doctor':
-        return 'Dr. Demo Doctor';
+        return 'د. أحمد محمد';
+      case 'nurse':
+        return 'م. فاطمة علي';
+      case 'receptionist':
+        return 'موظف استقبال';
+      case 'pharmacist':
+        return 'صيدلي';
+      case 'lab_technician':
+        return 'فني مختبر';
+      case 'radiographer':
+        return 'أخصائي أشعة';
       case 'patient':
-        return 'Demo Patient';
-      case 'employee':
-        return 'Demo Employee';
+        return 'مريض';
+      case 'relative':
+        return 'قريب';
       default:
-        return 'Demo User';
+        return 'مستخدم تجريبي';
+    }
+  }
+
+  /// Gets the first name for a demo account by role.
+  String _getDemoFirstName(String role) {
+    switch (role) {
+      case 'super_admin':
+        return 'مدير';
+      case 'clinic_admin':
+        return 'مدير';
+      case 'doctor':
+        return 'أحمد';
+      case 'nurse':
+        return 'فاطمة';
+      case 'receptionist':
+        return 'موظف';
+      case 'pharmacist':
+        return 'صيدلي';
+      case 'lab_technician':
+        return 'فني';
+      case 'radiographer':
+        return 'أخصائي';
+      case 'patient':
+        return 'مريض';
+      case 'relative':
+        return 'قريب';
+      default:
+        return 'مستخدم';
+    }
+  }
+
+  /// Gets the last name for a demo account by role.
+  String _getDemoLastName(String role) {
+    switch (role) {
+      case 'super_admin':
+        return 'النظام';
+      case 'clinic_admin':
+        return 'العيادة';
+      case 'doctor':
+        return 'محمد';
+      case 'nurse':
+        return 'علي';
+      case 'receptionist':
+        return 'استقبال';
+      case 'pharmacist':
+        return '';
+      case 'lab_technician':
+        return 'مختبر';
+      case 'radiographer':
+        return 'أشعة';
+      case 'patient':
+        return '';
+      case 'relative':
+        return '';
+      default:
+        return '';
     }
   }
 
   /// Gets the phone number for a demo account by role.
   String _getDemoPhone(String role) {
-    return '+213612345678';
+    return '+213666123456';
   }
 }
 
@@ -301,7 +466,7 @@ class DemoAccountResult {
     this.isNewlyCreated = false,
   });
 
-  /// The role of the account (super_admin, admin, doctor, patient, employee).
+  /// The role of the account.
   final String role;
 
   /// The email address of the account.
