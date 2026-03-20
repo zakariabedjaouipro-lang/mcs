@@ -12,6 +12,7 @@ import 'package:mcs/core/constants/app_routes.dart';
 import 'package:mcs/core/services/auth_service.dart';
 import 'package:mcs/core/theme/premium_colors.dart';
 import 'package:mcs/core/theme/premium_text_styles.dart';
+import 'package:mcs/core/utils/role_management_utils.dart';
 import 'package:mcs/core/widgets/app_card.dart';
 import 'package:mcs/core/widgets/custom_button.dart';
 import 'package:mcs/core/widgets/custom_text_field.dart';
@@ -39,73 +40,20 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
   bool _obscureConfirmPassword = true;
   String _selectedRole = 'patient';
   String? _selectedCountryId;
+  String? _selectedClinicId; // ✅ جديد: معرّف العيادة للموظفين
   bool _isLoading = false;
+  bool _isPublicRegistration = true; // ✅ جديد: نوع التسجيل
 
   List<Map<String, dynamic>> _countries = [];
   bool _countriesLoaded = false;
 
-  final List<RoleOption> _roles = const [
-    RoleOption(
-      value: 'patient',
-      label: 'Patient',
-      description: 'Access healthcare services',
-      icon: Icons.person,
-    ),
-    RoleOption(
-      value: 'doctor',
-      label: 'Doctor',
-      description: 'Manage clinic and patients',
-      icon: Icons.medical_services,
-    ),
-    RoleOption(
-      value: 'nurse',
-      label: 'Nurse',
-      description: 'Provide patient care',
-      icon: Icons.healing,
-    ),
-    RoleOption(
-      value: 'receptionist',
-      label: 'Receptionist',
-      description: 'Manage appointments',
-      icon: Icons.door_front_door,
-    ),
-    RoleOption(
-      value: 'pharmacist',
-      label: 'Pharmacist',
-      description: 'Manage medications',
-      icon: Icons.local_pharmacy,
-    ),
-    RoleOption(
-      value: 'lab_technician',
-      label: 'Lab Technician',
-      description: 'Process lab tests',
-      icon: Icons.science,
-    ),
-    RoleOption(
-      value: 'radiographer',
-      label: 'Radiographer',
-      description: 'Perform imaging',
-      icon: Icons.radar,
-    ),
-    RoleOption(
-      value: 'clinic_admin',
-      label: 'Clinic Admin',
-      description: 'Manage clinic and staff',
-      icon: Icons.business_center,
-    ),
-    RoleOption(
-      value: 'super_admin',
-      label: 'Super Admin',
-      description: 'Full system administration',
-      icon: Icons.security,
-    ),
-    RoleOption(
-      value: 'relative',
-      label: 'Relative',
-      description: 'Patient family member',
-      icon: Icons.family_restroom,
-    ),
-  ];
+  // ✅ الحصول على الأدوار المتاحة بناءً على نوع التسجيل
+  List<RoleOption> get _availableRoles {
+    return RoleManagementUtils.getAvailableRoles(
+      currentUserRole: '',
+      isPublicRegistration: _isPublicRegistration,
+    );
+  }
 
   @override
   void initState() {
@@ -257,18 +205,36 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       return;
     }
 
+    // ✅ التحقق من أن الموظفين لديهم معرّف عيادة
+    if (RoleManagementUtils.roleRequiresClinicId(_selectedRole) &&
+        _selectedClinicId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('يجب تحديد العيادة للموظفين'),
+          backgroundColor: PremiumColors.errorRed,
+        ),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
       final authService = sl<AuthService>();
+
+      // ✅ تحديد حالة الموافقة بناءً على الدور
+      final approvalStatus =
+          RoleManagementUtils.getApprovalStatusForRole(_selectedRole);
+
       final response = await authService.signUpWithEmail(
         email: _emailController.text.trim(),
         password: _passwordController.text,
+        clinicId: _selectedClinicId, // ✅ إضافة clinicId
         metadata: {
           'fullName': _nameController.text.trim(),
           'phone': _phoneController.text.trim(),
           'role': _selectedRole,
-          'approvalStatus': 'pending',
+          'approvalStatus': approvalStatus,
           'registrationType': 'email',
         },
       );
@@ -279,13 +245,18 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         'email': _emailController.text.trim(),
         'full_name': _nameController.text.trim(),
         'role': _selectedRole,
+        'clinic_id': _selectedClinicId, // ✅ حفظ clinicId
         'registration_type': 'email',
-        'status': 'pending',
+        'status': approvalStatus,
       }).then((_) {
         if (mounted) {
+          final message = approvalStatus == 'approved'
+              ? 'تم إنشاء الحساب بنجاح! يمكنك الدخول الآن.'
+              : 'تم إنشاء الحساب بنجاح. في انتظار الموافقة...';
+
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('تم إنشاء الحساب بنجاح. في انتظار الموافقة...'),
+            SnackBar(
+              content: Text(message),
               backgroundColor: PremiumColors.successGreen,
             ),
           );
@@ -316,11 +287,16 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       final authResponse = await authService.signInWithGoogle();
 
       if (authResponse != null && mounted) {
+        // ✅ تحديد حالة الموافقة بناءً على الدور
+        final approvalStatus =
+            RoleManagementUtils.getApprovalStatusForRole(_selectedRole);
+
         // Update user metadata with role and approval status
         await authService.updateUserMetadata({
           'role': _selectedRole,
-          'approvalStatus': 'pending',
+          'approvalStatus': approvalStatus,
           'registrationType': 'google',
+          if (_selectedClinicId != null) 'clinicId': _selectedClinicId,
         });
 
         // Create approval request in database
@@ -329,13 +305,18 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
           'email': authResponse.user!.email ?? '',
           'full_name': authResponse.user!.userMetadata?['full_name'] ?? '',
           'role': _selectedRole,
+          'clinic_id': _selectedClinicId, // ✅ حفظ clinicId
           'registration_type': 'google',
-          'status': 'pending',
+          'status': approvalStatus,
         }).then((_) {
           if (mounted) {
+            final message = approvalStatus == 'approved'
+                ? 'تم التسجيل عبر Google بنجاح!'
+                : 'تم التسجيل عبر Google. في انتظار الموافقة...';
+
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('تم التسجيل عبر Google. في انتظار الموافقة...'),
+              SnackBar(
+                content: Text(message),
                 backgroundColor: PremiumColors.successGreen,
               ),
             );
@@ -370,11 +351,16 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
         // Get current user to get their ID and details
         final user = authService.currentUser;
         if (user != null) {
+          // ✅ تحديد حالة الموافقة بناءً على الدور
+          final approvalStatus =
+              RoleManagementUtils.getApprovalStatusForRole(_selectedRole);
+
           // Update user metadata with role and approval status
           await authService.updateUserMetadata({
             'role': _selectedRole,
-            'approvalStatus': 'pending',
+            'approvalStatus': approvalStatus,
             'registrationType': 'facebook',
+            if (_selectedClinicId != null) 'clinicId': _selectedClinicId,
           });
 
           // Create approval request in database
@@ -386,14 +372,18 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
             'email': user.email ?? '',
             'full_name': fullName,
             'role': _selectedRole,
+            'clinic_id': _selectedClinicId, // ✅ حفظ clinicId
             'registration_type': 'facebook',
-            'status': 'pending',
+            'status': approvalStatus,
           }).then((_) {
             if (mounted) {
+              final message = approvalStatus == 'approved'
+                  ? 'تم التسجيل عبر Facebook بنجاح!'
+                  : 'تم التسجيل عبر Facebook. في انتظار الموافقة...';
+
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content:
-                      Text('تم التسجيل عبر Facebook. في انتظار الموافقة...'),
+                SnackBar(
+                  content: Text(message),
                   backgroundColor: PremiumColors.successGreen,
                 ),
               );
@@ -490,9 +480,9 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
             ),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: _roles.length,
+            itemCount: _availableRoles.length,
             itemBuilder: (context, index) {
-              final role = _roles[index];
+              final role = _availableRoles[index];
               return AppCard(
                 child: Material(
                   color: Colors.transparent,
@@ -954,18 +944,4 @@ class _PremiumRegisterScreenState extends State<PremiumRegisterScreen>
       ),
     );
   }
-}
-
-class RoleOption {
-  const RoleOption({
-    required this.value,
-    required this.label,
-    required this.description,
-    required this.icon,
-  });
-
-  final String value;
-  final String label;
-  final String description;
-  final IconData icon;
 }

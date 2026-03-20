@@ -56,16 +56,34 @@ class AuthService {
   }
 
   /// Registers a new user with email, password, and optional metadata.
+  ///
+  /// دعم إنشاء حسابات مع roles مختلفة:
+  /// - patient: لا يتطلب clinicId
+  /// - موظفين: يتطلب clinicId من Clinic Admin
+  /// - clinic_admin: يتطلب موافقة Super Admin
   Future<AuthResponse> signUpWithEmail({
     required String email,
     required String password,
     Map<String, dynamic>? metadata,
+    String? clinicId,
   }) async {
     try {
+      // إضافة clinicId إلى metadata إذا كان موجوداً
+      final finalMetadata = {
+        ...?metadata,
+        if (clinicId != null) 'clinicId': clinicId,
+      };
+
+      log(
+        'Signing up user with email: $email, role: ${metadata?['role']}, clinicId: $clinicId',
+        name: 'AuthService.signUpWithEmail',
+        level: 800,
+      );
+
       return await _auth.signUp(
         email: email,
         password: password,
-        data: metadata,
+        data: finalMetadata,
         emailRedirectTo: AppConstants.deepLinkUrl,
       );
     } catch (e, st) {

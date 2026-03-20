@@ -1,7 +1,7 @@
 /// Script للتحقق من وجود المستخدم والدور في قاعدة البيانات
 ///
 /// الأغراض:
-/// 1. التحقق من وجود UID معين في جدول profiles
+/// 1. التحقق من وجود UID معين في جدول users
 /// 2. التحقق من وجود دور مسند للمستخدم
 /// 3. عرض بيانات المستخدم الكاملة
 /// 4. إذا لم يكن هناك دور، إضافة دور افتراضي
@@ -27,19 +27,13 @@ Future<void> main() async {
   print('🔍 البحث عن UID: $userId\n');
 
   try {
-    // البحث عن المستخدم في جدول profiles
-    final profileData = await supabase
-        .from('profiles')
-        .select()
-        .eq('id', userId)
-        .limit(1)
-        .maybeSingle();
+    // ✅ البحث في الجدول الصحيح: 'users' بدلاً من 'profiles'
+    final userData =
+        await supabase.from('users').select().eq('id', userId).maybeSingle();
 
-    if (profileData == null) {
-      print('❌ لم يتم العثور على المستخدم في جدول profiles');
-      print(
-        '💡 قد يكون السبب: المستخدم لم يقم بإنشاء صفحة profile بعد المصادقة.\n',
-      );
+    if (userData == null) {
+      print('❌ لم يتم العثور على المستخدم في جدول users');
+      print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
       // البحث في جدول auth.users
       print('🔍 البحث في جدول المصادقة (auth.users)...\n');
@@ -50,24 +44,48 @@ Future<void> main() async {
         print('   - البريد: ${authUser.user!.email}');
         print('   - تاريخ الإنشاء: ${authUser.user!.createdAt}');
         print('   - البيانات الإضافية: ${authUser.user!.userMetadata}');
-        print(
-          '\n⚠️  المشكلة: لا يوجد سجل في جدول profiles مع دور مسند.\n',
-        );
-        print(
-          '💡 الحل: قم بإدراج السجل يدوياً أو عبر كود إنشاء المستخدم.\n',
-        );
+
+        // التحقق من جدول user_approvals
+        print('\n🔍 البحث في جدول user_approvals...');
+        final approvalData = await supabase
+            .from('user_approvals')
+            .select()
+            .eq('user_id', userId)
+            .maybeSingle();
+
+        if (approvalData != null) {
+          print('✅ وجدت طلب موافقة:');
+          approvalData.forEach((key, value) {
+            print('   $key: $value');
+          });
+        } else {
+          print('❌ لا يوجد طلب موافقة لهذا المستخدم');
+        }
+
+        print('\n⚠️  المشكلة: لا يوجد سجل في جدول users مع دور مسند.\n');
+        print('💡 الحل: قم بإدراج السجل يدوياً أو عبر كود إنشاء المستخدم.\n');
+      } else {
+        print('❌ لم يتم العثور على المستخدم في أي جدول');
       }
     } else {
-      print('✅ وجدت البيانات في جدول profiles:');
+      print('✅ وجدت البيانات في جدول users:');
       print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
-      profileData.forEach((key, value) {
+      userData.forEach((key, value) {
         if (key == 'role') {
           print('🎭 الدور: $value ${_getRoleEmoji(value)}');
         } else if (key == 'created_at') {
           print('📅 تاريخ الإنشاء: $value');
         } else if (key == 'updated_at') {
           print('🔄 آخر تحديث: $value');
+        } else if (key == 'first_name') {
+          print('👤 الاسم الأول: $value');
+        } else if (key == 'last_name') {
+          print('👤 الاسم الأخير: $value');
+        } else if (key == 'email') {
+          print('📧 البريد: $value');
+        } else if (key == 'phone') {
+          print('📱 الهاتف: $value');
         } else if (key != 'id') {
           print('   $key: $value');
         }
@@ -76,29 +94,33 @@ Future<void> main() async {
       print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
       // التحقق من الدور
-      final role = profileData['role'];
+      final role = userData['role'];
       if (role == null || role.toString().isEmpty) {
         print('⚠️  تنبيه: حقل الدور فارغ!');
         print('💡 الحل: قم بتحديث الدور بأحد الخيارات التالية:\n');
-        print('   • patient (مريض)');
+        print('   • super_admin (مدير النظام)');
+        print('   • clinic_admin (مدير العيادة)');
         print('   • doctor (طبيب)');
-        print('   • admin (مسؤول)');
-        print('   • employee (موظف)\n');
+        print('   • nurse (ممرض)');
+        print('   • receptionist (موظف استقبال)');
+        print('   • pharmacist (صيدلي)');
+        print('   • lab_technician (فني مختبر)');
+        print('   • radiographer (أخصائي أشعة)');
+        print('   • patient (مريض)');
+        print('   • relative (قريب)\n');
 
         // عرض أمر SQL للتحديث
         print('🔧 أمر SQL للتحديث:');
         print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         print("""
-UPDATE profiles 
-SET role = 'patient' 
+UPDATE users 
+SET role = 'patient'::user_role 
 WHERE id = '$userId';
 """);
         print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
       } else {
         print('✅ تم العثور على دور مسند: $role ${_getRoleEmoji(role)}');
-        print(
-          '✨ المستخدم مستعد للانتقال إلى التطبيق!\n\n',
-        );
+        print('✨ المستخدم مستعد للانتقال إلى التطبيق!\n\n');
       }
     }
   } catch (e) {
@@ -116,14 +138,26 @@ String _getRoleEmoji(dynamic role) {
   if (role == null) return '';
   final roleStr = role.toString().toLowerCase();
   switch (roleStr) {
-    case 'patient':
-      return '👨‍⚕️';
-    case 'doctor':
-      return '👨‍💼';
-    case 'admin':
+    case 'super_admin':
       return '👑';
-    case 'employee':
-      return '👔';
+    case 'clinic_admin':
+      return '🏥';
+    case 'doctor':
+      return '👨‍⚕️';
+    case 'nurse':
+      return '💉';
+    case 'receptionist':
+      return '📞';
+    case 'pharmacist':
+      return '💊';
+    case 'lab_technician':
+      return '🔬';
+    case 'radiographer':
+      return '📡';
+    case 'patient':
+      return '👤';
+    case 'relative':
+      return '👨‍👩‍👧';
     default:
       return '❓';
   }

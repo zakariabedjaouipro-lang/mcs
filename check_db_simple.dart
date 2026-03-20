@@ -15,15 +15,33 @@ Future<void> main() async {
     const userId = '38900069-65f8-4736-93b4-c95bec6e0c37';
     print('🔍 البحث عن UID: $userId\n');
 
-    // البحث عن المستخدم
+    // ✅ البحث في الجدول الصحيح: 'users' بدلاً من 'profiles'
     final response =
-        await client.from('profiles').select().eq('id', userId).maybeSingle();
+        await client.from('users').select().eq('id', userId).maybeSingle();
 
     if (response == null) {
-      print('❌ لم يتم العثور على المستخدم في جدول profiles');
-      print('💡 تحتاج إلى إنشاء profile للمستخدم أولاً\n');
+      print('❌ لم يتم العثور على المستخدم في جدول users');
+
+      // ✅ البحث في جدول user_approvals أيضاً
+      print('\n🔍 البحث في جدول user_approvals...');
+      final approvalResponse = await client
+          .from('user_approvals')
+          .select()
+          .eq('user_id', userId)
+          .maybeSingle();
+
+      if (approvalResponse != null) {
+        print('✅ وجدت بيانات في user_approvals:');
+        approvalResponse.forEach((key, value) {
+          print('$key: $value');
+        });
+      } else {
+        print('❌ لم يتم العثور على المستخدم في أي جدول');
+      }
+
+      print('💡 تحتاج إلى إنشاء مستخدم في جدول users أولاً\n');
     } else {
-      print('✅ وجدت بيانات المستخدم:');
+      print('✅ وجدت بيانات المستخدم في جدول users:');
       print('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
       response.forEach((key, value) {
@@ -37,8 +55,8 @@ Future<void> main() async {
         print('⚠️  تنبيه: حقل الدور فارغ!');
         print('💡 الحل: قم بتحديث الدور في Supabase Dashboard أو عبر SQL:\n');
         print('''
-UPDATE profiles 
-SET role = 'patient' 
+UPDATE users 
+SET role = 'super_admin' 
 WHERE id = '$userId';
 ''');
       } else {
